@@ -1,0 +1,26 @@
+version: '3.9'
+services:
+  nginx:
+    build: .
+    ports:
+      - "5000:443"  # Porta 443 do container exposta como 5000 no host
+      - "8080:80"
+    networks:
+      - public
+      - internal
+    # depends_on:
+    #   - api-gateway
+
+  # api-gateway:
+  #   image: transcendence/api-gateway
+  #   networks:
+  #     - internal
+
+  # api-gateway-2:
+  #   image: transcendence/api-gateway
+  #   networks:
+  #     - internal
+
+networks:
+  public:
+  internal:
