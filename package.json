@@ -4,7 +4,9 @@
   "description": "API Gateway for routing and authentication across microservices. Centralizes request handling, JWT verification, and load balancing. Serves as the entry point to services like user management, profiles, and friendship management.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -12,9 +14,14 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "fastify": "^5.3.3",
-    "jsonwebtoken": "^9.0.2",
-    "prisma": "^6.9.0",
+    "ts-node-dev": "^2.0.0",
     "tsx": "^4.20.1",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@fastify/jwt": "^9.1.0",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "fastify-cors": "^6.0.3"
   }
 }
