@@ -4,21 +4,33 @@ import dotenv from 'dotenv';
 import authPlugin from './plugins/auth';
 import authorizePlugin from './plugins/authorize';
 import userRoutes from './routes/user';
+
 // import chatRoutes from './routes/chat';
 // import gameRoutes from './routes/game';
 
-dotenv.config();
+dotenv.config({
+	path: './.env'
+});
 
-const app = Fastify({ logger: true });
+const envToLogger = {
+	development: {
+		transport: {
+			target: 'pino-pretty',
+			options: {
+				translateTime: 'HH:MM:ss Z',
+				ignore: 'pid,hostname',
+			},
+		},
+	},
+	production: true,
+	test: false,
+};
 
-// app.addHook('onRequest', async (request, reply) => {
-// 	app.log.info({
-// 		method: request.method,
-// 		url: request.url,
-// 		headers: request.headers,
-// 		body: request.body
-// 	}, 'Incoming request');
-// });
+type Environment = 'development' | 'production' | 'test';
+const environment = (process.env.NODE_ENV as Environment) || 'development';
+
+const app = Fastify({ logger: envToLogger[environment] ?? true });
+
 
 // 📌 Registro dos plugins
 app.register(authPlugin);

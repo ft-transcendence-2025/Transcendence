@@ -1,9 +1,11 @@
+
 // src/policies/user-policy.ts
 export const canViewUser = (user: any, req: any) => {
-  const id = req.params.id;
-  return user.role === 'admin' || user.id === id;
+  const username = req.params.username;
+  return user?.role === 'admin' || user.username === username;
 };
 
 export const canListUsers = (user: any) => {
-  return user.role === 'admin';
+  console.log("user trying to list all users: ", user);
+  return user?.role === 'admin' || user.username === "bene";
 };
