@@ -11,6 +11,15 @@ dotenv.config();
 
 const app = Fastify({ logger: true });
 
+app.addHook('onRequest', async (request, reply) => {
+	app.log.info({
+		method: request.method,
+		url: request.url,
+		headers: request.headers,
+		body: request.body
+	}, 'Incoming request');
+});
+
 // 📌 Registro dos plugins
 app.register(authPlugin);
 app.register(authorizePlugin);
