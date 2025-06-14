@@ -5,6 +5,7 @@ import authPlugin from './plugins/auth';
 import authorizePlugin from './plugins/authorize';
 import userRoutes from './routes/userRoutes';
 import profileRoutes from './routes/profileRoutes';
+import friendshipRoutes from './routes/friendshipRoutes';
 
 // import chatRoutes from './routes/chat';
 // import gameRoutes from './routes/game';
@@ -40,6 +41,7 @@ app.register(authorizePlugin);
 
 app.register(userRoutes, { prefix: 'api/users' });
 app.register(profileRoutes, { prefix: 'api/profiles' });
+app.register(friendshipRoutes, { prefix: 'api/friendships' });
 // app.register(chatRoutes, { prefix: 'api/chat' });
 // app.register(gameRoutes, { prefix: '/game' });
 
