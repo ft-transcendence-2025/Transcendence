@@ -3,7 +3,8 @@ import Fastify from 'fastify';
 import dotenv from 'dotenv';
 import authPlugin from './plugins/auth';
 import authorizePlugin from './plugins/authorize';
-import userRoutes from './routes/user';
+import userRoutes from './routes/userRoutes';
+import profileRoutes from './routes/profileRoutes';
 
 // import chatRoutes from './routes/chat';
 // import gameRoutes from './routes/game';
@@ -36,9 +37,10 @@ const app = Fastify({ logger: envToLogger[environment] ?? true });
 app.register(authPlugin);
 app.register(authorizePlugin);
 
-// 📌 Registro das rotas
+
 app.register(userRoutes, { prefix: 'api/users' });
-// app.register(chatRoutes, { prefix: '/chat' });
+app.register(profileRoutes, { prefix: 'api/profiles' });
+// app.register(chatRoutes, { prefix: 'api/chat' });
 // app.register(gameRoutes, { prefix: '/game' });
 
 export default app;
