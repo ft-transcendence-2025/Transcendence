@@ -1,6 +1,6 @@
 import { FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 import * as policy from '../policies/user-policy';
-import * as friendShipService from '../services/User-Management/friendShip-service';
+import * as friendShipService from '../services/User-Management/friendship-service';
 
 
 const profileRoutes: FastifyPluginAsync = async (app: any) => {
