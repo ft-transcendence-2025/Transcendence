@@ -1,20 +1,24 @@
 import { renderHome } from './views/home'
 import { renderAbout } from './views/about'
 import { renderContact } from './views/contact'
+import { renderLogin, attachLoginEvents } from './views/login'
+import { renderUsers, attachUsersEvents } from './views/users'
 
-export function router() {
-	const app = document.getElementById('app')!
-	const path = window.location.pathname
+export async function router() {
+    const app = document.getElementById('app')!
+    const path = window.location.pathname
 
-	switch (path) {
-		case '/about':
-			app.innerHTML = renderAbout()
-			break
-		case '/contact':
-			app.innerHTML = renderContact()
-			break
-		case '/':
-		default:
-			app.innerHTML = renderHome()
-	}
+    switch (path) {
+        case '/login':
+            app.innerHTML = await renderLogin()
+            attachLoginEvents()
+            break
+        case '/users':
+            app.innerHTML = await renderUsers();
+            attachUsersEvents();
+            break;
+        case '/':
+        default:
+            app.innerHTML = renderHome()
+    }
 }
