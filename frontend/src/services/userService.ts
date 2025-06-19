@@ -1,6 +1,20 @@
-import axios from 'axios';
+// import axios from 'axios';
 
 const BASE_URL = 'https://localhost:5000/api/users';
+export interface User {
+    id: number | string; // which type???
+    name: string;
+    email: string;
+}
+
+export interface LoginResponse {
+	token: string;
+	user: {
+	  id: number;
+	  name: string;
+	  email: string;
+	};
+  }
 
 // Set up an Axios instance
 const api = axios.create({
@@ -18,10 +32,10 @@ api.interceptors.request.use((config) => {
 });
 
 // Use the Axios instance for all requests
-export const getUsers = () => api.get(`/`);
+export const getUsers = () => api.get<User[]>(`/`);
 export const getUserByUsername = (username: string) => api.get(`/${username}`);
 export const updateUser = (username: string, body: any) => api.put(`/${username}`, body);
 export const disableUser = (username: string) => api.patch(`/${username}`);
 export const deleteUser = (username: string) => api.delete(`/${username}`);
-export const login = (body: any) => api.post(`/login`, body);
+export const login = (body: any) => api.post<LoginResponse>(`/login`, body);
 export const register = (body: any) => api.post(`/`, body);

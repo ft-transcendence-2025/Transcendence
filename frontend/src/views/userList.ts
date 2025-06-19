@@ -1,0 +1,27 @@
+import { loadHtml } from '../utils/htmlLoader.js';
+import { getUsers } from '../services/userService.js';
+
+export async function renderUserList(container: HTMLElement | null) {
+	if (!container) return;
+
+	// Fetch the component's HTML template
+	container.innerHTML = await loadHtml('/html/userList.html');
+
+	// Fetch users from the API
+	try {
+		const response = await getUsers();
+		const userList = response.data;
+
+		// Populate the user list in the container
+		const userListContainer = container.querySelector('#user-list') as HTMLElement;
+		userListContainer.innerHTML = userList.map(user => `
+			<div class="user-item">
+				<h3>${user.name}</h3>
+				<p>Email: ${user.email}</p>
+			</div>
+		`).join('');
+	} catch (error) {
+		console.error('Failed to fetch users:', error);
+		container.innerHTML = '<p>Error loading user list.</p>';
+	}
+}
