@@ -2,9 +2,11 @@
 
 const BASE_URL = 'https://localhost:5000/api/users';
 export interface User {
-    id: number | string; // which type???
-    name: string;
+    id: string;
+    username: string;
     email: string;
+    active: boolean;
+    createdAt: string;
 }
 
 export interface LoginResponse {
