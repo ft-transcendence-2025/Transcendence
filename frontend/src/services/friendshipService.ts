@@ -1,10 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 // import dotenv from 'dotenv';
 
 // dotenv.config({
 // 	path: './.env'
 // });
-
 
 // 	app.post('/', friendshipController.sendFriendRequest); // enviar pedido
 // 	app.get('/requests/:userId', friendshipController.getFriendRequests); // ver pedidos recebidos
@@ -20,7 +19,10 @@ const BASE_URL =
     : "http://user-management:3000/friendships";
 
 export const sendFriendRequest = (body: any) => axios.post(`${BASE_URL}`, body);
-export const getFriendRequests = (username: string) => axios.get(`${BASE_URL}/requests/${username}`);
-export const listFriends = (username: string) => axios.get(`${BASE_URL}/list/${username}`);
-export const respondToFriendRequest = (friendshipId: string, body: any) => axios.patch(`${BASE_URL}/respond/${friendshipId}`, body);
+export const getFriendRequests = (username: string) =>
+  axios.get(`${BASE_URL}/requests/${username}`);
+export const listFriends = (username: string) =>
+  axios.get(`${BASE_URL}/list/${username}`);
+export const respondToFriendRequest = (friendshipId: string, body: any) =>
+  axios.patch(`${BASE_URL}/respond/${friendshipId}`, body);
 export const removeFriend = (body: any) => axios.delete(`${BASE_URL}`, body);

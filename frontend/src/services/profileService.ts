@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 // import dotenv from 'dotenv';
 
 // dotenv.config({
@@ -12,7 +12,11 @@ const BASE_URL =
     ? "http://localhost:3000/profiles"
     : "http://user-management:3000/profiles";
 
-export const createProfile = (username: string, body: any) => axios.post(`${BASE_URL}/${username}`, body);
-export const getProfileByUsername = (username: string) => axios.get(`${BASE_URL}/${username}`);
-export const updateProfile = (username: string, body: any) => axios.put(`${BASE_URL}/${username}`, body);
-export const deleteProfile = (username: string) => axios.delete(`${BASE_URL}/${username}`);
+export const createProfile = (username: string, body: any) =>
+  axios.post(`${BASE_URL}/${username}`, body);
+export const getProfileByUsername = (username: string) =>
+  axios.get(`${BASE_URL}/${username}`);
+export const updateProfile = (username: string, body: any) =>
+  axios.put(`${BASE_URL}/${username}`, body);
+export const deleteProfile = (username: string) =>
+  axios.delete(`${BASE_URL}/${username}`);
