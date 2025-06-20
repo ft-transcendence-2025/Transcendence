@@ -11,7 +11,7 @@
     "copy:assets": "ncp public dist",
     "build": "npm run clean && npm-run-all --parallel build:* && npm run copy:assets",
     "watch:ts": "tsc --watch",
-    "watch:tw" :	"tailwindcss -i ./css/input.css -o ./dist/output.css --watch",
+    "watch:tw": "tailwindcss -i ./css/input.css -o ./dist/output.css --watch",
     "watch:assets": "onchange \"public/**/*\" -- npm run copy:assets",
     "dev": "npm run build && npm-run-all --parallel watch:*"
   },
@@ -20,7 +20,8 @@
   "license": "ISC",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.9",
-    "tailwindcss": "^4.1.9"
+    "tailwindcss": "^4.1.9",
+    "dotenv": "^16.5.0"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
