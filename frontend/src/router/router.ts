@@ -1,6 +1,6 @@
 import { routes } from "./routes.js";
 
-export async function router(content: HTMLElement | null) {
+export async function router(container: HTMLElement | null) {
   const potentialMatch = routes.map((route) => {
     return {
       route: route,
@@ -24,10 +24,10 @@ export async function router(content: HTMLElement | null) {
 	}
 	container.innerHTML = match.route.view();
 	 */
-  await match.route.action(content);
+  await match.route.action(container);
 }
 
-export function navigateTo(path: string, content: HTMLElement | null) {
+export function navigateTo(path: string, container: HTMLElement | null) {
   history.pushState(null, "", path);
-  router(content); // re-run the router to update the view
+  router(container); // re-run the router to update the view
 }
