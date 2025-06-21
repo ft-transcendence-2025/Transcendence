@@ -13,18 +13,20 @@
     "watch:ts": "tsc --watch",
     "watch:tw": "tailwindcss -i ./css/input.css -o ./dist/output.css --watch",
     "watch:assets": "onchange \"public/**/*\" -- npm run copy:assets",
-    "dev": "npm run build && npm-run-all --parallel watch:*"
+    "serve": "live-server dist --host=0.0.0.0 --port=5000 --entry-file=index.html",
+    "dev": "npm run build && npm-run-all --parallel watch:* serve"
   },
   "keywords": [],
   "author": "Papaija",
   "license": "ISC",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.9",
-    "tailwindcss": "^4.1.9",
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "tailwindcss": "^4.1.9"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
+    "live-server": "^1.2.0",
     "ncp": "^2.0.0",
     "npm-run-all": "^4.1.5",
     "onchange": "^7.1.0",

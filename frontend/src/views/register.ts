@@ -7,7 +7,7 @@ export async function renderRegister(container: HTMLElement | null) {
 
   container.innerHTML = await loadHtml("/html/registerForm.html");
 
-  const form = container.querySelector("#register-form") as HTMLFormElement;
+  const form = document.getElementById("register-form") as HTMLFormElement;
   if (!form) {
     console.error("Register form not found in the container.");
     return;
@@ -16,16 +16,17 @@ export async function renderRegister(container: HTMLElement | null) {
     e.preventDefault();
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+    console.log(data); // debug
 
     try {
       await register(data);
-      alert("Registration Successful!");
+      alert("Registration Successful!"); // debug
       // redirect to login
       const content = document.getElementById("content");
       navigateTo("/login", content);
     } catch (error) {
       console.error("Registration failed:", error);
-      alert("Registration failed! Please try again.");
+      alert("Registration failed! Please try again."); // debug
     }
   };
 }
