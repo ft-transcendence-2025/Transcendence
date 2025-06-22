@@ -21,9 +21,20 @@ export async function renderRegister(container: HTMLElement | null) {
     try {
       await register(data);
       alert("Registration Successful!"); // debug
+
       // redirect to login
-      const content = document.getElementById("content");
-      navigateTo("/login", content);
+      // Hide the register form
+      form.reset();
+      const registerContainer = document
+        .getElementById("register-form")
+        ?.closest("div");
+      if (registerContainer) registerContainer.classList.add("hidden");
+
+      // Show the login modal
+      const loginModal = document.getElementById("login-modal");
+      if (loginModal) {
+        loginModal.classList.remove("hidden");
+      }
     } catch (error) {
       console.error("Registration failed:", error);
       alert("Registration failed! Please try again."); // debug

@@ -21,7 +21,7 @@ export async function router(container: HTMLElement | null) {
 	if (!match.route.view) {
 		console.error(`No view found for route: ${match.route.path}`);
 		return;
-	}
+	}error
 	container.innerHTML = match.route.view();
 	 */
   await match.route.action(container);
