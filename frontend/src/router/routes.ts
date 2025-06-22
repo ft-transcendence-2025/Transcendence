@@ -2,6 +2,8 @@ import { renderHome } from "../views/home.js";
 import { openLoginModal } from "../components/loginModal.js";
 import { renderRegister } from "../views/register.js";
 import { renderUserList } from "../views/userList.js";
+import { renderDashboard } from "../views/dashboard.js";
+import { renderPong } from "../views/pong.js";
 
 interface Route {
   path: string;
@@ -18,4 +20,6 @@ export const routes: Route[] = [
       openLoginModal();
     },
   },
+  { path: "/dashboard", action: renderDashboard },
+  { path: "/pong", action: renderPong },
 ];

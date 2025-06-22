@@ -39,7 +39,11 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 // API functions
-export const getUsers = () => request<User[]>("/");
+export const getUsers = () =>
+  request<User[]>("/", {
+    method: "GET",
+    headers: getHeaders(),
+  });
 
 export const getUserByUsername = (username: string) =>
   request<User>(`/${username}`);
