@@ -58,7 +58,7 @@ const userRoutes: FastifyPluginAsync = async (app: any) => {
 		}
 	});
 
-	app.post('/register', {}, async (req: FastifyRequest, reply: FastifyReply) => {
+	app.post('/', {}, async (req: FastifyRequest, reply: FastifyReply) => {
 		try {
 			const response = await userService.register(req.body);
 			const user = response.data?.user;
