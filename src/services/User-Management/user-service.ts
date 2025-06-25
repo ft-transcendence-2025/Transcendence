@@ -17,4 +17,4 @@ export const deleteUser = (username: string) => axios.delete(`${BASE_URL}/users/
 
 
 export const login = (body: any) => axios.post(`${BASE_URL}/auth/login`, body)
-export const register = (body: any) => axios.post(`${BASE_URL}/users`, body);
+export const register = (body: any) => axios.post(`${BASE_URL}/auth/register`, body);
