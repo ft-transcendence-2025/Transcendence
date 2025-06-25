@@ -68,14 +68,14 @@ export const deleteUser = (username: string) =>
   });
 
 export const login = (body: any) =>
-  request<LoginResponse>("/login", {
+  request<LoginResponse>("/auth/login", {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify(body),
   });
 
 export const register = (body: any) =>
-  request<User>("/", {
+  request<User>("/auth/register", {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify(body),

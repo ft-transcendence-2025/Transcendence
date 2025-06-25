@@ -1,6 +1,7 @@
 import { loadHtml } from "../utils/htmlLoader.js";
 import { login } from "../services/userService.js";
 import { navigateTo } from "../router/router.js";
+import { renderNavbar } from "./navbar.js";
 
 // This function will find the modal on the page and open it.
 export async function openLoginModal() {
@@ -27,6 +28,12 @@ export async function openLoginModal() {
       localStorage.setItem("authToken", response.token);
       alert("Login Successful!");
       closeModal();
+
+      // render navbar to update links
+      const navbarContainer = document.getElementById("navbar");
+      if (navbarContainer) {
+        renderNavbar(navbarContainer);
+      }
 
       const container = document.getElementById("content");
       navigateTo("/dashboard", container);
