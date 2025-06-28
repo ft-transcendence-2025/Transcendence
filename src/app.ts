@@ -41,10 +41,10 @@ app.register(authorizePlugin);
 app.register(metrics);
 
 const routes = [
-  { plugin: userRoutes, prefix: "api/users" },
   { plugin: profileRoutes, prefix: "api/profiles" },
   { plugin: friendshipRoutes, prefix: "api/friendships" },
   { plugin: authRoutes, prefix: "api/auth" },
+  { plugin: userRoutes, prefix: "api/users" },
 ];
 
 routes.forEach((route) => {

@@ -16,22 +16,22 @@ export class userService {
   }
 
   static async getUsers() {
-    return axios.get(`${this.base_url}/users`);
+    return await axios.get(`${this.base_url}`);
   }
 
   static async getUserByUsername(username: string) {
-    return axios.get(`${this.base_url}/users/${username}`);
+    return await axios.get(`${this.base_url}/${username}`);
   }
 
   static async updateUser(username: string, body: any) {
-    return axios.put(`${this.base_url}/users/${username}`, body);
+    return await axios.put(`${this.base_url}/${username}`, body);
   }
 
   static async disableUser(username: string) {
-    return axios.patch(`${this.base_url}/users/${username}`);
+    return await axios.patch(`${this.base_url}/${username}`);
   }
 
   static async deleteUser(username: string) {
-    return axios.delete(`${this.base_url}/users/${username}`);
+    return await axios.delete(`${this.base_url}/${username}`);
   }
 }

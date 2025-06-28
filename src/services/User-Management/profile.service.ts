@@ -16,18 +16,18 @@ export class profileService {
   }
 
   static async createProfile(username: string, body: any) {
-    return axios.post(`${this.base_url}/${username}`, body);
+    return await axios.post(`${this.base_url}/${username}`, body);
   }
 
   static async getProfileByUsername(username: string) {
-    return axios.get(`${this.base_url}/${username}`);
+    return await axios.get(`${this.base_url}/${username}`);
   }
 
   static async updateProfile(username: string, body: any) {
-    return axios.put(`${this.base_url}/${username}`, body);
+    return await axios.put(`${this.base_url}/${username}`, body);
   }
 
   static async deleteProfile(username: string) {
-    return axios.delete(`${this.base_url}/${username}`);
+    return await axios.delete(`${this.base_url}/${username}`);
   }
 }

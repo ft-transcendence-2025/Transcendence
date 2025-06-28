@@ -15,22 +15,22 @@ export class authService {
         : process.env.DEV_AUTH_URL;
   }
   static async login(body: any) {
-    return axios.post(`${this.base_url}/login`, body);
+    return await axios.post(`${this.base_url}/login`, body);
   }
 
   static async register(body: any) {
-    return axios.post(`${this.base_url}/register`, body);
+    return await axios.post(`${this.base_url}/register`, body);
   }
 
   static async generate2FA(username: string, body: any) {
-    return axios.post(`${this.base_url}/${username}/2fa/generate`, body);
+    return await axios.post(`${this.base_url}/${username}/2fa/generate`, body);
   }
 
   static async enable2FA(username: string, body: any) {
-    return axios.post(`${this.base_url}/${username}/2fa/enable`, body);
+    return await axios.post(`${this.base_url}/${username}/2fa/enable`, body);
   }
 
   static async disable2FA(username: string, body: any) {
-    return axios.post(`${this.base_url}/${username}/2fa/disable`, body);
+    return await axios.post(`${this.base_url}/${username}/2fa/disable`, body);
   }
 }

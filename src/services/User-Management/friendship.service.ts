@@ -16,22 +16,22 @@ export class friendshipService {
   }
 
   static async sendFriendRequest(body: any) {
-    return axios.post(`${this.base_url}`, body);
+    return await axios.post(`${this.base_url}`, body);
   }
 
   static async getFriendRequests(username: string) {
-    return axios.get(`${this.base_url}/requests/${username}`);
+    return await axios.get(`${this.base_url}/requests/${username}`);
   }
 
   static async listFriends(username: string) {
-    return axios.get(`${this.base_url}/list/${username}`);
+    return await axios.get(`${this.base_url}/list/${username}`);
   }
 
   static async respondToFriendRequest(friendshipId: string, body: any) {
-    return axios.patch(`${this.base_url}/respond/${friendshipId}`, body);
+    return await axios.patch(`${this.base_url}/respond/${friendshipId}`, body);
   }
 
   static async removeFriend(body: any) {
-    return axios.delete(`${this.base_url}`, body);
+    return await axios.delete(`${this.base_url}`, body);
   }
 }
