@@ -1,5 +1,5 @@
 import { loadHtml } from "../utils/htmlLoader.js";
-import { login } from "../services/userService.js";
+import { login } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
 import { renderNavbar } from "./navbar.js";
 

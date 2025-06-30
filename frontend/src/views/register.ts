@@ -1,5 +1,5 @@
 import { loadHtml } from "../utils/htmlLoader.js";
-import { register } from "../services/userService.js";
+import { register } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
 
 export async function renderRegister(container: HTMLElement | null) {

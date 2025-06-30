@@ -67,20 +67,6 @@ export const deleteUser = (username: string) =>
     headers: getHeaders(),
   });
 
-export const login = (body: any) =>
-  request<LoginResponse>("/auth/login", {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify(body),
-  });
-
-export const register = (body: any) =>
-  request<User>("/auth/register", {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify(body),
-  });
-
 //
 //import axios from "axios";
 //
