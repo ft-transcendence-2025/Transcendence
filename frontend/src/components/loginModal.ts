@@ -14,7 +14,7 @@ export async function openLoginModal() {
   const modal = document.getElementById("login-modal")!;
   const form = modal.querySelector("form")!;
   const closeButton = modal.querySelector(
-    ".close-button"
+    ".close-button",
   )! as HTMLButtonElement;
 
   // Add event listener for the form submission

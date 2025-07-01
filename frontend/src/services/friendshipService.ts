@@ -17,7 +17,7 @@
 //   window.location.hostname === "localhost"
 //     ? "http://localhost:3000/friendships"
 //     : "http://user-management:3000/friendships";
-// 
+//
 // export const sendFriendRequest = (body: any) => axios.post(`${BASE_URL}`, body);
 // export const getFriendRequests = (username: string) =>
 //   axios.get(`${BASE_URL}/requests/${username}`);
