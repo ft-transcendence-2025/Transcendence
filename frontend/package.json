@@ -6,6 +6,7 @@
   "scripts": {
     "//": "--- DEBUG & DEVELOPMENT ---",
     "clean": "rm -rf dist",
+    "format": "prettier --write .",
     "build:ts": "tsc",
     "build:tw": "npx @tailwindcss/cli -i ./css/input.css -o ./dist/output.css",
     "copy:assets": "ncp public dist",
@@ -30,6 +31,13 @@
     "ncp": "^2.0.0",
     "npm-run-all": "^4.1.5",
     "onchange": "^7.1.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.6.13"
+  },
+  "prettier": {
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ]
   }
 }

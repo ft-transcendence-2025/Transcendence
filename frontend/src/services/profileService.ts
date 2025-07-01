@@ -11,7 +11,7 @@
 //   window.location.hostname === "localhost"
 //     ? "http://localhost:3000/profiles"
 //     : "http://user-management:3000/profiles";
-// 
+//
 // export const createProfile = (username: string, body: any) =>
 //   axios.post(`${BASE_URL}/${username}`, body);
 // export const getProfileByUsername = (username: string) =>

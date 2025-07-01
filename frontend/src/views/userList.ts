@@ -13,25 +13,26 @@ export async function renderUserList(container: HTMLElement | null) {
 
     // Populate the user list in the container
     const userListContainer = container.querySelector(
-      "#user-list"
+      "#user-list",
     ) as HTMLElement;
     userListContainer.innerHTML = userList
       .map(
         (user) => `
-			<div class="user-item">
+			<div id="user-list" class="bg-gray-100 shadow-md rounded-lg p-4 mb-4 w-2xl">
+                    
 			
 				<tr>
-                        <td class="border px-4 py-2">${user.username}</td>
-                        <td class="border px-4 py-2">${user.email ?? ""}</td>
-                        <td class="border px-4 py-2">${
+                        <td class="border px-4 py-2 text-left">${user.username}</td>
+                        <td class="border px-4 py-2 text-left">${user.email ?? ""}</td>
+                        <td class="border px-4 py-2 text-left">${
                           user.active ? "Yes" : "No"
                         }</td>
-                        <td class="border px-4 py-2">${new Date(
-                          user.createdAt
+                        <td class="border px-4 py-2 text-left">${new Date(
+                          user.createdAt,
                         ).toLocaleString()}</td>
                     </tr>
 			</div>
-		`
+		`,
       )
       .join("");
   } catch (error) {
