@@ -32,9 +32,34 @@ function getHeaders(contentType = "application/json") {
 // Generic request wrapper function
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const response = await fetch(BASE_URL + path, options);
+  
   if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+    let errorMessage = `HTTP error! status: ${response.status}`;
+    
+    try {
+      const errorData = await response.json();
+      
+      // Handle password validation errors (400 status with error array)
+      if (errorData.error && Array.isArray(errorData.error)) {
+        const firstError = errorData.error[0];
+        if (firstError && firstError.message) {
+          errorMessage = firstError.message;
+        }
+      }
+      // Handle other error formats
+      else if (errorData.message) {
+        errorMessage = errorData.message;
+      }
+      else if (errorData.error) {
+        errorMessage = String(errorData.error);
+      }
+    } catch (parseError) {
+      console.log("Failed to parse error response:", parseError);
+    }
+    
+    throw new Error(errorMessage);
   }
+  
   return response.json() as Promise<T>;
 }
 
