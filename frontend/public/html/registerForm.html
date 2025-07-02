@@ -1,6 +1,11 @@
 <div class="mx-auto mt-10 max-w-md">
   <h2 class="mb-6 text-center text-2xl font-bold">Create an Account</h2>
 
+  <!-- Error message container -->
+  <div id="error-message" class="mb-4 hidden rounded bg-red-100 border border-red-400 text-red-700 px-4 py-3" role="alert">
+    <span id="error-text"></span>
+  </div>
+
   <form
     id="register-form"
     class="mb-4 space-y-4 rounded bg-white px-8 pt-6 pb-8 shadow-md"
@@ -26,20 +31,50 @@
         name="email"
         id="email"
         class="w-full appearance-none rounded border px-3 py-2 text-gray-700 shadow"
-        required
       />
     </div>
     <div>
       <label for="password" class="mb-2 block text-sm font-bold text-gray-700"
         >Password</label
       >
-      <input
-        type="password"
-        name="password"
-        id="password"
-        class="w-full appearance-none rounded border px-3 py-2 text-gray-700 shadow"
-        required
-      />
+      <div class="relative">
+        <input
+          type="password"
+          name="password"
+          id="password"
+          class="w-full appearance-none rounded border px-3 py-2 pr-10 text-gray-700 shadow"
+          required
+        />
+        <button
+          type="button"
+          id="toggle-password"
+          class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600 hover:text-gray-800"
+        >
+          <i id="eye-icon" class="far fa-eye"></i>
+        </button>
+      </div>
+      <p class="mt-1 text-xs text-gray-600">Password must contain at least 8 characters, one uppercase letter, one number, and one special character</p>
+    </div>
+    <div>
+      <label for="confirmPassword" class="mb-2 block text-sm font-bold text-gray-700"
+        >Confirm Password</label
+      >
+      <div class="relative">
+        <input
+          type="password"
+          name="confirmPassword"
+          id="confirmPassword"
+          class="w-full appearance-none rounded border px-3 py-2 pr-10 text-gray-700 shadow"
+          required
+        />
+        <button
+          type="button"
+          id="toggle-confirm-password"
+          class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600 hover:text-gray-800"
+        >
+          <i id="eye-icon-confirm" class="far fa-eye"></i>
+        </button>
+      </div>
     </div>
     <div class="flex items-center justify-between">
       <button
