@@ -8,6 +8,7 @@ export async function renderNavbar(container: HTMLElement | null) {
   container.innerHTML = await loadHtml("/html/navbar.html");
 
   const loginLink = document.getElementById("login-link");
+  const dashboardLink = document.getElementById("dashboard-link");
   const registerLink = document.getElementById("register-link");
   const logoutLink = document.getElementById("logout-link");
 
@@ -18,10 +19,12 @@ export async function renderNavbar(container: HTMLElement | null) {
     loginLink?.classList.add("hidden");
     registerLink?.classList.add("hidden");
     logoutLink?.classList.remove("hidden");
+    dashboardLink?.classList.remove("hidden");
   } else {
     loginLink?.classList.remove("hidden");
     registerLink?.classList.remove("hidden");
     logoutLink?.classList.add("hidden");
+    dashboardLink?.classList.add("hidden");
   }
 
   // Add event listeners for logout
