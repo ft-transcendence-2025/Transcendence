@@ -23,10 +23,17 @@ export async function openLoginModal() {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
+    // Hide error message if it exists
+    const errorDiv = document.getElementById("login-error");
+    if (errorDiv) {
+      errorDiv.classList.add("hidden");
+      errorDiv.textContent = "";
+    }
+
     try {
       const response = await login(data);
       localStorage.setItem("authToken", response.token);
-      alert("Login Successful!");
+      // alert("Login Successful!"); //debug
       closeModal();
 
       // render navbar to update links
@@ -38,7 +45,10 @@ export async function openLoginModal() {
       const container = document.getElementById("content");
       navigateTo("/dashboard", container);
     } catch (error) {
-      alert("Login failed!");
+      if (errorDiv) {
+        errorDiv.classList.remove("hidden");
+        errorDiv.textContent = "Login failed. Please check your credentials.";
+      }
     }
   };
 

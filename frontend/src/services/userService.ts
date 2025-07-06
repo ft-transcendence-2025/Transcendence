@@ -1,4 +1,5 @@
 const BASE_URL = "https://localhost:5000/api/users";
+import { request, getHeaders } from "../utils/htmlLoader.js";
 
 export interface User {
   id: string;
@@ -17,52 +18,31 @@ export interface LoginResponse {
   };
 }
 
-// Helper function to get headers with Authorization if token exists
-function getHeaders(contentType = "application/json") {
-  const headers: Record<string, string> = {
-    "Content-Type": contentType,
-  };
-  const token = localStorage.getItem("authToken");
-  if (token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-  return headers;
-}
-
-// Generic request wrapper function
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(BASE_URL + path, options);
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-  return response.json() as Promise<T>;
-}
-
 // API functions
 export const getUsers = () =>
-  request<User[]>("/", {
+  request<User[]>(`${BASE_URL}/`, {
     method: "GET",
     headers: getHeaders(),
   });
 
 export const getUserByUsername = (username: string) =>
-  request<User>(`/${username}`);
+  request<User>(`${BASE_URL}/${username}`);
 
 export const updateUser = (username: string, body: any) =>
-  request<User>(`/${username}`, {
+  request<User>(`${BASE_URL}/${username}`, {
     method: "PUT",
     headers: getHeaders(),
     body: JSON.stringify(body),
   });
 
 export const disableUser = (username: string) =>
-  request<User>(`/${username}`, {
+  request<User>(`${BASE_URL}/${username}`, {
     method: "PATCH",
     headers: getHeaders(),
   });
 
 export const deleteUser = (username: string) =>
-  request<void>(`/${username}`, {
+  request<void>(`${BASE_URL}/${username}`, {
     method: "DELETE",
     headers: getHeaders(),
   });
