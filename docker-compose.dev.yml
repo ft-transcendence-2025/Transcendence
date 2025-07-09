@@ -1,0 +1,41 @@
+version: "3.9"
+services:
+  nginx:
+    build: ./Front-End
+    ports:
+      - "5000:443" # Porta 443 do container exposta como 5000 no host
+      - "8080:80"
+    volumes:
+      # Mount the compiled dist folder for live updates
+      - ./Front-End/frontend/dist:/usr/share/nginx/html
+    networks:
+      - public
+      - internal
+    depends_on:
+      - api-gateway-1
+      - api-gateway-2
+
+  api-gateway-1:
+    build: ./API-Gateway
+    env_file:
+      - ./API-Gateway/.env
+    networks:
+      - internal
+
+  api-gateway-2:
+    build: ./API-Gateway
+    env_file:
+      - ./API-Gateway/.env
+    networks:
+      - internal
+
+  user-management:
+    build: ./User-Management
+    env_file:
+      - ./User-Management/prisma/.env
+    networks:
+      - internal
+
+networks:
+  public:
+  internal:
