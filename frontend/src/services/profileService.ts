@@ -1,3 +1,4 @@
+const BASE_URL = "https://localhost:5000/api/profile";
 // import axios from "axios";
 // import dotenv from 'dotenv';
 

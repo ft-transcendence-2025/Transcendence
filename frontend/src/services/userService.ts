@@ -1,5 +1,5 @@
 const BASE_URL = "https://localhost:5000/api/users";
-import { request, getHeaders } from "../utils/htmlLoader.js";
+import { request, getHeaders } from "../utils/api.js";
 
 export interface User {
   id: string;
