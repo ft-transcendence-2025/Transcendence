@@ -1,38 +1,54 @@
-<div id="dashboard" class="space-y-10 p-4 py-8">
-  <a
-    href="/pong"
-    data-link
-    class="mx-auto block max-w-sm overflow-hidden rounded-2xl bg-teal-200 shadow-md transition-shadow hover:scale-105 hover:shadow-lg"
-  >
-    <div class="p-6">
-      <h2 class="text-xl font-semibold text-gray-800">Pong Game</h2>
-    </div>
-  </a>
-  <a
-    href="/tournament"
-    data-link
-    class="mx-auto block max-w-sm overflow-hidden rounded-2xl bg-pink-200 shadow-md transition-shadow hover:scale-105 hover:shadow-lg"
-  >
-    <div class="p-6">
-      <h2 class="text-xl font-semibold text-gray-800">Tournament</h2>
-    </div>
-  </a>
-  <a
-    href="/stats"
-    data-link
-    class="mx-auto block max-w-sm overflow-hidden rounded-2xl bg-teal-200 shadow-md transition-shadow hover:scale-105 hover:shadow-lg"
-  >
-    <div class="p-6">
-      <h2 class="text-xl font-semibold text-gray-800">Stats</h2>
-    </div>
-  </a>
-  <a
-    href="/settings"
-    data-link
-    class="mx-auto block max-w-sm overflow-hidden rounded-2xl bg-pink-200 shadow-md transition-shadow hover:scale-105 hover:shadow-lg"
-  >
-    <div class="p-6">
-      <h2 class="text-xl font-semibold text-gray-800">Settings</h2>
-    </div>
-  </a>
+<div id="dashboard" class="mx-auto max-w-4xl p-4 py-8">
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <!-- Pong 1 Player -->
+    <a
+      href="/pong"
+      data-link
+      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
+      style="background-color: #e6b2ba"
+    >
+      <div class="w-full p-6 text-center">
+        <h2 class="text-gunmetal text-xl font-semibold" style="color: #253031">
+          Pong 1 Player
+        </h2>
+        <p class="text-gunmetal/80 mt-2 text-sm" style="color: #253031">
+          Play against AI
+        </p>
+      </div>
+    </a>
+
+    <!-- Pong 2 Players -->
+    <a
+      href="/pong-multi"
+      data-link
+      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
+      style="background-color: #e7d6e1"
+    >
+      <div class="w-full p-6 text-center">
+        <h2 class="text-gunmetal text-xl font-semibold" style="color: #253031">
+          Pong 2 Players
+        </h2>
+        <p class="text-gunmetal/80 mt-2 text-sm" style="color: #253031">
+          Play with a friend
+        </p>
+      </div>
+    </a>
+
+    <!-- Tournament -->
+    <a
+      href="/tournament"
+      data-link
+      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
+      style="background-color: #e6b2ba"
+    >
+      <div class="w-full p-6 text-center">
+        <h2 class="text-gunmetal text-xl font-semibold" style="color: #253031">
+          Tournament
+        </h2>
+        <p class="text-gunmetal/80 mt-2 text-sm" style="color: #253031">
+          Compete in tournaments
+        </p>
+      </div>
+    </a>
+  </div>
 </div>

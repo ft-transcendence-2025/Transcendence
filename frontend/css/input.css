@@ -1,1 +1,55 @@
 @import "tailwindcss";
+
+/* Custom colors for your project */
+.bg-lilac {
+  background-color: #c599b6;
+}
+.bg-lilac-light {
+  background-color: #e7d6e1;
+}
+.bg-lilac-dark {
+  background-color: #896b7f;
+}
+.hover\:bg-lilac-light:hover {
+  background-color: #e7d6e1;
+}
+.text-lilac {
+  color: #c599b6;
+}
+.text-lilac-light {
+  color: #e7d6e1;
+}
+.text-lilac-dark {
+  color: #896b7f;
+}
+
+.bg-orchid-pink {
+  background-color: #e6b2ba;
+}
+.text-orchid-pink {
+  color: #e6b2ba;
+}
+
+.bg-seashell {
+  background-color: #fff7f3;
+}
+.text-seashell {
+  color: #fff7f3;
+}
+
+.bg-gunmetal {
+  background-color: #253031;
+}
+.text-gunmetal {
+  color: #253031;
+}
+.hover\:text-gunmetal:hover {
+  color: #253031;
+}
+
+.bg-dark-slate {
+  background-color: #315659;
+}
+.text-dark-slate {
+  color: #315659;
+}

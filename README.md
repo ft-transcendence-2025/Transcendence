@@ -11,3 +11,5 @@ In the fronted folder:
 
 In the root folder (finde the compose dev file in Transcendance repo)
 `docker compose -f docker-compose.dev.yml up`
+
+
