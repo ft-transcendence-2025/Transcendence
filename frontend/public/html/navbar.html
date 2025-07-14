@@ -1,10 +1,22 @@
-<nav class="bg-gray-800 p-4">
-	<div class="container mx-auto flex space-x-4">
-	  <a href="/" id="home-link" class="text-pink-300 hover:text-white text-sm font-bold px-3 py-2" data-link">Home</a>
-	  <a href="/dashboard" id="dashboard-link" class="text-pink-300 hover:text-white text-sm font-bold px-3 py-2 hidden" data-link">Dashboard</a>
-	  <a href="/login" id="login-link" class="text-pink-300 hover:text-white text-sm font-bold px-3 py-2" data-link">Login</a>
-	  <a href="/register" id="register-link" class="text-pink-300 hover:text-white text-sm font-bold px-3 py-2" data-link">Register</a>
-	  <a href="/users" class="text-pink-300 hover:text-white text-sm font-bold px-3 py-2" data-link>Users</a>
-	  <a href="#" id="logout-link" class="text-pink-300 hover:text-white text-sm font-bold px-3 py-2 hidden" data-link>Logout</a>
+<nav class="bg-(--color-lilac) p-4">
+	<div class="container mx-auto flex justify-between items-center">
+	  <!-- Left: User Menu Circle or empty spacer -->
+	  <div class="w-10 h-10 flex items-center justify-center">
+	    <div id="user-menu" class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center hidden">
+	      <span class="text-sm font-semibold text-(--color-gunmetal)">U</span>
+	    </div>
+	  </div>
+	   
+	  <!-- Center: Login/Register Links -->
+	  <div class="flex space-x-4">
+	    <a href="/login" id="login-link" class="text-(--color-gunmetal) hover:text-white text-sm font-bold px-3 py-2" data-link">Login</a>
+	    <a href="/register" id="register-link" class="text-(--color-gunmetal) hover:text-white text-sm font-bold px-3 py-2" data-link">Register</a>
+		<a href="/dashboard" id="dashboard-link" class="text-(--color-gunmetal) hover:text-white text-sm font-bold px-3 py-2 hidden" data-link">Play Game</a>
+	  </div>
+	  
+	  <!-- Right: Logout -->
+	  <div class="flex space-x-4">
+	    <a href="#" id="logout-link" class="text-(--color-gunmetal) hover:text-white text-sm font-bold px-3 py-2 hidden" data-link>Logout</a>
+	  </div>
 	</div>
   </nav>

@@ -8,11 +8,11 @@
     "clean": "rm -rf dist",
     "format": "prettier --write .",
     "build:ts": "tsc",
-    "build:tw": "npx @tailwindcss/cli -i ./css/input.css -o ./dist/output.css --content \"./public/**/*.html,./src/**/*.ts\"",
+    "build:tw": "npx @tailwindcss/cli -i ./src/app.css -o ./dist/output.css --config ./tailwind.config.js",
     "copy:assets": "ncp public dist",
     "build": "npm run clean && npm-run-all --parallel build:* && npm run copy:assets",
     "watch:ts": "tsc --watch",
-    "watch:tw": "tailwindcss -i ./css/input.css -o ./dist/output.css --watch --content \"./public/**/*.html,./src/**/*.ts\"",
+    "watch:tw": "tailwindcss -i ./src/app.css -o ./dist/output.css --watch --config ./tailwind.config.js",
     "watch:assets": "onchange \"public/**/*\" -- npm run copy:assets",
     "serve": "live-server dist --host=0.0.0.0 --port=5000 --entry-file=index.html",
     "dev": "npm run build && npm-run-all --parallel watch:* serve"
@@ -21,7 +21,7 @@
   "author": "Papaija",
   "license": "ISC",
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.9",
+    "@tailwindcss/cli": "^4.1.11",
     "dotenv": "^16.5.0",
     "tailwindcss": "^4.1.9"
   },
@@ -31,9 +31,9 @@
     "ncp": "^2.0.0",
     "npm-run-all": "^4.1.5",
     "onchange": "^7.1.0",
-    "typescript": "^5.8.3",
     "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.13"
+    "prettier-plugin-tailwindcss": "^0.6.13",
+    "typescript": "^5.8.3"
   },
   "prettier": {
     "plugins": [
