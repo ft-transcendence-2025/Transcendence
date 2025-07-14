@@ -1,6 +1,6 @@
 <div
   id="login-modal"
-  class="bg-opacity-20 bg-lilac-light fixed inset-0 flex hidden h-full w-full items-center justify-center overflow-y-auto"
+  class="bg-opacity-20 fixed inset-0 flex hidden h-full w-full items-center justify-center overflow-y-auto bg-(--color-lilac-light)"
 >
   <!-- Modal Content -->
   <div class="relative mx-auto w-96 rounded-md border bg-white p-5 shadow-lg">
@@ -13,7 +13,9 @@
       </button>
 
       <!-- Header -->
-      <h3 class="text-gunmetal text-lg leading-6 font-medium">Login</h3>
+      <h3 class="text-lg leading-6 font-medium text-(--color-gunmetal)">
+        Login
+      </h3>
 
       <!-- Form -->
       <div class="mt-2 px-7 py-3">
@@ -43,7 +45,7 @@
           </div>
           <button
             type="submit"
-            class="hover:bg-lilac-light hover:text-gunmetal w-full rounded-md bg-lilac-dark px-4 py-2 text-white"
+            class="w-full rounded-md bg-(--color-lilac-dark) px-4 py-2 text-white hover:bg-(--color-lilac-light) hover:text-(--color-gunmetal)"
           >
             Sign In
           </button>

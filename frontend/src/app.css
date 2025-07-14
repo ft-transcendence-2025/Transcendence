@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lilac-light: #e7d6e1;
+  --color-lilac: #c599b6;
+  --color-lilac-dark: #896b7f;
+
+  --color-orchid-pink: #e6b2ba;
+  --color-seashell: #fff7f3;
+  --color-gunmetal: #253031;
+  --color-dark-slate: #315659;
+}
+
+.text-stroke {
+  -webkit-text-stroke: 1px rgba(137, 107, 127, 0.5);
+}
+
+/* Custom text shadow utilities */
+.text-shadow-lilac {
+  text-shadow:
+    2px 2px 4px rgba(137, 107, 127, 0.8),
+    0 0 40px rgba(137, 107, 127, 0.2);
+}
