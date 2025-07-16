@@ -1,17 +1,24 @@
 <div id="pong" class="p-4">
-  <h2
-    class="mb-6 text-center text-3xl font-bold text-(--color-gunmetal) drop-shadow-pink-200"
-  >
+  <h2 class="mb-6 text-center text-3xl font-bold text-(--color-text-primary)">
     Pong Game
   </h2>
   <div
-    class="bg-opacity-80 flex items-center justify-center rounded-2xl border-4 border-(--color-lilac-light) bg-white p-6 shadow-2xl"
+    class="bg-opacity-80 relative flex items-center justify-center border-2 border-(--color-primary-light) bg-white p-6 shadow-2xl"
   >
     <canvas
       id="pong-canvas"
       width="600"
       height="400"
-      class="rounded-xl border-4 border-(--color-lilac-dark) bg-(--color-orchid-pink)"
+      class="border-2 border-(--color-primary-dark) bg-(--color-primary-light)"
     ></canvas>
+    <!-- Vertical divider line in the middle -->
+    <div
+      class="absolute top-6 bottom-6 left-1/2 w-0.5 -translate-x-0.5 transform bg-(--color-primary-dark)"
+    ></div>
+    <!-- Placeholder ball -->
+    <div
+      class="absolute h-4 w-4 -translate-y-1/2 transform rounded-full bg-(--color-accent) shadow-lg"
+      style="left: calc(60% - 2px); top: 30%"
+    ></div>
   </div>
 </div>
