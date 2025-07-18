@@ -1,0 +1,4 @@
+counter-test/node_modules/
+counter-test/cache/
+counter-test/artifacts/
+counter-test/.env
