@@ -1,80 +1,64 @@
 <div id="pong" class="p-4">
-    <h2 class="mb-6 text-center text-3xl font-bold text-(--color-text-primary)">
-        Pong Game
-    </h2>
+  <h2 class="mb-6 text-center text-3xl font-bold text-(--color-text-primary)">
+    Pong Game
+  </h2>
 
+  <div
+    class="bg-opacity-80 relative flex flex-col items-center justify-center border-2 border-(--color-primary-light) bg-white p-6 shadow-2xl"
+  >
+    <!-- Scoreboard Section -->
     <div
-        class="bg-opacity-80 relative flex flex-col items-center justify-center border-2 border-(--color-primary-light) bg-white p-6 shadow-2xl"
+      class="mb-4 flex w-full max-w-[600px] items-center rounded-md border border-(--color-primary-light) bg-(--color-background) p-4 shadow-md"
     >
-        <!-- Scoreboard Section -->
-        <div
-            class="mb-4 flex w-full max-w-[600px] items-center rounded-md border border-(--color-primary-light) bg-(--color-background) p-4 shadow-md"
+      <!-- Left Section: AI Player -->
+      <div class="flex flex-1 items-center justify-end space-x-4">
+        <span
+          id="ai-username"
+          class="text-lg font-semibold text-(--color-text-primary)"
+          >AI</span
         >
-            <!-- Left Section: AI Player -->
-            <div class="flex flex-1 items-center justify-end space-x-4">
-                <span
-                    id="ai-username"
-                    class="text-lg font-semibold text-(--color-text-primary)"
-                >AI</span
-                >
-                <span
-                    id="ai-score"
-                    class="text-3xl font-bold text-(--color-primary) text-shadow-md"
-                    style="
-                    font-family:
-                    &quot;Press Start 2P&quot;, &quot;Courier New&quot;, monospace;
-                    "
-                >0</span
-                >
-            </div>
+        <span
+          id="ai-score"
+          class="text-3xl font-bold text-(--color-primary-dark) text-shadow-sm"
+          style="
+            font-family:
+              &quot;Press Start 2P&quot;, &quot;Courier New&quot;, monospace;
+          "
+          >0</span
+        >
+      </div>
 
-            <!-- Center: VS Separator -->
-            <div class="px-8">
-                <span class="text-xl font-bold text-(--color-primary-dark)">VS</span>
-            </div>
+      <!-- Center: VS Separator -->
+      <div class="px-8">
+        <span class="text-xl font-bold text-(--color-primary-dark)">VS</span>
+      </div>
 
-            <!-- Right Section: User Player -->
-            <div class="flex flex-1 items-center justify-start space-x-4">
-                <span
-                    id="user-score"
-                    class="text-3xl font-bold text-(--color-accent) text-shadow-md"
-                    style="
-                    font-family:
-                    &quot;Press Start 2P&quot;, &quot;Courier New&quot;, monospace;
-                    "
-                >0</span
-                >
-                <span
-                    id="user-username"
-                    class="text-lg font-semibold text-(--color-text-primary)"
-                >Pink</span
-                >
-            </div>
-        </div>
-
-        <div class="relative flex items-center justify-center">
-            <canvas
-                id="pong-canvas"
-                class="border-2 border-(--color-primary-dark) bg-(--color-primary-light)"
-            ></canvas>
-            <!-- Vertical divider line in the middle -->
-            <div
-                class="absolute left-1/2 w-0.5 -translate-x-0.5 transform bg-(--color-primary-dark)"
-                style="
-                top: 0;
-                bottom: 0;
-                background-color: var(--color-primary-dark, #2d1b69);
-                "
-            ></div>
-            <!-- Placeholder ball -->
-            <div
-                class="absolute h-4 w-4 -translate-y-1/2 transform rounded-full bg-(--color-accent) shadow-lg"
-                style="
-                left: calc(60% - 2px);
-                top: 30%;
-                background-color: var(--color-accent, #315659);
-                "
-            ></div>
-        </div>
+      <!-- Right Section: User Player -->
+      <div class="flex flex-1 items-center justify-start space-x-4">
+        <span
+          id="user-score"
+          class="text-3xl font-bold text-(--color-accent) text-shadow-sm"
+          style="
+            font-family:
+              &quot;Press Start 2P&quot;, &quot;Courier New&quot;, monospace;
+          "
+          >0</span
+        >
+        <span
+          id="user-username"
+          class="text-lg font-semibold text-(--color-text-primary)"
+          ></span
+        >
+      </div>
     </div>
+
+    <div class="relative flex items-center justify-center">
+      <canvas
+        id="pong-canvas"
+        width="600"
+        height="400"
+        class="border-2 border-(--color-primary-dark) bg-(--color-primary-light)"
+      ></canvas>
+    </div>
+  </div>
 </div>
