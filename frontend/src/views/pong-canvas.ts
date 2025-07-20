@@ -110,17 +110,17 @@ class Ball {
   ): void {
     // Someone has scored
     if (this._x - this._radius < 0) {
-      const userScoreElement = document.getElementById("user-score");
-      if (userScoreElement) {
-        const currentScore = parseInt(userScoreElement.innerHTML) || 0;
-        userScoreElement.innerHTML = (currentScore + 1).toString();
+      const player2ScoreElement = document.getElementById("player2-score");
+      if (player2ScoreElement) {
+        const currentScore = parseInt(player2ScoreElement.innerHTML) || 0;
+        player2ScoreElement.innerHTML = (currentScore + 1).toString();
       }
       this._gameState = false;
     } else if (this._x + this._radius > canvas.width) {
-      const aiScoreElement = document.getElementById("ai-score");
-      if (aiScoreElement) {
-        const currentScore = parseInt(aiScoreElement.innerHTML) || 0;
-        aiScoreElement.innerHTML = (currentScore + 1).toString();
+      const player1ScoreElement = document.getElementById("player1-score");
+      if (player1ScoreElement) {
+        const currentScore = parseInt(player1ScoreElement.innerHTML) || 0;
+        player1ScoreElement.innerHTML = (currentScore + 1).toString();
       }
       this._gameState = false;
     }

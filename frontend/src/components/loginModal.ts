@@ -62,4 +62,6 @@ export async function openLoginModal() {
 function closeModal() {
   const modal = document.getElementById("login-modal");
   if (modal) modal.style.display = "none";
+  const container = document.getElementById("content");
+  navigateTo("/", container);
 }
