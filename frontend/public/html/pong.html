@@ -13,17 +13,13 @@
       <!-- Left Section: AI Player -->
       <div class="flex flex-1 items-center justify-end space-x-4">
         <span
-          id="ai-username"
+          id="player1-username"
           class="text-lg font-semibold text-(--color-text-primary)"
           >AI</span
         >
         <span
-          id="ai-score"
-          class="text-3xl font-bold text-(--color-primary-dark) text-shadow-sm"
-          style="
-            font-family:
-              &quot;Press Start 2P&quot;, &quot;Courier New&quot;, monospace;
-          "
+          id="player1-score"
+          class="font-press-start text-3xl font-bold text-(--color-primary-dark) text-shadow-sm"
           >0</span
         >
       </div>
@@ -36,29 +32,38 @@
       <!-- Right Section: User Player -->
       <div class="flex flex-1 items-center justify-start space-x-4">
         <span
-          id="user-score"
-          class="text-3xl font-bold text-(--color-accent) text-shadow-sm"
-          style="
-            font-family:
-              &quot;Press Start 2P&quot;, &quot;Courier New&quot;, monospace;
-          "
+          id="player2-score"
+          class="font-press-start text-3xl font-bold text-(--color-accent) text-shadow-sm"
           >0</span
         >
         <span
-          id="user-username"
+          id="player2-username"
           class="text-lg font-semibold text-(--color-text-primary)"
-          ></span
-        >
+        ></span>
       </div>
     </div>
 
     <div class="relative flex items-center justify-center">
       <canvas
         id="pong-canvas"
-        width="600"
-        height="400"
         class="border-2 border-(--color-primary-dark) bg-(--color-primary-light)"
       ></canvas>
+
+      <!-- Game Over Overlay -->
+      <div
+        id="game-over"
+        class="absolute flex hidden items-center justify-center"
+      >
+        <div
+          class="rounded-md border-2 border-(--color-primary-dark) bg-(--color-background) px-8 py-6 shadow-lg"
+        >
+          <div
+            class="font-press-start text-4xl font-bold text-(--color-accent) text-shadow-sm"
+          >
+            GAME OVER
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
