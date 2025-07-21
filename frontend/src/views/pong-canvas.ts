@@ -68,9 +68,12 @@ class Ball {
   private _strokeColor: string;
   private _yD: number;
   private _xD: number;
+  private _originalYD: number;
+  private _originalXD: number;
   private _lineThickness: number;
   private _gameState: boolean;
   private _winningScore: number = 5;
+  private _level: number = 1;
 
   constructor(
     x: number,
@@ -89,6 +92,8 @@ class Ball {
     this._strokeColor = strokeColor;
     this._xD = xD;
     this._yD = yD;
+    this._originalXD = xD;
+    this._originalYD = yD;
     this._lineThickness = lineThickness;
     this._gameState = false;
   }
@@ -99,6 +104,54 @@ class Ball {
   }
   get getGameState(): boolean {
     return this._gameState;
+  }
+
+  // Return true if game is over, false if is not
+  public update(
+    leftPaddle: Paddle,
+    rightPaddle: Paddle,
+    canvas: HTMLCanvasElement,
+  ): void {
+
+    // Someone has scored
+    // Player 2 Scores
+    if (this._x - this._radius < 0) {
+      this._gameState = false;
+      this.handleScore(2);
+    } else if (this._x + this._radius > canvas.width) { // Player 1 Scored
+      this._gameState = false;
+      this.handleScore(1);
+    }
+
+    if (this._gameState === true) {
+      if (Math.floor((performance.now() / 1000 / this._level)) % 5 === 0) {
+        this._xD *= 1.10;
+        this._yD *= 1.10;
+        this._level++;
+      }
+
+      // Game is running
+      this._x += this._xD;
+      this._y += this._yD;
+
+      // Change ball directions if hit ceiling, floor or paddles
+      if (
+        this.checkPaddleCollision(leftPaddle) ||
+          this.checkPaddleCollision(rightPaddle)
+      )
+        this._xD *= -1;
+      if (this.checkCeilingFloorCollision(canvas)) this._yD *= -1;
+    } else { // Game is stopped
+      // Randomize ball direction
+      this._xD = Math.random() < 0.5 ? -this._xD : this._xD;
+      this._yD = Math.random() < 0.5 ? -this._yD : this._yD;
+
+      this._x = canvas.width / 2;
+      this._y = canvas.height / 2;
+      this._level = 1;
+      this._xD = this._originalXD;
+      this._yD = this._originalYD;
+    }
   }
 
   private handleScore(player: 1 | 2): void {
@@ -131,45 +184,6 @@ class Ball {
     }
   }
 
-  // Return true if game is over, false if is not
-  public update(
-    leftPaddle: Paddle,
-    rightPaddle: Paddle,
-    canvas: HTMLCanvasElement,
-  ): void {
-
-    // Someone has scored
-    // Player 2 Scores
-    if (this._x - this._radius < 0) {
-      this._gameState = false;
-      this.handleScore(2);
-    } else if (this._x + this._radius > canvas.width) { // Player 1 Scored
-      this._gameState = false;
-      this.handleScore(1);
-    }
-
-    if (this._gameState === true) {
-      // Game is running
-      this._x += this._xD;
-      this._y += this._yD;
-
-      // Change ball directions if hit ceiling, floor or paddles
-      if (
-        this.checkPaddleCollision(leftPaddle) ||
-          this.checkPaddleCollision(rightPaddle)
-      )
-        this._xD *= -1;
-      if (this.checkCeilingFloorCollision(canvas)) this._yD *= -1;
-    } // Game is stopped
-    else {
-      // Randomize ball direction
-      this._xD = Math.random() < 0.5 ? -this._xD : this._xD;
-      this._yD = Math.random() < 0.5 ? -this._yD : this._yD;
-
-      this._x = canvas.width / 2;
-      this._y = canvas.height / 2;
-    }
-  }
 
   public render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
@@ -251,7 +265,7 @@ export class Pong {
     this.paddleHeight = this.canvas.width / 12;
     this.paddleWidth = window.innerWidth / 100;
     this.paddleY = this.canvas.height / 2 - this.paddleHeight / 2;
-    this.paddleD = 5; // travel velocity
+    this.paddleD = 7; // travel velocity
     this.lineThickness = 2;
     this.paddleColor = "#49706c";
     this.paddleStrokeColor = "#253031";
@@ -264,7 +278,7 @@ export class Pong {
     this.ballColor = "#fe019a";
     this.ballStrokeColor = "#253031";
     this.ballXD = 5; // travel velocity on X axis
-    this.ballYD = 2; // travel velocity on Y axis
+    this.ballYD = 1.5; // travel velocity on Y axis
     this.ballLineThickness = 2;
 
     // Initialize objects
