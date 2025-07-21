@@ -221,6 +221,8 @@ class Ball {
 }
 
 export class Pong {
+  private buffer: HTMLCanvasElement;
+  private bufferCtx: CanvasRenderingContext2D;
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private paddleHeight: number;
@@ -260,6 +262,13 @@ export class Pong {
     this.canvas.width = 1600;
     this.canvas.height = 700;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
+
+    // Performance improvements
+    // Render image in the buffer before drawing in the canvas
+    this.buffer = document.createElement("canvas") as HTMLCanvasElement;
+    this.buffer.width = this.canvas.width;
+    this.buffer.height = this.canvas.height;
+    this.bufferCtx = this.buffer.getContext("2d") as CanvasRenderingContext2D;
 
     // Change objects atributes
     this.paddleHeight = this.canvas.width / 12;
@@ -318,7 +327,8 @@ export class Pong {
   }
 
   public gameLoop() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear buffer
+    this.bufferCtx.clearRect(0, 0, this.buffer.width, this.buffer.height);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Check paddle state and adjust X and Y accordingly
     if (this.paddleState.leftUp) this.leftPaddle.move("Up", this.canvas);
@@ -329,14 +339,15 @@ export class Pong {
     this.ball.update(this.leftPaddle, this.rightPaddle, this.canvas);
 
     this.renderObjects();
+    this.ctx.drawImage(this.buffer, 0, 0);
 
     this.animationFrameId = requestAnimationFrame(this.gameLoop.bind(this));
   }
 
   private renderObjects(): void {
-    this.leftPaddle.render(this.ctx);
-    this.rightPaddle.render(this.ctx);
-    this.ball.render(this.ctx);
+    this.leftPaddle.render(this.bufferCtx);
+    this.rightPaddle.render(this.bufferCtx);
+    this.ball.render(this.bufferCtx);
   }
 
   private handleKeyDown(event: KeyboardEvent): void {
