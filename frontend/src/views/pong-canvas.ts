@@ -52,10 +52,10 @@ class Paddle {
   move(direction: string, canvas: HTMLCanvasElement): void {
     if (
       direction === "Down" &&
-        this._y + this._height + this._lineThickness <= canvas.height
+        this._y + this._height + (this._lineThickness / 2) <= canvas.height
     )
       this._y += this._yD;
-      else if (direction === "Up" && this.y - this._lineThickness >= 0)
+      else if (direction === "Up" && this.y - (this._lineThickness / 2) >= 0)
         this._y -= this._yD;
   }
 }
@@ -70,6 +70,7 @@ class Ball {
   private _xD: number;
   private _lineThickness: number;
   private _gameState: boolean;
+  private _winningScore: number = 5;
 
   constructor(
     x: number,
@@ -100,6 +101,36 @@ class Ball {
     return this._gameState;
   }
 
+  private handleScore(player: 1 | 2): void {
+    const playerScoreElement = document.getElementById(`player${player}-score`) as HTMLSpanElement;
+    if (playerScoreElement) {
+        const currentScore = parseInt(playerScoreElement.innerHTML);
+
+      if (currentScore === this._winningScore - 1) {
+        const gameOverText = document.getElementById("game-over") as HTMLDivElement;
+        if (gameOverText)
+          gameOverText.classList.toggle('hidden');
+
+        // Reset scores
+        // Find all elements whose ID ends with '-score'
+        //  - [id] = Targets elements with an ID attribute
+        //  - $= = "Ends with" operator
+        //  - '-score' = The suffix to match
+        document.querySelectorAll("[id$='-score']").forEach(el => {
+          (el as HTMLSpanElement).textContent = "0";
+        });
+
+        const winnerText = document.getElementById("winner-text") as HTMLDivElement;
+        if (winnerText)
+          winnerText.innerHTML = `Player ${player} WINS!`;
+
+
+      } else {
+        playerScoreElement.innerHTML = (currentScore + 1).toString();
+      }
+    }
+  }
+
   // Return true if game is over, false if is not
   public update(
     leftPaddle: Paddle,
@@ -111,58 +142,10 @@ class Ball {
     // Player 2 Scores
     if (this._x - this._radius < 0) {
       this._gameState = false;
-      const player2ScoreElement = document.getElementById("player2-score") as HTMLSpanElement;
-
-      if (player2ScoreElement) {
-        const currentScore = parseInt(player2ScoreElement.innerHTML);
-
-        // Game Over
-        // Player 2 Won
-        if (currentScore === 4) {
-          const gameOverText = document.getElementById("game-over") as HTMLDivElement;
-          if (gameOverText)
-            gameOverText.classList.toggle('hidden');
-
-          player2ScoreElement.innerHTML = "0";
-
-          const player1ScoreElement = document.getElementById("player1-score") as HTMLSpanElement;
-          if (player1ScoreElement)
-            player1ScoreElement.innerHTML = "0";
-
-          const winnerText = document.getElementById("winner-text") as HTMLDivElement;
-          if (winnerText)
-            winnerText.innerHTML = "Player 2 WINS!";
-        } else {
-          player2ScoreElement.innerHTML = (currentScore + 1).toString();
-        }
-      }
+      this.handleScore(2);
     } else if (this._x + this._radius > canvas.width) { // Player 1 Scored
       this._gameState = false;
-      const player1ScoreElement = document.getElementById("player1-score") as HTMLSpanElement;
-
-      if (player1ScoreElement) {
-        const currentScore = parseInt(player1ScoreElement.innerHTML);
-
-        // Game Over
-        // Player 1 Won the Game
-        if (currentScore === 4) {
-          const gameOverText = document.getElementById("game-over") as HTMLDivElement;
-          if (gameOverText)
-            gameOverText.classList.toggle('hidden');
-
-          player1ScoreElement.innerHTML = "0";
-
-          const player2ScoreElement = document.getElementById("player2-score") as HTMLSpanElement;
-          if (player2ScoreElement)
-            player2ScoreElement.innerHTML = "0";
-
-          const winnerText = document.getElementById("winner-text") as HTMLDivElement;
-          if (winnerText)
-            winnerText.innerHTML = "Player 1 WINS!";
-        } else {
-          player1ScoreElement.innerHTML = (currentScore + 1).toString();
-        }
-      }
+      this.handleScore(1);
     }
 
     if (this._gameState === true) {
@@ -180,8 +163,8 @@ class Ball {
     } // Game is stopped
     else {
       // Randomize ball direction
-      if (Math.floor((Math.random() * 10) % 2) !== 0) this._xD *= -1;
-      if (Math.floor((Math.random() * 10) % 2) !== 0) this._yD *= -1;
+      this._xD = Math.random() < 0.5 ? -this._xD : this._xD;
+      this._yD = Math.random() < 0.5 ? -this._yD : this._yD;
 
       this._x = canvas.width / 2;
       this._y = canvas.height / 2;
