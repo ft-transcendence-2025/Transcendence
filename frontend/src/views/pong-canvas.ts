@@ -92,8 +92,12 @@ class Ball {
     this._gameState = false;
   }
 
-  set gameState(state: boolean) {
+  // Ball running or stoped
+  set setGameState(state: boolean) {
     this._gameState = state;
+  }
+  get getGameState(): boolean {
+    return this._gameState;
   }
 
   // Return true if game is over, false if is not
@@ -102,9 +106,11 @@ class Ball {
     rightPaddle: Paddle,
     canvas: HTMLCanvasElement,
   ): void {
+
     // Someone has scored
     // Player 2 Scores
     if (this._x - this._radius < 0) {
+      this._gameState = false;
       const player2ScoreElement = document.getElementById("player2-score") as HTMLSpanElement;
 
       if (player2ScoreElement) {
@@ -130,8 +136,8 @@ class Ball {
           player2ScoreElement.innerHTML = (currentScore + 1).toString();
         }
       }
-      this._gameState = false;
     } else if (this._x + this._radius > canvas.width) { // Player 1 Scored
+      this._gameState = false;
       const player1ScoreElement = document.getElementById("player1-score") as HTMLSpanElement;
 
       if (player1ScoreElement) {
@@ -153,12 +159,10 @@ class Ball {
           const winnerText = document.getElementById("winner-text") as HTMLDivElement;
           if (winnerText)
             winnerText.innerHTML = "Player 1 WINS!";
-          this._gameState = false;
         } else {
           player1ScoreElement.innerHTML = (currentScore + 1).toString();
         }
       }
-      this._gameState = false;
     }
 
     if (this._gameState === true) {
@@ -175,6 +179,10 @@ class Ball {
       if (this.checkCeilingFloorCollision(canvas)) this._yD *= -1;
     } // Game is stopped
     else {
+      // Randomize ball direction
+      if (Math.floor((Math.random() * 10) % 2) !== 0) this._xD *= -1;
+      if (Math.floor((Math.random() * 10) % 2) !== 0) this._yD *= -1;
+
       this._x = canvas.width / 2;
       this._y = canvas.height / 2;
     }
@@ -350,8 +358,10 @@ export class Pong {
       const isGameOver = !gameOverDiv.classList.contains("hidden");
       if (isGameOver) {
         gameOverDiv.classList.toggle("hidden");
+        return ;
       }
-      this.ball.gameState = true;
+
+      this.ball.setGameState = true;
     }
   }
 
