@@ -1,10 +1,3 @@
-interface PaddleState {
-  leftUp: boolean;
-  leftDown: boolean;
-  rightUp: boolean;
-  rightDown: boolean;
-}
-
 class Paddle {
   private _x: number;
   private _y: number;
@@ -59,11 +52,11 @@ class Paddle {
   move(direction: string, canvas: HTMLCanvasElement): void {
     if (
       direction === "Down" &&
-      this._y + this._height + this._lineThickness <= canvas.height
+        this._y + this._height + this._lineThickness <= canvas.height
     )
       this._y += this._yD;
-    else if (direction === "Up" && this.y - this._lineThickness >= 0)
-      this._y -= this._yD;
+      else if (direction === "Up" && this.y - this._lineThickness >= 0)
+        this._y -= this._yD;
   }
 }
 
@@ -103,24 +96,67 @@ class Ball {
     this._gameState = state;
   }
 
+  // Return true if game is over, false if is not
   public update(
     leftPaddle: Paddle,
     rightPaddle: Paddle,
     canvas: HTMLCanvasElement,
   ): void {
     // Someone has scored
+    // Player 2 Scores
     if (this._x - this._radius < 0) {
-      const player2ScoreElement = document.getElementById("player2-score");
+      const player2ScoreElement = document.getElementById("player2-score") as HTMLSpanElement;
+
       if (player2ScoreElement) {
-        const currentScore = parseInt(player2ScoreElement.innerHTML) || 0;
-        player2ScoreElement.innerHTML = (currentScore + 1).toString();
+        const currentScore = parseInt(player2ScoreElement.innerHTML);
+
+        // Game Over
+        // Player 2 Won
+        if (currentScore === 4) {
+          const gameOverText = document.getElementById("game-over") as HTMLDivElement;
+          if (gameOverText)
+            gameOverText.classList.toggle('hidden');
+
+          player2ScoreElement.innerHTML = "0";
+
+          const player1ScoreElement = document.getElementById("player1-score") as HTMLSpanElement;
+          if (player1ScoreElement)
+            player1ScoreElement.innerHTML = "0";
+
+          const winnerText = document.getElementById("winner-text") as HTMLDivElement;
+          if (winnerText)
+            winnerText.innerHTML = "Player 2 WINS!";
+        } else {
+          player2ScoreElement.innerHTML = (currentScore + 1).toString();
+        }
       }
       this._gameState = false;
-    } else if (this._x + this._radius > canvas.width) {
-      const player1ScoreElement = document.getElementById("player1-score");
+    } else if (this._x + this._radius > canvas.width) { // Player 1 Scored
+      const player1ScoreElement = document.getElementById("player1-score") as HTMLSpanElement;
+
       if (player1ScoreElement) {
-        const currentScore = parseInt(player1ScoreElement.innerHTML) || 0;
-        player1ScoreElement.innerHTML = (currentScore + 1).toString();
+        const currentScore = parseInt(player1ScoreElement.innerHTML);
+
+        // Game Over
+        // Player 1 Won the Game
+        if (currentScore === 4) {
+          const gameOverText = document.getElementById("game-over") as HTMLDivElement;
+          if (gameOverText)
+            gameOverText.classList.toggle('hidden');
+
+          player1ScoreElement.innerHTML = "0";
+
+          const player2ScoreElement = document.getElementById("player2-score") as HTMLSpanElement;
+          if (player2ScoreElement)
+            player2ScoreElement.innerHTML = "0";
+
+          const winnerText = document.getElementById("winner-text") as HTMLDivElement;
+          if (winnerText)
+            winnerText.innerHTML = "Player 1 WINS!";
+          this._gameState = false;
+        } else {
+          player1ScoreElement.innerHTML = (currentScore + 1).toString();
+        }
       }
       this._gameState = false;
     }
@@ -133,7 +169,7 @@ class Ball {
       // Change ball directions if hit ceiling, floor or paddles
       if (
         this.checkPaddleCollision(leftPaddle) ||
-        this.checkPaddleCollision(rightPaddle)
+          this.checkPaddleCollision(rightPaddle)
       )
         this._xD *= -1;
       if (this.checkCeilingFloorCollision(canvas)) this._yD *= -1;
@@ -159,12 +195,12 @@ class Ball {
   checkPaddleCollision(paddle: Paddle): boolean {
     if (
       this._x + this._radius >= paddle.x &&
-      this._x - this._radius <= paddle.x + paddle.width
+        this._x - this._radius <= paddle.x + paddle.width
     ) {
       // horizontal range
       if (
         this._y + this._radius >= paddle.y &&
-        this._y - this._radius <= paddle.y + paddle.height
+          this._y - this._radius <= paddle.y + paddle.height
       )
         // vertical range
         return true;
@@ -202,18 +238,24 @@ export class Pong {
   private leftPaddle: Paddle;
   private rightPaddle: Paddle;
   private ball: Ball;
-  private paddleState: PaddleState; // Check if paddles are moving or stationary
   private animationFrameId: number | null = null;
+
+  // Check if paddles are moving or stationary
+  private paddleState = {
+    leftUp: false,
+    leftDown: false,
+    rightUp: false,
+    rightDown: false,
+  };
+
 
   constructor() {
     this.canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
     this.canvas.tabIndex = 0; // Make canvas focusable
-    this.canvas.width = window.innerWidth / 1.2;
-    this.canvas.height = window.innerHeight / 1.4;
-
+    this.canvas.width = 1600;
+    this.canvas.height = 700;
     this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
-    // Header
     // Change objects atributes
     this.paddleHeight = this.canvas.width / 12;
     this.paddleWidth = window.innerWidth / 100;
@@ -233,13 +275,6 @@ export class Pong {
     this.ballXD = 5; // travel velocity on X axis
     this.ballYD = 2; // travel velocity on Y axis
     this.ballLineThickness = 2;
-
-    this.paddleState = {
-      leftUp: false,
-      leftDown: false,
-      rightUp: false,
-      rightDown: false,
-    };
 
     // Initialize objects
     this.leftPaddle = new Paddle(
@@ -278,7 +313,7 @@ export class Pong {
   }
 
   public gameLoop() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // Clear full canvas
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); // clear buffer
 
     // Check paddle state and adjust X and Y accordingly
     if (this.paddleState.leftUp) this.leftPaddle.move("Up", this.canvas);
@@ -310,12 +345,18 @@ export class Pong {
     if (event.key === "w" || event.key === "W") this.paddleState.leftUp = true;
     if (event.key === "ArrowDown") this.paddleState.rightDown = true;
     if (event.key === "ArrowUp") this.paddleState.rightUp = true;
-    if (event.key == " ") this.ball.gameState = true;
+    if (event.key === " ") {
+      const gameOverDiv = document.getElementById("game-over") as HTMLDivElement;
+      const isGameOver = !gameOverDiv.classList.contains("hidden");
+      if (isGameOver) {
+        gameOverDiv.classList.toggle("hidden");
+      }
+      this.ball.gameState = true;
+    }
   }
 
   private handleKeyUp(event: KeyboardEvent): void {
-    if (event.key === "s" || event.key === "S")
-      this.paddleState.leftDown = false;
+    if (event.key === "s" || event.key === "S") this.paddleState.leftDown = false;
     if (event.key === "w" || event.key === "W") this.paddleState.leftUp = false;
     if (event.key === "ArrowDown") this.paddleState.rightDown = false;
     if (event.key === "ArrowUp") this.paddleState.rightUp = false;
