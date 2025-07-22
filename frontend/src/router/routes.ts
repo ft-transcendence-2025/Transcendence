@@ -4,6 +4,7 @@ import { renderRegister } from "../views/register.js";
 import { renderUserList } from "../views/userList.js";
 import { renderDashboard } from "../views/dashboard.js";
 import { renderPong } from "../views/pong.js";
+import { renderTournament } from "../views/tournament.js";
 
 interface Route {
   path: string;
@@ -22,4 +23,5 @@ export const routes: Route[] = [
   },
   { path: "/dashboard", action: renderDashboard },
   { path: "/pong", action: renderPong },
+  { path: "/tournament", action: renderTournament}
 ];
