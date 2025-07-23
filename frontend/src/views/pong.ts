@@ -2,6 +2,7 @@ import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/jwtUtils.js";
 import { Pong } from "./pong-canvas.js";
+import { Game } from  "./pong-canvas-remake.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -16,8 +17,12 @@ export async function renderPong(container: HTMLElement | null) {
   // Update the usernames based on game mode
   updatePlayerUsernames(gameMode);
 
-  const pong = new Pong();
-  pong.gameLoop();
+  // const pong = new Pong();
+  // pong.gameLoop();
+
+  const game = new Game();
+  game.gameLoop();
+
 }
 
 /**
