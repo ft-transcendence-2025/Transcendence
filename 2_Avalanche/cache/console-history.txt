@@ -1,3 +1,81 @@
+await myContract.getMatchCount()
+);
+  1625003600  // endTime (timestamp)
+  1625000000, // startTime (timestamp)
+  123,        // winner (player1)
+  2,          // score2
+  3,          // score1
+  456,        // player2
+  123,        // player1
+  101,        // matchId
+  1,          // tournamentId
+await myContract.newMatch(
+const myContract = await ethers.getContractAt("SimpleStorage","0x52C84043CD9c865236f11d9Fc9F56aa003c1f922")
+);
+  1625003600  // endTime (timestamp)
+  1625000000, // startTime (timestamp)
+  123,        // winner (player1)
+  2,          // score2
+  3,          // score1
+  456,        // player2
+  123,        // player1
+  101,        // matchId
+  1,          // tournamentId
+await myContract.newMatch(
+  1625003600  // endTime (timestamp)
+  1625000000, // startTime (timestamp)
+  123,        // winner (player1)
+  2,          // score2
+  3,          // score1
+  456,        // player2
+  123,        // player1
+  101,        // matchId
+  1,          // tournamentId
+await SimpleStorage.newMatch(
+  1625003600  // endTime (timestamp)
+  1625000000, // startTime (timestamp)
+  123,        // winner (player1)
+  2,          // score2
+  3,          // score1
+  456,        // player2
+  123,        // player1
+  101,        // matchId
+  1,          // tournamentId
+await SimpleStorage.newMatch(
+await myContract.getMatchCount()
+const myContract = await ethers.getContractAt("SimpleStorage","0x52C84043CD9c865236f11d9Fc9F56aa003c1f922")
+console.log(result)
+const result = await myNewContract.getMatch(0);
+clear
+await myNewContract.getMatchCount()
+myNewContract.getMatchCount()
+);
+1625003600
+1625000000,
+123,
+2,
+3,
+345,
+123,
+101,
+1,
+await myNewContract.newMatch(
+);
+1625003600
+1625000000,
+123,
+2,
+3,
+345,
+123,
+101,
+1,
+await SimpleStorage.newMatch(
+await myNewContract.getMatchCount()
+myNewContract.getMatchCount()
+const myNewContract = await ethers.getContractAt("SimpleStorage","0x17aB05351fC94a1a67Bf3f56DdbB941aE6c63E25")
+myContract.getMatchCount()
+const myContract = await ethers.getContractAt("SimpleStorage","0x52C84043CD9c865236f11d9Fc9F56aa003c1f922")
 await myContract.getCount()
 const myContract = await ethers.getContractAt("CounterTest","0x52C84043CD9c865236f11d9Fc9F56aa003c1f922")
 await myContract.getCount()

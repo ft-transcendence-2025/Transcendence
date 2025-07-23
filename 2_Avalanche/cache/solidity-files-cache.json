@@ -74,6 +74,42 @@
       "artifacts": [
         "console"
       ]
+    },
+    "/home/uatilla/Documents/42/Blockchain/2_Avalanche/contracts/SimpleStorage.sol": {
+      "lastModificationDate": 1753212882922,
+      "contentHash": "72ef9f0aa09c32819c98f6ab83bbdb57",
+      "sourceName": "contracts/SimpleStorage.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.18"
+      ],
+      "artifacts": [
+        "SimpleStorage"
+      ]
     }
   }
 }

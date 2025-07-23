@@ -1,10 +1,10 @@
 const hre = require("hardhat"); //package Hardhat R Environment
 
 async function main() {
-    const counterTest = await hre.ethers.deployContract("CounterTest");
-    console.log("Deploying CounterTest...");
-    await counterTest.waitForDeployment();
-    console.log(`CounterTest deployed to: ${counterTest.target}`);
+    const simpleStorage = await hre.ethers.deployContract("SimpleStorage");
+    console.log("Deploying SimpleStorage...");
+    await simpleStorage.waitForDeployment();
+    console.log(`SimpleStorage deployed to: ${simpleStorage.target}`);
 }
 
 main().catch((error) => {
