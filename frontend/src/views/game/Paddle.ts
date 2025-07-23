@@ -1,12 +1,4 @@
-export enum PaddleSide {
-  Left = 0,
-  Right = 1,
-};
-
-export enum PaddleState {
-  Up = 0,
-  Down = 1,
-}
+import { PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
 
 export class Paddle {
   public x: number = 0;
