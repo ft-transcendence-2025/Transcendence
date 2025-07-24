@@ -87,7 +87,7 @@ export async function renderRegister(container: HTMLElement | null) {
 
     try {
       await register(registrationData);
-      alert("Registration Successful!"); // debug
+      // alert("Registration Successful!"); // debug
 
       // redirect to login
       form.reset();

@@ -52,11 +52,11 @@ class Paddle {
   move(direction: string, canvas: HTMLCanvasElement): void {
     if (
       direction === "Down" &&
-        this._y + this._height + (this._lineThickness / 2) <= canvas.height
+      this._y + this._height + this._lineThickness / 2 <= canvas.height
     )
       this._y += this._yD;
-      else if (direction === "Up" && this.y - (this._lineThickness / 2) >= 0)
-        this._y -= this._yD;
+    else if (direction === "Up" && this.y - this._lineThickness / 2 >= 0)
+      this._y -= this._yD;
   }
 }
 
@@ -112,21 +112,21 @@ class Ball {
     rightPaddle: Paddle,
     canvas: HTMLCanvasElement,
   ): void {
-
     // Someone has scored
     // Player 2 Scores
     if (this._x - this._radius < 0) {
       this._gameState = false;
       this.handleScore(2);
-    } else if (this._x + this._radius > canvas.width) { // Player 1 Scored
+    } else if (this._x + this._radius > canvas.width) {
+      // Player 1 Scored
       this._gameState = false;
       this.handleScore(1);
     }
 
     if (this._gameState === true) {
-      if (Math.floor((performance.now() / 1000 / this._level)) % 5 === 0) {
-        this._xD *= 1.10;
-        this._yD *= 1.10;
+      if (Math.floor(performance.now() / 1000 / this._level) % 5 === 0) {
+        this._xD *= 1.1;
+        this._yD *= 1.1;
         this._level++;
       }
 
@@ -137,11 +137,12 @@ class Ball {
       // Change ball directions if hit ceiling, floor or paddles
       if (
         this.checkPaddleCollision(leftPaddle) ||
-          this.checkPaddleCollision(rightPaddle)
+        this.checkPaddleCollision(rightPaddle)
       )
         this._xD *= -1;
       if (this.checkCeilingFloorCollision(canvas)) this._yD *= -1;
-    } else { // Game is stopped
+    } else {
+      // Game is stopped
       // Randomize ball direction
       this._xD = Math.random() < 0.5 ? -this._xD : this._xD;
       this._yD = Math.random() < 0.5 ? -this._yD : this._yD;
@@ -155,35 +156,36 @@ class Ball {
   }
 
   private handleScore(player: 1 | 2): void {
-    const playerScoreElement = document.getElementById(`player${player}-score`) as HTMLSpanElement;
+    const playerScoreElement = document.getElementById(
+      `player${player}-score`,
+    ) as HTMLSpanElement;
     if (playerScoreElement) {
-        const currentScore = parseInt(playerScoreElement.innerHTML);
+      const currentScore = parseInt(playerScoreElement.innerHTML);
 
       if (currentScore === this._winningScore - 1) {
-        const gameOverText = document.getElementById("game-over") as HTMLDivElement;
-        if (gameOverText)
-          gameOverText.classList.toggle('hidden');
+        const gameOverText = document.getElementById(
+          "game-over",
+        ) as HTMLDivElement;
+        if (gameOverText) gameOverText.classList.toggle("hidden");
 
         // Reset scores
         // Find all elements whose ID ends with '-score'
         //  - [id] = Targets elements with an ID attribute
         //  - $= = "Ends with" operator
         //  - '-score' = The suffix to match
-        document.querySelectorAll("[id$='-score']").forEach(el => {
+        document.querySelectorAll("[id$='-score']").forEach((el) => {
           (el as HTMLSpanElement).textContent = "0";
         });
 
-        const winnerText = document.getElementById("winner-text") as HTMLDivElement;
-        if (winnerText)
-          winnerText.innerHTML = `Player ${player} WINS!`;
-
-
+        const winnerText = document.getElementById(
+          "winner-text",
+        ) as HTMLDivElement;
+        if (winnerText) winnerText.innerHTML = `Player ${player} WINS!`;
       } else {
         playerScoreElement.innerHTML = (currentScore + 1).toString();
       }
     }
   }
-
 
   public render(ctx: CanvasRenderingContext2D): void {
     ctx.beginPath();
@@ -200,12 +202,12 @@ class Ball {
   checkPaddleCollision(paddle: Paddle): boolean {
     if (
       this._x + this._radius >= paddle.x &&
-        this._x - this._radius <= paddle.x + paddle.width
+      this._x - this._radius <= paddle.x + paddle.width
     ) {
       // horizontal range
       if (
         this._y + this._radius >= paddle.y &&
-          this._y - this._radius <= paddle.y + paddle.height
+        this._y - this._radius <= paddle.y + paddle.height
       )
         // vertical range
         return true;
@@ -255,7 +257,6 @@ export class Pong {
     rightDown: false,
   };
 
-
   constructor() {
     this.canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
     this.canvas.tabIndex = 0; // Make canvas focusable
@@ -276,16 +277,16 @@ export class Pong {
     this.paddleY = this.canvas.height / 2 - this.paddleHeight / 2;
     this.paddleD = 7; // travel velocity
     this.lineThickness = 2;
-    this.paddleColor = "#49706c";
-    this.paddleStrokeColor = "#253031";
+    this.paddleColor = "#5FAD56";
+    this.paddleStrokeColor = "#396733";
     this.leftPaddleX = 5;
     this.rightPaddleX = this.canvas.width - this.paddleWidth - 5;
 
     this.ballX = this.canvas.width / 2;
     this.ballY = this.canvas.height / 2;
     this.ballRadius = 8;
-    this.ballColor = "#fe019a";
-    this.ballStrokeColor = "#253031";
+    this.ballColor = "#FE4E00";
+    this.ballStrokeColor = "#2E3A29";
     this.ballXD = 5; // travel velocity on X axis
     this.ballYD = 1.5; // travel velocity on Y axis
     this.ballLineThickness = 2;
@@ -362,11 +363,13 @@ export class Pong {
     if (event.key === "ArrowDown") this.paddleState.rightDown = true;
     if (event.key === "ArrowUp") this.paddleState.rightUp = true;
     if (event.key === " ") {
-      const gameOverDiv = document.getElementById("game-over") as HTMLDivElement;
+      const gameOverDiv = document.getElementById(
+        "game-over",
+      ) as HTMLDivElement;
       const isGameOver = !gameOverDiv.classList.contains("hidden");
       if (isGameOver) {
         gameOverDiv.classList.toggle("hidden");
-        return ;
+        return;
       }
 
       this.ball.setGameState = true;
@@ -374,7 +377,8 @@ export class Pong {
   }
 
   private handleKeyUp(event: KeyboardEvent): void {
-    if (event.key === "s" || event.key === "S") this.paddleState.leftDown = false;
+    if (event.key === "s" || event.key === "S")
+      this.paddleState.leftDown = false;
     if (event.key === "w" || event.key === "W") this.paddleState.leftUp = false;
     if (event.key === "ArrowDown") this.paddleState.rightDown = false;
     if (event.key === "ArrowUp") this.paddleState.rightUp = false;
