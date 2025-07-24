@@ -1,6 +1,6 @@
 <div
   id="login-modal"
-  class="bg-opacity-20 fixed inset-0 flex hidden h-full w-full items-center justify-center overflow-y-auto bg-(--color-primary-light)"
+  class="modal bg-opacity-20 fixed inset-0 flex hidden h-full w-full items-center justify-center overflow-y-auto bg-(--color-primary-light)"
 >
   <!-- Modal Content -->
   <div class="relative mx-auto w-96 rounded-md border bg-white p-5 shadow-lg">
@@ -50,7 +50,15 @@
             Sign In
           </button>
           <p class="mt-4 text-sm text-gray-500">
-            Don't have an account? <a href="/register" id="register-link" class="text-(--color-accent) hover:underline">Register here</a>
+            Don't have an account?
+            <a
+              href="/register"
+              id="register-link"
+              class="text-(--color-accent) hover:underline"
+              data-link
+              >Register here</a
+            >
+          </p>
         </form>
       </div>
     </div>

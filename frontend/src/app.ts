@@ -1,6 +1,15 @@
 import { renderNavbar } from "./components/navbar.js";
 import { router, navigateTo } from "./router/router.js";
 
+// Function to close all open modals
+function closeAllModals() {
+  const modals = document.querySelectorAll(".modal");
+  modals.forEach((modal) => {
+    const modalElement = modal as HTMLElement;
+    modalElement.style.display = "none";
+  });
+}
+
 // set initial app layout
 const navbarElement = document.getElementById("navbar");
 const contentElement = document.getElementById("content");
@@ -16,9 +25,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   // global click listener for navigation links (data-links)
   document.body.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
-    if (target.matches("[data-link]")) {
+    const linkElement = target.closest("[data-link]") as HTMLElement;
+    if (linkElement) {
       event.preventDefault(); // prevent default link behavior (full page reload)
-      const path = target.getAttribute("href");
+
+      // Close any open modals before navigating
+      closeAllModals();
+
+      const path = linkElement.getAttribute("href");
       if (path) {
         navigateTo(path, contentElement);
       }
