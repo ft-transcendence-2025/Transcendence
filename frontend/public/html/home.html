@@ -1,5 +1,5 @@
 <div
-  class="relative flex h-screen bg-cover bg-center bg-[url('./assets/images/monstera_1920.jpg')] items-center justify-center p-4 pt-32"
+  class="relative flex h-screen items-center justify-center bg-[url('./assets/images/monstera_1920.jpg')] bg-cover bg-center p-4 pt-32"
 >
   <!-- Washed out overlay -->
   <div class="absolute inset-0 bg-(--color-primary)/40"></div>
@@ -14,7 +14,13 @@
     <p
       class="rounded-lg bg-white/40 p-6 shadow-lg drop-shadow-md backdrop-blur-sm"
     >
-      <a href="/login" id="login-link" class="text-(--color-text-primary) hover:text-white text-2xl font-semibold px-3 py-2" data-link">Enter</a>
+      <a
+        href="/login"
+        id="login-link"
+        class="px-3 py-2 text-2xl font-semibold text-(--color-text-primary) hover:text-white"
+        data-link="true"
+        >Enter</a
+      >
     </p>
   </div>
 </div>

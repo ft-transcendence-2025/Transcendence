@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const linkElement = target.closest("[data-link]") as HTMLElement;
     if (linkElement) {
       event.preventDefault(); // prevent default link behavior (full page reload)
+      //event.stopPropagation(); // stop event bubbling
 
       // Close any open modals before navigating
       closeAllModals();

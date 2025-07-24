@@ -17,11 +17,14 @@ export const routes: Route[] = [
   { path: "/register", action: renderRegister },
   {
     path: "/login",
-    action: async () => {
+    action: async (container: HTMLElement | null) => {
+      // Render the home page as backdrop
+      await renderHome(container);
+      // Show the login modal on top
       openLoginModal();
     },
   },
   { path: "/dashboard", action: renderDashboard },
   { path: "/pong", action: renderPong },
-  { path: "/tournament", action: renderTournament}
+  { path: "/tournament", action: renderTournament },
 ];
