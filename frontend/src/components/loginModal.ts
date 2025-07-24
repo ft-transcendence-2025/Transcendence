@@ -2,9 +2,15 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import { login } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
 import { renderNavbar } from "./navbar.js";
+import { renderHome } from "../views/home.js";
 
 // This function will find the modal on the page and open it.
-export async function openLoginModal() {
+export async function openLoginModal(container: HTMLElement | null = null) {
+  // If container is provided, render home page as backdrop first
+  if (container) {
+    await renderHome(container);
+  }
+  
   // Inject the modal HTML if it doesn't exist
   if (!document.getElementById("login-modal")) {
     const modalHtml = await loadHtml("/html/loginModal.html");

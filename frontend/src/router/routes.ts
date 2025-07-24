@@ -15,15 +15,7 @@ export const routes: Route[] = [
   { path: "/", action: renderHome },
   { path: "/users", action: renderUserList },
   { path: "/register", action: renderRegister },
-  {
-    path: "/login",
-    action: async (container: HTMLElement | null) => {
-      // Render the home page as backdrop
-      await renderHome(container);
-      // Show the login modal on top
-      openLoginModal();
-    },
-  },
+  { path: "/login", action: openLoginModal },
   { path: "/dashboard", action: renderDashboard },
   { path: "/pong", action: renderPong },
   { path: "/tournament", action: renderTournament },
