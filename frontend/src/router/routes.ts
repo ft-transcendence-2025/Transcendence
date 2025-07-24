@@ -15,13 +15,8 @@ export const routes: Route[] = [
   { path: "/", action: renderHome },
   { path: "/users", action: renderUserList },
   { path: "/register", action: renderRegister },
-  {
-    path: "/login",
-    action: async () => {
-      openLoginModal();
-    },
-  },
+  { path: "/login", action: openLoginModal },
   { path: "/dashboard", action: renderDashboard },
   { path: "/pong", action: renderPong },
-  { path: "/tournament", action: renderTournament}
+  { path: "/tournament", action: renderTournament },
 ];

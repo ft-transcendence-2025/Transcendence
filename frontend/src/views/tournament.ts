@@ -61,7 +61,8 @@ function nextAvatar(slot: number): void {
 // Optional: Initialize all slots to default avatar index
 function initializeAvatars() {
   const slots = [1, 2, 3, 4, 5, 6, 7, 8];
-  slots.forEach((slot) => updateAvatar(slot, slot - 1)); // Each slot gets sequential avatar
+  // Each slot gets fixed sequential avatar
+  slots.forEach((slot) => updateAvatar(slot, slot - 1));
 
   // Add event listeners for navigation buttons (only for slots 2-8, slot 1 is static)
   for (let slot = 2; slot <= 8; slot++) {
