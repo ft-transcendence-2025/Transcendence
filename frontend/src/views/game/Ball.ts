@@ -13,7 +13,7 @@ export class Ball {
   public angle: number = getRandomAngle();
   public readonly radius: number = 8;
   private defaultSpeed: number = 4;
-  private currentSpeed: number;
+  public currentSpeed: number;
   private speedUpTime: number = 5000; // 5 seconds in milliseconds
 
   private firstHit: boolean = true;

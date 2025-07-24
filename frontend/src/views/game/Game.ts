@@ -2,8 +2,9 @@ import { Paddle } from  "./Paddle.js";
 import { PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
 import { Ball } from "./Ball.js";
 import { Player } from "./Player.js";
+import { AI } from "./AI.js";
 
-export class GamePvP {
+export class Game {
   private canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
   private ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
@@ -14,6 +15,7 @@ export class GamePvP {
   private ball: Ball;
   private player1: Player;
   private player2: Player;
+  private AI: AI;
 
   private gameState: boolean = false;
   private winningPoint: number = 3;
@@ -33,6 +35,7 @@ export class GamePvP {
     this.ball = new Ball(this.canvas);
     this.player1 = new Player(this.canvas, PaddleSide.Left);
     this.player2 = new Player(this.canvas, PaddleSide.Right);
+    this.AI = new AI(this.canvas, PaddleSide.Right, this.ball);
     
   }
 
@@ -49,8 +52,10 @@ export class GamePvP {
       this.gameState = false;
       this.checkPoints();
     }
-    if (this.gameState === false) this.ball.reset(this.canvas);
-    else this.ball.move(this.canvas);
+    if (this.gameState === false)
+      this.ball.reset(this.canvas);
+    else
+      this.ball.move(this.canvas);
     this.render();
 
     requestAnimationFrame(this.gameLoop.bind(this));
