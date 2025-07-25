@@ -66,10 +66,10 @@ export class Ball {
       this.currentSpeed = this.defaultSpeed;
 
     // Every 5 seconds the ball increases speed 10%
-    if (performance.now() - this.startTime >= this.speedUpTime) {
-      this.currentSpeed += this.currentSpeed / 10;
-      this.startTime = performance.now();
-    }
+    // if (performance.now() - this.startTime >= this.speedUpTime) {
+    //   this.currentSpeed += this.currentSpeed / 10;
+    //   this.startTime = performance.now();
+    // }
 
     this.x += Math.cos(this.angle) * this.currentSpeed;
     this.y += Math.sin(this.angle) * this.currentSpeed;

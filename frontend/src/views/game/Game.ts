@@ -1,5 +1,5 @@
 import { Paddle } from  "./Paddle.js";
-import { PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
+import { PaddleSide, PaddleState, GameMode, degreesToRadians, getRandomAngle } from "./utils.js";
 import { Ball } from "./Ball.js";
 import { Player } from "./Player.js";
 import { AI } from "./AI.js";
@@ -13,15 +13,15 @@ export class Game {
   private bufferCtx = this.buffer.getContext("2d") as CanvasRenderingContext2D;
 
   private ball: Ball;
-  private player1: Player;
-  private player2: Player;
-  private AI: AI;
+  private player1: Player | null = null;
+  private player2: Player | null = null;
+  private AI: AI | null = null;
 
   private gameState: boolean = false;
   private winningPoint: number = 3;
 
 
-  constructor() {
+  constructor(...args: [] | [GameMode, PaddleSide]) {
     this.canvas.tabIndex = 0; // Make canvas focusable
     this.canvas.focus();
     this.canvas.width = 1000;
@@ -31,23 +31,49 @@ export class Game {
 
     this.buffer.width = this.canvas.width;
     this.buffer.height = this.canvas.height;
-
     this.ball = new Ball(this.canvas);
-    this.player1 = new Player(this.canvas, PaddleSide.Left);
-    this.player2 = new Player(this.canvas, PaddleSide.Right);
-    this.AI = new AI(this.canvas, PaddleSide.Right, this.ball);
-    
+
+    if (args.length === 0)
+      this.gamePvP();
+    else
+      this.gamePvE(args[1]);
+  }
+
+  private gamePvE(side: PaddleSide): void {
+    if (!this.AI) {
+      this.AI = new AI(this.canvas, side, this.ball);
+    }
+    if (side === PaddleSide.Left)
+      this.player1 = new Player(this.canvas, PaddleSide.Right);
+    else
+      this.player1 = new Player(this.canvas, PaddleSide.Left);
+  }
+
+  private gamePvP(): void {
+    if (!this.player1)
+      this.player1 = new Player(this.canvas, PaddleSide.Left);
+    if (!this.player2)
+      this.player2 = new Player(this.canvas, PaddleSide.Right);
   }
 
   public gameLoop(): void {
     this.bufferCtx.clearRect(0, 0, this.buffer.width, this.buffer.height);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.player1.paddle.update(this.canvas);
-    this.player2.paddle.update(this.canvas);
+    if (this.player1) {
+      this.player1.paddle.update(this.canvas);
+      this.ball.checkPaddleCollision(this.player1.paddle);
+    }
+    if (this.player2) {
+      this.player2.paddle.update(this.canvas);
+      this.ball.checkPaddleCollision(this.player2.paddle);
+    }
+    if (this.AI) {
+      // this.AI.paddle.update(this.canvas);
+      this.ball.checkPaddleCollision(this.AI.paddle);
+    }
     this.ball.checkCeilingFloorCollision(this.canvas);
-    this.ball.checkPaddleCollision(this.player1.paddle);
-    this.ball.checkPaddleCollision(this.player2.paddle);
+
     if (this.ball.pointScored(this.canvas) === true) {
       this.gameState = false;
       this.checkPoints();
@@ -93,8 +119,12 @@ export class Game {
 
   private render(): void {
     this.ball.render(this.ctx);
-    this.player1.paddle.render(this.ctx);
-    this.player2.paddle.render(this.ctx);
+    if (this.player1)
+      this.player1.paddle.render(this.ctx);
+    if (this.player2)
+      this.player2.paddle.render(this.ctx);
+    if (this.AI)
+      this.AI.paddle.render(this.ctx);
   }
 
   // Press Space to start the ball rolling

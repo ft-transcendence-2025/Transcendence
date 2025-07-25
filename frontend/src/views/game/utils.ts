@@ -8,6 +8,11 @@ export enum PaddleState {
   Down = 1,
 }
 
+export enum GameMode {
+  PvP = 0,
+  PvE = 1,
+}
+
 export function degreesToRadians(degree: number): number {
   return degree * Math.PI/180;
 }

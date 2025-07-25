@@ -17,137 +17,123 @@ enum BallDir {
 };
 
 export class AI {
-  public paddle: Paddle;
-  private side: PaddleSide;
-
   private currPoint: Point = { x: 0, y: 0 };
   private prevPoint: Point = { x: 0, y: 0 };
-  public a: number = 0;
-  public b: number = 0;
+  private angularCoeficient: number = 0;
+  private linearCoeficient: number = 0;
+  private targetY: number = 0;
+  private ballIsMoving: boolean = false;
+  private tolerance: number;
+  public paddle: Paddle;
 
   constructor(canvas: HTMLCanvasElement, side: PaddleSide, ball: Ball) {
     this.paddle = new Paddle(canvas, side);
-    this.side = side;
-    
+
+    this.tolerance = this.paddle.height / 6;
     this.prevPoint = { x: ball.x, y: ball.y };
     this.currPoint = { x: ball.x, y: ball.y };
 
+    this.predictPossition(canvas, side, ball);
+    this.move(canvas);
+  }
+
+  private move(canvas: HTMLCanvasElement): void {
     setInterval(() => {
-      this.prevPoint = { ...this.currPoint }; // Save previous point first
+      if (this.paddle.y - this.paddle.height/2 > this.targetY && this.paddle.y >= 0) {
+        this.paddle.y -= this.paddle.speed * 2;
+      }
+      if (this.paddle.y + this.paddle.height/2 < this.targetY && this.paddle.y + this.paddle.height <= canvas.height) {
+        this.paddle.y += this.paddle.speed * 2;
+      }
+    }, 5)
+  }
+
+  private predictPossition(canvas: HTMLCanvasElement, side: PaddleSide, ball: Ball): void {
+    setInterval(() => {
       this.currPoint.x = ball.x;
       this.currPoint.y = ball.y;
 
-      // Check if ball actually moved
+      // Check if ball is moving
       if (this.prevPoint.x === this.currPoint.x && this.prevPoint.y === this.currPoint.y) {
+        this.ballIsMoving = false;
+        this.targetY = canvas.height/2;
         return;
       }
+      else
+        this.ballIsMoving = true;
 
-      this.setStraight();
-      const ballDir = this.getBallDir();
-      
-      const collisionPoint = this.predictCollision(ballDir, canvas);
-      
-      if (collisionPoint) {
-        // console.log(`Will hit at: (${collisionPoint.x}, ${collisionPoint.y})`);
-        
-        // Move paddle to intercept the ball
-        if (collisionPoint.y > this.paddle.y + this.paddle.height / 2) {
-          // console.log("Move Down");
-          // this.paddle.moveDown();
-        } else if (collisionPoint.y < this.paddle.y + this.paddle.height / 2) {
-          // console.log("Move UP");
-          // this.paddle.moveUp();
+      this.angularCoeficient = this.getAngularCoeficient();
+      this.linearCoeficient = this.getLinearCoeficient({x: this.currPoint.x, y: this.currPoint.y});
+      this.targetY = this.getTargetY(canvas, side);
+
+      this.prevPoint = { ...this.currPoint };
+    }, 10);
+  }
+
+  private getAngularCoeficient(): number {
+    const deltaX: number = this.currPoint.x - this.prevPoint.x;
+    const deltaY: number = this.currPoint.y - this.prevPoint.y;
+
+    if (deltaX < 0.01)
+      return 0;
+
+    return deltaY / deltaX;
+  }
+
+  private getLinearCoeficient(point: Point): number {
+    return point.y - (point.x * this.angularCoeficient);
+  }
+
+  private getTargetY(canvas: HTMLCanvasElement, side: PaddleSide): number {
+    let y: number = -1;
+    const maxBounces: number = 10;
+    let nbrBounces: number = 0;
+    const targetX = this.paddle.side === PaddleSide.Right ? canvas.width : 0;
+
+    // Ball going opossite side, set tartget to center
+    if (side !== this.paddle.side || this.ballIsMoving === false)
+      return canvas.height / 2;
+
+    y = this.angularCoeficient * targetX + this.linearCoeficient;
+    if (y > 0 && y < canvas.height)
+      return y;
+    while ((y < 0 || y > canvas.height) && nbrBounces++ < maxBounces) {
+      if (this.angularCoeficient > 0) {
+        if (this.currPoint.x > this.prevPoint.x) { // Going bottom Right
+          y = this.angularCoeficient * canvas.width + this.linearCoeficient; 
+          if (y > canvas.height) { // Ball bouces bottom
+            this.angularCoeficient *= -1;
+            this.linearCoeficient = this.getLinearCoeficient({x: canvas.width , y: y});
+          }
+        }
+        else { // Going Top left
+          y = this.linearCoeficient;
+          if (y < 0) { // Ball bouces top
+            this.angularCoeficient *= -1;
+            this.linearCoeficient = this.getLinearCoeficient({x: 0, y: y});
+          }
         }
       }
-
-    }, 100);
-  }
-
-  private setStraight(): void {
-   // Avoid division by zero
-    const deltaX = this.currPoint.x - this.prevPoint.x;
-    if (Math.abs(deltaX) < 0.001) {
-      this.a = 0;
-      this.b = this.currPoint.y;
-      return;
-    }
-    
-    this.a = (this.currPoint.y - this.prevPoint.y) / deltaX;
-    this.b = this.currPoint.y - (this.a * this.currPoint.x);
-  }
-
-  private getBallDir(): BallDir {
-    const deltaX = this.currPoint.x - this.prevPoint.x;
-    const deltaY = this.currPoint.y - this.prevPoint.y;
-
-    if (Math.abs(deltaX) < 0.001) {
-      // Vertical movement
-      return deltaY > 0 ? BallDir.downRight : BallDir.upRight;
-    }
-
-    if (deltaX > 0) {
-      if (deltaY > 0)
-        return BallDir.downRight;
-      else if (deltaY < 0)
-          return BallDir.upRight;
-      return BallDir.horRight;
-    }
-    else {
-      if (deltaY > 0)
-        return BallDir.downLeft;
-      else if (deltaY < 0)
-          return BallDir.upLeft;
-      return BallDir.horLeft;
-    }
-  }
-
-  private predictCollision(ballDir: BallDir, canvas: HTMLCanvasElement): Point | null {
-    // Determine paddle x position based on side
-    const paddleX = this.side === PaddleSide.Left ? 0 : canvas.width;
-
-    // Calculate where the ball line intersects with the paddle's x position
-    const collisionY = this.a * paddleX + this.b;
-
-    // Check if this collision point is within canvas bounds (vertical walls)
-    if (collisionY >= 0 && collisionY <= canvas.height) {
-      return { x: paddleX, y: collisionY };
-    }
-
-    // If not hitting paddle, check wall collisions
-    let wallCollisionY: number;
-    let wallCollisionX: number;
-
-    if (ballDir === BallDir.upLeft || ballDir === BallDir.upRight) {
-      // Check top wall (y = 0)
-      wallCollisionX = (0 - this.b) / this.a;
-      if (wallCollisionX >= 0 && wallCollisionX <= canvas.width) {
-        // Ball hits top, will bounce - recalculate
-        return this.predictCollisionAfterBounce(ballDir, wallCollisionX, 0, canvas);
+      else if (this.angularCoeficient < 0) {
+        if (this.currPoint.x > this.prevPoint.x) { // Going top Right
+          y = this.angularCoeficient * canvas.width + this.linearCoeficient;
+          if (y < 0) { // Ball bouces top
+            this.angularCoeficient *= -1;
+            this.linearCoeficient = this.getLinearCoeficient({x: canvas.width, y: y});
+          }
+        }
+        else { // Going Bottom left
+          y = this.linearCoeficient;
+          if (y > canvas.height) { // Ball bouces bottom
+            this.angularCoeficient *= -1;
+            this.linearCoeficient = this.getLinearCoeficient({x: 0, y: y});
+          }
+        }
       }
-    } else if (ballDir === BallDir.downLeft || ballDir === BallDir.downRight) {
-      // Check bottom wall (y = canvas.height)
-      wallCollisionX = (canvas.height - this.b) / this.a;
-      if (wallCollisionX >= 0 && wallCollisionX <= canvas.width) {
-        // Ball hits bottom, will bounce - recalculate
-        return this.predictCollisionAfterBounce(ballDir, wallCollisionX, canvas.height, canvas);
-      }
+      else
+        y = this.linearCoeficient;
     }
-    return null;
+    console.log(nbrBounces);
+    return y;
   }
-
-  private predictCollisionAfterBounce(ballDir: BallDir, bounceX: number, bounceY: number, canvas: HTMLCanvasElement): Point | null {
-    // This is a simplified version - you'd need to calculate the new trajectory after bounce
-    // For now, let's just return the paddle collision point
-    const paddleX = this.side === PaddleSide.Left ? 0 : canvas.width;
-    const collisionY = this.a * paddleX + this.b;
-
-    if (collisionY >= 0 && collisionY <= canvas.height) {
-      return { x: paddleX, y: collisionY };
-    }
-
-    return null;
-  }
-
 }
-
-

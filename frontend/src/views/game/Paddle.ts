@@ -8,7 +8,7 @@ export class Paddle {
   private color: string = "#49706c";
   private strokeColor: string = "#253031";
   private strokeWidth: number = 0;
-  private speed: number = 4;
+  public speed: number = 4;
   public side: PaddleSide;
 
   public state = {

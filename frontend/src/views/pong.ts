@@ -2,6 +2,7 @@ import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/jwtUtils.js";
 import { Game } from "./game/Game.js";
+import { GameMode, PaddleSide } from "./game/utils.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -17,7 +18,7 @@ export async function renderPong(container: HTMLElement | null) {
   updatePlayerUsernames(gameMode);
 
 
-  const game = new Game();
+  const game = new Game(GameMode.PvE, PaddleSide.Right);
   game.gameLoop();
 
 }
