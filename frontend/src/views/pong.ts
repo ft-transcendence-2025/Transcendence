@@ -1,7 +1,8 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/jwtUtils.js";
-import { Pong } from "./pong-canvas.js";
+import { Game } from "./game/Game.js";
+import { GameMode, PaddleSide } from "./game/utils.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -16,8 +17,10 @@ export async function renderPong(container: HTMLElement | null) {
   // Update the usernames based on game mode
   updatePlayerUsernames(gameMode);
 
-  const pong = new Pong();
-  pong.gameLoop();
+
+  const game = new Game(GameMode.PvE, PaddleSide.Right);
+  game.gameLoop();
+
 }
 
 /**
