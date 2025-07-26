@@ -17,10 +17,14 @@ export async function renderPong(container: HTMLElement | null) {
   // Update the usernames based on game mode
   updatePlayerUsernames(gameMode);
 
-
-  const game = new Game(GameMode.PvE, PaddleSide.Right);
-  game.gameLoop();
-
+  // Initialize the game based on the selected mode
+  if (gameMode === "ai") {
+    const game = new Game(GameMode.PvE, PaddleSide.Left);
+    game.gameLoop();
+  } else if (gameMode === "2player") {
+    const game = new Game();
+    game.gameLoop();
+  }
 }
 
 /**
