@@ -1,6 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername } from "../utils/jwtUtils.js";
+// import { getCurrentUsername } from "../utils/jwtUtils.js";
 
 export async function renderTournament(container: HTMLElement | null) {
   if (!container) return;
@@ -9,12 +9,12 @@ export async function renderTournament(container: HTMLElement | null) {
   container.innerHTML = await loadHtml("/html/tournament.html");
 
   // Get the current username and set it for player 1
-  const currentUsername = getCurrentUsername();
+  /*  const currentUsername = getCurrentUsername();
   const player1Name = document.getElementById("player1-slot-name");
 
   if (player1Name) {
     player1Name.textContent = currentUsername || "GrizzlyCatch";
-  }
+  } */
 
   // Initialize avatar navigation
   initializeAvatars();
@@ -60,12 +60,12 @@ function nextAvatar(slot: number): void {
 
 // Optional: Initialize all slots to default avatar index
 function initializeAvatars() {
-  const slots = [1, 2, 3, 4, 5, 6, 7, 8];
+  const slots = [1, 2, 3, 4];
   // Each slot gets fixed sequential avatar
   slots.forEach((slot) => updateAvatar(slot, slot - 1));
 
-  // Add event listeners for navigation buttons (only for slots 2-8, slot 1 is static)
-  for (let slot = 2; slot <= 8; slot++) {
+  // Add event listeners for navigation buttons
+  for (let slot = 1; slot <= 4; slot++) {
     const avatarContainer = document.getElementById(
       `avatar-preview-${slot}`,
     )?.parentElement;

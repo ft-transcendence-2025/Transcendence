@@ -16,6 +16,8 @@ const contentElement = document.getElementById("content");
 
 // listen for browser back / forward navigation
 window.addEventListener("popstate", () => {
+  // Close any open modals before routing
+  closeAllModals();
   router(contentElement);
 });
 
