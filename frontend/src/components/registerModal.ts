@@ -1,17 +1,22 @@
 import { loadHtml } from "../utils/htmlLoader.js";
 import { register } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
+import { renderHome } from "../views/home.js";
 
-export async function renderRegister(container: HTMLElement | null) {
-  if (!container) return;
-
-  container.innerHTML = await loadHtml("/html/registerForm.html");
-
-  const form = document.getElementById("register-form") as HTMLFormElement;
-  if (!form) {
-    console.error("Register form not found in the container.");
-    return;
+export async function openRegisterModal(container: HTMLElement | null = null) {
+  // If container is provided, render home page as backdrop first
+  if (container) {
+    await renderHome(container);
   }
+  
+  // Inject the modal HTML if it doesn't exist
+  if (!document.getElementById("register-modal")) {
+    const modalHtml = await loadHtml("/html/registerModal.html");
+    document.body.insertAdjacentHTML("beforeend", modalHtml);
+  }
+
+  const modal = document.getElementById("register-modal")!;
+  const form = modal.querySelector("#register-form") as HTMLFormElement;
 
   // Helper function to show error messages
   const showError = (message: string) => {
@@ -47,7 +52,7 @@ export async function renderRegister(container: HTMLElement | null) {
         passwordInput.type = "password";
       });
 
-      // Hide password when mouse leaves the button 
+      // Hide password when mouse leaves the button
       toggleButton.addEventListener("mouseleave", () => {
         passwordInput.type = "password";
       });
@@ -62,6 +67,9 @@ export async function renderRegister(container: HTMLElement | null) {
   // Setup password toggles
   setupPasswordToggle("password", "toggle-password");
   setupPasswordToggle("confirmPassword", "toggle-confirm-password");
+
+  // Show the modal
+  modal.style.display = "flex";
 
   form.onsubmit = async (e) => {
     e.preventDefault();
@@ -89,19 +97,20 @@ export async function renderRegister(container: HTMLElement | null) {
       await register(registrationData);
       // alert("Registration Successful!"); // debug
 
-      // redirect to login
+      // Close register modal
+      modal.style.display = "none";
       form.reset();
-      hideError();
-      const registerContainer = document
-        .getElementById("register-form")
-        ?.closest("div");
-      if (registerContainer) registerContainer.classList.add("hidden");
+      //hideError(); // Hide error message if it exists ???
 
       // Show the login modal
       navigateTo("/login", container);
     } catch (error) {
       console.error("Registration failed:", error);
-      showError(error instanceof Error ? error.message : "Registration failed. Please try again");
+      showError(
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again",
+      );
     }
   };
 }
