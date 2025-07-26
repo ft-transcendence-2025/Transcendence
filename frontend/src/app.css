@@ -1,20 +1,28 @@
 @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Blaka&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Blaka&family=Caesar+Dressing&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Blaka&family=Caesar+Dressing&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 @import "tailwindcss";
 
 @theme {
   --color-primary-light: #afd6aa;
-  --color-primary: #5FAD56;
+  --color-primary: #5fad56;
   --color-primary-dark: #396733;
+  --color-primary-darker: #223d1e;
 
-  --color-secondary: #F4B942;
-  --color-background: #FFF8E5;
-  --color-text-primary: #2E3A29;
-  --color-accent: #FE4E00;
+  --color-secondary: #f4b942;
+  --color-secondary-light: #fae3b3;
+  --color-background: #fff8e5;
+  --color-text-primary: #2e3a29;
+  --color-accent: #fe4e00;
 
-  --font-press-start: "Press Start 2P", 'system-ui';
-
+  --font-press-start: "Press Start 2P", "system-ui";
+  --font-blaka: "Blaka", "system-ui";
+  --font-greek: "Caesar Dressing", "system-ui";
+  --font-montserrat: "Montserrat", "sans-serif";
 }
 
 .text-stroke {
-  -webkit-text-stroke: 2px rgba(57, 103, 51, 0.5);
+  /* -webkit-text-stroke: 2px rgba(57, 103, 51, 0.8); */
+  -webkit-text-stroke: 2px #2e3a29;
 }

@@ -5,8 +5,8 @@ export class Paddle {
   public y: number;
   public readonly width: number = 15;
   public readonly height: number = 90;
-  private color: string = "#49706c";
-  private strokeColor: string = "#253031";
+  private color: string = "#5FAD56";
+  private strokeColor: string = "#396733";
   private strokeWidth: number = 0;
   public speed: number = 4;
   public side: PaddleSide;
@@ -17,13 +17,11 @@ export class Paddle {
   };
 
   constructor(canvas: HTMLCanvasElement, side: PaddleSide) {
-    this.y = canvas.height/2 - this.height/2;
+    this.y = canvas.height / 2 - this.height / 2;
     this.side = side;
 
-    if (side === PaddleSide.Left)
-      this.x = 5;
-    else if (side === PaddleSide.Right)
-      this.x = canvas.width - this.width - 5;
+    if (side === PaddleSide.Left) this.x = 5;
+    else if (side === PaddleSide.Right) this.x = canvas.width - this.width - 5;
   }
 
   public render(ctx: CanvasRenderingContext2D): void {
@@ -35,8 +33,7 @@ export class Paddle {
   }
 
   public update(canvas: HTMLCanvasElement): void {
-    if (this.state.up && this.y >= 0)
-      this.y -= this.speed;
+    if (this.state.up && this.y >= 0) this.y -= this.speed;
     if (this.state.down && this.y + this.height <= canvas.height)
       this.y += this.speed;
   }
