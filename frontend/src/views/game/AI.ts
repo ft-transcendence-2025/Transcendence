@@ -24,6 +24,7 @@ export class AI {
   private targetY: number = 0;
   private ballIsMoving: boolean = false;
   public paddle: Paddle;
+  private dir: number = 0;
 
   constructor(canvas: HTMLCanvasElement, side: PaddleSide, ball: Ball) {
     this.paddle = new Paddle(canvas, side);
@@ -35,59 +36,46 @@ export class AI {
     this.move(canvas);
   }
 
-  private move(canvas: HTMLCanvasElement): void {
-    const tolerance = this.paddle.height / 8;
-
-    setInterval(() => {
-      const paddleCenter = this.paddle.y + this.paddle.height/2;
-
-      if (paddleCenter > this.targetY - tolerance &&
-        paddleCenter < this.targetY + tolerance) {
-        this.paddle.state.down = false;
-        this.paddle.state.up = false;
-      }
-      else if (paddleCenter > this.targetY + tolerance) {
-        this.paddle.state.down = false;
-        this.paddle.state.up = true;
-      }
-      else if (paddleCenter < this.targetY - tolerance) {
-        this.paddle.state.up = false;
-        this.paddle.state.down = true;
-      }
-    }, 10)
-  }
-
   private predictPossition(canvas: HTMLCanvasElement, side: PaddleSide, ball: Ball): void {
     setInterval(() => {
       this.currPoint.x = ball.x;
       this.currPoint.y = ball.y;
 
+      this.dir = this.currPoint.x - this.prevPoint.x;
+
       // Check if ball is moving
-      if (this.prevPoint.x === this.currPoint.x && this.prevPoint.y === this.currPoint.y) {
+      if (this.prevPoint.x === this.currPoint.x && this.prevPoint.y === this.currPoint.y ||
+        this.ballIsOpossite(side)) {
         this.ballIsMoving = false;
         this.targetY = canvas.height/2;
+        this.prevPoint = { ...this.currPoint };
         return;
       }
       else
         this.ballIsMoving = true;
 
-      this.targetY = this.getTargetY(canvas, side);
+      this.targetY = this.getTargetY(canvas, side, ball);
       this.prevPoint = { ...this.currPoint };
     }, 1000);
   }
 
-  private getTargetY(canvas: HTMLCanvasElement, side: PaddleSide): number {
+  private ballIsOpossite(side: PaddleSide): boolean {
+    if (this.dir > 0 && side === PaddleSide.Left)
+      return true;
+    else if (this.dir < 0 && side === PaddleSide.Right)
+      return true;
+
+    return false;
+  }
+
+  private getTargetY(canvas: HTMLCanvasElement, side: PaddleSide, ball: Ball): number {
     let y: number = -1;
     let x: number = 0;
     const maxBounces: number = 10;
     let nbrBounces: number = 0;
     const targetX = this.paddle.side === PaddleSide.Right ? canvas.width : 0;
 
-    // Ball going opossite side, set tartget to center
-    if (side !== this.paddle.side || this.ballIsMoving === false)
-      return canvas.height / 2;
-
-    this.angularCoeficient = this.getAngularCoeficient();
+    this.angularCoeficient = Math.tan(ball.angle);
     this.linearCoeficient = this.getLinearCoeficient({x: this.currPoint.x, y: this.currPoint.y});
 
     y = this.getYatX(targetX);
@@ -135,16 +123,6 @@ export class AI {
     return y;
   }
 
-  private getAngularCoeficient(): number {
-    const deltaX: number = this.currPoint.x - this.prevPoint.x;
-    const deltaY: number = this.currPoint.y - this.prevPoint.y;
-
-    if (deltaX < 0.01)
-      return 0;
-
-    return deltaY / deltaX;
-  }
-
   private getLinearCoeficient(point: Point): number {
     return point.y - (point.x * this.angularCoeficient);
   }
@@ -156,8 +134,30 @@ export class AI {
 
   // x = (y - b) / a;
   private getXatY(y: number): number {
-    if (this.angularCoeficient < 0.01)
+    if (this.angularCoeficient > -0.01 && this.angularCoeficient < 0.01)
       return y;
     return (y - this.linearCoeficient) / this.angularCoeficient;
+  }
+
+  private move(canvas: HTMLCanvasElement): void {
+    const tolerance = this.paddle.height / 8;
+
+    setInterval(() => {
+      const paddleCenter = this.paddle.y + this.paddle.height/2;
+
+      if (paddleCenter > this.targetY - tolerance &&
+        paddleCenter < this.targetY + tolerance) {
+        this.paddle.state.down = false;
+        this.paddle.state.up = false;
+      }
+      else if (paddleCenter > this.targetY + tolerance) {
+        this.paddle.state.down = false;
+        this.paddle.state.up = true;
+      }
+      else if (paddleCenter < this.targetY - tolerance) {
+        this.paddle.state.up = false;
+        this.paddle.state.down = true;
+      }
+    }, 10)
   }
 }
