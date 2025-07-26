@@ -1,5 +1,5 @@
 <div id="dashboard" class="mx-auto max-w-4xl p-4 py-8">
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-5">
     <!-- Pong 1 Player -->
     <a
       href="/pong?mode=ai"
@@ -14,34 +14,65 @@
       </div>
     </a>
 
-    <!-- Pong 2 Players -->
+    <!-- Local Pong 2 Players -->
     <a
       href="/pong?mode=2player"
       data-link="true"
       class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-primary-light) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
     >
       <div class="w-full p-6 text-center">
-        <h2 class="text-xl font-semibold">Pong 2 Players</h2>
+        <h2 class="text-xl font-semibold">Local Pong 2 Players</h2>
         <p class="mt-2 text-sm text-opacity-80">
           Play with a friend
         </p>
       </div>
     </a>
 
-    <!-- Tournament -->
+    <!-- Remote Pong 2 Players -->
     <a
-      href="/tournament"
+      href="/remote-pong"
+      data-link="true"
+      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-primary-light) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
+    >
+      <div class="w-full p-6 text-center">
+        <h2 class="text-xl font-semibold">Remote Pong 2 Players</h2>
+        <p class="mt-2 text-sm text-opacity-80">
+          Play online
+        </p>
+      </div>
+    </a>
+
+    <!-- Local Tournament -->
+    <a
+      href="/local-tournament"
       data-link="true"
       class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-secondary) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
     >
       <div class="w-full p-6 text-center">
         <h2 class="text-xl font-semibold">
-          Tournament
+          Local Tournament
         </h2>
         <p class="mt-2 text-sm text-opacity-80">
-          Compete in tournaments
+          Compete with your friends on the same PC
         </p>
       </div>
     </a>
+
+    <!-- Remote Tournament -->
+    <a
+      href="/remote-tournament"
+      data-link="true"
+      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-secondary) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
+    >
+      <div class="w-full p-6 text-center">
+        <h2 class="text-xl font-semibold">
+          Remote Tournament
+        </h2>
+        <p class="mt-2 text-sm text-opacity-80">
+          Compete in a tournament online
+        </p>
+      </div>
+    </a>
+
   </div>
 </div>
