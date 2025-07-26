@@ -69,7 +69,7 @@ export class Game {
       this.ball.checkPaddleCollision(this.player2.paddle);
     }
     if (this.AI) {
-      // this.AI.paddle.update(this.canvas);
+      this.AI.paddle.update(this.canvas);
       this.ball.checkPaddleCollision(this.AI.paddle);
     }
     this.ball.checkCeilingFloorCollision(this.canvas);
