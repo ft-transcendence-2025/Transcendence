@@ -1,3 +1,7 @@
+await owner.sendTransaction({ to: "0xe78d32C27B54d317dD5b8ACE674d3c8B6D7B7a05", value: ethers.parseEther("0.1") });
+ethers.getSigners();
+const [owner,  feeCollector, operator] = await 
+const myContract = await ethers.getContractAt("CounterTest","0x52C84043CD9c865236f11d9Fc9F56aa003c1f922")
 await myContract.getMatchCount()
 );
   1625003600  // endTime (timestamp)
