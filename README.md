@@ -1,1 +1,1 @@
-Node modules and compiled .js excluded
+Pong Game
