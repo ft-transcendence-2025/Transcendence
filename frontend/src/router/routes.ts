@@ -5,6 +5,7 @@ import { renderUserList } from "../views/userList.js";
 import { renderDashboard } from "../views/dashboard.js";
 import { renderPong } from "../views/localPong.js";
 import { renderTournament } from "../views/localTournament.js";
+import { renderUserProfile } from "../views/userProfile.js";
 
 interface Route {
   path: string;
@@ -14,6 +15,7 @@ interface Route {
 export const routes: Route[] = [
   { path: "/", action: renderHome },
   { path: "/users", action: renderUserList },
+  { path: "/profile", action: renderUserProfile },
   { path: "/register", action: openRegisterModal },
   { path: "/login", action: openLoginModal },
   { path: "/dashboard", action: renderDashboard },
