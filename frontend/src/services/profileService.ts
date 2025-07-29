@@ -1,23 +1,51 @@
-const BASE_URL = "https://localhost:5000/api/profile";
-// import axios from "axios";
-// import dotenv from 'dotenv';
+const BASE_URL = "https://localhost:5000/api/profiles";
+import { request, getHeaders } from "../utils/api.js";
 
-// dotenv.config({
-// 	path: './.env'
-// });
+export interface UserProfile {
+  id: string;
+  userUsername: string;
+  status: "ONLINE" | "OFFLINE" | "IN_GAME";
+  bio?: string;
+  gender?: "MALE" | "FEMALE" | "OTHER";
+  nickName?: string;
+  firstName?: string;
+  lastName?: string;
+  language?: "ENGLISH" | "PORTUGUESE";
+  createdAt: string;
+  updatedAt: string;
+}
 
-// const BASE_URL = process.env.NODE_ENV == "production" ? "http://user-management:3000/profiles" : "http://localhost:3000/profiles";
+export interface CreateProfileRequest {
+  bio?: string;
+  gender?: "MALE" | "FEMALE" | "OTHER";
+  nickName?: string;
+  firstName?: string;
+  lastName?: string;
+  language?: "ENGLISH" | "PORTUGUESE";
+}
 
-// const BASE_URL =
-//   window.location.hostname === "localhost"
-//     ? "http://localhost:3000/profiles"
-//     : "http://user-management:3000/profiles";
-//
-// export const createProfile = (username: string, body: any) =>
-//   axios.post(`${BASE_URL}/${username}`, body);
-// export const getProfileByUsername = (username: string) =>
-//   axios.get(`${BASE_URL}/${username}`);
-// export const updateProfile = (username: string, body: any) =>
-//   axios.put(`${BASE_URL}/${username}`, body);
-// export const deleteProfile = (username: string) =>
-//   axios.delete(`${BASE_URL}/${username}`);
+// Profile API functions
+export const createProfile = async (
+  username: string,
+  profileData: CreateProfileRequest,
+): Promise<UserProfile> => {
+  return request<UserProfile>(`${BASE_URL}/${username}`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(profileData),
+  });
+};
+
+export const getProfileByUsername = async (
+  username: string,
+): Promise<UserProfile> => {
+  return request<UserProfile>(`${BASE_URL}/${username}`, {
+    method: "GET",
+    headers: getHeaders(),
+  });
+};
+
+// Avatar has a separate path /profiles/:username/avatar
+export const getUserAvatar = (username: string): string => {
+  return `${BASE_URL}/${username}/avatar`;
+};

@@ -1,0 +1,176 @@
+<div id="user-profile" class="mx-auto max-w-2xl p-4">
+  <h2 class="mb-6 text-center text-3xl font-bold">User Profile</h2>
+
+  <!-- Success/Error Messages -->
+  <div
+    id="success-message"
+    class="mb-4 hidden rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700"
+  ></div>
+  <div
+    id="error-message"
+    class="mb-4 hidden rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+  ></div>
+
+  <!-- Profile View (shown when profile already has been created) -->
+  <div id="profile-view" class="hidden rounded-lg bg-white p-6 shadow-md">
+    <div class="flex flex-col items-center space-y-6">
+      <!-- Avatar Section -->
+      <div class="flex flex-col items-center">
+        <img
+          id="profile-avatar"    
+          alt="Profile Avatar"
+          class="h-24 w-24 rounded-full border-4 border-(--color-primary-light) object-cover"
+        />
+        <button
+          id="change-avatar-btn"
+          class="mt-2 rounded bg-(--color-secondary) px-3 py-1 text-sm hover:bg-(--color-secondary-light)"
+        >
+          Change Avatar
+        </button>
+      </div>
+
+      <!-- Profile Information -->
+      <div class="w-full space-y-4">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Username</label
+            >
+            <p id="display-username" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Nickname</label
+            >
+            <p id="display-nickname" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >First Name</label
+            >
+            <p id="display-firstname" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Last Name</label
+            >
+            <p id="display-lastname" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Gender</label
+            >
+            <p id="display-gender" class="mt-1 text-gray-900">-</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Status</label
+            >
+            <p id="display-status" class="mt-1 text-gray-900">-</p>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700">Bio</label>
+          <p id="display-bio" class="mt-1 text-gray-900">-</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex space-x-4">
+        <button
+          id="edit-profile-btn"
+          class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
+        >
+          Edit Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Profile Form (shown when no profile exists) -->
+  <div
+    id="create-profile-form"
+    class="hidden rounded-lg bg-white p-6 shadow-md"
+  >
+    <h3 class="mb-4 text-xl font-semibold">Create Your Profile</h3>
+    <form id="create-profile-form-element" class="space-y-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label for="nickName" class="block text-sm font-medium text-gray-700">
+            Nickname
+          </label>
+          <input
+            type="text"
+            name="nickName"
+            id="nickName"
+            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            placeholder="Your nickname"
+          />
+        </div>
+        <div>
+          <label
+            for="firstName"
+            class="block text-sm font-medium text-gray-700"
+          >
+            First Name
+          </label>
+          <input
+            type="text"
+            name="firstName"
+            id="firstName"
+            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            placeholder="Your first name"
+          />
+        </div>
+        <div>
+          <label for="lastName" class="block text-sm font-medium text-gray-700">
+            Last Name
+          </label>
+          <input
+            type="text"
+            name="lastName"
+            id="lastName"
+            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            placeholder="Your last name"
+          />
+        </div>
+        <div>
+          <label for="gender" class="block text-sm font-medium text-gray-700">
+            Gender
+          </label>
+          <select
+            name="gender"
+            id="gender"
+            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+          >
+            <option value="">Select gender</option>
+            <option value="MALE">Male</option>
+            <option value="FEMALE">Female</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="bio" class="block text-sm font-medium text-gray-700">
+          Bio
+        </label>
+        <textarea
+          name="bio"
+          id="bio"
+          rows="3"
+          class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+          placeholder="Tell us about yourself..."
+        ></textarea>
+      </div>
+      <div class="flex justify-center">
+        <button
+          type="submit"
+          class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
+        >
+          Create Profile
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

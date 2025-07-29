@@ -9,15 +9,6 @@ export interface User {
   createdAt: string;
 }
 
-export interface LoginResponse {
-  token: string;
-  user: {
-    id: number;
-    username: string;
-    email: string;
-  };
-}
-
 // API functions
 export const getUsers = () =>
   request<User[]>(`${BASE_URL}/`, {
