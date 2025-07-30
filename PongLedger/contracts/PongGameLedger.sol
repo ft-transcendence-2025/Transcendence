@@ -23,7 +23,6 @@ contract PongGameLedger is Ownable{
         bool    exists;
     }
 
-
     /// @notice Mapping to store matches: tournamentId => matchId => matchData
     mapping(uint256 tournamentId => mapping (uint256 matchId => Match matchData)) public matches;
     
@@ -42,20 +41,27 @@ contract PongGameLedger is Ownable{
         uint256 startTime,
         uint256 endTime
     );
-
    
+    /// @notice Structure helps associate a PlayerId with its matches
+    struct MatchList{
+        uint256 tournamentId;
+        uint256 matchId;
+    }
+
+    /// @notice Mapping association playerId => array of match
+    mapping(uint256 playerId => MatchList[] matchList) public matchesByPlayer;
 
     /// @notice Initializes the contract with the owner (msg.sender)
     constructor() Ownable(msg.sender) {}
 
 
     //Possible errors, to communicate off-chain.
-    error MatchAlreadyExists(uint256 tournamentId, uint256 matchId);
     error InvalidPlayers();
     error InvalidWinner(uint256 winner);
     error InvalidTimeStamps();
     error MatchDoesNotExist(uint256 matchId);
     error TournamentDoesNotHaveMatches(uint256 tournamentId);
+    error PlayerDoesNotHaveMatches(uint256 playerId);
 
     /// @notice This contract manages tournament matches with creation functionality
     function newMatch(
@@ -73,8 +79,6 @@ contract PongGameLedger is Ownable{
         if(startTime > endTime) revert InvalidTimeStamps();
 
         uint256 matchId = matchCountPerTournament[tournamentId];
-        if (matches[tournamentId][matchId].exists) revert MatchAlreadyExists(tournamentId, matchId);
-
         //Adding the data from the struct into the mapping.
         matches[tournamentId][matchId] = Match(
             tournamentId,
@@ -88,13 +92,21 @@ contract PongGameLedger is Ownable{
             endTime,
             true
         );
+
+        // Adding the new match into the match list by player.
+        MatchList memory newMatchData = MatchList({
+            tournamentId: tournamentId,
+            matchId: matchId
+        });
+        matchesByPlayer[player1].push(newMatchData);
+        matchesByPlayer[player2].push(newMatchData);
         matchCountPerTournament[tournamentId]++;
 
         emit MatchCreated(tournamentId, matchId, player1, player2, score1, score2, winner, startTime, endTime);
     }
 
     /// @notice Returns the number of matches for a specific tournament
-    function getMatchCount(uint256 tournamentId) public view returns (uint256 matchCount) {
+    function getMatchCountPerTournament(uint256 tournamentId) public view returns (uint256 matchCount) {
         return matchCountPerTournament[tournamentId];
     }
 
@@ -129,8 +141,8 @@ contract PongGameLedger is Ownable{
 
     /// @notice This function returns an array with all matches from a tournament.
     /// @return An array will all Match structs from the tournamentId.
-    /// @dev Future version it can have a pagination feature to be more gas efficient.
-    function getMatchesForTournament(uint256 tournamentId)
+    /// @dev Future versions it can have a pagination feature to be more gas efficient.
+    function getMatchesByTournament(uint256 tournamentId)
         public view returns (Match[] memory){
 
             uint256 totalMatches = matchCountPerTournament[tournamentId];
@@ -140,6 +152,21 @@ contract PongGameLedger is Ownable{
                 result[i] = matches[tournamentId][i];
             }
             return result;
+        }
+
+    /// @notice This function returns an array with all matches from a player
+    /// @dev Future versions it can have a pagination feature to be more gas efficient
+    function getMatchesByPlayer(uint playerId)
+        public view returns (Match[] memory) {
+            uint256 totalMatches = matchesByPlayer[playerId].length;
+            if (totalMatches == 0) revert PlayerDoesNotHaveMatches(playerId);
+            Match[] memory result = new Match[](totalMatches);
+            for (uint256 i = 0; i < totalMatches; i++){
+                MatchList memory matchList = matchesByPlayer[playerId][i];
+                result[i] = matches[matchList.tournamentId][matchList.matchId];
+            }
+            return result;
+
         }
 
 }

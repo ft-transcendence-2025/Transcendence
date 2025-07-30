@@ -1,0 +1,38 @@
+services:
+  blockchain:
+    build:
+      context: ./srcs/blockchain
+      dockerfile: dockerfile
+    image: blockchain
+    container_name: blockchain
+    restart: unless-stopped
+    networks:
+      - ledgerNetwork
+    expose:
+      - "9650" #9650:9650 to allow external connections
+    env_file:
+      - ./.env
+    volumes:
+      - blockchain:/var/lib/avalanche
+      - $(DATA_DIR)/logs/avalanche:/var/log/avalanche
+    secrets:
+      - primary_key
+      - contract_address
+
+secrets:
+  primary_key:
+    file: ./secrets/primary_key.txt
+  contract_address:
+    file: ./secrets/contract_address.txt
+
+volumes:
+  blockchain:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: $(DATA_DIR)/blockchain
+
+networks:
+  ledgerNetwork:
+    driver: bridge #check to allow other types of connections.
