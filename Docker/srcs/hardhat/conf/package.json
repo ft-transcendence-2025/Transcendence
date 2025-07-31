@@ -1,5 +1,5 @@
 {
-  "name": "ponggameledger",
+  "name": "app",
   "version": "1.0.0",
   "description": "Smart contract with Web3 frontend",
   "main": "server.js",
