@@ -1,0 +1,82 @@
+<div id="tournament-tree" class="mx-auto max-w-6xl p-4">
+  <h2 class="mb-8 text-center text-3xl font-bold">Tournament Tree</h2>
+
+  <!-- Tournament Layout -->
+  <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+    
+    <!-- Semi-Finals Column -->
+    <div class="space-y-6">
+      <!-- Game 1 -->
+      <div class="rounded-lg border-2 border-(--color-primary-light) bg-white p-4 shadow-md">
+        <div class="mb-2 text-center text-sm font-bold text-gray-600">Game 1</div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between rounded bg-gray-50 p-3">
+            <span class="font-medium">Player 1</span>
+          </div>
+          <div class="text-center text-xs text-gray-500">VS</div>
+          <div class="flex items-center justify-between rounded bg-gray-50 p-3">
+            <span class="font-medium">Player 2</span>
+          </div>
+        </div>
+        <div class="mt-3 text-center">
+          <button class="rounded bg-(--color-secondary) px-4 py-2 text-sm font-medium hover:bg-(--color-secondary-light)">
+            Start Game
+          </button>
+        </div>
+      </div>
+
+      <!-- Game 2 -->
+      <div class="rounded-lg border-2 border-(--color-primary-light) bg-white p-4 shadow-md">
+        <div class="mb-2 text-center text-sm font-bold text-gray-600">Game 2</div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between rounded bg-gray-50 p-3">
+            <span class="font-medium">Player 3</span>
+          </div>
+          <div class="text-center text-xs text-gray-500">VS</div>
+          <div class="flex items-center justify-between rounded bg-gray-50 p-3">
+            <span class="font-medium">Player 4</span>
+          </div>
+        </div>
+        <div class="mt-3 text-center">
+          <button class="rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500" disabled>
+            Waiting...
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Column -->
+    <div class="space-y-6">
+      <!-- Final Game -->
+      <div class="rounded-lg border-2 border-(--color-accent) bg-white p-4 shadow-md">
+        <div class="mb-2 text-center text-sm font-bold text-gray-600">Final Game</div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between rounded bg-gray-50 p-3">
+            <span class="font-medium text-gray-400">Winner Game 1</span>
+          </div>
+          <div class="text-center text-xs text-gray-500">VS</div>
+          <div class="flex items-center justify-between rounded bg-gray-50 p-3">
+            <span class="font-medium text-gray-400">Winner Game 2</span>
+          </div>
+        </div>
+        <div class="mt-3 text-center">
+          <button class="rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500" disabled>
+            Waiting...
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Winner Column -->
+    <div class="space-y-6">  
+      <!-- Winner Display -->
+      <div class="rounded-lg border-2 border-(--color-accent) bg-(--color-secondary-light) p-6 shadow-md">
+        <div class="text-center">
+          <i id="trophy-icon" class="fa-regular fa-star"></i>
+          <div class="text-lg font-bold text-gray-400">Tournament Winner</div>
+          <div class="mt-2 text-2xl font-bold text-(--color-accent)">ABC</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
