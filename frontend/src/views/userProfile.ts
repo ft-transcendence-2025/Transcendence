@@ -49,13 +49,15 @@ export async function renderUserProfile(container: HTMLElement | null) {
 function showCreateForm() {
   const createForm = document.getElementById("fill-profile-container");
   const profileView = document.getElementById("profile-view");
-  document.getElementById("fill-profile-title")!.textContent =
-    "Create Your Profile";
-  document.getElementById("save-profile-btn")!.textContent = "Create Profile";
+  const titleElement = document.getElementById("fill-profile-title");
+  const buttonElement = document.getElementById("save-profile-btn");
+
+  if (titleElement) titleElement.textContent = "Create Your Profile";
+  if (buttonElement) buttonElement.textContent = "Create Profile";
 
   // Clear form fields for create mode
   clearFormFields();
-  
+
   // Clear current profile to ensure there are no leftovers from previous session
   currentProfile = null;
 
