@@ -3,9 +3,13 @@ import { getCurrentUsername } from "../utils/jwtUtils.js";
 import {
   getProfileByUsername,
   createProfile,
+  updateProfile,
   getUserAvatar,
   CreateProfileRequest,
 } from "../services/profileService.js";
+
+// Store profile data for reuse
+let currentProfile: any = null;
 
 export async function renderUserProfile(container: HTMLElement | null) {
   if (!container) return;
@@ -23,7 +27,7 @@ export async function renderUserProfile(container: HTMLElement | null) {
   try {
     // Try to get existing profile
     const profile = await getProfileByUsername(username);
-    populateProfileForm(profile);
+    populateProfileView(profile);
     showProfileView();
   } catch (error: any) {
     if (
@@ -43,22 +47,53 @@ export async function renderUserProfile(container: HTMLElement | null) {
 }
 
 function showCreateForm() {
-  const createForm = document.getElementById("create-profile-container");
+  const createForm = document.getElementById("fill-profile-container");
   const profileView = document.getElementById("profile-view");
+  document.getElementById("fill-profile-title")!.textContent =
+    "Create Your Profile";
+  document.getElementById("save-profile-btn")!.textContent = "Create Profile";
+
+  // Clear form fields for create mode
+  clearFormFields();
 
   if (createForm) createForm.classList.remove("hidden");
   if (profileView) profileView.classList.add("hidden");
 }
 
+function clearFormFields() {
+  const form = document.getElementById("fill-profile-form") as HTMLFormElement;
+  if (form) {
+    form.reset();
+  }
+}
+
+function showUpdateForm() {
+  const updateForm = document.getElementById("fill-profile-container");
+  const profileView = document.getElementById("profile-view");
+  document.getElementById("fill-profile-title")!.textContent =
+    "Update Your Profile";
+  document.getElementById("save-profile-btn")!.textContent = "Update Profile";
+
+  // Use stored profile data to populate form fields
+  if (currentProfile) {
+    populateFormFields(currentProfile);
+  }
+
+  if (updateForm) updateForm.classList.remove("hidden");
+  if (profileView) profileView.classList.add("hidden");
+}
+
 function showProfileView() {
-  const createForm = document.getElementById("create-profile-container");
+  const fillForm = document.getElementById("fill-profile-container");
   const profileView = document.getElementById("profile-view");
 
-  if (createForm) createForm.classList.add("hidden");
+  if (fillForm) fillForm.classList.add("hidden");
   if (profileView) profileView.classList.remove("hidden");
 }
 
-function populateProfileForm(profile: any) {
+function populateProfileView(profile: any) {
+  currentProfile = profile; // Store for later use
+
   // Set avatar
   const avatarImg = document.getElementById(
     "profile-avatar",
@@ -70,7 +105,7 @@ function populateProfileForm(profile: any) {
     };
   }
 
-  // Populate profile fields
+  // Populate profile display fields
   const fields = [
     { id: "display-username", value: profile.userUsername },
     { id: "display-nickname", value: profile.nickName || "Not set" },
@@ -87,25 +122,50 @@ function populateProfileForm(profile: any) {
   });
 }
 
+function populateFormFields(profile: any) {
+  // Populate form input fields for editing
+  const formFields = [
+    { name: "nickName", value: profile.nickName || "" },
+    { name: "firstName", value: profile.firstName || "" },
+    { name: "lastName", value: profile.lastName || "" },
+    { name: "bio", value: profile.bio || "" },
+    { name: "gender", value: profile.gender || "" },
+  ];
+
+  formFields.forEach((field) => {
+    const element = document.querySelector(`[name="${field.name}"]`) as
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | HTMLSelectElement;
+    if (element) {
+      element.value = field.value;
+    }
+  });
+}
+
 function setupEventListeners(username: string) {
-  // Create profile form submission
-  const createForm = document.getElementById(
-    "create-profile-form",
+  // Profile form submission (handles both create and update)
+  const profileForm = document.getElementById(
+    "fill-profile-form",
   ) as HTMLFormElement;
-  if (createForm) {
-    createForm.addEventListener("submit", async (e) => {
+  if (profileForm) {
+    profileForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      await handleCreateProfile(username);
+
+      // Distinguish between create and update based on currentProfile
+      if (currentProfile) {
+        await handleUpdateProfile(username);
+      } else {
+        await handleCreateProfile(username);
+      }
     });
   }
 
-  // Edit profile button (for future implementation)
+  // Edit profile button
   const editBtn = document.getElementById("edit-profile-btn");
   if (editBtn) {
     editBtn.addEventListener("click", () => {
-      // TODO: Implement profile edit
-      // ...
-      // ...
+      showUpdateForm();
     });
   }
 
@@ -122,9 +182,7 @@ function setupEventListeners(username: string) {
 }
 
 async function handleCreateProfile(username: string) {
-  const form = document.getElementById(
-    "create-profile-form",
-  ) as HTMLFormElement;
+  const form = document.getElementById("fill-profile-form") as HTMLFormElement;
   const formData = new FormData(form);
 
   const profileData: CreateProfileRequest = {
@@ -150,11 +208,48 @@ async function handleCreateProfile(username: string) {
     showSuccessMessage("Profile created successfully!");
 
     // Switch to profile view and populate with new data
-    populateProfileForm(profile);
+    populateProfileView(profile);
     showProfileView();
   } catch (error: any) {
     console.error("Error creating profile:", error);
     showErrorMessage(`Error creating profile: ${error.message}`);
+  }
+}
+
+async function handleUpdateProfile(username: string) {
+  const form = document.getElementById("fill-profile-form") as HTMLFormElement;
+  const formData = new FormData(form);
+  const profileData: Partial<CreateProfileRequest> = {
+    nickName: (formData.get("nickName") as string) || undefined,
+    firstName: (formData.get("firstName") as string) || undefined,
+    lastName: (formData.get("lastName") as string) || undefined,
+    bio: (formData.get("bio") as string) || undefined,
+    gender: (formData.get("gender") as any) || undefined,
+  };
+
+  // Remove empty strings before sending
+  Object.keys(profileData).forEach((key) => {
+    if (profileData[key as keyof CreateProfileRequest] === "") {
+      delete profileData[key as keyof CreateProfileRequest];
+    }
+  });
+
+  try {
+    const profile = await updateProfile(username, profileData);
+    console.log("Profile updated successfully:", profile);
+
+    // Show success message
+    showSuccessMessage("Profile updated successfully!");
+
+    // Fetch the updated profile to ensure we have complete data
+    const updatedProfile = await getProfileByUsername(username);
+
+    // Switch to profile view and populate with fresh data
+    populateProfileView(updatedProfile);
+    showProfileView();
+  } catch (error: any) {
+    console.error("Error updating profile:", error);
+    showErrorMessage(`Error updating profile: ${error.message}`);
   }
 }
 
@@ -172,7 +267,7 @@ function showErrorMessage(message: string) {
   if (errorDiv) {
     errorDiv.textContent = message;
     errorDiv.classList.remove("hidden");
-    setTimeout(() => errorDiv.classList.add("hidden"), 5000);
+    setTimeout(() => errorDiv.classList.add("hidden"), 8000);
   }
 }
 

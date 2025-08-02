@@ -45,6 +45,17 @@ export const getProfileByUsername = async (
   });
 };
 
+export const updateProfile = async (
+  username: string,
+  profileData: Partial<CreateProfileRequest>,
+): Promise<UserProfile> => {
+  return request<UserProfile>(`${BASE_URL}/${username}`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify(profileData),
+  });
+};
+
 // Avatar has a separate path /profiles/:username/avatar
 export const getUserAvatar = (username: string): string => {
   return `${BASE_URL}/${username}/avatar`;
@@ -85,8 +96,8 @@ export const JUNGLE_AVATARS = [
   "sloth.png",
 ];
 
-// Helper function to convert preset avatar to File object for upload
-/* export const getPresetAvatarFile = async (avatarName: string): Promise<File> => {
+// Helper function to convert jungle avatar to File object for upload
+/* export const getJungleAvatarFile = async (avatarName: string): Promise<File> => {
   const response = await fetch(`/assets/avatars/${avatarName}`);
   const blob = await response.blob();
   return new File([blob], avatarName, { type: blob.type });

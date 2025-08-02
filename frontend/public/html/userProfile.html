@@ -19,7 +19,7 @@
         <img
           id="profile-avatar"
           alt="Profile Avatar"
-          class="h-24 w-24 rounded-full border-4 border-(--color-primary-light) object-cover"
+          class="h-24 w-24 rounded-full border-4 border-(--color-primary) object-cover"
         />
         <button
           id="change-avatar-btn"
@@ -81,13 +81,13 @@
     </div>
   </div>
 
-  <!-- Create Profile Form (shown when no profile exists) -->
+  <!-- Create / Edit Profile (dynamic ) -->
   <div
-    id="create-profile-container"
+    id="fill-profile-container"
     class="hidden rounded-lg bg-white p-6 shadow-md"
   >
-    <h3 class="mb-4 text-xl font-semibold">Create Your Profile</h3>
-    <form id="create-profile-form" class="space-y-4">
+    <h3 id="fill-profile-title" class="mb-4 text-xl font-semibold"></h3>
+    <form id="fill-profile-form" class="space-y-4">
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <label for="nickName" class="block text-sm font-medium text-gray-700">
@@ -159,9 +159,9 @@
       <div class="flex justify-center">
         <button
           type="submit"
+          id="save-profile-btn"
           class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
         >
-          Create Profile
         </button>
       </div>
     </form>
