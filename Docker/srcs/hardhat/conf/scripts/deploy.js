@@ -1,50 +1,19 @@
 const hre = require("hardhat"); //package Hardhat R Environment
 
-/*async function main() {
-    const counterTest = await hre.ethers.deployContract("CounterTest");
-    console.log("Deploying counterTest...");
-    await counterTest.waitForDeployment();
-    console.log(`counterTest deployed to: ${counterTest.target}`);
-}*/
-
-/*async function main() {
-    const pongGameLedger = await hre.ethers.deployContract("PongGameLedger");
-    console.log("Deploying PongGameLedger...");
-    await pongGameLedger.waitForDeployment();
-    console.log(`PongGameLedger deployed to: ${pongGameLedger.target}`);
-}
-
-main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-});*/
-
 async function main() {
-  console.log("🚀  Starting contract deployment to Avalanche local network...");
-  //WHAT is the contractFactory?
-  const PongGameLedger = await ethers.getContractFactory("PongGameLedger");
+  console.log("🚀  Deployment Service [INFO]: Starting contract deployment to Avalanche local blockchain...");
+  const pongGameLedger = await hre.ethers.deployContract("PongGameLedger");
 
-  console.log("📦  Deploying contract...");
-  const pongGameLedger = await PongGameLedger.deploy();
+  console.log("📦  Deployment Service [INFO]: Deploying on going...");
   await pongGameLedger.waitForDeployment();
 
-  console.log(`✅  Contract deployed to: ${pongGameLedger.address}`);
-  console.log(`🔗  Transaction hash: ${pongGameLedger.deployTransaction.hash}`);
-  //console.log("PongGameLedger deployed to:", await pongGameLedger.getAddress());
-
-  //Verify deployment
-  console.log("🔍  Verifying deployment...");
-  const deployedCode = await hre.ethers.provider.getCode(pongGameLedger.address);
-  if (deployedCode !== "0x") {
-    console.log("✅  Contract successfully deployed and verified!");
-  } else {
-    console.log("❌  Contract deployment verification failed");
-  }
+  console.log(`✅  Deployment Service [SUCCESS]:PongGameLedger deployed to: ${pongGameLedger.target}`);
+  //console.log(`🔗   Transaction hash: ${pongGameLedger.deployTransaction.hash}`);
 }
 
 main()
   .then(() => process.exit(0))
   .catch((error) => {
-    console.error("❌ Deployment failed:", error);
+    console.error("❌ Deployment Service [ERROR]: Deployment process due to the following error =>: ", error);
     process.exit(1);
   });
