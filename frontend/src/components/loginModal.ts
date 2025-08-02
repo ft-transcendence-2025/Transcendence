@@ -10,7 +10,7 @@ export async function openLoginModal(container: HTMLElement | null = null) {
   if (container) {
     await renderHome(container);
   }
-  
+
   // Inject the modal HTML if it doesn't exist
   if (!document.getElementById("login-modal")) {
     const modalHtml = await loadHtml("/html/loginModal.html");
@@ -23,18 +23,31 @@ export async function openLoginModal(container: HTMLElement | null = null) {
     ".close-button",
   )! as HTMLButtonElement;
 
+  // Helper function to show error messages
+  const showError = (message: string) => {
+    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
+    const errorText = modal.querySelector("#error-text") as HTMLElement;
+    if (errorContainer && errorText) {
+      errorText.textContent = message;
+      errorContainer.classList.remove("hidden");
+    }
+  };
+
+  // Helper function to hide error messages
+  const hideError = () => {
+    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
+    if (errorContainer) {
+      errorContainer.classList.add("hidden");
+    }
+  };
+
   // Add event listener for the form submission
   form.onsubmit = async (e) => {
     e.preventDefault();
+    hideError(); // Clear any previous errors
+
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-
-    // Hide error message if it exists
-    const errorDiv = document.getElementById("login-error");
-    if (errorDiv) {
-      errorDiv.classList.add("hidden");
-      errorDiv.textContent = "";
-    }
 
     try {
       const response = await login(data);
@@ -51,10 +64,12 @@ export async function openLoginModal(container: HTMLElement | null = null) {
       const container = document.getElementById("content");
       navigateTo("/dashboard", container);
     } catch (error) {
-      if (errorDiv) {
-        errorDiv.classList.remove("hidden");
-        errorDiv.textContent = "Login failed. Please check your credentials.";
-      }
+      console.error("Login failed:", error);
+      showError(
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please check your credentials.",
+      );
     }
   };
 
@@ -67,7 +82,22 @@ export async function openLoginModal(container: HTMLElement | null = null) {
 
 function closeModal() {
   const modal = document.getElementById("login-modal");
-  if (modal) modal.style.display = "none";
+  if (modal) {
+    modal.style.display = "none";
+
+    // Clear any error messages when closing (scoped to modal)
+    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
+    if (errorContainer) {
+      errorContainer.classList.add("hidden");
+    }
+
+    // Reset the form
+    const form = modal.querySelector("form");
+    if (form) {
+      form.reset();
+    }
+  }
+
   const container = document.getElementById("content");
   navigateTo("/", container);
 }

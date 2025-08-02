@@ -8,7 +8,7 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
   if (container) {
     await renderHome(container);
   }
-  
+
   // Inject the modal HTML if it doesn't exist
   if (!document.getElementById("register-modal")) {
     const modalHtml = await loadHtml("/html/registerModal.html");
@@ -20,8 +20,8 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
 
   // Helper function to show error messages
   const showError = (message: string) => {
-    const errorContainer = document.getElementById("error-message");
-    const errorText = document.getElementById("error-text");
+    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
+    const errorText = modal.querySelector("#error-text") as HTMLElement;
     if (errorContainer && errorText) {
       errorText.textContent = message;
       errorContainer.classList.remove("hidden");
@@ -30,7 +30,7 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
 
   // Helper function to hide error messages
   const hideError = () => {
-    const errorContainer = document.getElementById("error-message");
+    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
     if (errorContainer) {
       errorContainer.classList.add("hidden");
     }
@@ -38,8 +38,12 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
 
   // Password visibility toggle functionality
   const setupPasswordToggle = (inputId: string, toggleId: string) => {
-    const passwordInput = document.getElementById(inputId) as HTMLInputElement;
-    const toggleButton = document.getElementById(toggleId) as HTMLButtonElement;
+    const passwordInput = modal.querySelector(
+      `#${inputId}`,
+    ) as HTMLInputElement;
+    const toggleButton = modal.querySelector(
+      `#${toggleId}`,
+    ) as HTMLButtonElement;
 
     if (passwordInput && toggleButton) {
       // Show password while mouse is pressed down

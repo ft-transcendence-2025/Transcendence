@@ -49,3 +49,17 @@ export const getProfileByUsername = async (
 export const getUserAvatar = (username: string): string => {
   return `${BASE_URL}/${username}/avatar`;
 };
+
+export const saveUserAvatar = async (
+  username: string,
+  avatarFile: File,
+): Promise<void> => {
+  const formData = new FormData();
+  formData.append("avatar", avatarFile);
+
+  await request(`${BASE_URL}/${username}/avatar`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: formData,
+  });
+}

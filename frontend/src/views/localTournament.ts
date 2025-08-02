@@ -89,4 +89,16 @@ function initializeAvatars() {
       }
     }
   }
+
+  // Add event listener for the "Start Tournament" button
+  const startButton = document.getElementById("start-tournament-button");
+  if (startButton) {
+    startButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      const container = document.getElementById("content");
+      if (container) {
+        navigateTo("/tournament-tree", container);
+      }
+    });
+  }
 }
