@@ -42,7 +42,7 @@ export async function renderUserProfile(container: HTMLElement | null) {
     }
   }
 
-  // Set up event listeners
+  // Set up all view event listeners
   setupEventListeners(username);
 }
 
@@ -55,6 +55,9 @@ function showCreateForm() {
 
   // Clear form fields for create mode
   clearFormFields();
+  
+  // Clear current profile to ensure there are no leftovers from previous session
+  currentProfile = null;
 
   if (createForm) createForm.classList.remove("hidden");
   if (profileView) profileView.classList.add("hidden");
@@ -203,8 +206,6 @@ async function handleCreateProfile(username: string) {
   try {
     const profile = await createProfile(username, profileData);
     console.log("Profile created successfully:", profile);
-
-    // Show success message
     showSuccessMessage("Profile created successfully!");
 
     // Switch to profile view and populate with new data
@@ -237,14 +238,11 @@ async function handleUpdateProfile(username: string) {
   try {
     const profile = await updateProfile(username, profileData);
     console.log("Profile updated successfully:", profile);
-
-    // Show success message
     showSuccessMessage("Profile updated successfully!");
 
-    // Fetch the updated profile to ensure we have complete data
+    // Fetch the updated profile
     const updatedProfile = await getProfileByUsername(username);
 
-    // Switch to profile view and populate with fresh data
     populateProfileView(updatedProfile);
     showProfileView();
   } catch (error: any) {
@@ -341,6 +339,9 @@ function setupAvatarModalEventListeners(username: string) {
   const saveBtn = document.getElementById("save-avatar-btn");
   if (saveBtn) {
     saveBtn.addEventListener("click", () => {
+      // TO DO - save selected avatar to profile
+      // ...
+      // ...
       showSuccessMessage("Avatar selection saved! (Placeholder - no backend)");
       closeAvatarModal();
     });
