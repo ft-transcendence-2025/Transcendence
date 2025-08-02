@@ -45,6 +45,17 @@ export const getProfileByUsername = async (
   });
 };
 
+export const updateProfile = async (
+  username: string,
+  profileData: Partial<CreateProfileRequest>,
+): Promise<UserProfile> => {
+  return request<UserProfile>(`${BASE_URL}/${username}`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify(profileData),
+  });
+};
+
 // Avatar has a separate path /profiles/:username/avatar
 export const getUserAvatar = (username: string): string => {
   return `${BASE_URL}/${username}/avatar`;
@@ -57,9 +68,37 @@ export const saveUserAvatar = async (
   const formData = new FormData();
   formData.append("avatar", avatarFile);
 
+  // Only include Authorization header for file uploads, let browser set Content-Type (for multipart)
+  const headers: Record<string, string> = {};
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   await request(`${BASE_URL}/${username}/avatar`, {
     method: "POST",
-    headers: getHeaders(),
+    headers: headers,
     body: formData,
   });
-}
+};
+
+// Available avatars from assets
+export const JUNGLE_AVATARS = [
+  "bear.png",
+  "cat.png", 
+  "chicken.png",
+  "dog.png",
+  "gorilla.png",
+  "koala.png",
+  "meerkat.png",
+  "panda.png",
+  "rabbit.png",
+  "sloth.png",
+];
+
+// Helper function to convert jungle avatar to File object for upload
+/* export const getJungleAvatarFile = async (avatarName: string): Promise<File> => {
+  const response = await fetch(`/assets/avatars/${avatarName}`);
+  const blob = await response.blob();
+  return new File([blob], avatarName, { type: blob.type });
+}; */

@@ -17,9 +17,9 @@
       <!-- Avatar Section -->
       <div class="flex flex-col items-center">
         <img
-          id="profile-avatar"    
+          id="profile-avatar"
           alt="Profile Avatar"
-          class="h-24 w-24 rounded-full border-4 border-(--color-primary-light) object-cover"
+          class="h-24 w-24 rounded-full border-4 border-(--color-primary) object-cover"
         />
         <button
           id="change-avatar-btn"
@@ -62,13 +62,6 @@
             >
             <p id="display-gender" class="mt-1 text-gray-900">-</p>
           </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700"
-              >Status</label
-            >
-            <p id="display-status" class="mt-1 text-gray-900">-</p>
-          </div>
         </div>
         <div>
           <label class="block text-sm font-semibold text-gray-700">Bio</label>
@@ -88,13 +81,13 @@
     </div>
   </div>
 
-  <!-- Create Profile Form (shown when no profile exists) -->
+  <!-- Create / Edit Profile (dynamic ) -->
   <div
-    id="create-profile-form"
+    id="fill-profile-container"
     class="hidden rounded-lg bg-white p-6 shadow-md"
   >
-    <h3 class="mb-4 text-xl font-semibold">Create Your Profile</h3>
-    <form id="create-profile-form-element" class="space-y-4">
+    <h3 id="fill-profile-title" class="mb-4 text-xl font-semibold"></h3>
+    <form id="fill-profile-form" class="space-y-4">
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
           <label for="nickName" class="block text-sm font-medium text-gray-700">
@@ -166,11 +159,158 @@
       <div class="flex justify-center">
         <button
           type="submit"
+          id="save-profile-btn"
           class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
         >
-          Create Profile
         </button>
       </div>
     </form>
+  </div>
+  <!-- Avatar Selection Modal -->
+  <div
+    id="avatar-modal"
+    class="modal fixed inset-0 z-50 hidden items-center justify-center"
+  >
+    <div
+      class="mx-4 max-w-md rounded-lg border-2 border-(--color-primary) bg-white p-6 shadow-xl"
+    >
+      <h3 class="mb-4 text-xl font-semibold">Choose Avatar</h3>
+
+      <!-- Jungle Avatars -->
+      <div class="mb-6">
+        <div class="grid grid-cols-5 gap-3">
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="bear.png"
+          >
+            <img
+              src="/assets/avatars/bear.png"
+              alt="Bear"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="cat.png"
+          >
+            <img
+              src="/assets/avatars/cat.png"
+              alt="Cat"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="chicken.png"
+          >
+            <img
+              src="/assets/avatars/chicken.png"
+              alt="Chicken"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="dog.png"
+          >
+            <img
+              src="/assets/avatars/dog.png"
+              alt="Dog"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="gorilla.png"
+          >
+            <img
+              src="/assets/avatars/gorilla.png"
+              alt="Gorilla"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="koala.png"
+          >
+            <img
+              src="/assets/avatars/koala.png"
+              alt="Koala"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="meerkat.png"
+          >
+            <img
+              src="/assets/avatars/meerkat.png"
+              alt="Meerkat"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="panda.png"
+          >
+            <img
+              src="/assets/avatars/panda.png"
+              alt="Panda"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="rabbit.png"
+          >
+            <img
+              src="/assets/avatars/rabbit.png"
+              alt="Rabbit"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="sloth.png"
+          >
+            <img
+              src="/assets/avatars/sloth.png"
+              alt="Sloth"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Custom Avatar -->
+      <div class="mb-6">
+        <h4 class="mb-3 text-sm font-medium text-gray-700">
+          Upload Custom Avatar
+        </h4>
+        <input
+          type="file"
+          id="custom-avatar-upload"
+          accept="image/*"
+          class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none"
+        />
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="flex justify-end space-x-3">
+        <button
+          id="cancel-avatar-btn"
+          class="rounded bg-gray-300 px-4 py-2 text-sm hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          id="save-avatar-btn"
+          class="rounded bg-(--color-primary) px-4 py-2 text-sm text-white hover:bg-(--color-primary-dark)"
+          disabled
+        >
+          Save Avatar
+        </button>
+      </div>
+    </div>
   </div>
 </div>
