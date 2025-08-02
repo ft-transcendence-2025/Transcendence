@@ -43,7 +43,7 @@ export async function renderUserProfile(container: HTMLElement | null) {
 }
 
 function showCreateForm() {
-  const createForm = document.getElementById("create-profile-form");
+  const createForm = document.getElementById("create-profile-container");
   const profileView = document.getElementById("profile-view");
 
   if (createForm) createForm.classList.remove("hidden");
@@ -51,7 +51,7 @@ function showCreateForm() {
 }
 
 function showProfileView() {
-  const createForm = document.getElementById("create-profile-form");
+  const createForm = document.getElementById("create-profile-container");
   const profileView = document.getElementById("profile-view");
 
   if (createForm) createForm.classList.add("hidden");
@@ -66,7 +66,7 @@ function populateProfileForm(profile: any) {
   if (avatarImg) {
     avatarImg.src = getUserAvatar(profile.userUsername);
     avatarImg.onerror = () => {
-      avatarImg.src = "/assets/avatars/panda.png"; // Fallback on panda
+      avatarImg.src = "/assets/avatars/panda.png"; // Default on panda
     };
   }
 
@@ -90,7 +90,7 @@ function populateProfileForm(profile: any) {
 function setupEventListeners(username: string) {
   // Create profile form submission
   const createForm = document.getElementById(
-    "create-profile-form-element",
+    "create-profile-form",
   ) as HTMLFormElement;
   if (createForm) {
     createForm.addEventListener("submit", async (e) => {
@@ -108,11 +108,22 @@ function setupEventListeners(username: string) {
       // ...
     });
   }
+
+  // Change avatar button
+  const changeAvatarBtn = document.getElementById("change-avatar-btn");
+  if (changeAvatarBtn) {
+    changeAvatarBtn.addEventListener("click", () => {
+      openAvatarModal();
+    });
+  }
+
+  // Avatar modal event listeners
+  setupAvatarModalEventListeners(username);
 }
 
 async function handleCreateProfile(username: string) {
   const form = document.getElementById(
-    "create-profile-form-element",
+    "create-profile-form",
   ) as HTMLFormElement;
   const formData = new FormData(form);
 
@@ -162,5 +173,91 @@ function showErrorMessage(message: string) {
     errorDiv.textContent = message;
     errorDiv.classList.remove("hidden");
     setTimeout(() => errorDiv.classList.add("hidden"), 5000);
+  }
+}
+
+// Avatar Modal Functions
+let selectedAvatar: string | null = null;
+
+function openAvatarModal() {
+  const modal = document.getElementById("avatar-modal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    selectedAvatar = null;
+    updateSaveButton();
+  }
+}
+
+function closeAvatarModal() {
+  const modal = document.getElementById("avatar-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    selectedAvatar = null;
+    clearAvatarSelections();
+  }
+}
+
+function clearAvatarSelections() {
+  const avatarOptions = document.querySelectorAll(".avatar-option");
+  avatarOptions.forEach((option) => {
+    option.classList.remove("border-(--color-primary)");
+    option.classList.add("border-transparent");
+  });
+}
+
+function updateSaveButton() {
+  const saveBtn = document.getElementById(
+    "save-avatar-btn",
+  ) as HTMLButtonElement;
+  if (saveBtn) {
+    saveBtn.disabled = !selectedAvatar;
+  }
+}
+
+function setupAvatarModalEventListeners(username: string) {
+  // Preset avatar selection
+  const avatarOptions = document.querySelectorAll(".avatar-option");
+  avatarOptions.forEach((option) => {
+    option.addEventListener("click", () => {
+      // Clear previous selections
+      clearAvatarSelections();
+
+      // Select this avatar
+      option.classList.remove("border-transparent");
+      option.classList.add("border-(--color-primary)");
+
+      const avatarName = option.getAttribute("data-avatar");
+      if (avatarName) {
+        selectedAvatar = avatarName;
+        updateSaveButton();
+      }
+    });
+  });
+
+  // Cancel button
+  const cancelBtn = document.getElementById("cancel-avatar-btn");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", closeAvatarModal);
+  }
+
+  // Save button - just close modal for now
+  const saveBtn = document.getElementById("save-avatar-btn");
+  if (saveBtn) {
+    saveBtn.addEventListener("click", () => {
+      showSuccessMessage("Avatar selection saved! (Placeholder - no backend)");
+      closeAvatarModal();
+    });
+  }
+
+  // Close modal when clicking outside
+  const modal = document.getElementById("avatar-modal");
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeAvatarModal();
+      }
+    });
   }
 }
