@@ -14,7 +14,7 @@ RUN git clone --depth 1 --branch v1.13.2 https://github.com/ava-labs/avalanchego
 FROM alpine:3.22
 
 RUN for i in $(seq 1 5); do apk update && break || sleep 5; done \
-    && apk add libc6-compat curl bash\
+    && apk add libc6-compat curl bash netcat-openbsd\
     && rm -rf /var/cache/apk/* \
     && echo 'export SHELL=/bin/bash' >> /etc/profile \
     && echo 'export SHELL=/bin/bash' >> /root/.profile

@@ -6,7 +6,7 @@ echo "ℹ️  Hardhat Service [INFO]: Trying to connect with the local network..
 response=$(curl -s -X POST \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
-  http://172.18.0.2:9650/ext/bc/C/rpc)
+  http://172.18.0.2:9650/ext/bc/C/rpc) #ESSE IP DEVE VIR DE UMA ENV
 
 if [[ $? -ne 0 ]] || ! echo "$response" | grep -q '"result"'; then
     echo "❌  Hardhat Service [ERROR]: Could not connect to the local network or invalid response."
