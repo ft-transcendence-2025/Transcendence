@@ -9,7 +9,7 @@ module.exports = {
     },
     localhost: {
       url: "http://127.0.0.1:8545",
-      chainId: 1337 //entender isso aqiu
+      chainId: 1337
     },
     avalanche_local: {
       url: "http://avalanche-container:9650/ext/bc/C/rpc", // C-Chain RPC endpoint

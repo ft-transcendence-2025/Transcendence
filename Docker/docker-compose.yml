@@ -1,38 +1,38 @@
 services:
-  blockchain:
+  avalanche:
     build:
-      context: ./srcs/blockchain
-      dockerfile: dockerfile
-    image: blockchain
-    container_name: blockchain
+      context: ./srcs/avalanche
+      dockerfile: Dockerfile
+    image: avalanche
+    container_name: avalanche
     restart: unless-stopped
     networks:
-      - ledgerNetwork
+      - avalanche-hardhat-network #CHANGE LATER
     expose:
-      - "9650" #9650:9650 to allow external connections
-    env_file:
-      - ./.env
-    volumes:
-      - blockchain:/var/lib/avalanche
-      - $(DATA_DIR)/logs/avalanche:/var/log/avalanche
-    secrets:
-      - primary_key
-      - contract_address
+      - "8080" # DO I REALLY NEED TO EXPOSE IT?
+      - "8081" # THE SAME?
+      - "9650"
 
-secrets:
-  primary_key:
-    file: ./secrets/primary_key.txt
-  contract_address:
-    file: ./secrets/contract_address.txt
+    # WHAT CHANGES FOR PORTS?
+    #expose:
+    #  - "9650"
+    #env_file:
+    #  - ./.env
+    #secrets:
+    #  - primary_key
 
-volumes:
-  blockchain:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: $(DATA_DIR)/blockchain
+  hardhat:
+    build:
+      context: ./srcs/hardhat
+      dockerfile: Dockerfile
+    image: hardhat
+    container_name: hardhat
+    restart: unless-stopped
+    networks:
+      - avalanche-hardhat-network
+    #volumes:
+    #  - ./contract_address:/contract_address
 
 networks:
-  ledgerNetwork:
-    driver: bridge #check to allow other types of connections.
+  avalanche-hardhat-network:
+    driver: bridge # connection between container through name CHANGE LATER
