@@ -17,7 +17,7 @@ export class Ball {
   public y: number;
   public angle: number = getRandomAngle();
   public readonly radius: number = 8;
-  private defaultSpeed: number = 6;
+  private defaultSpeed: number = 10;
   public currentSpeed: number = this.defaultSpeed / 2;;
 
   private firstHit: boolean = true;
@@ -75,7 +75,7 @@ export class Ball {
   }
 
   private increaseBallSpeed(): void {
-    const maxSpeed: number = 10;
+    const maxSpeed: number = 100;
     const speedUpTime: number = 5000;
 
     // Every 5 seconds the ball increases speed 5%
@@ -120,13 +120,15 @@ export class Ball {
 
       // Adjust ball position to avoid sticking
       if (paddle.side === PaddleSide.Left) {
-        if (this.x - this.radius < paddle.x) // When the ball passed the paddle or hit the top or bottom
-          return;
+        // if (this.x - this.radius < paddle.x) // When the ball passed the paddle or hit the top or bottom
+        //   return;
+        this.x = paddle.x + paddle.width + this.radius;
         this.angle = clamped * maxBounceAngle;
         this.increaseBallSpeed();
       } else if (paddle.side === PaddleSide.Right) {
-        if (this.x > paddle.x) // When the ball passed the paddle or hit the top or bottom
-          return;
+        // if (this.x > paddle.x) // When the ball passed the paddle or hit the top or bottom
+        //   return;
+        this.x = paddle.x - this.radius;
         this.angle = Math.PI - clamped * maxBounceAngle; // Set angle to PI - bounceAngle (leftward)
         this.increaseBallSpeed();
       }

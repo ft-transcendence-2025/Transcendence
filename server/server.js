@@ -21,4 +21,5 @@ fastify.get('/pong', function (req, reply) {
 fastify.listen({ port: 5000 }, (err, address) => {
   if (err)
     throw err
+  console.log("Listening on: ", address);
 })

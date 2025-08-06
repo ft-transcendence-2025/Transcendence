@@ -7,7 +7,7 @@ export class Paddle {
         this.color = "#5FAD56";
         this.strokeColor = "#396733";
         this.strokeWidth = 0;
-        this.speed = 4;
+        this.speed = 8;
         this.state = {
             up: false,
             down: false,
