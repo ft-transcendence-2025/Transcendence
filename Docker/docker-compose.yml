@@ -22,10 +22,8 @@ services:
     image: hardhat
     container_name: hardhat
     restart: unless-stopped
-    networks:
-      - blockchain-network
-    depends_on:
-      - avalanche
+    env_file:
+      - ./.env
 
 networks:
   blockchain-network:

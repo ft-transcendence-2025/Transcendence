@@ -2,13 +2,14 @@
 set -euo pipefail
 
 # Variables
-NODE_IP="${NODE_IP:-http://172.18.0.2:9650/ext/bc/C/rpc}"
-HARDHAT_NETWORK="${HARDHAT_NETWORK:-avalanche_local_ip}"
+NODE_IP="${NODE_IP:-https://api.avax-test.network/ext/bc/C/rpc}"
+HARDHAT_NETWORK="${HARDHAT_NETWORK:-fuji}"
 MAX_ATTEMPTS=10
 
+echo "ℹ️ℹ️ℹ️ℹ️ℹ️  Hardhat Service [DEBUG]: PRIVATE_KEY is: $PRIVATE_KEY"
 
 # Check connection and retry in failure case
-echo "ℹ️  Hardhat Service [INFO]: Trying to connect with the local network..."
+echo "ℹ️  Hardhat Service [INFO]: Trying to connect with the Avalanche Fuji Testnet network..."
 ATTEMPT=0
 while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
   response=$(curl -s -X POST \
@@ -26,7 +27,7 @@ while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
 done
 
 if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
-  echo "❌  Hardhat Service [ERROR]: Could not connect to the local network after $MAX_ATTEMPTS attempts."
+  echo "❌  Hardhat Service [ERROR]: Could not connect to the Avalanche Fuji Testnet network after $MAX_ATTEMPTS attempts."
   exit 1
 fi
 
@@ -43,11 +44,11 @@ else
     contract_address=$(echo "$deploy_output" | grep "PongGameLedger deployed to:" | awk -F 'deployed to: ' '{print $2}')
     echo "       📍 Contract Address: $contract_address"
 
-    # Saving the contract address in a .txt file
-    mkdir -p contract_address
-    timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
-    echo "$contract_address" > "contract_address/contract_address_${timestamp}.txt"
-    echo "       📄 Contract Address saved to: contract_address/contract_address_${timestamp}.txt"
+    #Saving the contract address in a .txt file
+    # mkdir -p contract_address
+    # timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
+    # echo "$contract_address" > "contract_address/contract_address_${timestamp}.txt"
+    # echo "       📄 Contract Address saved to: contract_address/contract_address_${timestamp}.txt"
 fi
 
 # Keep the container running.
