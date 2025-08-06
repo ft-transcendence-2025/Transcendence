@@ -11,6 +11,11 @@ AVALANCHEGO_PATH="${AVALANCHEGO_PATH:-/usr/local/bin/avalanchego}"
 START_TIME=$(date +%s)
 ATTEMPT=0
 
+# DATA_DIR="${DATA_DIR:-/avalanche-data}"
+#BLOCKCHAIN_SPECS_FILE="blockchain-specs.json"
+#mkdir -p ./avalanche-data/node{1..5}
+# BLOCKCHAIN_SPECS=""
+
 # Cleanup Function: Called on script exit to ensure a gracefull shutdown
 cleanup() {
     echo "ℹ️  AvalancheGo Network Runner [INFO]: Shutting down..."
@@ -21,9 +26,28 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
+# Building node directories to assure data persistency
+# for i in $(seq "$N_NODES"); do
+#     NODE_DIR="$DATA_DIR/node$i"
+#     mkdir -p "$NODE_DIR"
+#     NODE_SPEC="{\"config\": {\"data-dir\": \"$NODE_DIR\"}}"
+
+#     if [ -z "$BLOCKCHAIN_SPECS" ]; then
+#         BLOCKCHAIN_SPECS="$NODE_SPEC"
+#     else
+#         BLOCKCHAIN_SPECS="$BLOCKCHAIN_SPECS,$NODE_SPEC"
+#     fi
+# done
+# BLOCKCHAIN_SPECS="[$BLOCKCHAIN_SPECS]"
+# echo "$BLOCKCHAIN_SPECS" > "$BLOCKCHAIN_SPECS_FILE"
+
+
 # Start the ANR server in the background
 echo "ℹ️  Avalanche Network Runner [INFO]: Starting the blockchain manager..."
-avalanche-network-runner server --log-level "$LOG_LEVEL" --port="$PORT" --grpc-gateway-port="$GRPC_PORT" &
+avalanche-network-runner server \
+    --log-level "$LOG_LEVEL" \
+    --port="$PORT" \
+    --grpc-gateway-port="$GRPC_PORT" &
 SERVER_PID=$!
 
 # Wait for the server to start
@@ -39,14 +63,24 @@ while ! nc -z localhost "${PORT#:}" 2>/dev/null; do
 done
 echo "✅  Avalanche Network Runner [SUCCESS]: Service ready!"
 
+
 # Run the control start command with the correct path inside the container
-echo "ℹ️  AvalancheGo Blockchain Nodes [INFO]: Starting the blockchain..."
-if ! avalanche-network-runner control start --log-level "$LOG_LEVEL" --endpoint "localhost"$PORT"" \
-        --number-of-nodes "$N_NODES" --avalanchego-path "$AVALANCHEGO_PATH"; then
+# echo "ℹ️  AvalancheGo Blockchain Nodes [INFO]: Starting the blockchain..."
+# if [ ! -f "$BLOCKCHAIN_SPECS_FILE" ]; then
+#   echo "❌ blockchain-specs.json not found in $(pwd)"
+#   exit 1
+# fi
+
+if ! avalanche-network-runner control start \
+    --log-level "$LOG_LEVEL" \
+    --endpoint "localhost"$PORT"" \
+    --number-of-nodes "$N_NODES" \
+    --avalanchego-path "$AVALANCHEGO_PATH"; then
     echo "❌  AvalancheGo Blockchain Nodes [ERROR]: Failed to start the blockchain."
     exit 1
 fi
-echo "✅  AvalancheGo Blockchain Nodes [INFO]: Blockchain ready!"
+
+echo "✅  AvalancheGo Blockchain Nodes [SUCCESS]: Blockchain ready!"
 
 # Keep the container running by waiting for the background server process
 wait "$SERVER_PID"

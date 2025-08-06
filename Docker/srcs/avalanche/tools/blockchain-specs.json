@@ -1,0 +1,27 @@
+[
+  {
+    "config": {
+      "data-dir": "./avalanche-data/node1"
+    }
+  },
+  {
+    "config": {
+      "data-dir": "./avalanche-data/node2"
+    }
+  },
+  {
+    "config": {
+      "data-dir": "./avalanche-data/node3"
+    }
+  },
+  {
+    "config": {
+      "data-dir": "./avalanche-data/node4"
+    }
+  },
+  {
+    "config": {
+      "data-dir": "./avalanche-data/node5"
+    }
+  }
+]

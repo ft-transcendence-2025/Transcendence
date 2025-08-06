@@ -7,19 +7,13 @@ services:
     container_name: avalanche
     restart: unless-stopped
     networks:
-      - avalanche-hardhat-network #CHANGE LATER
+      - blockchain-network
     expose:
-      - "8080" # DO I REALLY NEED TO EXPOSE IT?
-      - "8081" # THE SAME?
       - "9650"
-
-    # WHAT CHANGES FOR PORTS?
-    #expose:
-    #  - "9650"
-    #env_file:
-    #  - ./.env
-    #secrets:
-    #  - primary_key
+    env_file:
+      - ./.env
+    volumes:
+      - avalanche-data:/avalanche-data
 
   hardhat:
     build:
@@ -29,10 +23,13 @@ services:
     container_name: hardhat
     restart: unless-stopped
     networks:
-      - avalanche-hardhat-network
-    #volumes:
-    #  - ./contract_address:/contract_address
+      - blockchain-network
+    depends_on:
+      - avalanche
 
 networks:
-  avalanche-hardhat-network:
-    driver: bridge # connection between container through name CHANGE LATER
+  blockchain-network:
+    driver: bridge
+
+volumes:
+  avalanche-data:

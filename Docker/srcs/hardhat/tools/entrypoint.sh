@@ -4,25 +4,34 @@ set -euo pipefail
 # Variables
 NODE_IP="${NODE_IP:-http://172.18.0.2:9650/ext/bc/C/rpc}"
 HARDHAT_NETWORK="${HARDHAT_NETWORK:-avalanche_local_ip}"
+MAX_ATTEMPTS=10
 
-# Check if the hardhat container can connect with the avalanche local node service
+
+# Check connection and retry in failure case
 echo "ℹ️  Hardhat Service [INFO]: Trying to connect with the local network..."
-response=$(curl -s -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
-  --max-time 15 \
-  "$NODE_IP")
+ATTEMPT=0
+while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+  response=$(curl -s -X POST \
+    -H "Content-Type: application/json" \
+    -d '{"jsonrpc":"2.0","method":"eth_chainId","params":[],"id":1}' \
+    --max-time 15 \
+    "$NODE_IP")
+  if [[ $? -eq 0 ]] && echo "$response" | grep -q '"result"'; then
+      echo "✅ Hardhat Service [SUCCESS]: Connection successful."
+      break
+  fi
+  ATTEMPT=$((ATTEMPT + 1))
+  echo "ℹ️  Hardhat Service [INFO]: Attempt $ATTEMPT / $MAX_ATTEMPTS..."
+  sleep 5
+done
 
-if [[ $? -ne 0 ]] || ! echo "$response" | grep -q '"result"'; then
-    echo "❌  Hardhat Service [ERROR]: Could not connect to the local network or invalid response."
-    exit 1
-else
-    echo "✅ Hardhat Service [SUCCESS]: Connection successful."
+if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+  echo "❌  Hardhat Service [ERROR]: Could not connect to the local network after $MAX_ATTEMPTS attempts."
+  exit 1
 fi
 
 # Deploy the contract assuring the correct log message was received
 echo "ℹ️  Hardhat Service [INFO]: Trying to deploy the contract..."
-
 deploy_output=$(npx hardhat run scripts/deploy.js --network "$HARDHAT_NETWORK" 2>&1)
 
 if [[ $? -ne 0 ]]; then

@@ -32,4 +32,8 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 9650 9652 9654 9656 9658 8080 8081
 
+WORKDIR /app
+COPY tools/blockchain-specs.json /app/
+
+
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
