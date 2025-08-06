@@ -57,14 +57,45 @@
           >
             GAME OVER
           </div>
-          <div
+          <p
             id="winner-text"
             class="mt-4 text-xl font-bold text-(--color-primary-dark)"
           >
             Player XXX WINS!
-          </div>
+        </p>
         </div>
       </div>
+
+      <!-- Waiting for player to reconnect Overlay -->
+      <div
+        id="reconnect-overlay"
+        class="absolute flex hidden items-center justify-center"
+      >
+        <div
+          class="rounded-md text-(--color-text-primary) border-2 border-(--color-primary-dark) bg-(--color-background) px-8 py-6 text-center shadow-lg"
+        >
+          <p>
+            <i class="fa-solid fa-spinner animate-spin"></i>
+            Waiting for player to reconnect...&nbsp;
+            <span id="reconnect-counter">30</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Paused game Overlay -->
+      <div
+        id="game-paused"
+        class="absolute hidden flex items-center justify-center"
+      >
+        <div
+          class="text-(--color-text-primary) rounded-md border-2 border-(--color-primary-dark) bg-(--color-background) px-12 py-6 text-center shadow-lg"
+        >
+          <h2 class="text-xl font-semibold mb-4">
+            GAME PAUSED
+          </h3>
+          <p>Press <kbd class="rounded bg-(--color-primary-light) px-2 py-1">P</kbd> to resume</p>
+      </div>
+
     </div>
   </div>
 
@@ -90,33 +121,34 @@
 
       <div class="space-y-3 text-sm">
         <div class="flex space-x-3">
-          <kbd
-            class="rounded bg-(--color-primary-light) px-2 py-1 font-mono text-xs"
+          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
             >↑</kbd
           >
-          <kbd
-            class="rounded bg-(--color-primary-light) px-2 py-1 font-mono text-xs"
+          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
             >↓</kbd
           >
           <span>Move paddle up/down</span>
         </div>
         <div class="flex space-x-3">
-          <kbd
-            class="rounded bg-(--color-primary-light) px-2 py-1 font-mono text-xs"
+          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
             >W</kbd
           >
-          <kbd
-            class="rounded bg-(--color-primary-light) px-2 py-1 font-mono text-xs"
+          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
             >S</kbd
           >
           <span>Alternative controls / player on the left</span>
         </div>
         <div class="flex space-x-3">
-          <kbd
-            class="rounded bg-(--color-primary-light) px-3 py-1 font-mono text-xs"
+          <kbd class="rounded bg-(--color-primary-light) px-3 py-1 text-xs"
             >Space</kbd
           >
           <span>Start the game</span>
+        </div>
+        <div class="flex space-x-3">
+          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
+            >P</kbd
+          >
+          <span>Pause the game</span>
         </div>
         <div class="mt-4 rounded-md bg-(--color-secondary-light) p-3">
           <p class="text-xs text-gray-600">
