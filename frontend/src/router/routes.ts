@@ -3,7 +3,7 @@ import { openLoginModal } from "../components/loginModal.js";
 import { openRegisterModal } from "../components/registerModal.js";
 import { renderUserList } from "../views/userList.js";
 import { renderDashboard } from "../views/dashboard.js";
-import { renderPong } from "../views/localPong.js";
+import { renderPong } from "../views/pong.js";
 import { renderTournament } from "../views/localTournament.js";
 import { renderUserProfile } from "../views/userProfile.js";
 import { renderTournamentTree } from "../views/tournamentTree.js";
@@ -23,4 +23,5 @@ export const routes: Route[] = [
   { path: "/pong", action: renderPong },
   { path: "/local-tournament", action: renderTournament },
   { path: "/tournament-tree", action: renderTournamentTree },
+  { path: "/friends", action: renderUserList} // substitute when friends are implemented
 ];

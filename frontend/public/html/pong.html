@@ -1,8 +1,6 @@
 <div id="pong" class="p-4">
-  <h2 class="mb-6 text-center text-3xl font-bold">Pong Game</h2>
-
   <div
-    class="bg-opacity-80 relative flex flex-col items-center justify-center border-2 border-(--color-primary-light) bg-white p-6 shadow-2xl"
+    class="bg-opacity-80 relative flex flex-col items-center justify-center border-2 border-(--color-primary-light) bg-white p-6"
   >
     <!-- Scoreboard Section -->
     <div
@@ -33,7 +31,13 @@
         <span id="player2-username" class="text-lg font-semibold"></span>
       </div>
     </div>
-
+    <!-- Pong Instructions / Manual -->
+    <button
+      id="instructions-btn"
+      class="absolute top-4 right-4 flex cursor-pointer items-center justify-center rounded-full bg-(--color-primary-light) p-3 shadow-sm transition-colors hover:bg-(--color-primary)"
+    >
+      <i class="fa-solid fa-book"></i>
+    </button>
     <div class="relative flex items-center justify-center">
       <canvas
         id="pong-canvas"
@@ -60,6 +64,74 @@
             Player XXX WINS!
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Instructions Modal -->
+  <div
+    id="instructions-modal"
+    class="modal fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-sm"
+  >
+    <div
+      class="mx-4 max-w-md rounded-lg border-2 border-(--color-primary-dark) bg-white p-6 shadow-xl"
+    >
+      <div class="mb-4 flex items-center justify-between">
+        <h3 class="text-xl font-bold text-(--color-text-primary)">
+          How to Play Pong
+        </h3>
+        <button
+          id="close-instructions-btn"
+          class="text-2xl text-gray-400 hover:text-gray-600"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="space-y-3 text-sm">
+        <div class="flex space-x-3">
+          <kbd
+            class="rounded bg-(--color-primary-light) px-2 py-1 font-mono text-xs"
+            >↑</kbd
+          >
+          <kbd
+            class="rounded bg-(--color-primary-light) px-2 py-1 font-mono text-xs"
+            >↓</kbd
+          >
+          <span>Move paddle up/down</span>
+        </div>
+        <div class="flex space-x-3">
+          <kbd
+            class="rounded bg-(--color-primary-light) px-2 py-1 font-mono text-xs"
+            >W</kbd
+          >
+          <kbd
+            class="rounded bg-(--color-primary-light) px-2 py-1 font-mono text-xs"
+            >S</kbd
+          >
+          <span>Alternative controls / player on the left</span>
+        </div>
+        <div class="flex space-x-3">
+          <kbd
+            class="rounded bg-(--color-primary-light) px-3 py-1 font-mono text-xs"
+            >Space</kbd
+          >
+          <span>Start the game</span>
+        </div>
+        <div class="mt-4 rounded-md bg-(--color-secondary-light) p-3">
+          <p class="text-xs text-gray-600">
+            <strong>Objective:</strong> Score 3 points to win
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex justify-center">
+        <button
+          id="got-it-btn"
+          class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
+        >
+          Got it!
+        </button>
       </div>
     </div>
   </div>
