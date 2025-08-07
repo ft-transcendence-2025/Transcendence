@@ -66,7 +66,8 @@ async function toggleUserMenuSidebar() {
   sidebar = document.createElement("div");
   sidebar.id = "user-menu-sidebar";
   sidebar.className =
-    "fixed top-16 left-0 w-1/5 h-full bg-white shadow-lg z-50";
+    "absolute top-full left-0 w-1/5 min-h-screen bg-white shadow-lg z-50";
+
   // Load userMenu.html content
   try {
     const userMenuHtml = await loadHtml("/html/userMenu.html");
@@ -74,6 +75,14 @@ async function toggleUserMenuSidebar() {
   } catch (error) {
     console.error("Failed to load user menu:", error);
   }
-  // Add to document
-  document.body.appendChild(sidebar);
+
+  // Attach sidebar to the navbar
+  const navbar =
+    document.querySelector("nav") || document.getElementById("navbar");
+  if (navbar) {
+    navbar.style.position = "relative";
+    navbar.appendChild(sidebar);
+  } else {
+    console.error("Navbar element not found");
+  }
 }

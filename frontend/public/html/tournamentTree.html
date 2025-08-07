@@ -11,15 +11,17 @@
         <div class="mb-2 text-center text-sm font-bold text-gray-600">Game 1</div>
         <div class="space-y-2">
           <div class="flex items-center justify-between rounded bg-gray-50 p-3">
-            <span class="font-medium">Player 1</span>
+            <span id="game1-player1" class="font-medium">Player 1</span>
+            <span id="game1-player1-indicator" class="winner-indicator hidden">👑</span>
           </div>
           <div class="text-center text-xs text-gray-500">VS</div>
           <div class="flex items-center justify-between rounded bg-gray-50 p-3">
-            <span class="font-medium">Player 2</span>
+            <span id="game1-player2" class="font-medium">Player 2</span>
+            <span id="game1-player2-indicator" class="winner-indicator hidden">👑</span>
           </div>
         </div>
         <div class="mt-3 text-center">
-          <button class="rounded bg-(--color-secondary) px-4 py-2 text-sm font-medium hover:bg-(--color-secondary-light)">
+          <button class="rounded bg-(--color-secondary) px-4 py-2 text-sm font-medium hover:bg-(--color-secondary-light)" data-game="1" data-state="ready">
             Start Game
           </button>
         </div>
@@ -30,15 +32,17 @@
         <div class="mb-2 text-center text-sm font-bold text-gray-600">Game 2</div>
         <div class="space-y-2">
           <div class="flex items-center justify-between rounded bg-gray-50 p-3">
-            <span class="font-medium">Player 3</span>
+            <span id="game2-player1" class="font-medium">Player 3</span>
+            <span id="game2-player1-indicator" class="winner-indicator hidden">👑</span>
           </div>
           <div class="text-center text-xs text-gray-500">VS</div>
           <div class="flex items-center justify-between rounded bg-gray-50 p-3">
-            <span class="font-medium">Player 4</span>
+            <span id="game2-player2" class="font-medium">Player 4</span>
+            <span id="game2-player2-indicator" class="winner-indicator hidden">👑</span>
           </div>
         </div>
         <div class="mt-3 text-center">
-          <button class="rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500" disabled>
+          <button class="rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500" data-game="2" data-state="waiting" disabled>
             Waiting...
           </button>
         </div>
@@ -52,15 +56,15 @@
         <div class="mb-2 text-center text-sm font-bold text-gray-600">Final Game</div>
         <div class="space-y-2">
           <div class="flex items-center justify-between rounded bg-gray-50 p-3">
-            <span class="font-medium text-gray-400">Winner Game 1</span>
+            <span id="final-player1" class="font-medium text-gray-400">Winner Game 1</span>
           </div>
           <div class="text-center text-xs text-gray-500">VS</div>
           <div class="flex items-center justify-between rounded bg-gray-50 p-3">
-            <span class="font-medium text-gray-400">Winner Game 2</span>
+            <span id="final-player2" class="font-medium text-gray-400">Winner Game 2</span>
           </div>
         </div>
         <div class="mt-3 text-center">
-          <button class="rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500" disabled>
+          <button class="rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500" data-game="final" data-state="waiting" >
             Waiting...
           </button>
         </div>
