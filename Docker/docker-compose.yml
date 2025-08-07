@@ -1,33 +1,19 @@
 services:
   avalanche:
     build:
-      context: ./srcs/avalanche
+      context: ./avalanche
       dockerfile: Dockerfile
     image: avalanche
     container_name: avalanche
     restart: unless-stopped
-    networks:
-      - blockchain-network
-    expose:
-      - "9650"
-    env_file:
-      - ./.env
     volumes:
-      - avalanche-data:/avalanche-data
-
-  hardhat:
-    build:
-      context: ./srcs/hardhat
-      dockerfile: Dockerfile
-    image: hardhat
-    container_name: hardhat
-    restart: unless-stopped
-    env_file:
-      - ./.env
-
-networks:
-  blockchain-network:
-    driver: bridge
+      - avalanche-data:/app/avalanche-data
+    secrets:
+      - avalanche_private_key
+    
+secrets:
+  avalanche_private_key:
+    file: ./secrets/avalanche_private_key.txt
 
 volumes:
   avalanche-data:

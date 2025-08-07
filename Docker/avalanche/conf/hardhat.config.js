@@ -1,5 +1,13 @@
-require("dotenv").config()
+const fs = require("fs");
+require("dotenv").config();
 require("@nomicfoundation/hardhat-toolbox");
+
+let privateKey;
+try {
+  privateKey = fs.readFileSync("/run/secrets/avalanche_private_key", "utf8").trim();
+} catch (err) {
+  privateKey = process.env.PRIVATE_KEY || "";
+}
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -16,7 +24,7 @@ module.exports = {
     fuji: {
       url: "https://api.avax-test.network/ext/bc/C/rpc",
       chainId: 43113,
-      accounts: [process.env.PRIVATE_KEY]
+      accounts: [privateKey]
     }
   },
 };
