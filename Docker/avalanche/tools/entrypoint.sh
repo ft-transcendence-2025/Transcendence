@@ -9,6 +9,7 @@ CONTRACT_FOLDER="${CONTRACT_FOLDER:-avalanche-data/contract_address}"
 
 if [ ! -f /run/secrets/avalanche_private_key ]; then
   echo "❌  Avalanche Service [ERROR]: Secret files are missing (Wallet from Fuji Tesnet address with AVAX funds)."
+  echo "       ⚠️ Guide: <project_root_folder>/secrets/avalanche_private_key.txt"
   exit 1
 fi
 
