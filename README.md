@@ -1,8 +1,6 @@
 # ft_transcendence Blockchain Module
 
 ![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)
-![GitHub stars](https://img.shields.io/github/stars/ft-transcendence-2025/Blockchain.svg)
-![GitHub issues](https://img.shields.io/github/issues/ft-transcendence-2025/Blockchain.svg)
 
 ## Description
 
