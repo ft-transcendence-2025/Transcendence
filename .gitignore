@@ -39,6 +39,7 @@ Thumbs.db
 # Docker-specific (if applicable)
 docker-compose.override.yml
 *.dockerignore
+Docker/secrets/
 
 # Coverage reports (if running tests with coverage)
 coverage/
