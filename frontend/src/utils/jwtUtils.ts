@@ -66,3 +66,29 @@ export function getCurrentUsername(): string | null {
   const user = getCurrentUser();
   return user?.username || null;
 }
+
+/**
+ * Get player's display name (nickname with fallback to username)
+ * This function tries to fetch the nickname from the profile, falls back to username
+ */
+export async function getUserNickname(username?: string): Promise<string> {
+  try {
+    // Use provided username or get current user's username
+    const targetUsername = username || getCurrentUsername();
+    
+    if (!targetUsername) {
+      return "Guest";
+    }
+
+    // Try to get profile to fetch nickname
+    const { getProfileByUsername } = await import("../services/profileService.js");
+    const profile = await getProfileByUsername(targetUsername);
+    
+    // Return nickname if available, otherwise fallback to username
+    return profile.nickName || targetUsername;
+  } catch (error) {
+    // If profile fetch fails, fallback to username or Guest
+    console.warn("Could not fetch profile for display name:", error);
+    return username || getCurrentUsername() || "Guest";
+  }
+}
