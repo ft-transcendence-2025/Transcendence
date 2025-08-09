@@ -15,7 +15,7 @@ export async function renderPong(container: HTMLElement | null) {
 
   // Get the game parameters from URL
   const urlParams = new URLSearchParams(window.location.search);
-  const gameMode = urlParams.get("mode") || "2player"; // "ai" or "2player"
+  const gameMode = urlParams.get("mode") || "2player"; // default to "2player"
 
   // Update the player names based on game mode
   await updatePlayerNames(gameMode);
@@ -60,7 +60,7 @@ async function updatePlayerNames(gameMode: string) {
       player2Element.textContent = "Player 2";
     }
   } else if (gameMode === "remote") {
-    // Remote mode, fetch player names from the server or use defaults
+    // TODO Remote mode, fetch player names from the server
     if (player1Element) {
       player1Element.textContent = "Remote Player 1";
     }
