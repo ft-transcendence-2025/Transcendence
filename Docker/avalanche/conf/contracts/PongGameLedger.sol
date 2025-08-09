@@ -18,8 +18,9 @@ contract PongGameLedger is Ownable{
         uint256 score1;
         uint256 score2;
         uint256 winner;
-        uint256 startTime; // Optional
-        uint256 endTime; // Optional
+        uint256 startTime;
+        uint256 endTime;
+        bool    remoteMatch;
         bool    exists;
     }
 
@@ -39,7 +40,8 @@ contract PongGameLedger is Ownable{
         uint256 score2,
         uint256 winner,
         uint256 startTime,
-        uint256 endTime
+        uint256 endTime,
+        bool    remoteMatch
     );
    
     /// @notice Structure helps associate a PlayerId with its matches
@@ -72,7 +74,8 @@ contract PongGameLedger is Ownable{
         uint256 score2,
         uint256 winner,
         uint256 startTime,
-        uint256 endTime
+        uint256 endTime,
+        bool    remoteMatch
     ) public onlyOwner {
         if(player1 == player2) revert InvalidPlayers();
         if(winner != player1 && winner != player2) revert InvalidWinner(winner);
@@ -90,6 +93,7 @@ contract PongGameLedger is Ownable{
             winner,
             startTime,
             endTime,
+            remoteMatch,
             true
         );
 
@@ -102,7 +106,7 @@ contract PongGameLedger is Ownable{
         matchesByPlayer[player2].push(newMatchData);
         matchCountPerTournament[tournamentId]++;
 
-        emit MatchCreated(tournamentId, matchId, player1, player2, score1, score2, winner, startTime, endTime);
+        emit MatchCreated(tournamentId, matchId, player1, player2, score1, score2, winner, startTime, endTime, remoteMatch);
     }
 
     /// @notice Returns the number of matches for a specific tournament
