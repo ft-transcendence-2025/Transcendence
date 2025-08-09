@@ -93,9 +93,9 @@ Use Hardhat or a Web3 tool to interact with `PongGameLedger`. Below are examples
 - **Example**:
   ```javascript
   const PongGameLedger = await ethers.getContractAt("PongGameLedger", "contract_address_here");
-  await PongGameLedger.newMatch(1, 1001, 1002, 10, 5, 1001, 1630000000, 1630003600);
+  await PongGameLedger.newMatch(1, 1001, 1002, 10, 5, 1001, 1630000000, 1630003600, true);
   ```
-- **Parameters**: `tournamentId`, `player1`, `player2`, `score1`, `score2`, `winner`, `startTime`, `endTime`.
+- **Parameters**: `tournamentId`, `player1`, `player2`, `score1`, `score2`, `winner`, `startTime`, `endTime`, `remoteMatch`.
 
 #### Retrieve Match Data
 - **By Tournament and Match ID**:
