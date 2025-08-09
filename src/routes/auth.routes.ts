@@ -1,5 +1,5 @@
 import { FastifyPluginAsync, FastifyRequest, FastifyReply } from "fastify";
-import * as policy from "../policies/user-policy";
+import * as policy from "../policies/user.policy";
 import { authService } from "../services/User-Management/auth.service";
 
 const authRoutes: FastifyPluginAsync = async (app: any) => {

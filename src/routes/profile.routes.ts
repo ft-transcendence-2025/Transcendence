@@ -1,5 +1,5 @@
 import { FastifyPluginAsync, FastifyRequest, FastifyReply } from "fastify";
-import * as policy from "../policies/user-policy";
+import * as policy from "../policies/user.policy";
 import { profileService } from "../services/User-Management/profile.service";
 
 const profileRoutes: FastifyPluginAsync = async (app: any) => {
