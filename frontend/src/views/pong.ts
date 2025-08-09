@@ -16,7 +16,6 @@ export async function renderPong(container: HTMLElement | null) {
   // Get the game parameters from URL
   const urlParams = new URLSearchParams(window.location.search);
   const gameMode = urlParams.get("mode") || "2player"; // "ai" or "2player"
-  const gameType = urlParams.get("type") || "local"; // "local" or "remote"
 
   // Update the player names based on game mode
   await updatePlayerNames(gameMode);
@@ -27,6 +26,10 @@ export async function renderPong(container: HTMLElement | null) {
     game.gameLoop();
   } else if (gameMode === "2player") {
     const game = new Game();
+    game.gameLoop();
+  } else if (gameMode === "remote") {
+    // TODO: Implement remote game mode
+    const game = new Game(); 
     game.gameLoop();
   }
 }
@@ -55,6 +58,14 @@ async function updatePlayerNames(gameMode: string) {
     }
     if (player2Element) {
       player2Element.textContent = "Player 2";
+    }
+  } else if (gameMode === "remote") {
+    // Remote mode, fetch player names from the server or use defaults
+    if (player1Element) {
+      player1Element.textContent = "Remote Player 1";
+    }
+    if (player2Element) {
+      player2Element.textContent = "Remote Player 2";
     }
   }
 }
