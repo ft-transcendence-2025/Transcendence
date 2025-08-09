@@ -73,14 +73,13 @@ export function getCurrentUsername(): string | null {
  */
 export async function getUserNickname(username?: string): Promise<string> {
   try {
-    // Use provided username or get current user's username
     const targetUsername = username || getCurrentUsername();
     
     if (!targetUsername) {
       return "Guest";
     }
 
-    // Try to get profile to fetch nickname
+    // Get profile to fetch nickname
     const { getProfileByUsername } = await import("../services/profileService.js");
     const profile = await getProfileByUsername(targetUsername);
     
