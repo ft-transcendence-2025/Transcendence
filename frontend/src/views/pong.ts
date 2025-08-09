@@ -1,6 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername } from "../utils/jwtUtils.js";
+import { getUserNickname } from "../utils/jwtUtils.js";
 import { Game } from "./game/Game.js";
 import { GameMode, PaddleSide } from "./game/utils.js";
 
@@ -13,49 +13,49 @@ export async function renderPong(container: HTMLElement | null) {
   // Event listeners to open/close game instructions modal
   renderInstructionsModal();
 
-  // Get the game mode from URL parameters
+  // Get the game parameters from URL
   const urlParams = new URLSearchParams(window.location.search);
-  const gameMode = urlParams.get("mode") || "2player"; // default to 2player mode
+  const gameMode = urlParams.get("mode") || "2player"; // "ai" or "2player"
+  const gameType = urlParams.get("type") || "local"; // "local" or "remote"
 
-  // Update the usernames based on game mode
-  updatePlayerUsernames(gameMode);
+  // Update the player names based on game mode
+  await updatePlayerNames(gameMode);
 
   // Initialize the game based on the selected mode
   if (gameMode === "ai") {
-	const game = new Game(GameMode.PvE, PaddleSide.Left);
-	game.gameLoop();
+    const game = new Game(GameMode.PvE, PaddleSide.Left);
+    game.gameLoop();
   } else if (gameMode === "2player") {
-	const game = new Game();
-	game.gameLoop();
+    const game = new Game();
+    game.gameLoop();
   }
 }
 
 /**
  * Update the player usernames based on game mode
  */
-function updatePlayerUsernames(gameMode: string) {
-  const currentUsername = getCurrentUsername();
-  const player1Element = document.getElementById("player1-username");
-  const player2Element = document.getElementById("player2-username");
+async function updatePlayerNames(gameMode: string) {
+  const player1Element = document.getElementById("player1-name");
+  const player2Element = document.getElementById("player2-name");
 
   if (gameMode === "ai") {
-	// AI vs Player mode
-	if (player1Element) {
-	  player1Element.textContent = "AI";
-	}
-	if (player2Element && currentUsername) {
-	  player2Element.textContent = currentUsername;
-	} else if (player2Element) {
-	  player2Element.textContent = "Guest";
-	}
+    // AI vs Player mode
+    if (player1Element) {
+      player1Element.textContent = "AI";
+    }
+    if (player2Element) {
+      // Fetch nickname asynchronously
+      const currentNickname = await getUserNickname();
+      player2Element.textContent = currentNickname;
+    }
   } else if (gameMode === "2player") {
-	// Player vs Player mode
-	if (player1Element) {
-	  player1Element.textContent = "Player 1";
-	}
-	if (player2Element) {
-	  player2Element.textContent = "Player 2";
-	}
+    // Player vs Player mode
+    if (player1Element) {
+      player1Element.textContent = "Player 1";
+    }
+    if (player2Element) {
+      player2Element.textContent = "Player 2";
+    }
   }
 }
 
