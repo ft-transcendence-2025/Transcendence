@@ -1,9 +1,9 @@
 import { FastifyPluginAsync, FastifyRequest, FastifyReply } from "fastify";
-import * as policy from "../policies/user.policy";
-import { authService } from "../services/User-Management/auth.service";
+import { authService } from "../services/auth.service";
+import proxy from "@fastify/http-proxy";
 
 const authRoutes: FastifyPluginAsync = async (app: any) => {
-  app.post("/login", {}, async (req: FastifyRequest, reply: FastifyReply) => {
+  app.post("/api/auth/login", {}, async (req: FastifyRequest, reply: FastifyReply) => {
     try {
       const response = await authService.login(req.body);
       const user = response.data?.user;
@@ -22,7 +22,7 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
   });
 
   app.post(
-    "/register",
+    "/api/auth/register",
     {},
     async (req: FastifyRequest, reply: FastifyReply) => {
       try {
@@ -41,59 +41,18 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
     }
   );
 
-  app.post(
-    "/:username/2fa/generate",
-    {
-      preHandler: [app.authenticate],
-    },
-    async (req: FastifyRequest, reply: FastifyReply) => {
-      try {
-        const { username } = req.params as { username: string };
-        const response = await authService.generate2FA(username, req.body);
-        reply.send(response.data);
-      } catch (error: any) {
-        reply
-          .status(error.response?.status || 500)
-          .send(error.response?.data || { message: "Internal server error" });
-      }
-    }
-  );
+  const upstream =
+    process.env.NODE_ENV === "production"
+      ? process.env.PROD_AUTH_URL
+      : process.env.DEV_AUTH_URL;
 
-  app.post(
-    "/:username/2fa/enable",
-    {
-      preHandler: [app.authenticate],
-    },
-    async (req: FastifyRequest, reply: FastifyReply) => {
-      try {
-        const { username } = req.params as { username: string };
-        const response = await authService.enable2FA(username, req.body);
-        reply.send(response.data);
-      } catch (error: any) {
-        reply
-          .status(error.response?.status || 500)
-          .send(error.response?.data || { message: "Internal server error" });
-      }
-    }
-  );
 
-  app.post(
-    "/:username/2fa/disable",
-    {
-      preHandler: [app.authenticate],
-    },
-    async (req: FastifyRequest, reply: FastifyReply) => {
-      try {
-        const { username } = req.params as { username: string };
-        const response = await authService.disable2FA(username, req.body);
-        reply.send(response.data);
-      } catch (error: any) {
-        reply
-          .status(error.response?.status || 500)
-          .send(error.response?.data || { message: "Internal server error" });
-      }
-    }
-  );
+  app.register(proxy, {
+    upstream,
+    prefix: "/api/auth/:username",
+    rewritePrefix: "/auth/:username",
+    // preHandler: [app.authenticate], 
+  });
 };
 
 export default authRoutes;

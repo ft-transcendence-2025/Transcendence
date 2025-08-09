@@ -1,4 +1,4 @@
-export const friendshipRules = [
+export const profileRules = [
   {
     match: (method: string, hasUsername: boolean) =>
       method === "GET" && !hasUsername,

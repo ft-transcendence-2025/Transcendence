@@ -21,16 +21,4 @@ export class authService {
   static async register(body: any) {
     return await axios.post(`${this.base_url}/register`, body);
   }
-
-  static async generate2FA(username: string, body: any) {
-    return await axios.post(`${this.base_url}/${username}/2fa/generate`, body);
-  }
-
-  static async enable2FA(username: string, body: any) {
-    return await axios.post(`${this.base_url}/${username}/2fa/enable`, body);
-  }
-
-  static async disable2FA(username: string, body: any) {
-    return await axios.post(`${this.base_url}/${username}/2fa/disable`, body);
-  }
 }

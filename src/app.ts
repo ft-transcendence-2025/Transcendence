@@ -4,8 +4,8 @@ import dotenv from "dotenv";
 import authPlugin from "./plugins/auth";
 import authorizePlugin from "./plugins/authorize";
 import userProxy from "./routes/user.proxy";
-import profileRoutes from "./routes/profile.routes";
-import friendshipRoutes from "./routes/friendship.routes";
+import profileProxy from "./routes/profile.proxy";
+import friendshipProxy from "./routes/friendship.proxy";
 import authRoutes from "./routes/auth.routes";
 import metrics from "fastify-metrics";
 
@@ -35,21 +35,21 @@ const environment = (process.env.NODE_ENV as Environment) || "development";
 
 const app = Fastify({ logger: envToLogger[environment] ?? true });
 
-// 📌 Registro dos plugins
 app.register(authPlugin);
 app.register(authorizePlugin);
 app.register(metrics);
 
 const routes = [
-  { plugin: profileRoutes, prefix: "api/profiles" },
-  { plugin: friendshipRoutes, prefix: "api/friendships" },
-  { plugin: authRoutes, prefix: "api/auth" },
-  { plugin: userProxy/* , prefix: "api/users"  */},
+  { plugin: profileProxy },
+  { plugin: friendshipProxy },
+  { plugin: authRoutes },
+  { plugin: userProxy },
 ];
 
 routes.forEach((route) => {
-  app.register(route.plugin, { prefix: route.prefix });
+  app.register(route.plugin);
 });
+
 // app.register(chatRoutes, { prefix: 'api/chat' });
 // app.register(gameRoutes, { prefix: '/game' });
 
