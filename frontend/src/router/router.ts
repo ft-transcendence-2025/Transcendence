@@ -8,12 +8,19 @@ export async function router(container: HTMLElement | null) {
         };
     });
     let match = potentialMatch.find((potentialMatch) => potentialMatch.isMatch);
+    
     if (!match) {
+        // No route found, show 404
         match = {
-            // mby 404 and return?
-            route: routes[0], // default to the first route (home) if no match found
-            isMatch: true,
+            route: routes.find(r => r.path === "/404")!,
+            isMatch: true
         };
+    }
+
+    // Show navbar by default for all routes
+    const navbar = document.getElementById("navbar");
+    if (navbar) {
+        navbar.classList.remove("hidden");
     }
 
     // Clear the container before rendering new content

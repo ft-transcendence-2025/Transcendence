@@ -43,7 +43,8 @@ frontend/
 │       └── ...              # Other views
 ├── package.json             # Dependencies and scripts
 ├── tsconfig.json           # TypeScript configuration
-└── tailwind.config.js      # Tailwind CSS configuration
+├── tailwind.config.js      # Tailwind CSS configuration
+└── .env                     
 ```
 
 ## Code Organization
