@@ -1,5 +1,7 @@
-const BASE_URL = "https://localhost:5000/api/profiles";
+import { BASE_URL } from "../config/config.js";
 import { request, getHeaders } from "../utils/api.js";
+
+const PROFILE_BASE_URL = `${BASE_URL}/profiles`;
 
 export interface UserProfile {
   id: string;
@@ -29,7 +31,7 @@ export const createProfile = async (
   username: string,
   profileData: CreateProfileRequest,
 ): Promise<UserProfile> => {
-  return request<UserProfile>(`${BASE_URL}/${username}`, {
+  return request<UserProfile>(`${PROFILE_BASE_URL}/${username}`, {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify(profileData),
@@ -39,7 +41,7 @@ export const createProfile = async (
 export const getProfileByUsername = async (
   username: string,
 ): Promise<UserProfile> => {
-  return request<UserProfile>(`${BASE_URL}/${username}`, {
+  return request<UserProfile>(`${PROFILE_BASE_URL}/${username}`, {
     method: "GET",
     headers: getHeaders(),
   });
@@ -49,7 +51,7 @@ export const updateProfile = async (
   username: string,
   profileData: Partial<CreateProfileRequest>,
 ): Promise<UserProfile> => {
-  return request<UserProfile>(`${BASE_URL}/${username}`, {
+  return request<UserProfile>(`${PROFILE_BASE_URL}/${username}`, {
     method: "PUT",
     headers: getHeaders(),
     body: JSON.stringify(profileData),
@@ -58,7 +60,7 @@ export const updateProfile = async (
 
 // Avatar has a separate path /profiles/:username/avatar
 export const getUserAvatar = (username: string): string => {
-  return `${BASE_URL}/${username}/avatar`;
+  return `${PROFILE_BASE_URL}/${username}/avatar`;
 };
 
 export const saveUserAvatar = async (
@@ -75,7 +77,7 @@ export const saveUserAvatar = async (
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  await request(`${BASE_URL}/${username}/avatar`, {
+  await request(`${PROFILE_BASE_URL}/${username}/avatar`, {
     method: "POST",
     headers: headers,
     body: formData,
@@ -85,7 +87,7 @@ export const saveUserAvatar = async (
 // Available avatars from assets
 export const JUNGLE_AVATARS = [
   "bear.png",
-  "cat.png", 
+  "cat.png",
   "chicken.png",
   "dog.png",
   "gorilla.png",
