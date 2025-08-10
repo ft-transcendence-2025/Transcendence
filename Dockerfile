@@ -23,8 +23,15 @@ COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 # Copy SSL certificates
 COPY ./nginx/ssl/ /etc/nginx/ssl/
 
-# Copy frontent build output
+# Copy frontend build output
 COPY --from=builder /app/dist/ /usr/share/nginx/html/
+
+# Copy .env file for the startup script to read
+COPY ./frontend/.env /app/.env
+
+# Copy startup script
+COPY ./generate-env.sh /docker-entrypoint.d/50-generate-env.sh
+RUN chmod +x /docker-entrypoint.d/50-generate-env.sh
 
 EXPOSE 443
 EXPOSE 80
