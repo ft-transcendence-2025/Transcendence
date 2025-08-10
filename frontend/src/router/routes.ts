@@ -1,4 +1,5 @@
 import { renderHome } from "../views/home.js";
+import { render404 } from "../views/404.js";
 import { openLoginModal } from "../components/loginModal.js";
 import { openRegisterModal } from "../components/registerModal.js";
 import { renderUserList } from "../views/userList.js";
@@ -15,6 +16,7 @@ interface Route {
 
 export const routes: Route[] = [
   { path: "/", action: renderHome },
+  { path: "/404", action: render404 },
   { path: "/users", action: renderUserList },
   { path: "/profile", action: renderUserProfile },
   { path: "/register", action: openRegisterModal },
