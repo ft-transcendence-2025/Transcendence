@@ -1,46 +1,30 @@
 {
-  "name": "pong",
+  "name": "server-side-pong",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
-    "//": "--- DEBUG & DEVELOPMENT ---",
     "clean": "rm -rf dist",
-    "format": "prettier --write .",
     "build:ts": "tsc",
-    "build:tw": "npx @tailwindcss/cli -i ./src/app.css -o ./dist/output.css --config ./tailwind.config.js",
-    "copy:assets": "ncp public dist",
-    "build": "npm run clean && npm-run-all --parallel build:* && npm run copy:assets",
+    "build": "npm run clean && npm-run-all --parallel build:*",
     "watch:ts": "tsc --watch",
-    "watch:tw": "tailwindcss -i ./src/app.css -o ./dist/output.css --watch --config ./tailwind.config.js",
-    "watch:assets": "onchange \"public/**/*\" -- npm run copy:assets",
-    "serve": "nodemon server/*.js",
+    "serve": "nodemon dist/server.js",
     "dev": "npm run build && npm-run-all --parallel watch:* serve"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
-    "@fastify/static": "^8.2.0",
-    "fastify": "^5.4.0",
-    "@tailwindcss/cli": "^4.1.11",
-    "dotenv": "^16.5.0",
-    "tailwindcss": "^4.1.9"
+    "fastify": "^5.4.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10",
-    "copyfiles": "^2.4.1",
-    "live-server": "^1.2.0",
+    "@types/node": "^24.2.1",
     "ncp": "^2.0.0",
+    "nodemon": "^3.1.10",
     "npm-run-all": "^4.1.5",
-    "onchange": "^7.1.0",
-    "prettier": "^3.6.2",
-    "prettier-plugin-tailwindcss": "^0.6.13",
-    "typescript": "^5.8.3"
-  },
-  "prettier": {
-    "plugins": [
-      "prettier-plugin-tailwindcss"
-    ]
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
   }
 }
