@@ -1,9 +1,10 @@
-import { Game } from "./game/Game.js";
 export async function routes(fastify) {
     fastify.get('/', (req, reply) => {
-        let game = new Game();
-        let gameState = game.gameState;
-        return { gameState };
+        reply.sendFile('./html/index.html');
+    });
+    fastify.get("/:id", async (req, reply) => {
+        const { id } = req.params;
+        reply.send(id);
     });
 }
 ;

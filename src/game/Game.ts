@@ -2,7 +2,7 @@ import { Canvas, canvas, getRandomAngle, degreesToRadians } from "./utils.js";
 import { Paddle, PaddleSide, PaddlePositionState } from "./Paddle.js";
 import { Ball, BallPositionState } from "./Ball.js";
 
-interface GameState {
+export interface GameState {
   canvas: Canvas,
   paddleLeft: PaddlePositionState,
   paddleRight: PaddlePositionState,

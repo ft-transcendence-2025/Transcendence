@@ -3,9 +3,15 @@ import { Game } from "./game/Game.js";
 
 export async function routes(fastify: FastifyInstance) {
   fastify.get('/', (req, reply) => {
-    let game = new Game();
-    let gameState = game.gameState;
+    reply.sendFile('./html/index.html');
+  });
 
-    return { gameState };
-  })
+  fastify.get<{
+    Params: { id: number }
+  }>("/:id", async (req, reply) => {
+      const { id } = req.params
+      reply.send(id);
+  });
+
 };
+
