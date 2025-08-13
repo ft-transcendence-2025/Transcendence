@@ -8,7 +8,7 @@ import profileProxy from "./routes/profile.proxy";
 import friendshipProxy from "./routes/friendship.proxy";
 import authRoutes from "./routes/auth.routes";
 import metrics from "fastify-metrics";
-
+import fastifyCookie from "@fastify/cookie";
 // import chatRoutes from './routes/chat';
 // import gameRoutes from './routes/game';
 
@@ -34,7 +34,7 @@ type Environment = "development" | "production" | "test";
 const environment = (process.env.NODE_ENV as Environment) || "development";
 
 const app = Fastify({ logger: envToLogger[environment] ?? true });
-
+app.register(fastifyCookie);
 app.register(authPlugin);
 app.register(authorizePlugin);
 app.register(metrics);
