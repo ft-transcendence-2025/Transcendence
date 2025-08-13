@@ -1,8 +1,10 @@
 const ws = new WebSocket("ws://localhost:6969");
 
-const canvas = document.getElementById("pong-canvas");
-const ctx = canvas.getContext("2d");
+let score = document.getElementById("score-area");
+let canvas = document.getElementById("pong-canvas");
+let ctx = canvas.getContext("2d");
 let gameState = {};
+
 
 // Wait for connection to open
 ws.addEventListener('open', () => {
@@ -11,20 +13,24 @@ ws.addEventListener('open', () => {
     gameState = JSON.parse(event.data);
     canvas.width = gameState.canvas.width;
     canvas.height = gameState.canvas.height;
+    requestAnimationFrame(gameLoop);
   });
 
-  requestAnimationFrame(gameLoop);
 });
 
 function gameLoop() {
+  score.innerHTML = `${gameState.score.player1} - ${gameState.score.player2}`;
+
+  ctx.clearRect(0, 0, gameState.canvas.width, gameState.canvas.height);
   renderBall(gameState.ball);
   renderPaddle(gameState.paddleLeft);
   renderPaddle(gameState.paddleRight);
-   
+
   requestAnimationFrame(gameLoop);
 }
 
-async function renderBall(ball) {
+
+function renderBall(ball) {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2); // Full circle
   ctx.fillStyle = "#FE4E00";
@@ -36,7 +42,7 @@ async function renderBall(ball) {
 }
 
 
-async function renderPaddle(paddle) {
+function renderPaddle(paddle) {
   ctx.fillStyle =  "#5FAD56";
   ctx.fillRect(paddle.position.x, paddle.position.y, paddle.attr.width, paddle.attr.height);
   ctx.strokeStyle =  "#396733";
@@ -45,7 +51,6 @@ async function renderPaddle(paddle) {
 }
 
 
-let payLoad = {};
 // Listen for keydown events on the document
 document.addEventListener("keydown", (event) => {
   if ([" ", "s", "S", "w", "W", "ArrowDown", "ArrowUp"].includes(event.key)) {
@@ -53,8 +58,10 @@ document.addEventListener("keydown", (event) => {
   }
   // Send key data to server through WebSocket
   if (ws.readyState === WebSocket.OPEN) {
-    payLoad["type"] = "keydown";
-    payLoad["key"] = event.key;
+    const payLoad = {
+      type: "keydown",
+      key: event.key,
+    };
     ws.send(JSON.stringify(payLoad));
   }
   else {
@@ -65,8 +72,10 @@ document.addEventListener("keydown", (event) => {
 document.addEventListener("keyup", (event) => {
   // Send key data to server through WebSocket
   if (ws.readyState === WebSocket.OPEN) {
-    payLoad["type"] = "keyup";
-    payLoad["key"] = event.key;
+    const payLoad = {
+      type: "keyup",
+      key: event.key,
+    };
     ws.send(JSON.stringify(payLoad));
   }
   else {

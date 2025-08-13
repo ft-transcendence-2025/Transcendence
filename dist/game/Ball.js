@@ -1,6 +1,11 @@
 import { degreesToRadians, getRandomAngle } from "./utils.js";
 import { PaddleSide } from "./Paddle.js";
 ;
+var Player;
+(function (Player) {
+    Player[Player["player1"] = 1] = "player1";
+    Player[Player["player2"] = 2] = "player2";
+})(Player || (Player = {}));
 export class Ball {
     ;
     ;
@@ -13,7 +18,7 @@ export class Ball {
         this.radius = 8;
         this.defaultSpeed = 8;
         this.currentSpeed = this.defaultSpeed / 2;
-        this.firstHit = true;
+        this.firstHit = false;
         this.startTime = performance.now();
         this.isRunning = false;
         this.state = {
@@ -24,15 +29,11 @@ export class Ball {
     }
     // Check if a player scored a point
     pointScored(canvas) {
-        if (this.state.x + this.radius < 0) {
-            // Player 2 Scored
-            return true;
-        }
-        else if (this.state.x - this.radius > canvas.width) {
-            // Player 1 Scored
-            return true;
-        }
-        return false;
+        if (this.state.x + this.radius < 0)
+            return Player.player2;
+        else if (this.state.x - this.radius > canvas.width)
+            return Player.player1;
+        return 0;
     }
     move() {
         if (this.firstHit === false)
@@ -55,6 +56,7 @@ export class Ball {
     reset(canvas) {
         this.startTime = performance.now();
         this.firstHit = false;
+        this.currentSpeed = this.defaultSpeed;
         this.state.x = canvas.width / 2;
         this.state.y = canvas.height / 2;
     }
@@ -83,13 +85,12 @@ export class Ball {
             if (paddle.side === PaddleSide.Left) {
                 this.state.x = paddle.state.position.x + paddle.width + this.radius;
                 this.angle = clamped * maxBounceAngle;
-                this.increaseBallSpeed();
             }
             else if (paddle.side === PaddleSide.Right) {
                 this.state.x = paddle.state.position.x - this.radius;
                 this.angle = Math.PI - clamped * maxBounceAngle; // Set angle to PI - bounceAngle (leftward)
-                this.increaseBallSpeed();
             }
+            this.increaseBallSpeed();
         }
     }
 }

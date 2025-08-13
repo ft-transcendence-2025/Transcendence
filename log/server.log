@@ -3450,3 +3450,1012 @@ src/server.ts(52,15): error TS2345: Argument of type 'GameState' is not assignab
 {"level":30,"time":1755110472422,"pid":87626,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":3.2258110009133816,"msg":"request completed"}
 {"level":30,"time":1755110472463,"pid":87626,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":52692},"msg":"incoming request"}
 {"level":30,"time":1755110472463,"pid":87626,"hostname":"Legion","reqId":"req-a","res":{"statusCode":304},"responseTime":0.522962000221014,"msg":"request completed"}
+{"level":30,"time":1755111991824,"pid":93725,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755111991825,"pid":93725,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112113432,"pid":94055,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112113433,"pid":94055,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112115498,"pid":94097,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112115498,"pid":94097,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112142332,"pid":94253,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112142332,"pid":94253,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112148841,"pid":94328,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112148841,"pid":94328,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112151951,"pid":94365,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112151952,"pid":94365,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112158879,"pid":94432,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112158880,"pid":94432,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112163890,"pid":94467,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112163890,"pid":94467,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112182118,"pid":94619,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112182118,"pid":94619,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112182953,"pid":94650,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112182953,"pid":94650,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112185590,"pid":94697,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112185590,"pid":94697,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112208011,"pid":94813,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112208011,"pid":94813,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112212335,"pid":94894,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112212335,"pid":94894,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112215426,"pid":94950,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112215426,"pid":94950,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112227611,"pid":95015,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112227611,"pid":95015,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112233724,"pid":95053,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112233724,"pid":95053,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112236639,"pid":95101,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112236640,"pid":95101,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112245328,"pid":95158,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112245329,"pid":95158,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112249187,"pid":95192,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112249187,"pid":95192,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112251982,"pid":95226,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112251982,"pid":95226,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112269977,"pid":95350,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112269978,"pid":95350,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112277275,"pid":95405,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112277275,"pid":95405,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112283035,"pid":95446,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112283035,"pid":95446,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112285797,"pid":95480,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112285797,"pid":95480,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112292448,"pid":95520,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112292448,"pid":95520,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112327939,"pid":95806,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112327939,"pid":95806,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112345225,"pid":95971,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112345225,"pid":95971,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112351129,"pid":96088,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112351129,"pid":96088,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112353625,"pid":96157,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112353625,"pid":96157,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112387212,"pid":96303,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112387212,"pid":96303,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112395960,"pid":96423,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112395961,"pid":96423,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112400426,"pid":96459,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112400426,"pid":96459,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112403399,"pid":96509,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112403399,"pid":96509,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112418412,"pid":96614,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112418412,"pid":96614,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112437541,"pid":96736,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112437541,"pid":96736,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112439647,"pid":96768,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112439647,"pid":96768,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112451733,"pid":96813,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112451733,"pid":96813,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112456950,"pid":96864,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112456950,"pid":96864,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112457626,"pid":96893,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112457626,"pid":96893,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112463101,"pid":96944,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112463102,"pid":96944,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112465278,"pid":96991,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112465278,"pid":96991,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112466117,"pid":97020,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112466118,"pid":97020,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112469595,"pid":97085,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112469595,"pid":97085,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112472327,"pid":97119,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112472327,"pid":97119,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112477964,"pid":97119,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":40754},"msg":"incoming request"}
+{"level":30,"time":1755112477974,"pid":97119,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":9.781393002718687,"msg":"request completed"}
+{"level":30,"time":1755112478004,"pid":97119,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":40754},"msg":"incoming request"}
+{"level":30,"time":1755112478005,"pid":97119,"hostname":"Legion","reqId":"req-2","res":{"statusCode":304},"responseTime":1.2382260002195835,"msg":"request completed"}
+{"level":30,"time":1755112478016,"pid":97119,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":40770},"msg":"incoming request"}
+{"level":30,"time":1755112478019,"pid":97119,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":2.861549999564886,"msg":"request completed"}
+{"level":30,"time":1755112494659,"pid":97383,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112494659,"pid":97383,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112505257,"pid":97444,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112505257,"pid":97444,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112507845,"pid":97477,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112507846,"pid":97477,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112508457,"pid":97477,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54264},"msg":"incoming request"}
+{"level":30,"time":1755112508465,"pid":97477,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":7.838220998644829,"msg":"request completed"}
+{"level":30,"time":1755112508484,"pid":97477,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54264},"msg":"incoming request"}
+{"level":30,"time":1755112508485,"pid":97477,"hostname":"Legion","reqId":"req-2","res":{"statusCode":304},"responseTime":1.1600509993731976,"msg":"request completed"}
+{"level":30,"time":1755112508503,"pid":97477,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54292},"msg":"incoming request"}
+{"level":30,"time":1755112508504,"pid":97477,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":1.1088420003652573,"msg":"request completed"}
+{"level":30,"time":1755112528860,"pid":97477,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54264},"msg":"incoming request"}
+{"level":30,"time":1755112528862,"pid":97477,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.86430099979043,"msg":"request completed"}
+{"level":30,"time":1755112528899,"pid":97477,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54264},"msg":"incoming request"}
+{"level":30,"time":1755112528900,"pid":97477,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":0.9371059983968735,"msg":"request completed"}
+{"level":30,"time":1755112528911,"pid":97477,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54292},"msg":"incoming request"}
+{"level":30,"time":1755112528912,"pid":97477,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.7695670016109943,"msg":"request completed"}
+{"level":30,"time":1755112531680,"pid":97477,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54264},"msg":"incoming request"}
+{"level":30,"time":1755112531683,"pid":97477,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":2.0155500024557114,"msg":"request completed"}
+{"level":30,"time":1755112531711,"pid":97477,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54264},"msg":"incoming request"}
+{"level":30,"time":1755112531712,"pid":97477,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":0.8689090013504028,"msg":"request completed"}
+{"level":30,"time":1755112531719,"pid":97477,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54292},"msg":"incoming request"}
+{"level":30,"time":1755112531720,"pid":97477,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":0.9044979996979237,"msg":"request completed"}
+{"level":30,"time":1755112535324,"pid":97477,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54264},"msg":"incoming request"}
+{"level":30,"time":1755112535325,"pid":97477,"hostname":"Legion","reqId":"req-a","res":{"statusCode":304},"responseTime":1.1521020010113716,"msg":"request completed"}
+{"level":30,"time":1755112535360,"pid":97477,"hostname":"Legion","reqId":"req-b","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54264},"msg":"incoming request"}
+{"level":30,"time":1755112535360,"pid":97477,"hostname":"Legion","reqId":"req-b","res":{"statusCode":304},"responseTime":0.7516500018537045,"msg":"request completed"}
+{"level":30,"time":1755112535368,"pid":97477,"hostname":"Legion","reqId":"req-c","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54292},"msg":"incoming request"}
+{"level":30,"time":1755112535369,"pid":97477,"hostname":"Legion","reqId":"req-c","res":{"statusCode":304},"responseTime":1.0059720017015934,"msg":"request completed"}
+{"level":30,"time":1755112569125,"pid":97720,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755112569126,"pid":97720,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755112569196,"pid":97720,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":47028},"msg":"incoming request"}
+{"level":30,"time":1755112569204,"pid":97720,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":7.516743000596762,"msg":"request completed"}
+{"level":30,"time":1755112569223,"pid":97720,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":47028},"msg":"incoming request"}
+{"level":30,"time":1755112569224,"pid":97720,"hostname":"Legion","reqId":"req-2","res":{"statusCode":304},"responseTime":1.1958439983427525,"msg":"request completed"}
+{"level":30,"time":1755112569230,"pid":97720,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":47044},"msg":"incoming request"}
+{"level":30,"time":1755112569231,"pid":97720,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.8502340018749237,"msg":"request completed"}
+{"level":30,"time":1755112646347,"pid":97720,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112646352,"pid":97720,"hostname":"Legion","reqId":"req-4","res":{"statusCode":200},"responseTime":4.4669299982488155,"msg":"request completed"}
+{"level":30,"time":1755112646376,"pid":97720,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112646377,"pid":97720,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":0.9741949997842312,"msg":"request completed"}
+{"level":30,"time":1755112646383,"pid":97720,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51358},"msg":"incoming request"}
+{"level":30,"time":1755112646384,"pid":97720,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.7023379988968372,"msg":"request completed"}
+{"level":30,"time":1755112646964,"pid":97720,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112646966,"pid":97720,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":1.6769299991428852,"msg":"request completed"}
+{"level":30,"time":1755112646993,"pid":97720,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112646994,"pid":97720,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":0.9741320013999939,"msg":"request completed"}
+{"level":30,"time":1755112646999,"pid":97720,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51358},"msg":"incoming request"}
+{"level":30,"time":1755112647000,"pid":97720,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":0.5808309987187386,"msg":"request completed"}
+{"level":30,"time":1755112669794,"pid":97720,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112669797,"pid":97720,"hostname":"Legion","reqId":"req-a","res":{"statusCode":200},"responseTime":2.384705998003483,"msg":"request completed"}
+{"level":30,"time":1755112669827,"pid":97720,"hostname":"Legion","reqId":"req-b","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112669828,"pid":97720,"hostname":"Legion","reqId":"req-b","res":{"statusCode":304},"responseTime":0.8913099989295006,"msg":"request completed"}
+{"level":30,"time":1755112669834,"pid":97720,"hostname":"Legion","reqId":"req-c","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51358},"msg":"incoming request"}
+{"level":30,"time":1755112669834,"pid":97720,"hostname":"Legion","reqId":"req-c","res":{"statusCode":304},"responseTime":0.7371800020337105,"msg":"request completed"}
+{"level":30,"time":1755112670477,"pid":97720,"hostname":"Legion","reqId":"req-d","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112670479,"pid":97720,"hostname":"Legion","reqId":"req-d","res":{"statusCode":200},"responseTime":1.5511519983410835,"msg":"request completed"}
+{"level":30,"time":1755112670506,"pid":97720,"hostname":"Legion","reqId":"req-e","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112670506,"pid":97720,"hostname":"Legion","reqId":"req-e","res":{"statusCode":304},"responseTime":0.68716000020504,"msg":"request completed"}
+{"level":30,"time":1755112670514,"pid":97720,"hostname":"Legion","reqId":"req-f","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51358},"msg":"incoming request"}
+{"level":30,"time":1755112670515,"pid":97720,"hostname":"Legion","reqId":"req-f","res":{"statusCode":304},"responseTime":0.6466930024325848,"msg":"request completed"}
+{"level":30,"time":1755112684176,"pid":97720,"hostname":"Legion","reqId":"req-g","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112684178,"pid":97720,"hostname":"Legion","reqId":"req-g","res":{"statusCode":200},"responseTime":1.52657700330019,"msg":"request completed"}
+{"level":30,"time":1755112684197,"pid":97720,"hostname":"Legion","reqId":"req-h","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51348},"msg":"incoming request"}
+{"level":30,"time":1755112684198,"pid":97720,"hostname":"Legion","reqId":"req-h","res":{"statusCode":304},"responseTime":0.6931330002844334,"msg":"request completed"}
+{"level":30,"time":1755112684203,"pid":97720,"hostname":"Legion","reqId":"req-i","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":51358},"msg":"incoming request"}
+{"level":30,"time":1755112684204,"pid":97720,"hostname":"Legion","reqId":"req-i","res":{"statusCode":304},"responseTime":0.506462998688221,"msg":"request completed"}
+{"level":30,"time":1755112888441,"pid":97720,"hostname":"Legion","reqId":"req-j","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112888443,"pid":97720,"hostname":"Legion","reqId":"req-j","res":{"statusCode":200},"responseTime":1.1521090008318424,"msg":"request completed"}
+{"level":30,"time":1755112888469,"pid":97720,"hostname":"Legion","reqId":"req-k","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112888469,"pid":97720,"hostname":"Legion","reqId":"req-k","res":{"statusCode":304},"responseTime":0.6516240015625954,"msg":"request completed"}
+{"level":30,"time":1755112888482,"pid":97720,"hostname":"Legion","reqId":"req-l","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112888483,"pid":97720,"hostname":"Legion","reqId":"req-l","res":{"statusCode":304},"responseTime":0.8293580003082752,"msg":"request completed"}
+{"level":30,"time":1755112888815,"pid":97720,"hostname":"Legion","reqId":"req-m","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112888817,"pid":97720,"hostname":"Legion","reqId":"req-m","res":{"statusCode":304},"responseTime":1.5193819999694824,"msg":"request completed"}
+{"level":30,"time":1755112888841,"pid":97720,"hostname":"Legion","reqId":"req-n","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112888842,"pid":97720,"hostname":"Legion","reqId":"req-n","res":{"statusCode":304},"responseTime":0.4819680005311966,"msg":"request completed"}
+{"level":30,"time":1755112888847,"pid":97720,"hostname":"Legion","reqId":"req-o","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112888848,"pid":97720,"hostname":"Legion","reqId":"req-o","res":{"statusCode":304},"responseTime":0.5247819982469082,"msg":"request completed"}
+{"level":30,"time":1755112906756,"pid":97720,"hostname":"Legion","reqId":"req-p","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112906758,"pid":97720,"hostname":"Legion","reqId":"req-p","res":{"statusCode":200},"responseTime":1.242738999426365,"msg":"request completed"}
+{"level":30,"time":1755112906791,"pid":97720,"hostname":"Legion","reqId":"req-q","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112906791,"pid":97720,"hostname":"Legion","reqId":"req-q","res":{"statusCode":304},"responseTime":0.410046998411417,"msg":"request completed"}
+{"level":30,"time":1755112906799,"pid":97720,"hostname":"Legion","reqId":"req-r","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112906800,"pid":97720,"hostname":"Legion","reqId":"req-r","res":{"statusCode":304},"responseTime":0.3920559994876385,"msg":"request completed"}
+{"level":30,"time":1755112907112,"pid":97720,"hostname":"Legion","reqId":"req-s","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112907113,"pid":97720,"hostname":"Legion","reqId":"req-s","res":{"statusCode":200},"responseTime":0.9847269989550114,"msg":"request completed"}
+{"level":30,"time":1755112907143,"pid":97720,"hostname":"Legion","reqId":"req-t","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112907143,"pid":97720,"hostname":"Legion","reqId":"req-t","res":{"statusCode":304},"responseTime":0.7958990000188351,"msg":"request completed"}
+{"level":30,"time":1755112907154,"pid":97720,"hostname":"Legion","reqId":"req-u","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112907154,"pid":97720,"hostname":"Legion","reqId":"req-u","res":{"statusCode":304},"responseTime":0.4133870005607605,"msg":"request completed"}
+{"level":30,"time":1755112907319,"pid":97720,"hostname":"Legion","reqId":"req-v","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112907320,"pid":97720,"hostname":"Legion","reqId":"req-v","res":{"statusCode":304},"responseTime":0.7877500019967556,"msg":"request completed"}
+{"level":30,"time":1755112907344,"pid":97720,"hostname":"Legion","reqId":"req-w","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112907344,"pid":97720,"hostname":"Legion","reqId":"req-w","res":{"statusCode":304},"responseTime":0.5060399994254112,"msg":"request completed"}
+{"level":30,"time":1755112907350,"pid":97720,"hostname":"Legion","reqId":"req-x","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112907351,"pid":97720,"hostname":"Legion","reqId":"req-x","res":{"statusCode":304},"responseTime":0.4693179987370968,"msg":"request completed"}
+{"level":30,"time":1755112907532,"pid":97720,"hostname":"Legion","reqId":"req-y","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112907533,"pid":97720,"hostname":"Legion","reqId":"req-y","res":{"statusCode":304},"responseTime":1.2595940008759499,"msg":"request completed"}
+{"level":30,"time":1755112907560,"pid":97720,"hostname":"Legion","reqId":"req-z","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112907560,"pid":97720,"hostname":"Legion","reqId":"req-z","res":{"statusCode":304},"responseTime":0.5009780004620552,"msg":"request completed"}
+{"level":30,"time":1755112907565,"pid":97720,"hostname":"Legion","reqId":"req-10","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112907565,"pid":97720,"hostname":"Legion","reqId":"req-10","res":{"statusCode":304},"responseTime":0.43883799761533737,"msg":"request completed"}
+{"level":30,"time":1755112915527,"pid":97720,"hostname":"Legion","reqId":"req-11","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112915527,"pid":97720,"hostname":"Legion","reqId":"req-11","res":{"statusCode":200},"responseTime":0.6212820000946522,"msg":"request completed"}
+{"level":30,"time":1755112915550,"pid":97720,"hostname":"Legion","reqId":"req-12","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112915550,"pid":97720,"hostname":"Legion","reqId":"req-12","res":{"statusCode":304},"responseTime":0.5326360017061234,"msg":"request completed"}
+{"level":30,"time":1755112915556,"pid":97720,"hostname":"Legion","reqId":"req-13","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112915557,"pid":97720,"hostname":"Legion","reqId":"req-13","res":{"statusCode":304},"responseTime":0.5438989996910095,"msg":"request completed"}
+{"level":30,"time":1755112915926,"pid":97720,"hostname":"Legion","reqId":"req-14","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112915928,"pid":97720,"hostname":"Legion","reqId":"req-14","res":{"statusCode":200},"responseTime":1.9683730006217957,"msg":"request completed"}
+{"level":30,"time":1755112915958,"pid":97720,"hostname":"Legion","reqId":"req-15","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112915958,"pid":97720,"hostname":"Legion","reqId":"req-15","res":{"statusCode":304},"responseTime":0.38991399854421616,"msg":"request completed"}
+{"level":30,"time":1755112915973,"pid":97720,"hostname":"Legion","reqId":"req-16","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112915974,"pid":97720,"hostname":"Legion","reqId":"req-16","res":{"statusCode":304},"responseTime":0.8669539988040924,"msg":"request completed"}
+{"level":30,"time":1755112916087,"pid":97720,"hostname":"Legion","reqId":"req-17","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112916088,"pid":97720,"hostname":"Legion","reqId":"req-17","res":{"statusCode":304},"responseTime":1.1684870012104511,"msg":"request completed"}
+{"level":30,"time":1755112916115,"pid":97720,"hostname":"Legion","reqId":"req-18","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57374},"msg":"incoming request"}
+{"level":30,"time":1755112916115,"pid":97720,"hostname":"Legion","reqId":"req-18","res":{"statusCode":304},"responseTime":0.4561620019376278,"msg":"request completed"}
+{"level":30,"time":1755112916120,"pid":97720,"hostname":"Legion","reqId":"req-19","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57382},"msg":"incoming request"}
+{"level":30,"time":1755112916121,"pid":97720,"hostname":"Legion","reqId":"req-19","res":{"statusCode":304},"responseTime":0.4337269999086857,"msg":"request completed"}
+{"level":30,"time":1755113531994,"pid":99886,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113531994,"pid":99886,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113536259,"pid":100091,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113536260,"pid":100091,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113541795,"pid":100173,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113541795,"pid":100173,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113545643,"pid":100251,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113545643,"pid":100251,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113557143,"pid":100327,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113557143,"pid":100327,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113565196,"pid":100370,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113565197,"pid":100370,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113570155,"pid":100393,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113570155,"pid":100393,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113581674,"pid":100491,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113581674,"pid":100491,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113582849,"pid":100522,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113582850,"pid":100522,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113583507,"pid":100522,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48404},"msg":"incoming request"}
+{"level":30,"time":1755113583519,"pid":100522,"hostname":"Legion","reqId":"req-1","res":{"statusCode":200},"responseTime":11.112886000424623,"msg":"request completed"}
+{"level":30,"time":1755113583543,"pid":100522,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48404},"msg":"incoming request"}
+{"level":30,"time":1755113583545,"pid":100522,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":1.888876996934414,"msg":"request completed"}
+{"level":30,"time":1755113583554,"pid":100522,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48426},"msg":"incoming request"}
+{"level":30,"time":1755113583556,"pid":100522,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":0.9961900003254414,"msg":"request completed"}
+{"level":30,"time":1755113589837,"pid":100597,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113589837,"pid":100597,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113591243,"pid":100630,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113591243,"pid":100630,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113592357,"pid":100661,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113592357,"pid":100661,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113592513,"pid":100661,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48434},"msg":"incoming request"}
+{"level":30,"time":1755113592525,"pid":100661,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":11.309401001781225,"msg":"request completed"}
+{"level":30,"time":1755113592544,"pid":100661,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48434},"msg":"incoming request"}
+{"level":30,"time":1755113592547,"pid":100661,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.8676650002598763,"msg":"request completed"}
+{"level":30,"time":1755113592552,"pid":100661,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48436},"msg":"incoming request"}
+{"level":30,"time":1755113592553,"pid":100661,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.370449997484684,"msg":"request completed"}
+{"level":30,"time":1755113619586,"pid":100748,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113619587,"pid":100748,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113621173,"pid":100783,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113621173,"pid":100783,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113621511,"pid":100783,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":36838},"msg":"incoming request"}
+{"level":30,"time":1755113621520,"pid":100783,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.397851001471281,"msg":"request completed"}
+{"level":30,"time":1755113621560,"pid":100783,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":36838},"msg":"incoming request"}
+{"level":30,"time":1755113621563,"pid":100783,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.85190299898386,"msg":"request completed"}
+{"level":30,"time":1755113621576,"pid":100783,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":36850},"msg":"incoming request"}
+{"level":30,"time":1755113621577,"pid":100783,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":0.9775590002536774,"msg":"request completed"}
+{"level":30,"time":1755113628860,"pid":100783,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":36838},"msg":"incoming request"}
+{"level":30,"time":1755113628861,"pid":100783,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.1797600015997887,"msg":"request completed"}
+{"level":30,"time":1755113628891,"pid":100783,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":36838},"msg":"incoming request"}
+{"level":30,"time":1755113628892,"pid":100783,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.0137510001659393,"msg":"request completed"}
+{"level":30,"time":1755113628899,"pid":100783,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":36850},"msg":"incoming request"}
+{"level":30,"time":1755113628900,"pid":100783,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.8735039979219437,"msg":"request completed"}
+{"level":30,"time":1755113629389,"pid":100812,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113629389,"pid":100812,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113635406,"pid":100857,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113635406,"pid":100857,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113643525,"pid":100897,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113643525,"pid":100897,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113652805,"pid":100956,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113652805,"pid":100956,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113653369,"pid":100987,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113653369,"pid":100987,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113660230,"pid":101019,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113660230,"pid":101019,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113665687,"pid":101068,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113665687,"pid":101068,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113673065,"pid":101105,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113673065,"pid":101105,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113673788,"pid":101137,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113673788,"pid":101137,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113688440,"pid":101184,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113688440,"pid":101184,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113690286,"pid":101242,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113690286,"pid":101242,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113696071,"pid":101356,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113696071,"pid":101356,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113696693,"pid":101388,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113696693,"pid":101388,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113700484,"pid":101421,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113700484,"pid":101421,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113701972,"pid":101456,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113701972,"pid":101456,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113708348,"pid":101504,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113708348,"pid":101504,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113709644,"pid":101533,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113709645,"pid":101533,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113713355,"pid":101568,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113713356,"pid":101568,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113717198,"pid":101618,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113717198,"pid":101618,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113718485,"pid":101664,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113718485,"pid":101664,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113720201,"pid":101696,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113720201,"pid":101696,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113720672,"pid":101696,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":40676},"msg":"incoming request"}
+{"level":30,"time":1755113720684,"pid":101696,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":11.373678997159004,"msg":"request completed"}
+{"level":30,"time":1755113720721,"pid":101696,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":40676},"msg":"incoming request"}
+{"level":30,"time":1755113720725,"pid":101696,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.816693998873234,"msg":"request completed"}
+{"level":30,"time":1755113720735,"pid":101696,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":40690},"msg":"incoming request"}
+{"level":30,"time":1755113720736,"pid":101696,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.2653330005705357,"msg":"request completed"}
+{"level":30,"time":1755113721309,"pid":101727,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113721310,"pid":101727,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113745131,"pid":101798,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113745132,"pid":101798,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113746198,"pid":101830,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113746198,"pid":101830,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113746876,"pid":101830,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48152},"msg":"incoming request"}
+{"level":30,"time":1755113746885,"pid":101830,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.322501998394728,"msg":"request completed"}
+{"level":30,"time":1755113746930,"pid":101830,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48152},"msg":"incoming request"}
+{"level":30,"time":1755113746933,"pid":101830,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.8681099973618984,"msg":"request completed"}
+{"level":30,"time":1755113751565,"pid":101874,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113751565,"pid":101874,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113760333,"pid":101920,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113760333,"pid":101920,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113761035,"pid":101949,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113761036,"pid":101949,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113769217,"pid":102019,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113769217,"pid":102019,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113770130,"pid":102051,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113770131,"pid":102051,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113775569,"pid":102088,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113775570,"pid":102088,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113782744,"pid":102137,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113782744,"pid":102137,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113788345,"pid":102188,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113788345,"pid":102188,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113790244,"pid":102233,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113790244,"pid":102233,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113796121,"pid":102271,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113796121,"pid":102271,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113796624,"pid":102300,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113796624,"pid":102300,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113803873,"pid":102341,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113803873,"pid":102341,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113818785,"pid":102397,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113818785,"pid":102397,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113819704,"pid":102397,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":47902},"msg":"incoming request"}
+{"level":30,"time":1755113819712,"pid":102397,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.075647998601198,"msg":"request completed"}
+{"level":30,"time":1755113819750,"pid":102397,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":47902},"msg":"incoming request"}
+{"level":30,"time":1755113819754,"pid":102397,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.8012179993093014,"msg":"request completed"}
+{"level":30,"time":1755113820286,"pid":102432,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113820286,"pid":102432,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113823862,"pid":102432,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":35870},"msg":"incoming request"}
+{"level":30,"time":1755113823871,"pid":102432,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":7.9237399995327,"msg":"request completed"}
+{"level":30,"time":1755113823899,"pid":102432,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":35870},"msg":"incoming request"}
+{"level":30,"time":1755113823902,"pid":102432,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.4650669991970062,"msg":"request completed"}
+{"level":30,"time":1755113825931,"pid":102432,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":35870},"msg":"incoming request"}
+{"level":30,"time":1755113825932,"pid":102432,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.731308002024889,"msg":"request completed"}
+{"level":30,"time":1755113825979,"pid":102432,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":35870},"msg":"incoming request"}
+{"level":30,"time":1755113825980,"pid":102432,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":0.7206239998340607,"msg":"request completed"}
+{"level":30,"time":1755113828032,"pid":102432,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":35870},"msg":"incoming request"}
+{"level":30,"time":1755113828033,"pid":102432,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.0884669981896877,"msg":"request completed"}
+{"level":30,"time":1755113828066,"pid":102432,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":35870},"msg":"incoming request"}
+{"level":30,"time":1755113828067,"pid":102432,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.8850209973752499,"msg":"request completed"}
+{"level":30,"time":1755113828950,"pid":102432,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":35870},"msg":"incoming request"}
+{"level":30,"time":1755113828951,"pid":102432,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":1.3111060000956059,"msg":"request completed"}
+{"level":30,"time":1755113828982,"pid":102432,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":35870},"msg":"incoming request"}
+{"level":30,"time":1755113828983,"pid":102432,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":1.4318149983882904,"msg":"request completed"}
+{"level":30,"time":1755113850358,"pid":102518,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113850358,"pid":102518,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113852812,"pid":102552,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113852812,"pid":102552,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113854905,"pid":102584,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113854905,"pid":102584,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113857297,"pid":102617,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113857297,"pid":102617,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113862464,"pid":102812,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113862464,"pid":102812,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113866240,"pid":102850,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113866241,"pid":102850,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755113875071,"pid":102898,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755113875071,"pid":102898,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114091722,"pid":103240,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114091722,"pid":103240,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114126519,"pid":103414,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114126519,"pid":103414,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114127159,"pid":103446,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114127159,"pid":103446,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114127855,"pid":103461,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114127855,"pid":103461,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114128758,"pid":103506,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114128758,"pid":103506,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114129962,"pid":103539,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114129963,"pid":103539,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114131199,"pid":103539,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":56528},"msg":"incoming request"}
+{"level":30,"time":1755114131208,"pid":103539,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.43843300268054,"msg":"request completed"}
+{"level":30,"time":1755114131252,"pid":103539,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":56528},"msg":"incoming request"}
+{"level":30,"time":1755114131255,"pid":103539,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.342934001237154,"msg":"request completed"}
+{"level":30,"time":1755114131796,"pid":103539,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":56528},"msg":"incoming request"}
+{"level":30,"time":1755114131797,"pid":103539,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.9158920012414455,"msg":"request completed"}
+{"level":30,"time":1755114131844,"pid":103539,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":56528},"msg":"incoming request"}
+{"level":30,"time":1755114131845,"pid":103539,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.0103399977087975,"msg":"request completed"}
+{"level":30,"time":1755114132549,"pid":103539,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":56528},"msg":"incoming request"}
+{"level":30,"time":1755114132550,"pid":103539,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.0227719992399216,"msg":"request completed"}
+{"level":30,"time":1755114132581,"pid":103539,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":56528},"msg":"incoming request"}
+{"level":30,"time":1755114132582,"pid":103539,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":1.0121350027620792,"msg":"request completed"}
+{"level":30,"time":1755114145456,"pid":103608,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114145457,"pid":103608,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114147151,"pid":103642,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114147151,"pid":103642,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114147610,"pid":103642,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":46858},"msg":"incoming request"}
+{"level":30,"time":1755114147620,"pid":103642,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":9.122232999652624,"msg":"request completed"}
+{"level":30,"time":1755114147658,"pid":103642,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":46858},"msg":"incoming request"}
+{"level":30,"time":1755114147662,"pid":103642,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.5914629995822906,"msg":"request completed"}
+{"level":30,"time":1755114156894,"pid":103689,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114156895,"pid":103689,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114178678,"pid":103754,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114178678,"pid":103754,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114179315,"pid":103754,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":49330},"msg":"incoming request"}
+{"level":30,"time":1755114179326,"pid":103754,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":11.119082000106573,"msg":"request completed"}
+{"level":30,"time":1755114179370,"pid":103754,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":49330},"msg":"incoming request"}
+{"level":30,"time":1755114179373,"pid":103754,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.1899830028414726,"msg":"request completed"}
+{"level":30,"time":1755114180240,"pid":103754,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":49330},"msg":"incoming request"}
+{"level":30,"time":1755114180241,"pid":103754,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.8162089996039867,"msg":"request completed"}
+{"level":30,"time":1755114180280,"pid":103754,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":49330},"msg":"incoming request"}
+{"level":30,"time":1755114180281,"pid":103754,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":0.9771969988942146,"msg":"request completed"}
+{"level":30,"time":1755114182225,"pid":103754,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":49330},"msg":"incoming request"}
+{"level":30,"time":1755114182227,"pid":103754,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":0.9939979985356331,"msg":"request completed"}
+{"level":30,"time":1755114182395,"pid":103754,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":49330},"msg":"incoming request"}
+{"level":30,"time":1755114182396,"pid":103754,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":1.2658619992434978,"msg":"request completed"}
+{"level":30,"time":1755114182427,"pid":103754,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":49330},"msg":"incoming request"}
+{"level":30,"time":1755114182428,"pid":103754,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":0.7415879964828491,"msg":"request completed"}
+{"level":30,"time":1755114197637,"pid":103829,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114197637,"pid":103829,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114201243,"pid":103851,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114201243,"pid":103851,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114204786,"pid":103851,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":44542},"msg":"incoming request"}
+{"level":30,"time":1755114204797,"pid":103851,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":9.93656199797988,"msg":"request completed"}
+{"level":30,"time":1755114204833,"pid":103851,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":44542},"msg":"incoming request"}
+{"level":30,"time":1755114204836,"pid":103851,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.779934998601675,"msg":"request completed"}
+{"level":30,"time":1755114237089,"pid":103955,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114237089,"pid":103955,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114238927,"pid":103987,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114238928,"pid":103987,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114240509,"pid":104018,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114240509,"pid":104018,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114241280,"pid":104047,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114241281,"pid":104047,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114241841,"pid":104077,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114241841,"pid":104077,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114242242,"pid":104094,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114242242,"pid":104094,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114252896,"pid":104160,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114252897,"pid":104160,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114286281,"pid":104254,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114286281,"pid":104254,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114287506,"pid":104283,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114287506,"pid":104283,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114294718,"pid":104329,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114294718,"pid":104329,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114298912,"pid":104383,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114298912,"pid":104383,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114304613,"pid":104447,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114304613,"pid":104447,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114306335,"pid":104447,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57434},"msg":"incoming request"}
+{"level":30,"time":1755114306344,"pid":104447,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.45092000067234,"msg":"request completed"}
+{"level":30,"time":1755114306376,"pid":104447,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57434},"msg":"incoming request"}
+{"level":30,"time":1755114306379,"pid":104447,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.2419340014457703,"msg":"request completed"}
+{"level":30,"time":1755114306412,"pid":104447,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57454},"msg":"incoming request"}
+{"level":30,"time":1755114306413,"pid":104447,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.0035789981484413,"msg":"request completed"}
+{"level":30,"time":1755114388070,"pid":104637,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114388070,"pid":104637,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114423047,"pid":104820,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114423048,"pid":104820,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114431850,"pid":104876,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114431850,"pid":104876,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114432449,"pid":104911,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114432449,"pid":104911,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114437681,"pid":104952,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114437681,"pid":104952,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114477242,"pid":105084,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114477242,"pid":105084,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114483519,"pid":105122,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114483519,"pid":105122,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114489714,"pid":105162,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114489715,"pid":105162,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114492785,"pid":105211,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114492785,"pid":105211,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114502575,"pid":105303,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114502575,"pid":105303,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114505850,"pid":105366,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114505850,"pid":105366,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114513223,"pid":105422,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114513224,"pid":105422,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114519201,"pid":105461,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114519201,"pid":105461,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114522492,"pid":105494,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114522492,"pid":105494,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114527528,"pid":105528,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114527528,"pid":105528,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114543474,"pid":105583,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114543474,"pid":105583,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114551567,"pid":105624,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114551567,"pid":105624,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114554840,"pid":105673,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114554840,"pid":105673,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114557018,"pid":105705,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114557019,"pid":105705,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114562586,"pid":105755,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114562586,"pid":105755,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114597527,"pid":105929,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114597527,"pid":105929,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114601541,"pid":105964,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114601541,"pid":105964,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114610446,"pid":106052,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114610447,"pid":106052,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114620508,"pid":106164,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114620508,"pid":106164,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114621891,"pid":106194,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114621892,"pid":106194,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114632160,"pid":106267,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114632161,"pid":106267,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114634531,"pid":106267,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":39532},"msg":"incoming request"}
+{"level":30,"time":1755114634540,"pid":106267,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.430184997618198,"msg":"request completed"}
+{"level":30,"time":1755114634573,"pid":106267,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":39532},"msg":"incoming request"}
+{"level":30,"time":1755114634576,"pid":106267,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.441567000001669,"msg":"request completed"}
+{"level":30,"time":1755114634587,"pid":106267,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":39550},"msg":"incoming request"}
+{"level":30,"time":1755114634588,"pid":106267,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":0.9821290001273155,"msg":"request completed"}
+{"level":30,"time":1755114711799,"pid":106496,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114711799,"pid":106496,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114719889,"pid":106558,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114719889,"pid":106558,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114722905,"pid":106592,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114722906,"pid":106592,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114724875,"pid":106639,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114724876,"pid":106639,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114757436,"pid":106877,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114757436,"pid":106877,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114766978,"pid":106946,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114766978,"pid":106946,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114776969,"pid":107024,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114776970,"pid":107024,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114778079,"pid":107054,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114778079,"pid":107054,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114779557,"pid":107100,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114779557,"pid":107100,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114782190,"pid":107173,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114782190,"pid":107173,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114809321,"pid":107357,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114809321,"pid":107357,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114823726,"pid":107357,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60942},"msg":"incoming request"}
+{"level":30,"time":1755114823736,"pid":107357,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.991176001727581,"msg":"request completed"}
+{"level":30,"time":1755114823769,"pid":107357,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60942},"msg":"incoming request"}
+{"level":30,"time":1755114823770,"pid":107357,"hostname":"Legion","reqId":"req-2","res":{"statusCode":304},"responseTime":1.3355529978871346,"msg":"request completed"}
+{"level":30,"time":1755114823779,"pid":107357,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60948},"msg":"incoming request"}
+{"level":30,"time":1755114823780,"pid":107357,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.9322839975357056,"msg":"request completed"}
+{"level":30,"time":1755114828632,"pid":107357,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60942},"msg":"incoming request"}
+{"level":30,"time":1755114828633,"pid":107357,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.017765000462532,"msg":"request completed"}
+{"level":30,"time":1755114828663,"pid":107357,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60942},"msg":"incoming request"}
+{"level":30,"time":1755114828664,"pid":107357,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.236556001007557,"msg":"request completed"}
+{"level":30,"time":1755114828670,"pid":107357,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60948},"msg":"incoming request"}
+{"level":30,"time":1755114828671,"pid":107357,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.7155729979276657,"msg":"request completed"}
+{"level":30,"time":1755114829311,"pid":107357,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60942},"msg":"incoming request"}
+{"level":30,"time":1755114829312,"pid":107357,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":1.2003310024738312,"msg":"request completed"}
+{"level":30,"time":1755114829344,"pid":107357,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60942},"msg":"incoming request"}
+{"level":30,"time":1755114829345,"pid":107357,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":0.9985440000891685,"msg":"request completed"}
+{"level":30,"time":1755114829369,"pid":107357,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60948},"msg":"incoming request"}
+{"level":30,"time":1755114829370,"pid":107357,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":1.209281999617815,"msg":"request completed"}
+{"level":30,"time":1755114830329,"pid":107357,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60942},"msg":"incoming request"}
+{"level":30,"time":1755114830330,"pid":107357,"hostname":"Legion","reqId":"req-a","res":{"statusCode":304},"responseTime":0.8224899992346764,"msg":"request completed"}
+{"level":30,"time":1755114830361,"pid":107357,"hostname":"Legion","reqId":"req-b","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60942},"msg":"incoming request"}
+{"level":30,"time":1755114830362,"pid":107357,"hostname":"Legion","reqId":"req-b","res":{"statusCode":304},"responseTime":1.1518470011651516,"msg":"request completed"}
+{"level":30,"time":1755114830368,"pid":107357,"hostname":"Legion","reqId":"req-c","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":60948},"msg":"incoming request"}
+{"level":30,"time":1755114830369,"pid":107357,"hostname":"Legion","reqId":"req-c","res":{"statusCode":304},"responseTime":0.6130830012261868,"msg":"request completed"}
+{"level":30,"time":1755114841635,"pid":107562,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114841636,"pid":107562,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114864905,"pid":107615,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114864905,"pid":107615,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114866940,"pid":107663,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114866940,"pid":107663,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114868122,"pid":107663,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45896},"msg":"incoming request"}
+{"level":30,"time":1755114868131,"pid":107663,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.317611001431942,"msg":"request completed"}
+{"level":30,"time":1755114868169,"pid":107663,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45896},"msg":"incoming request"}
+{"level":30,"time":1755114868172,"pid":107663,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.0140320025384426,"msg":"request completed"}
+{"level":30,"time":1755114868199,"pid":107663,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45902},"msg":"incoming request"}
+{"level":30,"time":1755114868200,"pid":107663,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.2283460013568401,"msg":"request completed"}
+{"level":30,"time":1755114868909,"pid":107663,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45896},"msg":"incoming request"}
+{"level":30,"time":1755114868910,"pid":107663,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.0337629988789558,"msg":"request completed"}
+{"level":30,"time":1755114868947,"pid":107663,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45896},"msg":"incoming request"}
+{"level":30,"time":1755114868949,"pid":107663,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.2323129996657372,"msg":"request completed"}
+{"level":30,"time":1755114868974,"pid":107663,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45902},"msg":"incoming request"}
+{"level":30,"time":1755114868975,"pid":107663,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.679442998021841,"msg":"request completed"}
+{"level":30,"time":1755114869551,"pid":107663,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45896},"msg":"incoming request"}
+{"level":30,"time":1755114869552,"pid":107663,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":1.0067990012466908,"msg":"request completed"}
+{"level":30,"time":1755114869585,"pid":107663,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45896},"msg":"incoming request"}
+{"level":30,"time":1755114869586,"pid":107663,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":0.6828310005366802,"msg":"request completed"}
+{"level":30,"time":1755114869613,"pid":107663,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45902},"msg":"incoming request"}
+{"level":30,"time":1755114869615,"pid":107663,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":1.9078940004110336,"msg":"request completed"}
+{"level":30,"time":1755114872386,"pid":107663,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45896},"msg":"incoming request"}
+{"level":30,"time":1755114872387,"pid":107663,"hostname":"Legion","reqId":"req-a","res":{"statusCode":304},"responseTime":0.7827540002763271,"msg":"request completed"}
+{"level":30,"time":1755114872419,"pid":107663,"hostname":"Legion","reqId":"req-b","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45896},"msg":"incoming request"}
+{"level":30,"time":1755114872420,"pid":107663,"hostname":"Legion","reqId":"req-b","res":{"statusCode":304},"responseTime":1.2691249996423721,"msg":"request completed"}
+{"level":30,"time":1755114872442,"pid":107663,"hostname":"Legion","reqId":"req-c","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45902},"msg":"incoming request"}
+{"level":30,"time":1755114872443,"pid":107663,"hostname":"Legion","reqId":"req-c","res":{"statusCode":304},"responseTime":0.5580550022423267,"msg":"request completed"}
+{"level":30,"time":1755114872841,"pid":107709,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114872841,"pid":107709,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114872989,"pid":107709,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45934},"msg":"incoming request"}
+{"level":30,"time":1755114872998,"pid":107709,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.224998001009226,"msg":"request completed"}
+{"level":30,"time":1755114873024,"pid":107709,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45934},"msg":"incoming request"}
+{"level":30,"time":1755114873027,"pid":107709,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.8577399998903275,"msg":"request completed"}
+{"level":30,"time":1755114873064,"pid":107709,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45944},"msg":"incoming request"}
+{"level":30,"time":1755114873066,"pid":107709,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.4426699988543987,"msg":"request completed"}
+{"level":30,"time":1755114873572,"pid":107709,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45934},"msg":"incoming request"}
+{"level":30,"time":1755114873574,"pid":107709,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.1653070002794266,"msg":"request completed"}
+{"level":30,"time":1755114873604,"pid":107709,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45934},"msg":"incoming request"}
+{"level":30,"time":1755114873605,"pid":107709,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.0113429985940456,"msg":"request completed"}
+{"level":30,"time":1755114873611,"pid":107709,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45944},"msg":"incoming request"}
+{"level":30,"time":1755114873612,"pid":107709,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":1.0202399976551533,"msg":"request completed"}
+{"level":30,"time":1755114874081,"pid":107709,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45934},"msg":"incoming request"}
+{"level":30,"time":1755114874082,"pid":107709,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":0.9840920008718967,"msg":"request completed"}
+{"level":30,"time":1755114874111,"pid":107709,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45934},"msg":"incoming request"}
+{"level":30,"time":1755114874112,"pid":107709,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":0.8706209994852543,"msg":"request completed"}
+{"level":30,"time":1755114874118,"pid":107709,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":45944},"msg":"incoming request"}
+{"level":30,"time":1755114874119,"pid":107709,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":0.6581319980323315,"msg":"request completed"}
+{"level":30,"time":1755114876625,"pid":107738,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114876625,"pid":107738,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114877043,"pid":107775,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114877044,"pid":107775,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114877761,"pid":107775,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":37232},"msg":"incoming request"}
+{"level":30,"time":1755114877770,"pid":107775,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.381852000951767,"msg":"request completed"}
+{"level":30,"time":1755114877814,"pid":107775,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":37232},"msg":"incoming request"}
+{"level":30,"time":1755114877818,"pid":107775,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.275315999984741,"msg":"request completed"}
+{"level":30,"time":1755114877837,"pid":107775,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":37238},"msg":"incoming request"}
+{"level":30,"time":1755114877839,"pid":107775,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.1072540022432804,"msg":"request completed"}
+{"level":30,"time":1755114878186,"pid":107805,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114878186,"pid":107805,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114878296,"pid":107805,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":37240},"msg":"incoming request"}
+{"level":30,"time":1755114878309,"pid":107805,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":12.971372999250889,"msg":"request completed"}
+{"level":30,"time":1755114878353,"pid":107805,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":37240},"msg":"incoming request"}
+{"level":30,"time":1755114878357,"pid":107805,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.667858000844717,"msg":"request completed"}
+{"level":30,"time":1755114878374,"pid":107805,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":37252},"msg":"incoming request"}
+{"level":30,"time":1755114878375,"pid":107805,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":1.010962001979351,"msg":"request completed"}
+{"level":30,"time":1755114880533,"pid":107824,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114880534,"pid":107824,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114903568,"pid":107915,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114903568,"pid":107915,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114936619,"pid":108059,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114936619,"pid":108059,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114944739,"pid":108102,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114944740,"pid":108102,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114945127,"pid":108147,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114945128,"pid":108147,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114948871,"pid":108197,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114948871,"pid":108197,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114952693,"pid":108232,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114952694,"pid":108232,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114953040,"pid":108262,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114953040,"pid":108262,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114958197,"pid":108304,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114958197,"pid":108304,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114966103,"pid":108355,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114966104,"pid":108355,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114969429,"pid":108376,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114969430,"pid":108376,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114970750,"pid":108437,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114970750,"pid":108437,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114972691,"pid":108467,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114972691,"pid":108467,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114990306,"pid":108520,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755114990306,"pid":108520,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755114991038,"pid":108520,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59878},"msg":"incoming request"}
+{"level":30,"time":1755114991046,"pid":108520,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.16516399756074,"msg":"request completed"}
+{"level":30,"time":1755114991083,"pid":108520,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59878},"msg":"incoming request"}
+{"level":30,"time":1755114991086,"pid":108520,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.445941999554634,"msg":"request completed"}
+{"level":30,"time":1755114991097,"pid":108520,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59890},"msg":"incoming request"}
+{"level":30,"time":1755114991099,"pid":108520,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.7069879993796349,"msg":"request completed"}
+{"level":30,"time":1755114992042,"pid":108520,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59878},"msg":"incoming request"}
+{"level":30,"time":1755114992043,"pid":108520,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":0.9144739992916584,"msg":"request completed"}
+{"level":30,"time":1755114992082,"pid":108520,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59878},"msg":"incoming request"}
+{"level":30,"time":1755114992083,"pid":108520,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.0736420005559921,"msg":"request completed"}
+{"level":30,"time":1755114992104,"pid":108520,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59890},"msg":"incoming request"}
+{"level":30,"time":1755114992105,"pid":108520,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.8332750014960766,"msg":"request completed"}
+{"level":30,"time":1755115003621,"pid":108604,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115003621,"pid":108604,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115007122,"pid":108643,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115007122,"pid":108643,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115007451,"pid":108643,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48230},"msg":"incoming request"}
+{"level":30,"time":1755115007460,"pid":108643,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.427554000169039,"msg":"request completed"}
+{"level":30,"time":1755115007494,"pid":108643,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48230},"msg":"incoming request"}
+{"level":30,"time":1755115007497,"pid":108643,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.260327000170946,"msg":"request completed"}
+{"level":30,"time":1755115007512,"pid":108643,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48242},"msg":"incoming request"}
+{"level":30,"time":1755115007513,"pid":108643,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.2033610008656979,"msg":"request completed"}
+{"level":30,"time":1755115009487,"pid":108643,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48230},"msg":"incoming request"}
+{"level":30,"time":1755115009488,"pid":108643,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":0.9570580013096333,"msg":"request completed"}
+{"level":30,"time":1755115009650,"pid":108643,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48230},"msg":"incoming request"}
+{"level":30,"time":1755115009651,"pid":108643,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.207217998802662,"msg":"request completed"}
+{"level":30,"time":1755115009669,"pid":108643,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48242},"msg":"incoming request"}
+{"level":30,"time":1755115009670,"pid":108643,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.6852690018713474,"msg":"request completed"}
+{"level":30,"time":1755115012477,"pid":108682,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115012478,"pid":108682,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115013194,"pid":108729,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115013194,"pid":108729,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115014341,"pid":108772,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115014342,"pid":108772,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115023823,"pid":108772,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59770},"msg":"incoming request"}
+{"level":30,"time":1755115023831,"pid":108772,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":7.83993000164628,"msg":"request completed"}
+{"level":30,"time":1755115023878,"pid":108772,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59770},"msg":"incoming request"}
+{"level":30,"time":1755115023881,"pid":108772,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.805773999541998,"msg":"request completed"}
+{"level":30,"time":1755115023890,"pid":108772,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59778},"msg":"incoming request"}
+{"level":30,"time":1755115023891,"pid":108772,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.290488000959158,"msg":"request completed"}
+{"level":30,"time":1755115024690,"pid":108772,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59770},"msg":"incoming request"}
+{"level":30,"time":1755115024691,"pid":108772,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.08288099989295,"msg":"request completed"}
+{"level":30,"time":1755115024732,"pid":108772,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59770},"msg":"incoming request"}
+{"level":30,"time":1755115024733,"pid":108772,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.0970239974558353,"msg":"request completed"}
+{"level":30,"time":1755115024759,"pid":108772,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59778},"msg":"incoming request"}
+{"level":30,"time":1755115024760,"pid":108772,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.8998819999396801,"msg":"request completed"}
+{"level":30,"time":1755115030374,"pid":108772,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59770},"msg":"incoming request"}
+{"level":30,"time":1755115030375,"pid":108772,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":0.9048820026218891,"msg":"request completed"}
+{"level":30,"time":1755115030408,"pid":108772,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59770},"msg":"incoming request"}
+{"level":30,"time":1755115030409,"pid":108772,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":1.033601000905037,"msg":"request completed"}
+{"level":30,"time":1755115030414,"pid":108772,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59778},"msg":"incoming request"}
+{"level":30,"time":1755115030415,"pid":108772,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":0.8353059999644756,"msg":"request completed"}
+{"level":30,"time":1755115032432,"pid":108772,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59770},"msg":"incoming request"}
+{"level":30,"time":1755115032433,"pid":108772,"hostname":"Legion","reqId":"req-a","res":{"statusCode":304},"responseTime":0.6935769990086555,"msg":"request completed"}
+{"level":30,"time":1755115032570,"pid":108772,"hostname":"Legion","reqId":"req-b","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59770},"msg":"incoming request"}
+{"level":30,"time":1755115032571,"pid":108772,"hostname":"Legion","reqId":"req-b","res":{"statusCode":304},"responseTime":0.9039330035448074,"msg":"request completed"}
+{"level":30,"time":1755115032577,"pid":108772,"hostname":"Legion","reqId":"req-c","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59778},"msg":"incoming request"}
+{"level":30,"time":1755115032578,"pid":108772,"hostname":"Legion","reqId":"req-c","res":{"statusCode":304},"responseTime":0.6070259995758533,"msg":"request completed"}
+{"level":30,"time":1755115040622,"pid":108904,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115040622,"pid":108904,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115047222,"pid":108978,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115047222,"pid":108978,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115047793,"pid":108978,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":50356},"msg":"incoming request"}
+{"level":30,"time":1755115047802,"pid":108978,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.56937400251627,"msg":"request completed"}
+{"level":30,"time":1755115047834,"pid":108978,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":50356},"msg":"incoming request"}
+{"level":30,"time":1755115047837,"pid":108978,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.071622997522354,"msg":"request completed"}
+{"level":30,"time":1755115047853,"pid":108978,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":50374},"msg":"incoming request"}
+{"level":30,"time":1755115047855,"pid":108978,"hostname":"Legion","reqId":"req-3","res":{"statusCode":200},"responseTime":1.833176001906395,"msg":"request completed"}
+{"level":30,"time":1755115053774,"pid":109053,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115053774,"pid":109053,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115054372,"pid":109053,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115054388,"pid":109053,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":14.93477900326252,"msg":"request completed"}
+{"level":30,"time":1755115054409,"pid":109053,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115054411,"pid":109053,"hostname":"Legion","reqId":"req-2","res":{"statusCode":304},"responseTime":1.6779730021953583,"msg":"request completed"}
+{"level":30,"time":1755115054418,"pid":109053,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48480},"msg":"incoming request"}
+{"level":30,"time":1755115054419,"pid":109053,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":1.210352998226881,"msg":"request completed"}
+{"level":30,"time":1755115056455,"pid":109053,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115056456,"pid":109053,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":0.7961929999291897,"msg":"request completed"}
+{"level":30,"time":1755115056605,"pid":109053,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115056606,"pid":109053,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.1096850000321865,"msg":"request completed"}
+{"level":30,"time":1755115056617,"pid":109053,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48480},"msg":"incoming request"}
+{"level":30,"time":1755115056618,"pid":109053,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.9075260013341904,"msg":"request completed"}
+{"level":30,"time":1755115057429,"pid":109053,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115057430,"pid":109053,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":1.2944119982421398,"msg":"request completed"}
+{"level":30,"time":1755115057460,"pid":109053,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115057461,"pid":109053,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":0.8515359982848167,"msg":"request completed"}
+{"level":30,"time":1755115064320,"pid":109053,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115064322,"pid":109053,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":2.0087230019271374,"msg":"request completed"}
+{"level":30,"time":1755115064355,"pid":109053,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115064357,"pid":109053,"hostname":"Legion","reqId":"req-a","res":{"statusCode":304},"responseTime":1.0696379989385605,"msg":"request completed"}
+{"level":30,"time":1755115066410,"pid":109053,"hostname":"Legion","reqId":"req-b","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115066410,"pid":109053,"hostname":"Legion","reqId":"req-b","res":{"statusCode":304},"responseTime":0.8225309997797012,"msg":"request completed"}
+{"level":30,"time":1755115066549,"pid":109053,"hostname":"Legion","reqId":"req-c","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115066550,"pid":109053,"hostname":"Legion","reqId":"req-c","res":{"statusCode":304},"responseTime":0.6490119993686676,"msg":"request completed"}
+{"level":30,"time":1755115071809,"pid":109053,"hostname":"Legion","reqId":"req-d","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115071810,"pid":109053,"hostname":"Legion","reqId":"req-d","res":{"statusCode":304},"responseTime":0.7837410010397434,"msg":"request completed"}
+{"level":30,"time":1755115071846,"pid":109053,"hostname":"Legion","reqId":"req-e","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115071847,"pid":109053,"hostname":"Legion","reqId":"req-e","res":{"statusCode":304},"responseTime":0.8605710007250309,"msg":"request completed"}
+{"level":30,"time":1755115072781,"pid":109053,"hostname":"Legion","reqId":"req-f","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115072782,"pid":109053,"hostname":"Legion","reqId":"req-f","res":{"statusCode":304},"responseTime":1.2450419999659061,"msg":"request completed"}
+{"level":30,"time":1755115072814,"pid":109053,"hostname":"Legion","reqId":"req-g","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115072814,"pid":109053,"hostname":"Legion","reqId":"req-g","res":{"statusCode":304},"responseTime":0.8198730014264584,"msg":"request completed"}
+{"level":30,"time":1755115073740,"pid":109053,"hostname":"Legion","reqId":"req-h","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115073741,"pid":109053,"hostname":"Legion","reqId":"req-h","res":{"statusCode":304},"responseTime":1.1614359989762306,"msg":"request completed"}
+{"level":30,"time":1755115073780,"pid":109053,"hostname":"Legion","reqId":"req-i","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115073780,"pid":109053,"hostname":"Legion","reqId":"req-i","res":{"statusCode":304},"responseTime":0.6254730001091957,"msg":"request completed"}
+{"level":30,"time":1755115074639,"pid":109053,"hostname":"Legion","reqId":"req-j","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115074640,"pid":109053,"hostname":"Legion","reqId":"req-j","res":{"statusCode":304},"responseTime":0.9224579967558384,"msg":"request completed"}
+{"level":30,"time":1755115074671,"pid":109053,"hostname":"Legion","reqId":"req-k","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115074671,"pid":109053,"hostname":"Legion","reqId":"req-k","res":{"statusCode":304},"responseTime":0.4842269979417324,"msg":"request completed"}
+{"level":30,"time":1755115081623,"pid":109053,"hostname":"Legion","reqId":"req-l","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115081624,"pid":109053,"hostname":"Legion","reqId":"req-l","res":{"statusCode":304},"responseTime":0.7681860029697418,"msg":"request completed"}
+{"level":30,"time":1755115081664,"pid":109053,"hostname":"Legion","reqId":"req-m","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115081664,"pid":109053,"hostname":"Legion","reqId":"req-m","res":{"statusCode":304},"responseTime":0.5415120013058186,"msg":"request completed"}
+{"level":30,"time":1755115082220,"pid":109053,"hostname":"Legion","reqId":"req-n","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115082221,"pid":109053,"hostname":"Legion","reqId":"req-n","res":{"statusCode":304},"responseTime":1.1529250033199787,"msg":"request completed"}
+{"level":30,"time":1755115082257,"pid":109053,"hostname":"Legion","reqId":"req-o","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115082258,"pid":109053,"hostname":"Legion","reqId":"req-o","res":{"statusCode":304},"responseTime":0.5066840015351772,"msg":"request completed"}
+{"level":30,"time":1755115082700,"pid":109053,"hostname":"Legion","reqId":"req-p","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115082701,"pid":109053,"hostname":"Legion","reqId":"req-p","res":{"statusCode":304},"responseTime":0.4014960005879402,"msg":"request completed"}
+{"level":30,"time":1755115082735,"pid":109053,"hostname":"Legion","reqId":"req-q","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":48472},"msg":"incoming request"}
+{"level":30,"time":1755115082736,"pid":109053,"hostname":"Legion","reqId":"req-q","res":{"statusCode":304},"responseTime":0.5899129994213581,"msg":"request completed"}
+{"level":30,"time":1755115088739,"pid":109296,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115088740,"pid":109296,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115091073,"pid":109403,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115091073,"pid":109403,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115115429,"pid":109475,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115115429,"pid":109475,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115122723,"pid":109532,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115122723,"pid":109532,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115124607,"pid":109577,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115124607,"pid":109577,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115125787,"pid":109608,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115125787,"pid":109608,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115130968,"pid":109645,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115130968,"pid":109645,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115133409,"pid":109677,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115133409,"pid":109677,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115137070,"pid":109702,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115137070,"pid":109702,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115137674,"pid":109746,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115137674,"pid":109746,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115138888,"pid":109777,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115138888,"pid":109777,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115139504,"pid":109777,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57826},"msg":"incoming request"}
+{"level":30,"time":1755115139513,"pid":109777,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.53728599846363,"msg":"request completed"}
+{"level":30,"time":1755115139551,"pid":109777,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57826},"msg":"incoming request"}
+{"level":30,"time":1755115139554,"pid":109777,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.0012989975512028,"msg":"request completed"}
+{"level":30,"time":1755115140178,"pid":109777,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57826},"msg":"incoming request"}
+{"level":30,"time":1755115140179,"pid":109777,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.918528001755476,"msg":"request completed"}
+{"level":30,"time":1755115140243,"pid":109777,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57826},"msg":"incoming request"}
+{"level":30,"time":1755115140244,"pid":109777,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":0.8898079991340637,"msg":"request completed"}
+{"level":30,"time":1755115143002,"pid":109777,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57826},"msg":"incoming request"}
+{"level":30,"time":1755115143003,"pid":109777,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.072928000241518,"msg":"request completed"}
+{"level":30,"time":1755115143070,"pid":109777,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":57826},"msg":"incoming request"}
+{"level":30,"time":1755115143071,"pid":109777,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.7565519995987415,"msg":"request completed"}
+{"level":30,"time":1755115144092,"pid":109818,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115144092,"pid":109818,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115156035,"pid":109859,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115156036,"pid":109859,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115161541,"pid":109916,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115161541,"pid":109916,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115161876,"pid":109916,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55292},"msg":"incoming request"}
+{"level":30,"time":1755115161887,"pid":109916,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":10.83338500186801,"msg":"request completed"}
+{"level":30,"time":1755115161937,"pid":109916,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55292},"msg":"incoming request"}
+{"level":30,"time":1755115161941,"pid":109916,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.653810001909733,"msg":"request completed"}
+{"level":30,"time":1755115162456,"pid":109916,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55292},"msg":"incoming request"}
+{"level":30,"time":1755115162458,"pid":109916,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":1.132776003330946,"msg":"request completed"}
+{"level":30,"time":1755115162494,"pid":109916,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55292},"msg":"incoming request"}
+{"level":30,"time":1755115162495,"pid":109916,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":0.7232629992067814,"msg":"request completed"}
+{"level":30,"time":1755115167777,"pid":109958,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115167778,"pid":109958,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115169323,"pid":109990,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115169324,"pid":109990,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115170405,"pid":110023,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115170406,"pid":110023,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115172565,"pid":110023,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54512},"msg":"incoming request"}
+{"level":30,"time":1755115172574,"pid":110023,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.450371000915766,"msg":"request completed"}
+{"level":30,"time":1755115172604,"pid":110023,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54512},"msg":"incoming request"}
+{"level":30,"time":1755115172607,"pid":110023,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":2.7710300013422966,"msg":"request completed"}
+{"level":30,"time":1755115173414,"pid":110023,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54512},"msg":"incoming request"}
+{"level":30,"time":1755115173415,"pid":110023,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.9967540018260479,"msg":"request completed"}
+{"level":30,"time":1755115173450,"pid":110023,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54512},"msg":"incoming request"}
+{"level":30,"time":1755115173451,"pid":110023,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.063756000250578,"msg":"request completed"}
+{"level":30,"time":1755115174057,"pid":110023,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54512},"msg":"incoming request"}
+{"level":30,"time":1755115174059,"pid":110023,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.3629379980266094,"msg":"request completed"}
+{"level":30,"time":1755115174088,"pid":110023,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54512},"msg":"incoming request"}
+{"level":30,"time":1755115174089,"pid":110023,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":0.9719109982252121,"msg":"request completed"}
+{"level":30,"time":1755115174444,"pid":110023,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54512},"msg":"incoming request"}
+{"level":30,"time":1755115174446,"pid":110023,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":1.3390810005366802,"msg":"request completed"}
+{"level":30,"time":1755115174477,"pid":110023,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":54512},"msg":"incoming request"}
+{"level":30,"time":1755115174478,"pid":110023,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":0.8349840007722378,"msg":"request completed"}
+{"level":30,"time":1755115178558,"pid":110069,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115178558,"pid":110069,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115290518,"pid":110357,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115290519,"pid":110357,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115290697,"pid":110357,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115290706,"pid":110357,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.484868999570608,"msg":"request completed"}
+{"level":30,"time":1755115290743,"pid":110357,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115290747,"pid":110357,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":4.175909999758005,"msg":"request completed"}
+{"level":30,"time":1755115291367,"pid":110357,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115291368,"pid":110357,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.7720069997012615,"msg":"request completed"}
+{"level":30,"time":1755115291404,"pid":110357,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115291405,"pid":110357,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":0.9745739996433258,"msg":"request completed"}
+{"level":30,"time":1755115292346,"pid":110357,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115292347,"pid":110357,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":0.9828599989414215,"msg":"request completed"}
+{"level":30,"time":1755115292388,"pid":110357,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115292389,"pid":110357,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":1.1035719998180866,"msg":"request completed"}
+{"level":30,"time":1755115293276,"pid":110357,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115293276,"pid":110357,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":0.6226019971072674,"msg":"request completed"}
+{"level":30,"time":1755115293313,"pid":110357,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115293314,"pid":110357,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":1.0959000028669834,"msg":"request completed"}
+{"level":30,"time":1755115294317,"pid":110357,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115294318,"pid":110357,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":0.8429920002818108,"msg":"request completed"}
+{"level":30,"time":1755115294355,"pid":110357,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115294357,"pid":110357,"hostname":"Legion","reqId":"req-a","res":{"statusCode":304},"responseTime":0.8174250014126301,"msg":"request completed"}
+{"level":30,"time":1755115296803,"pid":110357,"hostname":"Legion","reqId":"req-b","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115296804,"pid":110357,"hostname":"Legion","reqId":"req-b","res":{"statusCode":304},"responseTime":1.01511699706316,"msg":"request completed"}
+{"level":30,"time":1755115296886,"pid":110357,"hostname":"Legion","reqId":"req-c","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42538},"msg":"incoming request"}
+{"level":30,"time":1755115296887,"pid":110357,"hostname":"Legion","reqId":"req-c","res":{"statusCode":304},"responseTime":0.5549569986760616,"msg":"request completed"}
+{"level":30,"time":1755115300345,"pid":110400,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115300346,"pid":110400,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115337505,"pid":110530,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115337505,"pid":110530,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115338886,"pid":110572,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115338886,"pid":110572,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115345899,"pid":110613,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115345900,"pid":110613,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115355485,"pid":110613,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115355495,"pid":110613,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":8.971337001770735,"msg":"request completed"}
+{"level":30,"time":1755115355555,"pid":110613,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115355558,"pid":110613,"hostname":"Legion","reqId":"req-2","res":{"statusCode":200},"responseTime":3.257201001048088,"msg":"request completed"}
+{"level":30,"time":1755115361714,"pid":110613,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115361715,"pid":110613,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":0.9710319973528385,"msg":"request completed"}
+{"level":30,"time":1755115361910,"pid":110613,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115361911,"pid":110613,"hostname":"Legion","reqId":"req-4","res":{"statusCode":304},"responseTime":1.146026000380516,"msg":"request completed"}
+{"level":30,"time":1755115369893,"pid":110613,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115369894,"pid":110613,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":1.066865000873804,"msg":"request completed"}
+{"level":30,"time":1755115370057,"pid":110613,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115370058,"pid":110613,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":1.0054489970207214,"msg":"request completed"}
+{"level":30,"time":1755115374112,"pid":110613,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115374113,"pid":110613,"hostname":"Legion","reqId":"req-7","res":{"statusCode":304},"responseTime":0.8999769985675812,"msg":"request completed"}
+{"level":30,"time":1755115374204,"pid":110613,"hostname":"Legion","reqId":"req-8","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115374205,"pid":110613,"hostname":"Legion","reqId":"req-8","res":{"statusCode":304},"responseTime":0.9755010008811951,"msg":"request completed"}
+{"level":30,"time":1755115374930,"pid":110613,"hostname":"Legion","reqId":"req-9","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115374932,"pid":110613,"hostname":"Legion","reqId":"req-9","res":{"statusCode":304},"responseTime":1.3415919989347458,"msg":"request completed"}
+{"level":30,"time":1755115374965,"pid":110613,"hostname":"Legion","reqId":"req-a","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115374966,"pid":110613,"hostname":"Legion","reqId":"req-a","res":{"statusCode":304},"responseTime":0.5584710016846657,"msg":"request completed"}
+{"level":30,"time":1755115375405,"pid":110613,"hostname":"Legion","reqId":"req-b","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115375406,"pid":110613,"hostname":"Legion","reqId":"req-b","res":{"statusCode":304},"responseTime":0.8388569988310337,"msg":"request completed"}
+{"level":30,"time":1755115375448,"pid":110613,"hostname":"Legion","reqId":"req-c","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115375449,"pid":110613,"hostname":"Legion","reqId":"req-c","res":{"statusCode":304},"responseTime":0.9082880020141602,"msg":"request completed"}
+{"level":30,"time":1755115375681,"pid":110613,"hostname":"Legion","reqId":"req-d","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115375684,"pid":110613,"hostname":"Legion","reqId":"req-d","res":{"statusCode":304},"responseTime":2.126749001443386,"msg":"request completed"}
+{"level":30,"time":1755115375731,"pid":110613,"hostname":"Legion","reqId":"req-e","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115375732,"pid":110613,"hostname":"Legion","reqId":"req-e","res":{"statusCode":304},"responseTime":0.9986930005252361,"msg":"request completed"}
+{"level":30,"time":1755115375862,"pid":110613,"hostname":"Legion","reqId":"req-f","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115375864,"pid":110613,"hostname":"Legion","reqId":"req-f","res":{"statusCode":304},"responseTime":1.3211660012602806,"msg":"request completed"}
+{"level":30,"time":1755115375897,"pid":110613,"hostname":"Legion","reqId":"req-g","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115375898,"pid":110613,"hostname":"Legion","reqId":"req-g","res":{"statusCode":304},"responseTime":1.0157999992370605,"msg":"request completed"}
+{"level":30,"time":1755115376023,"pid":110613,"hostname":"Legion","reqId":"req-h","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376026,"pid":110613,"hostname":"Legion","reqId":"req-h","res":{"statusCode":304},"responseTime":2.060419000685215,"msg":"request completed"}
+{"level":30,"time":1755115376061,"pid":110613,"hostname":"Legion","reqId":"req-i","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376062,"pid":110613,"hostname":"Legion","reqId":"req-i","res":{"statusCode":304},"responseTime":0.5046169981360435,"msg":"request completed"}
+{"level":30,"time":1755115376187,"pid":110613,"hostname":"Legion","reqId":"req-j","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376188,"pid":110613,"hostname":"Legion","reqId":"req-j","res":{"statusCode":304},"responseTime":0.9947619996964931,"msg":"request completed"}
+{"level":30,"time":1755115376220,"pid":110613,"hostname":"Legion","reqId":"req-k","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376220,"pid":110613,"hostname":"Legion","reqId":"req-k","res":{"statusCode":304},"responseTime":0.6249839998781681,"msg":"request completed"}
+{"level":30,"time":1755115376365,"pid":110613,"hostname":"Legion","reqId":"req-l","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376366,"pid":110613,"hostname":"Legion","reqId":"req-l","res":{"statusCode":304},"responseTime":0.7670640014111996,"msg":"request completed"}
+{"level":30,"time":1755115376389,"pid":110613,"hostname":"Legion","reqId":"req-m","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376390,"pid":110613,"hostname":"Legion","reqId":"req-m","res":{"statusCode":304},"responseTime":0.8523540012538433,"msg":"request completed"}
+{"level":30,"time":1755115376509,"pid":110613,"hostname":"Legion","reqId":"req-n","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376509,"pid":110613,"hostname":"Legion","reqId":"req-n","res":{"statusCode":304},"responseTime":0.7243070006370544,"msg":"request completed"}
+{"level":30,"time":1755115376545,"pid":110613,"hostname":"Legion","reqId":"req-o","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376545,"pid":110613,"hostname":"Legion","reqId":"req-o","res":{"statusCode":304},"responseTime":0.7466159984469414,"msg":"request completed"}
+{"level":30,"time":1755115376659,"pid":110613,"hostname":"Legion","reqId":"req-p","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376659,"pid":110613,"hostname":"Legion","reqId":"req-p","res":{"statusCode":304},"responseTime":0.4625370018184185,"msg":"request completed"}
+{"level":30,"time":1755115376686,"pid":110613,"hostname":"Legion","reqId":"req-q","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376687,"pid":110613,"hostname":"Legion","reqId":"req-q","res":{"statusCode":304},"responseTime":0.581336997449398,"msg":"request completed"}
+{"level":30,"time":1755115376801,"pid":110613,"hostname":"Legion","reqId":"req-r","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376802,"pid":110613,"hostname":"Legion","reqId":"req-r","res":{"statusCode":304},"responseTime":1.1463279984891415,"msg":"request completed"}
+{"level":30,"time":1755115376837,"pid":110613,"hostname":"Legion","reqId":"req-s","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376837,"pid":110613,"hostname":"Legion","reqId":"req-s","res":{"statusCode":304},"responseTime":0.4752430021762848,"msg":"request completed"}
+{"level":30,"time":1755115376932,"pid":110613,"hostname":"Legion","reqId":"req-t","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376933,"pid":110613,"hostname":"Legion","reqId":"req-t","res":{"statusCode":304},"responseTime":0.6984209977090359,"msg":"request completed"}
+{"level":30,"time":1755115376964,"pid":110613,"hostname":"Legion","reqId":"req-u","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115376964,"pid":110613,"hostname":"Legion","reqId":"req-u","res":{"statusCode":304},"responseTime":0.5722270011901855,"msg":"request completed"}
+{"level":30,"time":1755115377082,"pid":110613,"hostname":"Legion","reqId":"req-v","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115377083,"pid":110613,"hostname":"Legion","reqId":"req-v","res":{"statusCode":304},"responseTime":0.6752120032906532,"msg":"request completed"}
+{"level":30,"time":1755115377114,"pid":110613,"hostname":"Legion","reqId":"req-w","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115377115,"pid":110613,"hostname":"Legion","reqId":"req-w","res":{"statusCode":304},"responseTime":0.521501999348402,"msg":"request completed"}
+{"level":30,"time":1755115385845,"pid":110613,"hostname":"Legion","reqId":"req-x","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115385846,"pid":110613,"hostname":"Legion","reqId":"req-x","res":{"statusCode":304},"responseTime":0.9021279998123646,"msg":"request completed"}
+{"level":30,"time":1755115385872,"pid":110613,"hostname":"Legion","reqId":"req-y","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115385872,"pid":110613,"hostname":"Legion","reqId":"req-y","res":{"statusCode":304},"responseTime":0.48354800045490265,"msg":"request completed"}
+{"level":30,"time":1755115387886,"pid":110613,"hostname":"Legion","reqId":"req-z","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115387886,"pid":110613,"hostname":"Legion","reqId":"req-z","res":{"statusCode":304},"responseTime":0.4827050007879734,"msg":"request completed"}
+{"level":30,"time":1755115388046,"pid":110613,"hostname":"Legion","reqId":"req-10","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115388047,"pid":110613,"hostname":"Legion","reqId":"req-10","res":{"statusCode":304},"responseTime":0.40713000297546387,"msg":"request completed"}
+{"level":30,"time":1755115398065,"pid":110613,"hostname":"Legion","reqId":"req-11","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115398066,"pid":110613,"hostname":"Legion","reqId":"req-11","res":{"statusCode":304},"responseTime":0.7120030000805855,"msg":"request completed"}
+{"level":30,"time":1755115398259,"pid":110613,"hostname":"Legion","reqId":"req-12","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55830},"msg":"incoming request"}
+{"level":30,"time":1755115398260,"pid":110613,"hostname":"Legion","reqId":"req-12","res":{"statusCode":304},"responseTime":0.6160850003361702,"msg":"request completed"}
+{"level":30,"time":1755115437211,"pid":111114,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115437212,"pid":111114,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115438902,"pid":111157,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115438902,"pid":111157,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115440048,"pid":111157,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55136},"msg":"incoming request"}
+{"level":30,"time":1755115440064,"pid":111157,"hostname":"Legion","reqId":"req-1","res":{"statusCode":304},"responseTime":14.869952999055386,"msg":"request completed"}
+{"level":30,"time":1755115440092,"pid":111157,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":55136},"msg":"incoming request"}
+{"level":30,"time":1755115440093,"pid":111157,"hostname":"Legion","reqId":"req-2","res":{"statusCode":304},"responseTime":1.4980099983513355,"msg":"request completed"}
+{"level":30,"time":1755115457265,"pid":111226,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115457265,"pid":111226,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115459946,"pid":111266,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115459946,"pid":111266,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115462311,"pid":111285,"hostname":"Legion","msg":"Server listening at http://127.0.0.1:6969"}
+{"level":30,"time":1755115462311,"pid":111285,"hostname":"Legion","msg":"Server listening at http://192.168.1.6:6969"}
+{"level":30,"time":1755115469022,"pid":111285,"hostname":"Legion","reqId":"req-1","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":40348},"msg":"incoming request"}
+{"level":30,"time":1755115469031,"pid":111285,"hostname":"Legion","reqId":"req-1","res":{"statusCode":200},"responseTime":7.991018000990152,"msg":"request completed"}
+{"level":30,"time":1755115477140,"pid":111285,"hostname":"Legion","reqId":"req-2","req":{"method":"GET","url":"/api/game","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42696},"msg":"incoming request"}
+{"level":30,"time":1755115477142,"pid":111285,"hostname":"Legion","reqId":"req-2","msg":"Route GET:/api/game not found"}
+{"level":30,"time":1755115477142,"pid":111285,"hostname":"Legion","reqId":"req-2","res":{"statusCode":404},"responseTime":2.0224049985408783,"msg":"request completed"}
+{"level":30,"time":1755115481985,"pid":111285,"hostname":"Legion","reqId":"req-3","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42702},"msg":"incoming request"}
+{"level":30,"time":1755115481987,"pid":111285,"hostname":"Legion","reqId":"req-3","res":{"statusCode":304},"responseTime":1.685028001666069,"msg":"request completed"}
+{"level":30,"time":1755115482283,"pid":111285,"hostname":"Legion","reqId":"req-4","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":42702},"msg":"incoming request"}
+{"level":30,"time":1755115482285,"pid":111285,"hostname":"Legion","reqId":"req-4","res":{"statusCode":200},"responseTime":1.4726670011878014,"msg":"request completed"}
+{"level":30,"time":1755115798423,"pid":111285,"hostname":"Legion","reqId":"req-5","req":{"method":"GET","url":"/","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":39138},"msg":"incoming request"}
+{"level":30,"time":1755115798424,"pid":111285,"hostname":"Legion","reqId":"req-5","res":{"statusCode":304},"responseTime":0.9739850014448166,"msg":"request completed"}
+{"level":30,"time":1755115815330,"pid":111285,"hostname":"Legion","reqId":"req-6","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":39138},"msg":"incoming request"}
+{"level":30,"time":1755115815331,"pid":111285,"hostname":"Legion","reqId":"req-6","res":{"statusCode":304},"responseTime":1.047740001231432,"msg":"request completed"}
+{"level":30,"time":1755115815336,"pid":111285,"hostname":"Legion","reqId":"req-7","req":{"method":"GET","url":"/js/app.js","host":"localhost:6969","remoteAddress":"127.0.0.1","remotePort":59438},"msg":"incoming request"}
+{"level":30,"time":1755115815337,"pid":111285,"hostname":"Legion","reqId":"req-7","res":{"statusCode":200},"responseTime":1.1608840003609657,"msg":"request completed"}

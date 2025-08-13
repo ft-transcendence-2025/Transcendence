@@ -7,7 +7,6 @@ export class Game {
             width: 1000,
             height: 500,
         };
-        this.startTime = performance.now();
         this.paddleLeft = new Paddle(this.canvas, PaddleSide.Left);
         this.paddleRight = new Paddle(this.canvas, PaddleSide.Right);
         this.ball = new Ball(this.canvas);
@@ -16,6 +15,10 @@ export class Game {
             paddleLeft: this.paddleLeft.state,
             paddleRight: this.paddleRight.state,
             ball: this.ball.state,
+            score: {
+                player1: 0,
+                player2: 0,
+            }
         };
     }
     ;

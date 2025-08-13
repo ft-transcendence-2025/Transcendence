@@ -7,6 +7,11 @@ export interface BallState {
   radius: number,
 };
 
+enum Player {
+  player1 = 1,
+  player2 = 2,
+}
+
 export class Ball {
   private color: string = "#FE4E00";
 
@@ -20,7 +25,7 @@ export class Ball {
   private defaultSpeed: number = 8;
   public currentSpeed: number = this.defaultSpeed / 2;;
 
-  private firstHit: boolean = true;
+  private firstHit: boolean = false;
   private startTime: DOMHighResTimeStamp = performance.now();;
   public isRunning: boolean = false;
 
@@ -33,15 +38,12 @@ export class Ball {
   }
 
   // Check if a player scored a point
-  public pointScored(canvas: Canvas): boolean {
-    if (this.state.x + this.radius < 0) {
-      // Player 2 Scored
-      return true;
-    } else if (this.state.x - this.radius > canvas.width) {
-      // Player 1 Scored
-      return true;
-    }
-    return false;
+  public pointScored(canvas: Canvas): Player.player1 | Player.player2 | 0 {
+    if (this.state.x + this.radius < 0)
+      return Player.player2;
+    else if (this.state.x - this.radius > canvas.width)
+      return Player.player1;
+    return 0;
   }
 
   public move(): void {
@@ -69,6 +71,7 @@ export class Ball {
   public reset(canvas: Canvas): void {
     this.startTime = performance.now();
     this.firstHit = false;
+    this.currentSpeed = this.defaultSpeed;
     this.state.x = canvas.width / 2;
     this.state.y = canvas.height / 2;
   }
@@ -101,13 +104,12 @@ export class Ball {
       if (paddle.side === PaddleSide.Left) {
         this.state.x = paddle.state.position.x + paddle.width + this.radius;
         this.angle = clamped * maxBounceAngle;
-        this.increaseBallSpeed();
       }
       else if (paddle.side === PaddleSide.Right) {
         this.state.x = paddle.state.position.x - this.radius;
         this.angle = Math.PI - clamped * maxBounceAngle; // Set angle to PI - bounceAngle (leftward)
-        this.increaseBallSpeed();
       }
+      this.increaseBallSpeed();
     }
   }
 }
