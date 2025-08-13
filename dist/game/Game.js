@@ -1,19 +1,21 @@
-import { canvas } from "./utils.js";
 import { Paddle, PaddleSide } from "./Paddle.js";
 import { Ball } from "./Ball.js";
 ;
 export class Game {
     constructor() {
-        this.canvas = canvas;
+        this.canvas = {
+            width: 1000,
+            height: 500,
+        };
         this.startTime = performance.now();
-        this.paddleLeft = new Paddle(canvas, PaddleSide.Left);
-        this.paddleRight = new Paddle(canvas, PaddleSide.Right);
-        this.ball = new Ball(canvas);
+        this.paddleLeft = new Paddle(this.canvas, PaddleSide.Left);
+        this.paddleRight = new Paddle(this.canvas, PaddleSide.Right);
+        this.ball = new Ball(this.canvas);
         this.gameState = {
             canvas: this.canvas,
-            paddleLeft: this.paddleLeft.positionState,
-            paddleRight: this.paddleRight.positionState,
-            ballPosition: this.ball.positionState,
+            paddleLeft: this.paddleLeft.state,
+            paddleRight: this.paddleRight.state,
+            ball: this.ball.state,
         };
     }
     ;

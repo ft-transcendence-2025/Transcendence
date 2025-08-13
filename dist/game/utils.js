@@ -1,8 +1,4 @@
 ;
-export const canvas = {
-    width: 1000,
-    height: 500,
-};
 export function degreesToRadians(degree) {
     return degree * Math.PI / 180;
 }

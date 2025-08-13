@@ -3,11 +3,6 @@ export interface Canvas {
   height: number,
 };
 
-export const canvas: Canvas = {
-  width: 1000,
-  height: 500,
-}
-
 export function degreesToRadians(degree: number): number {
   return degree * Math.PI/180;
 }

@@ -5,7 +5,7 @@ import path from "node:path";
 import { routes } from "./routes.js";
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { socketConnetions } from "./websocket.js";
+import { SocketConn } from "./websocket.js";
 
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -35,4 +35,4 @@ fastify.listen({ port: 6969, host: "0.0.0.0" }, (err, address) => {
   console.log("Listening on:", address);
 })
 
-socketConnetions(wss);
+const socketConne = new SocketConn(wss);
