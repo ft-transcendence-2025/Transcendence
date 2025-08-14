@@ -13,7 +13,7 @@ export interface User {
 
 interface LoginResponse {
   // export only if used in other files
-  token: string;
+  accessToken: string;
   user: {
     id: number;
     username: string;
