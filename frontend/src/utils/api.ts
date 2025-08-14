@@ -30,7 +30,6 @@ async function refreshAccessToken(): Promise<boolean> {
       method: "POST",
       credentials: "include", // sends cookie with refresh token
     });
-    console.log("API res para refresh: ", res);
     if (!res.ok) return false;
 
     const data = await res.json();
@@ -49,7 +48,6 @@ export async function request<T>(
   url: string,
   options: RequestInit = {},
 ): Promise<T> {
-  console.log("DEBUG: request wrapper called..");
   let response = await fetch(url, {
     ...options,
     headers: {
@@ -60,9 +58,7 @@ export async function request<T>(
   });
 
   if (response.status === 401) {
-    console.log("DEBUG: PEDIDO COM STATUS 401, NAO AUTORIZADO..");
     const refreshed = await refreshAccessToken();
-    console.log("resultado da chamada para o refreshToken: ", refreshed);
     if (refreshed) {
       response = await fetch(url, {
         ...options,
