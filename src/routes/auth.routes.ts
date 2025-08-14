@@ -13,7 +13,7 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
         // @ts-ignore
         const token = await reply.accessTokenJwtSign(
           { id: user.id, email: user?.email, username: user.username },
-          { expiresIn: "10m" }
+          { expiresIn: "1m" }
         );
         // @ts-ignore
         const refreshToken = await reply.refreshTokenJwtSign(
@@ -26,7 +26,7 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
             secure: true,
           })
           .code(200)
-          .send({ token });
+          .send({ accessToken: token });
       } catch (error: any) {
         reply
           .status(error.response?.status || 500)
@@ -43,13 +43,12 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
     async (req: FastifyRequest, reply: FastifyReply) => {
       // @ts-ignore
       const user = await req.refreshTokenJwtDecode({ onlyCookie: true });
-      console.log("este e o user: ", user);
       // @ts-ignore
       const token = await reply.accessTokenJwtSign(
         { id: user.id, email: user?.email, username: user.username },
-        { expiresIn: "10m" }
+        { expiresIn: "1m" }
       );
-      reply.code(200).send({ token });
+      reply.code(200).send({ accessToken: token });
     }
   );
 
@@ -63,7 +62,7 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
         // @ts-ignore
         const token = await reply.accessTokenJwtSign(
           { id: user.id, email: user?.email, username: user.username },
-          { expiresIn: "10m" }
+          { expiresIn: "1m" }
         );
         // @ts-ignore
         const refreshToken = await reply.refreshTokenJwtSign(
@@ -76,7 +75,7 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
             secure: true,
           })
           .code(201)
-          .send({ token });
+          .send({ accessToken: token });
       } catch (error: any) {
         reply
           .status(error.response?.status || 500)
