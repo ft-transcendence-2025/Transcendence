@@ -51,7 +51,7 @@ export async function openLoginModal(container: HTMLElement | null = null) {
 
     try {
       const response = await login(data);
-      localStorage.setItem("authToken", response.token);
+      localStorage.setItem("authToken", response.accessToken);
       // alert("Login Successful!"); //debug
       closeModal();
 
