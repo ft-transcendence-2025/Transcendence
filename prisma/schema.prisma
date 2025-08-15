@@ -15,6 +15,7 @@ model Conversation {
   id        String      @id @default(uuid())
   user1Id   String
   user2Id   String
+  delivered      Boolean      @default(false) // Track if the message was delivered
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -32,9 +33,9 @@ model Message {
   type           MessageType @default(TEXT)
   senderId       String
   conversationId String
-  isRead         Boolean     @default(false)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  delivered      Boolean      @default(false) // Track if the message was delivered
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   // Relations
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
