@@ -1,3 +1,4 @@
+import { get } from "http";
 import prisma from "../lib/prisma";
 
 const gameIdConnection = new Map<string, any>(); // Map to store gameId and WebSocket connection
@@ -33,10 +34,15 @@ export const LobbyHandler = (connection: any, request: any) => {
   });
 
 
-  connection.on('close', () => {
-    console.log(`User ${userId} disconnected`);
-    gameIdConnection.delete(gameId);
-  });
+connection.on('close', () => {
+	console.log(`User ${userId} disconnected`);
+	const connections = gameIdConnection.get(gameId) || [];
+	const index = connections.findIndex((conn: any) => conn.connection === connection);
+	if (index !== -1) {
+		connections.splice(index, 1); // Remove only the disconnected user
+		gameIdConnection.set(gameId, connections); // Update the map
+	}
+});
 };
 
 // Function to send pending messages to a user
