@@ -70,18 +70,35 @@ export const saveUserAvatar = async (
   const formData = new FormData();
   formData.append("avatar", avatarFile);
 
-  // Only include Authorization header for file uploads, let browser set Content-Type (for multipart)
+  const token =
+    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
   const headers: Record<string, string> = {};
-  const token = localStorage.getItem("authToken");
+
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  await request(`${PROFILE_BASE_URL}/${username}/avatar`, {
+  // use fetch directly for file uploads to avoid issues with content-type header
+  const response = await fetch(`${PROFILE_BASE_URL}/${username}/avatar`, {
     method: "POST",
-    headers: headers,
+    headers: headers, // Only Authorization header, no Content-Type
     body: formData,
+    credentials: "include",
   });
+
+  if (!response.ok) {
+    let errorMessage = `HTTP error! status: ${response.status}`;
+    try {
+      const contentType = response.headers.get("content-type");
+      if (contentType?.includes("application/json")) {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } else {
+        errorMessage = (await response.text()) || errorMessage;
+      }
+    } catch {}
+    throw new Error(errorMessage);
+  }
 };
 
 // Available avatars from assets
@@ -99,8 +116,10 @@ export const JUNGLE_AVATARS = [
 ];
 
 // Helper function to convert jungle avatar to File object for upload
-/* export const getJungleAvatarFile = async (avatarName: string): Promise<File> => {
+export const getJungleAvatarFile = async (
+  avatarName: string,
+): Promise<File> => {
   const response = await fetch(`/assets/avatars/${avatarName}`);
   const blob = await response.blob();
   return new File([blob], avatarName, { type: blob.type });
-}; */
+};

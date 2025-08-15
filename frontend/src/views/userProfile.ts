@@ -5,6 +5,8 @@ import {
   createProfile,
   updateProfile,
   getUserAvatar,
+  saveUserAvatar,
+  getJungleAvatarFile,
   CreateProfileRequest,
 } from "../services/profileService.js";
 
@@ -271,8 +273,11 @@ function showErrorMessage(message: string) {
   }
 }
 
-// Avatar Modal Functions
+// Avatar options: default options or custom file
 let selectedAvatar: string | null = null;
+let customAvatarFile: File | null = null;
+
+// Avatar Modal Functions
 
 function openAvatarModal() {
   const modal = document.getElementById("avatar-modal");
@@ -280,6 +285,7 @@ function openAvatarModal() {
     modal.classList.remove("hidden");
     modal.classList.add("flex");
     selectedAvatar = null;
+    customAvatarFile = null;
     updateSaveButton();
   }
 }
@@ -290,7 +296,9 @@ function closeAvatarModal() {
     modal.classList.add("hidden");
     modal.classList.remove("flex");
     selectedAvatar = null;
+    customAvatarFile = null;
     clearAvatarSelections();
+    clearCustomFileInput();
   }
 }
 
@@ -302,12 +310,74 @@ function clearAvatarSelections() {
   });
 }
 
+function clearCustomFileInput() {
+  const fileInput = document.getElementById(
+    "custom-avatar-upload",
+  ) as HTMLInputElement;
+  if (fileInput) {
+    fileInput.value = "";
+  }
+}
+
 function updateSaveButton() {
   const saveBtn = document.getElementById(
     "save-avatar-btn",
   ) as HTMLButtonElement;
   if (saveBtn) {
-    saveBtn.disabled = !selectedAvatar;
+    saveBtn.disabled = !(selectedAvatar || customAvatarFile);
+  }
+}
+
+// Change user avatar to selected jungle avatar or custom file
+async function changeAvatar(username: string) {
+  try {
+    // Show loading state
+    const saveBtn = document.getElementById(
+      "save-avatar-btn",
+    ) as HTMLButtonElement;
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Saving...";
+    }
+
+    let avatarFile: File;
+
+    if (customAvatarFile) {
+      // Use custom uploaded file
+      avatarFile = customAvatarFile;
+    } else if (selectedAvatar) {
+      // Convert selected jungle avatar to File object
+      avatarFile = await getJungleAvatarFile(selectedAvatar);
+    } else {
+      throw new Error("No avatar selected");
+    }
+
+    // Save avatar to backend
+    await saveUserAvatar(username, avatarFile);
+
+    // Update the profile avatar image in the UI
+    const avatarImg = document.getElementById(
+      "profile-avatar",
+    ) as HTMLImageElement;
+    if (avatarImg) {
+      // Add cache buster to force reload
+      avatarImg.src = `${getUserAvatar(username)}?t=${Date.now()}`;
+    }
+
+    showSuccessMessage("Avatar updated successfully!");
+    closeAvatarModal();
+  } catch (error: any) {
+    console.error("Error changing avatar:", error);
+    showErrorMessage(`Error updating avatar: ${error.message}`);
+  } finally {
+    // Reset save button
+    const saveBtn = document.getElementById(
+      "save-avatar-btn",
+    ) as HTMLButtonElement;
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save Avatar";
+    }
   }
 }
 
@@ -318,6 +388,8 @@ function setupAvatarModalEventListeners(username: string) {
     option.addEventListener("click", () => {
       // Clear previous selections
       clearAvatarSelections();
+      clearCustomFileInput();
+      customAvatarFile = null;
 
       // Select this avatar
       option.classList.remove("border-transparent");
@@ -331,21 +403,57 @@ function setupAvatarModalEventListeners(username: string) {
     });
   });
 
+  // Custom file upload
+  const fileInput = document.getElementById(
+    "custom-avatar-upload",
+  ) as HTMLInputElement;
+  if (fileInput) {
+    fileInput.addEventListener("change", (e) => {
+      const target = e.target as HTMLInputElement;
+      const file = target.files?.[0];
+
+      if (file) {
+        // Validate file type
+        if (!file.type.startsWith("image/")) {
+          showErrorMessage("Please select a valid image file");
+          target.value = "";
+          return;
+        }
+
+        // Validate file size (limit to 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+          showErrorMessage("Image file must be smaller than 2MB");
+          target.value = "";
+          return;
+        }
+
+        // Clear preset avatar selection
+        clearAvatarSelections();
+        selectedAvatar = null;
+
+        // Set custom file
+        customAvatarFile = file;
+        updateSaveButton();
+      } else {
+        customAvatarFile = null;
+        updateSaveButton();
+      }
+    });
+  }
+
   // Cancel button
   const cancelBtn = document.getElementById("cancel-avatar-btn");
   if (cancelBtn) {
     cancelBtn.addEventListener("click", closeAvatarModal);
   }
 
-  // Save button - just close modal for now
+  // Save button - implement avatar change
   const saveBtn = document.getElementById("save-avatar-btn");
   if (saveBtn) {
-    saveBtn.addEventListener("click", () => {
-      // TO DO - save selected avatar to profile
-      // ...
-      // ...
-      showSuccessMessage("Avatar selection saved! (Placeholder - no backend)");
-      closeAvatarModal();
+    saveBtn.addEventListener("click", async () => {
+      if (selectedAvatar || customAvatarFile) {
+        await changeAvatar(username);
+      }
     });
   }
 
