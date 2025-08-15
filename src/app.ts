@@ -1,5 +1,4 @@
 import Fastify, { fastify, FastifyRegister, FastifyRequest } from 'fastify';
-import { WebSocket } from '@fastify/websocket';
 import websocket from '@fastify/websocket';
 import conversationRoutes from './routes/conversation.route';
 import { PrivateChatHandler } from './controllers/privatechat.controller';
