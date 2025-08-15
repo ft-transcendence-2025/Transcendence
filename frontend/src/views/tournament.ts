@@ -1,6 +1,7 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserNickname } from "../utils/jwtUtils.js";
+import { getUserNickname } from "../utils/userUtils.js";
+import { getUserAvatar } from "../utils/userUtils.js";
 
 // Tournament data structure
 interface TournamentData {
@@ -84,7 +85,7 @@ function enablePlayerCustomization(enable: boolean) {
       inputField.disabled = !enable;
       if (!enable) {
         inputField.style.cursor = "not-allowed";
-      } 
+      }
     }
 
     if (avatarContainer) {
@@ -100,13 +101,14 @@ function enablePlayerCustomization(enable: boolean) {
 async function populateRemotePlayers() {
   // Get current user
   const currentNickname = await getUserNickname();
+  const currentAvatarUrl = await getUserAvatar();
 
   // Mock data - this has to come from API !!!!!!!
   const remotePlayers = [
-    { username: currentNickname || "You", avatar: "panda.png" },
-    { username: "Player 2", avatar: "gorilla.png" },
-    { username: "Player 3", avatar: "meerkat.png" },
-    { username: "Player 4", avatar: "rabbit.png" },
+    { username: currentNickname || "You", avatar: currentAvatarUrl, isUrl: true },
+    { username: "Player 2", avatar: "gorilla.png", isUrl: false },
+    { username: "Player 3", avatar: "meerkat.png", isUrl: false },
+    { username: "Player 4", avatar: "rabbit.png", isUrl: false },
   ];
 
   // Update player names and avatars in the UI
@@ -123,9 +125,19 @@ async function populateRemotePlayers() {
       playerNameElement.placeholder = player.username;
     }
 
-	// Mock data - set avatars for remote players from their profiles !!!!!
+    // Set avatar based on whether it's a URL or filename
     if (avatarImg) {
-      avatarImg.src = `assets/avatars/${player.avatar}`;
+      if (player.isUrl) {
+        // For real user avatars, use the full API URL
+        avatarImg.src = player.avatar;
+        // If avatar fails default to panda
+        avatarImg.onerror = () => {
+          avatarImg.src = "/assets/avatars/panda.png";
+        };
+      } else {
+        // For mock data, use default asset images
+        avatarImg.src = `/assets/avatars/${player.avatar}`;
+      }
     }
   });
 }
@@ -255,13 +267,12 @@ async function collectRemoteTournamentData() {
     type: "remote",
     players: players,
   };
- // To do...
- // ...
- // ...
+  // To do...
+  // ...
+  // ...
 }
 
 // Export functions for tournament tree to use
 export function getTournamentData(): TournamentData | null {
   return tournamentData ? { ...tournamentData } : null;
 }
-

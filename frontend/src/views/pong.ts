@@ -1,6 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserNickname } from "../utils/jwtUtils.js";
+import { getUserNickname } from "../utils/userUtils.js";
 import { Game } from "./game/Game.js";
 import { GameMode, PaddleSide } from "./game/utils.js";
 
@@ -29,7 +29,7 @@ export async function renderPong(container: HTMLElement | null) {
     game.gameLoop();
   } else if (gameMode === "remote") {
     // TODO: Implement remote game mode
-    const game = new Game(); 
+    const game = new Game();
     game.gameLoop();
   }
 }
@@ -81,19 +81,19 @@ function renderInstructionsModal() {
 
   // Show modal when instructions icon is clicked
   instructionsBtn?.addEventListener("click", () => {
-	instructionsModal?.classList.remove("hidden");
-	instructionsModal?.classList.add("flex");
+    instructionsModal?.classList.remove("hidden");
+    instructionsModal?.classList.add("flex");
   });
 
   // Hide modal when close x is clicked
   closeBtn?.addEventListener("click", () => {
-	instructionsModal?.classList.add("hidden");
-	instructionsModal?.classList.remove("flex");
+    instructionsModal?.classList.add("hidden");
+    instructionsModal?.classList.remove("flex");
   });
 
   // Hide modal when "Got it!" button is clicked
   gotItBtn?.addEventListener("click", () => {
-	instructionsModal?.classList.add("hidden");
-	instructionsModal?.classList.remove("flex");
+    instructionsModal?.classList.add("hidden");
+    instructionsModal?.classList.remove("flex");
   });
 }

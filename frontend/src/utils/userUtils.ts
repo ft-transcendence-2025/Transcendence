@@ -1,4 +1,4 @@
-// JWT utility functions
+// JWT and User info utility functions
 
 export interface DecodedToken {
   id: number;
@@ -74,20 +74,39 @@ export function getCurrentUsername(): string | null {
 export async function getUserNickname(username?: string): Promise<string> {
   try {
     const targetUsername = username || getCurrentUsername();
-    
+
     if (!targetUsername) {
       return "Guest";
     }
 
     // Get profile to fetch nickname
-    const { getProfileByUsername } = await import("../services/profileService.js");
+    const { getProfileByUsername } = await import(
+      "../services/profileService.js"
+    );
     const profile = await getProfileByUsername(targetUsername);
-    
+
     // Return nickname if available, otherwise fallback to username
     return profile.nickName || targetUsername;
   } catch (error) {
     // If profile fetch fails, fallback to username or Guest
     console.warn("Could not fetch profile for display name:", error);
     return username || getCurrentUsername() || "Guest";
+  }
+}
+
+export async function getUserAvatar(username?: string): Promise<string> {
+  try {
+    const targetUsername = username || getCurrentUsername();
+
+    if (!targetUsername) {
+      return "/assets/avatars/panda.png"; // Fallback avatar
+    }
+
+    // Get avatar URL from profile service
+    const { getUserAvatar } = await import("../services/profileService.js");
+    return getUserAvatar(targetUsername);
+  } catch (error) {
+    console.warn("Could not fetch user avatar:", error);
+    return "/assets/avatars/panda.png"; // Fallback avatar
   }
 }

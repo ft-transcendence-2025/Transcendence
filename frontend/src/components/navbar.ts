@@ -1,5 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
+import { getUserAvatar } from "../utils/userUtils.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
   if (!container) return;
@@ -22,6 +23,24 @@ export async function renderNavbar(container: HTMLElement | null) {
     logoutLink?.classList.remove("hidden");
     dashboardLink?.classList.remove("hidden");
     userMenu?.classList.remove("hidden");
+
+    // Set user avatar
+    const userAvatar = document.getElementById(
+      "user-menu-avatar",
+    ) as HTMLImageElement;
+    if (userAvatar) {
+      try {
+        const avatarUrl = await getUserAvatar();
+        userAvatar.src = avatarUrl;
+        // Default to panda on error
+        userAvatar.onerror = () => {
+          userAvatar.src = "/assets/avatars/panda.png";
+        };
+      } catch (error) {
+        console.warn("Could not load user avatar:", error);
+        userAvatar.src = "/assets/avatars/panda.png";
+      }
+    }
   } else {
     loginLink?.classList.remove("hidden");
     registerLink?.classList.remove("hidden");
