@@ -1,5 +1,5 @@
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername } from "../utils/jwtUtils.js";
+import { getCurrentUsername } from "../utils/userUtils.js";
 import {
   getProfileByUsername,
   createProfile,
