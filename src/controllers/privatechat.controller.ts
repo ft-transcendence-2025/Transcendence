@@ -16,42 +16,45 @@ export const PrivateChatHandler = (connection: any, request: any) => {
   sendPendingMessages(userId, connection);
 
   connection.on('message', async (message: any) => {
-    const { conversationId, content, type } = JSON.parse(message.toString());
-    if (!conversationId || !content || !type) {
+    const { recipientId, content, type } = JSON.parse(message.toString());
+    if (!recipientId || !content ) {
       console.error(`Invalid message format: ${message.toString()}`);
       return;
     }
 
-    // Find the conversation first
-    const conversation = await prisma.conversation.findUnique({
-      where: { id: conversationId },
+    // Find or create the conversation between userId and recipientId
+    let conversation = await prisma.conversation.findFirst({
+      where: {
+        OR: [
+          { user1Id: userId, user2Id: recipientId },
+          { user1Id: recipientId, user2Id: userId },
+        ],
+      },
     });
 
     if (!conversation) {
-      console.error(`Conversation ${conversationId} not found`);
-      return;
+      conversation = await prisma.conversation.create({
+        data: {
+          user1Id: userId,
+          user2Id: recipientId,
+        },
+      });
+      console.log(`Created new conversation between ${userId} and ${recipientId}`);
     }
 
-    // Validate user participation
-    if (conversation.user1Id !== userId && conversation.user2Id !== userId) {
-      console.error(`User ${userId} is not a participant in conversation ${conversationId}`);
-      return;
-    }
-
-    // Save the message only after validation
+    // Save the message
     const savedMessage = await prisma.message.create({
       data: {
         senderId: userId,
-        conversationId,
+        conversationId: conversation.id,
         content,
         type,
         delivered: false,
       },
     });
 
-    console.log(`Message from ${userId} in conversation ${conversationId}: ${content}`);
+    console.log(`Message from ${userId} to ${recipientId} in conversation ${conversation.id}: ${content}`);
 
-    const recipientId = conversation.user1Id === userId ? conversation.user2Id : conversation.user1Id;
     const recipientConnection = connectedUsers.get(recipientId);
     if (recipientConnection) {
       recipientConnection.send(JSON.stringify({
@@ -73,7 +76,6 @@ export const PrivateChatHandler = (connection: any, request: any) => {
     connectedUsers.delete(userId);
   });
 };
-
 
 
 // Function to send pending messages to a user
