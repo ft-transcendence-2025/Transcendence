@@ -7,6 +7,7 @@ import userProxy from "./routes/user.proxy";
 import profileProxy from "./routes/profile.proxy";
 import friendshipProxy from "./routes/friendship.proxy";
 import authRoutes from "./routes/auth.routes";
+import chatProxy from "./routes/chat.proxy";
 import metrics from "fastify-metrics";
 import fastifyCookie from "@fastify/cookie";
 // import chatRoutes from './routes/chat';
@@ -44,13 +45,11 @@ const routes = [
   { plugin: friendshipProxy },
   { plugin: authRoutes },
   { plugin: userProxy },
+  { plugin: chatProxy },
 ];
 
 routes.forEach((route) => {
   app.register(route.plugin);
 });
-
-// app.register(chatRoutes, { prefix: 'api/chat' });
-// app.register(gameRoutes, { prefix: '/game' });
 
 export default app;
