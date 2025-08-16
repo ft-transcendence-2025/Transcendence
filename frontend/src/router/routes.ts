@@ -8,6 +8,7 @@ import { renderPong } from "../views/pong.js";
 import { renderTournament } from "../views/tournament.js";
 import { renderUserProfile } from "../views/userProfile.js";
 import { renderTournamentTree } from "../views/tournamentTree.js";
+import { renderChat } from "../views/chat.js";
 
 interface Route {
   path: string;
@@ -16,6 +17,7 @@ interface Route {
 
 export const routes: Route[] = [
   { path: "/", action: renderHome },
+  { path: "/chat", action: renderChat },
   { path: "/404", action: render404 },
   { path: "/users", action: renderUserList },
   { path: "/profile", action: renderUserProfile },
