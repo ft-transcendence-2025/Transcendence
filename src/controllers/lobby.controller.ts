@@ -6,9 +6,9 @@
 		console.log(`Broadcasting message in game ${gameId} from user ${userId}: ${message.toString()}`);
 		if (connections) {
 			for (const { connection, userId: connUserId } of connections) {
-				if (connUserId !== userId) {
+				// if (connUserId !== userId) {
 					connection.send(`${userId}: ${message.toString()}`);
-				}
+				// }
 			}
 		}
 	};

@@ -13,7 +13,7 @@ export const PrivateChatHandler = (connection: any, request: any) => {
   connectedUsers.set(userId, connection);
 
   // Send pending messages to the user
-  sendPendingMessages(userId, connection);
+  // sendPendingMessages(userId, connection);
 
   connection.on("message", async (message: any) => {
     try {
