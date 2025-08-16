@@ -3,6 +3,7 @@ import websocket from '@fastify/websocket';
 import conversationRoutes from './routes/conversation.route';
 import { PrivateChatHandler } from './controllers/privatechat.controller';
 import { LobbyHandler } from './controllers/lobby.controller';
+import { chatHandler } from './controllers/chat.controller';
 
 const envToLogger = {
   development: {
@@ -29,8 +30,7 @@ app.register(websocket);
 
 
 app.register(async function (app) {
-  app.get('/ws/lobby', { websocket: true }, LobbyHandler);
-    app.get('/ws', { websocket: true }, PrivateChatHandler);
+    app.get('/ws', { websocket: true }, chatHandler);
 });
 
 
