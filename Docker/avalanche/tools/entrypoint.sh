@@ -68,4 +68,8 @@ else
 fi
 
 # Keep the container running.
-tail -f /dev/null
+#tail -f /dev/null
+
+# Start the API server
+echo "ℹ️  Avalanche Service [INFO]: Starting the Fastify API..."
+node ../api-management/server.js

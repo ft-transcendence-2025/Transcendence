@@ -10,6 +10,8 @@ services:
       - avalanche-data:/app/avalanche-data
     secrets:
       - avalanche_private_key
+    ports:
+      - "3000:3000"
     
 secrets:
   avalanche_private_key:
