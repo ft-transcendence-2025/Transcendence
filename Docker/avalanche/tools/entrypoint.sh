@@ -5,7 +5,7 @@ set -euo pipefail
 NODE_IP="${NODE_IP:-https://api.avax-test.network/ext/bc/C/rpc}"
 AVALANCHE_NETWORK="${AVALANCHE_NETWORK:-fuji}"
 MAX_ATTEMPTS=10
-CONTRACT_FOLDER="${CONTRACT_FOLDER:-avalanche-data/contract_address}"
+CONTRACT_FOLDER="${CONTRACT_FOLDER:-../avalanche-data/contract_address}"
 
 if [ ! -f /run/secrets/avalanche_private_key ]; then
   echo "❌  Avalanche Service [ERROR]: Secret files are missing (Wallet from Fuji Tesnet address with AVAX funds)."
@@ -36,6 +36,11 @@ if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
   exit 1
 fi
 
+# Compile the contract (generating the binaries, readable by the blockchain and building the ABI, that list functions and events).
+echo "ℹ️  Avalanche Service [INFO]: Compiling the contract..."
+npx hardhat compile
+echo "✅ Avalanche Service [SUCCESS]: Contract compiled."
+
 # Check if contract address file already exists
 if [ -n "$(ls -A "${CONTRACT_FOLDER}" 2>/dev/null)" ]; then
   echo "⚠️  Avalanche Service [INFO]: Contract already exists. Skipping deployment."
@@ -43,7 +48,10 @@ if [ -n "$(ls -A "${CONTRACT_FOLDER}" 2>/dev/null)" ]; then
     CONTRACT_FUJI_ADDRESS=$(cat "${CONTRACT_FOLDER}/${CONTRACT_FILE}")
     echo "       📍 Contract Address: $CONTRACT_FUJI_ADDRESS"
     echo "       📄 Contract Address saved to: ${CONTRACT_FOLDER}/${CONTRACT_FILE}"
-    tail -f /dev/null
+    
+    # Start the API server
+    echo "ℹ️  Avalanche Service [INFO]: Starting the Fastify API..."
+    node ../api-management/server.js
     exit 0
 fi
 
