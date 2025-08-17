@@ -1,242 +1,94 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Group Chat</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<!-- Chat Toggle Button -->
+<div class="fixed bottom-6 right-6 z-50">
+    <button id="chatToggle" class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:scale-105 transition-transform relative">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <!-- Notification badge -->
+        <div id="chatBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center hidden">
+            <span id="unreadCount">0</span>
+        </div>
+    </button>
+</div>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
-            height: 600px;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .chat-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .online-count {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 0.9rem;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background: #f8f9fa;
-        }
-
-        .message {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-            max-width: 70%;
-        }
-
-        .message.own {
-            align-self: flex-end;
-            flex-direction: row-reverse;
-        }
-
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-
-        .message-content {
-            background: white;
-            padding: 12px 16px;
-            border-radius: 18px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .message.own .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .message-author {
-            font-weight: 600;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-            color: #667eea;
-        }
-
-        .message.own .message-author {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .message-text {
-            line-height: 1.4;
-        }
-
-        .message-time {
-            font-size: 0.75rem;
-            color: #999;
-            margin-top: 4px;
-        }
-
-        .message.own .message-time {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .chat-input-container {
-            padding: 20px;
-            background: white;
-            border-top: 1px solid #e9ecef;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .chat-input {
-            flex: 1;
-            border: 2px solid #e9ecef;
-            border-radius: 25px;
-            padding: 12px 20px;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s ease;
-        }
-
-        .chat-input:focus {
-            border-color: #667eea;
-        }
-
-        .send-button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .send-button:hover {
-            transform: scale(1.05);
-        }
-
-        .send-button:active {
-            transform: scale(0.95);
-        }
-
-        .typing-indicator {
-            padding: 0 20px 10px;
-            color: #999;
-            font-size: 0.9rem;
-            font-style: italic;
-            display: none;
-        }
-
-        .system-message {
-            text-align: center;
-            color: #999;
-            font-size: 0.85rem;
-            padding: 5px 0;
-            font-style: italic;
-        }
-
-        /* Scrollbar styling */
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-    </style>
-</head>
-<body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <div class="chat-title">🎮 Transcendence Chat</div>
-            <div class="online-count">5 online</div>
+<!-- Chat Window -->
+<div id="chatWindow" class="fixed bottom-0 right-6 z-40 transform translate-y-full transition-transform duration-300 ease-in-out">
+    <div class="bg-white rounded-t-2xl shadow-2xl w-80 h-96 flex flex-col overflow-hidden border-l border-r border-t border-gray-200">
+        <!-- Chat Header -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="text-lg font-semibold">💬 Chat</div>
+                <div class="bg-white/20 px-2 py-1 rounded-full text-xs">
+                    <span id="onlineCount">5</span> online
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="minimizeChat" class="text-white/80 hover:text-white transition-colors">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+                <button id="closeChat" class="text-white/80 hover:text-white transition-colors">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
         </div>
 
-        <div class="chat-messages" id="chatMessages">
-            <div class="system-message">Initializing chat... 🔄</div>
+        <!-- Messages Area -->
+        <div class="flex-1 p-3 overflow-y-auto flex flex-col gap-3 bg-gray-50 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100" id="chatMessages">
+            <div class="text-center text-gray-500 text-sm py-2 italic">
+                Welcome to chat! 👋
+            </div>
         </div>
 
-        <div class="typing-indicator" id="typingIndicator">
+        <!-- Typing Indicator -->
+        <div class="px-3 pb-2 text-gray-500 text-xs italic hidden" id="typingIndicator">
             Someone is typing...
         </div>
 
-        <div class="chat-input-container">
+        <!-- Input Area -->
+        <div class="p-3 bg-white border-t border-gray-200 flex gap-2 items-center">
             <input 
                 type="text" 
-                class="chat-input" 
+                class="flex-1 border border-gray-300 rounded-full px-3 py-2 text-sm outline-none transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500" 
                 id="chatInput" 
-                placeholder="Type your message..."
+                placeholder="Type a message..."
                 maxlength="500"
             >
-            <button class="send-button" id="sendButton">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <button class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white border-none rounded-full w-8 h-8 flex items-center justify-center cursor-pointer transition-transform hover:scale-105 active:scale-95" id="sendButton">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"></line>
                     <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
                 </svg>
             </button>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<style>
+/* Custom scrollbar for Webkit browsers */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scrollbar-track-gray-100::-webkit-scrollbar-track {
+    background: #f3f4f6;
+}
+
+.scrollbar-thumb-gray-400::-webkit-scrollbar-thumb {
+    background: #9ca3af;
+    border-radius: 2px;
+}
+
+.scrollbar-thumb-gray-400::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+/* Smooth animations */
+#chatWindow {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+</style>

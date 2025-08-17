@@ -1,5 +1,6 @@
 import { renderNavbar } from "./components/navbar.js";
 import { router, navigateTo } from "./router/router.js";
+import { renderChat } from "./views/chat.js";
 
 // Function to close all open modals
 function closeAllModals() {
@@ -13,6 +14,7 @@ function closeAllModals() {
 // set initial app layout
 const navbarElement = document.getElementById("navbar");
 const contentElement = document.getElementById("content");
+const chatElement = document.getElementById("chat-div-container");
 
 // listen for browser back / forward navigation
 window.addEventListener("popstate", () => {
@@ -24,6 +26,7 @@ window.addEventListener("popstate", () => {
 // listen for dom to be fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
   await renderNavbar(navbarElement); // render the navbar component
+  await renderChat(chatElement); // render the navbar component
   // global click listener for navigation links (data-links)
   document.body.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
