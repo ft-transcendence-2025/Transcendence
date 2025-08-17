@@ -1,8 +1,6 @@
 import Fastify, { fastify, FastifyRegister, FastifyRequest } from 'fastify';
 import websocket from '@fastify/websocket';
 import conversationRoutes from './routes/conversation.route';
-import { PrivateChatHandler } from './controllers/privatechat.controller';
-import { LobbyHandler } from './controllers/lobby.controller';
 import { chatHandler } from './controllers/chat.controller';
 
 const envToLogger = {
