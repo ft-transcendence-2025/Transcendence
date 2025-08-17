@@ -20,6 +20,14 @@ export async function renderPong(container: HTMLElement | null) {
   // Update the player names based on game mode
   await updatePlayerNames(gameMode);
 
+  const url = (location.protocol === "https:" ? "wss:" : "ws:") + "//" + location.host + "/ws/game";
+  const ws = new WebSocket(url);
+
+  ws.addEventListener('open', () => console.log('connected'));
+  ws.addEventListener('message', e => console.log('msg', e.data));
+  ws.addEventListener('close', e => console.log('closed', e.code, e.reason));
+  ws.addEventListener('error', e => console.error('error', e));
+
   // Initialize the game based on the selected mode
   if (gameMode === "ai") {
     const game = new Game(GameMode.PvE, PaddleSide.Left);
