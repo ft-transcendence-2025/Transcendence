@@ -125,6 +125,7 @@ contract PongGameLedger is Ownable{
         uint256 win,
         uint256 sTime,
         uint256 eTime,
+        bool    rmatch,
         bool    exists
     ) {
         Match memory m = matches[tournamentId][matchId];
@@ -139,6 +140,7 @@ contract PongGameLedger is Ownable{
             m.winner,
             m.startTime,
             m.endTime,
+            m. remoteMatch,
             m.exists
         );
     }
