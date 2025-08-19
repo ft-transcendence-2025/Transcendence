@@ -10,7 +10,7 @@ export class Ball {
   private color: string = "#FE4E00";
 
   // line around the circle
-  private strokeWidth: number = 2;
+  private strokeWidth: number = 1;
   private strokeColor: string = "#253031";
 
   public x: number;
