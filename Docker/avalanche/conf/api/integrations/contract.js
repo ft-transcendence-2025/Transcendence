@@ -5,9 +5,9 @@ require('dotenv').config();
 
 const RPC_URL = process.env.NODE_IP || 'https://api.avax-test.network/ext/bc/C/rpc';
 const CONTRACT_FOLDER = process.env.CONTRACT_FOLDER || '../avalanche-data/contract_address';
-const ABI_PATH = path.join(__dirname, '../blockchain-management/artifacts/contracts/PongGameLedger.sol/PongGameLedger.json');
+const ABI_PATH = path.join(__dirname, '../../blockchain-management/artifacts/contracts/PongGameLedger.sol/PongGameLedger.json');
 
-let provider, contractAddress, contractABI, contract;
+let provider, contractAddress, contractABI, contract, signer;
 
 function init() {
     const files = fs.readdirSync(CONTRACT_FOLDER);
@@ -21,6 +21,13 @@ function init() {
     provider = new ethers.JsonRpcProvider(RPC_URL);
 
     contract = new ethers.Contract(contractAddress, contractABI, provider);
+
+    const privateKey = fs.readFileSync('/run/secrets/avalanche_private_key', 'utf8').trim();
+
+    signer = new ethers.Wallet(privateKey, provider);
+
+    contract = contract.connect(signer);
+
     console.log(`✅ Blockchain API [SUCCESS]: Initialized contract at ${contractAddress}`);
 }
 
