@@ -193,34 +193,34 @@ Base URL: http://localhost:3000 (when running via docker-compose)
 - **Success response**: 200 OK
     ```json
     {
-        "matches": [
-            {
-                "tournamentId": "1",
-                "matchId": "0",
-                "player1": "1001",
-                "player2": "1002",
-                "score1": "10",
-                "score2": "5",
-                "winner": "1001",
-                "startTime": "1630000000",
-                "endTime": "1630003600",
-                "remoteMatch": true
-            },
-            {
-                "tournamentId": "1",
-                "matchId": "1",
-                "player1": "1003",
-                "player2": "1001",
-                "score1": "11",
-                "score2": "6",
-                "winner": "1003",
-                "startTime": "1630007200",
-                "endTime": "1630018000",
-                "remoteMatch": false
-            }
-        // ...additional match objects
-        ]
-    }    
+      "count": 2,
+      "matches": [
+        {
+          "tournamentId": "87",
+          "matchId": "0",
+          "player1": "10",
+          "player2": "12",
+          "score1": "10",
+          "score2": "70",
+          "winner": "10",
+          "startTime": "10",
+          "endTime": "600",
+          "remoteMatch": true
+        },
+        {
+          "tournamentId": "99",
+          "matchId": "0",
+          "player1": "10",
+          "player2": "21",
+          "score1": "10",
+          "score2": "70",
+          "winner": "10",
+          "startTime": "10",
+          "endTime": "600",
+          "remoteMatch": true
+        }
+      ]
+  } 
     ```
 - **Errors**:
      * 400 Bad Request - invalid/non-numeric path parameters.
@@ -229,7 +229,7 @@ Base URL: http://localhost:3000 (when running via docker-compose)
        
 - **Request Example**:
     ```bash
-    curl -sS http://localhost:3000/tournaments/1001/matches
+    curl -sS http://localhost:3000/players/10/matches
     ```
   
 
@@ -246,7 +246,6 @@ Base URL: http://localhost:3000 (when running via docker-compose)
     ```
 - **Errors**:
      * 400 Bad Request - invalid/non-numeric path parameters.
-     * 404 Not Found - tournament not found (or no match count available for the given tournamentId).
      * 500 Internal Server Error - blockchain/contract access error (body: ``` { "error": "message" } ```).
        
 - **Request Example**:
