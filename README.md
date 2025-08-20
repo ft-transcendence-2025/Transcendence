@@ -21,12 +21,24 @@ Docker/
 ├── avalanche/
 │   ├── Dockerfile
 │   ├── conf/
-│   │   ├── hardhat.config.js
-│   │   ├── package.json
-│   │   ├── contracts/
-│   │   │   └── PongGameLedger.sol
-│   │   └── scripts/
-│   │       └── deploy.js
+|   |   ├── api/
+│   │   │   ├── server.js
+│   │   |   ├── integrations/
+│   │   │   |   └── contract.js
+│   │   |   ├── routes/
+│   │   │   │   ├── matches.js
+│   │   │   │   ├── players.js
+│   │   │   |   └── tournaments.js
+│   │   |   └── schemas/
+│   │   │       └── matchSchemas.js
+|   |   └── blockchain/
+│   │       ├── hardhat.config.js
+│   │       ├── package.json
+│   │       ├── package-lock.json
+│   │       ├── contracts/
+│   │       |   └── PongGameLedger.sol
+│   │       └── scripts/
+│   │           └── deploy.js
 │   └── tools/
 │       └── entrypoint.sh
 └── secrets/
@@ -64,6 +76,271 @@ cd Blockchain/Docker
 docker-compose up --build
 ```
 This builds the Docker image, starts the `avalanche` service, and executes the `entrypoint.sh` script to deploy the contract.
+
+
+## Match object schema
+#### Fields used in API requests and responses
+| Field | Type & format | Required | Description |
+|-----------|----------------------------|-------------|------------------|
+| **tournamentId** | string (numeric) | yes | Tournament identifier the match belongs to. |
+| **matchId** | string (numeric, /^\d+$/) | server-assigned | Match identifier or index within the tournament. |
+| **player1** | string (numeric, /^\d+$/) | yes | Player 1 ID. |
+| **player2** | string (numeric, /^\d+$/) | yes | Player 2 ID. |
+| **score1** | string (numeric, /^\d+$/) | yes | Score for player1 (non-negative integer). |
+| **score2** | string (numeric, /^\d+$/) | yes | Score for player2 (non-negative integer). |
+| **winner** | string (numeric, /^\d+$/) | yes | ID of the winning player (must equal player1 or player2). |
+| **startTime** | string (unix seconds, e.g. "1630000000") | yes | Match start time as Unix timestamp (seconds). |
+| **endTime** | string (unix seconds, e.g. "1630003600") | yes | Match end time as Unix timestamp (seconds). |
+| **remoteMatch** | boolean | yes | True if the match was played remotely, false if in-person. |
+
+- **Validation rules**:
+     * All numeric strings must match /^\d+$/ (only digits).
+     * Player1 and player2 must be different (player1 !== player2).
+     * Winner must equal either player1 or player2.
+     * startTime ≤ endTime (startTime must not be greater than endTime).
+     * Score1 and score2 must be non-negative integers (as numeric strings).
+     * Permissions: creating matches is owner-only (see POST /matches).
+
+
+## Server API
+This service exposes a small Fastify HTTP API that wraps the deployed PongGameLedger contract. All endpoints are served by the avalanche container and listen on port 3000 by default.
+Base URL: http://localhost:3000 (when running via docker-compose)
+
+### 1. Endpoints
+
+#### POST /matches
+- **Purpose**: Create a new match on-chain (owner-only — the signer in the container must be the contract owner).
+- **Method**: POST
+     * Content-type: application/json
+- **Request body (application/json)**:
+    ```json
+    {
+        "tournamentId": "1",    // string (numeric) — required
+        "player1": "1001",      // string (numeric) — required
+        "player2": "1002",      // string (numeric) — required
+        "score1": "10",         // string (numeric) — required
+        "score2": "5",          // string (numeric) — required
+        "winner": "1001",       // string (numeric) — required
+        "startTime": "1630000000", // string (unix timestamp) — required
+        "endTime": "1630003600",   // string (unix timestamp) — required
+        "remoteMatch": true      // boolean — required
+    }    
+    ```
+- **Success response**: 200 OK
+    ```json
+    {
+        "txHash": "0xabcdef...123456",
+        "message": "Match created"
+    }    
+    ```
+- **Errors**:
+     * 400 Bad Request - validation errors (missing or invalid fields). (body: ``` { "error": "tournamentId must be a numeric string" } ```).
+     * 403 Forbidden — signer is not contract owner (owner-only operation). (body: ``` { "error": "not contract owner" } ```).
+     * 500 Internal Server Error - blockchain/contract access error (body: ``` { "error": "message" } ```).
+       
+- **Request Example**:
+    ```bash
+    curl -sS -X POST http://localhost:3000/matches 
+    -H "Content-Type: application/json" 
+    -d '{ "tournamentId":"1", "player1":"1001", "player2":"1002", "score1":"10", "score2":"5", "winner":"1001", "startTime":"1630000000", "endTime":"1630003600", "remoteMatch":true }'
+    ```
+
+#### GET /health
+- **Purpose**: Return a message that the API is running correctly.
+- **Method**: GET
+- **Path params**: none
+- **Success response**: 200 OK
+    ```json
+    {
+        "status": "healthy",
+        "message": "API is running"
+    }    
+    ```
+- **Errors**:
+     * 500 Internal Server Error - file read or filesystem access error (body: ``` { "error": "message" } ```).
+       
+- **Request Example**:
+    ```bash
+    curl -sS http://localhost:3000/health
+    ```
+
+
+#### GET /contract/address
+- **Purpose**: Return the contract address currently used by the API (reads the latest file in the contract_address folder).
+- **Method**: GET
+- **Path params**: none
+- **Success response**: 200 OK
+    ```json
+    {
+        "address": "0x1234567890abcdef1234567890abcdef12345678"
+    }    
+    ```
+- **Errors**:
+     * 500 Internal Server Error - file read or filesystem access error (body: ``` { "error": "message" } ```).
+       
+- **Request Example**:
+    ```bash
+    curl -sS http://localhost:3000/contract/address
+    ```
+
+
+
+#### GET /players/:playerId/matches
+- **Purpose**: Fetch all matches involving a player.
+- **Method**: GET
+- **Path params**:
+    * **playerId**: numeric string
+- **Success response**: 200 OK
+    ```json
+    {
+        "matches": [
+            {
+                "tournamentId": "1",
+                "matchId": "0",
+                "player1": "1001",
+                "player2": "1002",
+                "score1": "10",
+                "score2": "5",
+                "winner": "1001",
+                "startTime": "1630000000",
+                "endTime": "1630003600",
+                "remoteMatch": true
+            },
+            {
+                "tournamentId": "1",
+                "matchId": "1",
+                "player1": "1003",
+                "player2": "1001",
+                "score1": "11",
+                "score2": "6",
+                "winner": "1003",
+                "startTime": "1630007200",
+                "endTime": "1630018000",
+                "remoteMatch": false
+            }
+        // ...additional match objects
+        ]
+    }    
+    ```
+- **Errors**:
+     * 400 Bad Request - invalid/non-numeric path parameters.
+     * 404 Not Found - no matches found for the given playerId.
+     * 500 Internal Server Error - blockchain/contract access error (body: ``` { "error": "message" } ```).
+       
+- **Request Example**:
+    ```bash
+    curl -sS http://localhost:3000/tournaments/1001/matches
+    ```
+  
+
+#### GET /tournaments/:tournamentId/matchCount
+- **Purpose**: Return the number of matches recorded for a tournament.
+- **Method**: GET
+- **Path params**:
+    * **tournamentId**: numeric string
+- **Success response**: 200 OK
+    ```json
+    {
+      "count": "2"
+    }    
+    ```
+- **Errors**:
+     * 400 Bad Request - invalid/non-numeric path parameters.
+     * 404 Not Found - tournament not found (or no match count available for the given tournamentId).
+     * 500 Internal Server Error - blockchain/contract access error (body: ``` { "error": "message" } ```).
+       
+- **Request Example**:
+    ```bash
+    curl -sS http://localhost:3000/tournaments/1/matchCount
+    ```
+
+
+
+
+
+#### GET /tournaments/:tournamentId/matches
+- **Purpose**: Return an array with all matches for a tournament.
+- **Method**: GET
+- **Path params**:
+    * **tournamentId**: numeric string
+- **Success response**: 200 OK
+    ```json
+    {
+      "matches": [
+            {
+                "tournamentId": "1",
+                "matchId": "0",
+                "player1": "1001",
+                "player2": "1002",
+                "score1": "10",
+                "score2": "5",
+                "winner": "1001",
+                "startTime": "1630000000",
+                "endTime": "1630003600",
+                "remoteMatch": true
+            },
+            {
+                "tournamentId": "1",
+                "matchId": "1",
+                "player1": "1003",
+                "player2": "1004",
+                "score1": "7",
+                "score2": "9",
+                "winner": "1004",
+                "startTime": "1630007200",
+                "endTime": "1630018000",
+                "remoteMatch": false
+            }
+        // ...additional match objects
+        ]
+    }
+    ```
+- **Errors**:
+     * 400 Bad Request - invalid/non-numeric path parameters.
+     * 404 Not Found - no match found for the given tournamentId.
+     * 500 Internal Server Error - blockchain/contract access error (body: ``` { "error": "message" } ```).
+       
+- **Request Example**:
+    ```bash
+    curl -sS http://localhost:3000/tournaments/1/matches
+    ```
+
+#### GET /tournaments/:tournamentId/matches/:matchId
+- **Purpose**: Return a single match by tournament ID and match ID.
+- **Method**: GET
+- **Path params**:
+    * **tournamentId**: numeric string
+    * **matchId**: numeric string
+- **Success response**: 200 OK
+    ```json
+    {
+      "match": {
+        "tournamentId": "1",
+        "matchId": "0",
+        "player1": "1001",
+        "player2": "1002",
+        "score1": "10",
+        "score2": "5",
+        "winner": "1001",
+        "startTime": "1630000000",
+        "endTime": "1630003600",
+        "remoteMatch": true
+      }
+    }
+    
+    ```
+- **Errors**:
+     * 400 Bad Request - invalid/non-numeric path parameters.
+     * 404 Not Found - no match found for a given tournamentId/matchId.
+     * 500 Internal Server Error - blockchain/contract access error (body: ``` { "error": "message" } ```).
+       
+- **Request Example**:
+    ```bash
+    curl -sS http://localhost:3000/tournaments/1/matches/0
+    ```
+
+
+
 
 ## Deployment
 
