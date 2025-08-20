@@ -1,67 +1,128 @@
-<div id="dashboard" class="mx-auto max-w-4xl p-4 py-8">
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-5">
-    <!-- Pong 1 Player -->
-    <a
-      href="/pong?mode=ai"
-      data-link="true"
-      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-primary-light) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
-    >
-      <div class="w-full p-6 text-center">
-        <h2 class="text-xl font-semibold">Pong 1 Player</h2>
-        <p class="text-opacity-80 mt-2 text-sm">Play against AI</p>
-      </div>
-    </a>
+<div id="dashboard" class="mx-auto max-w-6xl p-4 py-8">
+  <!-- Local Games Section -->
+  <div class="mb-12">
+    <h2 class="mb-6 text-3xl font-bold">Local Games</h2>
+    <div class="grid grid-cols-1 justify-items-center gap-6 md:grid-cols-3">
+      <!-- Pong 1 Player -->
+      <a
+        href="/pong?mode=ai"
+        data-link="true"
+        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/single_tree.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
+        ></div>
+        <div class="relative w-full p-6">
+          <h3
+            class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
+          >
+            Pong 1 Player
+          </h3>
+          <p
+            class="text-md absolute right-6 bottom-4 left-6 text-white opacity-0 drop-shadow-md transition-opacity duration-300 group-hover:opacity-100"
+          >
+            Play against AI
+          </p>
+        </div>
+      </a>
 
-    <!-- Local Pong 2 Players -->
-    <a
-      href="/pong?mode=2player"
-      data-link="true"
-      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-primary-light) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
-    >
-      <div class="w-full p-6 text-center">
-        <h2 class="text-xl font-semibold">Local Pong 2 Players</h2>
-        <p class="text-opacity-80 mt-2 text-sm">Play with a friend</p>
-      </div>
-    </a>
+      <!-- Local Pong 2 Players -->
+      <a
+        href="/pong?mode=2player"
+        data-link="true"
+        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
+        ></div>
+        <div class="relative w-full p-6">
+          <h3
+            class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
+          >
+            Local Pong 2 Players
+          </h3>
+          <p
+            class="text-md absolute right-6 bottom-4 left-6 text-white opacity-0 drop-shadow-md transition-opacity duration-300 group-hover:opacity-100"
+          >
+            Play offline
+          </p>
+        </div>
+      </a>
 
-    <!-- Remote Pong 2 Players -->
-    <a
-      href="/pong?mode=remote"
-      data-link="true"
-      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-primary-light) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
-    >
-      <div class="w-full p-6 text-center">
-        <h2 class="text-xl font-semibold">Remote Pong 2 Players</h2>
-        <p class="text-opacity-80 mt-2 text-sm">Play online</p>
-      </div>
-    </a>
+      <!-- Local Tournament -->
+      <a
+        href="/tournament?type=local"
+        data-link="true"
+        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
+        ></div>
+        <div class="relative w-full p-6">
+          <h3
+            class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
+          >
+            Local Tournament
+          </h3>
+          <p
+            class="text-md absolute right-6 bottom-4 left-6 text-white opacity-0 drop-shadow-md transition-opacity duration-300 group-hover:opacity-100"
+          >
+            Compete in a tournament offline
+          </p>
+        </div>
+      </a>
+    </div>
+  </div>
 
-    <!-- Local Tournament -->
-    <a
-      href="/tournament?type=local"
-      data-link="true"
-      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-secondary) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
-    >
-      <div class="w-full p-6 text-center">
-        <h2 class="text-xl font-semibold">Local Tournament</h2>
-        <p class="text-opacity-80 mt-2 text-sm">
-          Compete with your friends on the same PC
-        </p>
-      </div>
-    </a>
+  <!-- Remote Games Section -->
+  <div>
+    <h2 class="mb-6 text-3xl font-bold">Remote Games</h2>
+    <div class="grid grid-cols-1 justify-items-center gap-6 md:grid-cols-2">
+      <!-- Remote Pong 2 Players -->
+      <a
+        href="/pong?mode=remote"
+        data-link="true"
+        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
+        ></div>
+        <div class="relative w-full p-6">
+          <h3
+            class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
+          >
+            Remote Pong 2 Players
+          </h3>
+          <p
+            class="text-md absolute right-6 bottom-4 left-6 text-white opacity-0 drop-shadow-md transition-opacity duration-300 group-hover:opacity-100"
+          >
+            Play online
+          </p>
+        </div>
+      </a>
 
-    <!-- Remote Tournament -->
-    <a
-      href="/tournament?type=remote"
-      data-link="true"
-      class="block flex h-32 w-full items-center overflow-hidden rounded-2xl bg-(--color-secondary) shadow-md transition-all hover:scale-105 hover:shadow-lg md:h-96"
-    >
-      <div class="w-full p-6 text-center">
-        <h2 class="text-xl font-semibold">Remote Tournament</h2>
-        <p class="text-opacity-80 mt-2 text-sm">
-          Compete in a tournament online
-        </p>
-      </div>
-    </a>
+      <!-- Remote Tournament -->
+      <a
+        href="/tournament?type=remote"
+        data-link="true"
+        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent
+        ></div>
+        <div class="relative w-full p-6">
+          <h3
+            class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
+          >
+            Remote Tournament
+          </h3>
+          <p
+            class="text-md absolute right-6 bottom-4 left-6 text-white opacity-0 drop-shadow-md transition-opacity duration-300 group-hover:opacity-100"
+          >
+            Compete in a tournament online
+          </p>
+        </div>
+      </a>
+    </div>
   </div>
 </div>

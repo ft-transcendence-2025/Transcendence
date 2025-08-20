@@ -56,7 +56,8 @@ export class AI {
 
 			this.targetY = this.getTargetY(canvas, side, ball);
 			this.prevPoint = { ...this.currPoint };
-		}, 1000);
+      console.log("hi");
+		}, 100);
 	}
 
 	private ballIsOpossite(side: PaddleSide): boolean {

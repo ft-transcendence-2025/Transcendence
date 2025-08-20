@@ -23,6 +23,7 @@ export class Game {
 
   constructor(...args: [] | [GameMode, PaddleSide]) {
     this.canvas.tabIndex = 0; // Make canvas focusable
+    this.canvas.style.outline = "none"; // Remove blue focus outline
     this.canvas.focus();
     this.canvas.width = 1000;
     this.canvas.height = 500;
