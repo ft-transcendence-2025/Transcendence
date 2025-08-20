@@ -62,6 +62,12 @@ export class Game {
   private gameState: GameState | null = null;
 
   constructor(...args: [] | [GameMode, PaddleSide]) {
+    this.canvas.tabIndex = 0; // Make canvas focusable
+    this.canvas.style.outline = "none"; // Remove blue focus outline
+    this.canvas.focus();
+    this.canvas.width = 1000;
+    this.canvas.height = 500;
+
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
     this.ws.addEventListener('open', () => {
       this.ws.addEventListener("message", (event) => {
