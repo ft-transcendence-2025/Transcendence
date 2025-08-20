@@ -2,8 +2,23 @@
 async function tournamentRoutes(fastify, options) {
     
     fastify.get('/tournaments/:tournamentId/matchCount', async (req, res) => {
-        const tournamentId = BigInt(req.params.tournamentId);
-        const count = await fastify.contract.getContract().getMatchCountPerTournament(tournamentId);
+        const tournamentId = req.params.tournamentId;
+        
+        let tournamentIdBigInt;
+        try {
+            tournamentIdBigInt = BigInt(tournamentId);
+            if (tournamentIdBigInt < 0n) {
+                fastify.log.error(`Invalid tournamentId: ${tournamentId} (cannot be a negative value)` );
+                res.code(400).send({ error: 'Invalid tournamentId: must be a valid positive integer (0 included - Local Game)' });
+                return;
+            }
+        } catch (err) {
+            fastify.log.error(`Invalid tournamentId: ${tournamentId} (cannot be a negative value)` );
+            res.code(400).send({ error: 'Invalid tournamentId: must be a valid positive integer (0 included - Local Game)' });
+            return;
+        }
+        
+        const count = await fastify.contract.getContract().getMatchCountPerTournament(tournamentIdBigInt);
         return { count: count.toString() };
     });
 
