@@ -26,7 +26,7 @@ window.addEventListener("popstate", () => {
 // listen for dom to be fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
   await renderNavbar(navbarElement); // render the navbar component
-  await renderChat(chatElement); // render the navbar component
+  await renderChat(chatElement);
   // global click listener for navigation links (data-links)
   document.body.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;

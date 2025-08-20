@@ -1,417 +1,276 @@
 import { loadHtml } from "../utils/htmlLoader.js";
 
-// Chat service configuration
-const CHAT_SERVICE_URL = `wss://localhost:5000/ws/chat`;
-const GAME_ID = "123"; // Test game ID
+type Friend = {
+  id: string;
+  name: string;
+  status: "online" | "offline";
+};
 
-// Global variables
-let lobbySocket: WebSocket | null = null;
-let currentUser: any = null;
-
-// Bottom chat class
-class BottomChat {
-  private isOpen: boolean = false;
-  private isMinimized: boolean = false;
-  private unreadCount: number = 0;
-  private chatWindow: HTMLElement | null = null;
-  private chatToggle: HTMLElement | null = null;
-  private chatMessages: HTMLElement | null = null;
-  private chatInput: HTMLInputElement | null = null;
-  private sendButton: HTMLElement | null = null;
-  private closeChat: HTMLElement | null = null;
-  private minimizeChat: HTMLElement | null = null;
-  private typingIndicator: HTMLElement | null = null;
-  private chatBadge: HTMLElement | null = null;
-  private unreadCountEl: HTMLElement | null = null;
-
-  constructor() {
-    this.init();
-  }
-
-  init() {
-    this.chatWindow = document.getElementById('chatWindow');
-    this.chatToggle = document.getElementById('chatToggle');
-    this.chatMessages = document.getElementById('chatMessages');
-    this.chatInput = document.getElementById('chatInput') as HTMLInputElement;
-    this.sendButton = document.getElementById('sendButton');
-    this.closeChat = document.getElementById('closeChat');
-    this.minimizeChat = document.getElementById('minimizeChat');
-    this.typingIndicator = document.getElementById('typingIndicator');
-    this.chatBadge = document.getElementById('chatBadge');
-    this.unreadCountEl = document.getElementById('unreadCount');
-
-    this.bindEvents();
-    this.clearSystemMessage();
-  }
-
-  bindEvents() {
-    this.chatToggle?.addEventListener('click', () => this.toggleChat());
-    this.closeChat?.addEventListener('click', () => this.hideChat());
-    this.minimizeChat?.addEventListener('click', () => this.hideChat());
-    this.sendButton?.addEventListener('click', () => this.sendMessage());
-    
-    this.chatInput?.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        this.sendMessage();
-      }
-    });
-
-    // Simulate typing indicator
-    let typingTimeout: number;
-    this.chatInput?.addEventListener('input', () => {
-      clearTimeout(typingTimeout);
-      if (this.chatInput && this.chatInput.value.length > 0) {
-        this.showTypingIndicator('You');
-        typingTimeout = setTimeout(() => {
-          this.hideTypingIndicator();
-        }, 1000) as any;
-      } else {
-        this.hideTypingIndicator();
-      }
-    });
-
-    // Close chat when clicking outside (optional)
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (this.chatWindow && this.chatToggle && 
-          !this.chatWindow.contains(target) && 
-          !this.chatToggle.contains(target) && 
-          this.isOpen) {
-        // Uncomment next line if you want to close on outside click
-        // this.hideChat();
-      }
-    });
-  }
-
-  toggleChat() {
-    if (this.isOpen) {
-      this.hideChat();
-    } else {
-      this.showChat();
-    }
-  }
-
-  showChat() {
-    this.isOpen = true;
-    this.chatWindow?.classList.remove('translate-y-full');
-    this.chatWindow?.classList.add('translate-y-0');
-    this.chatInput?.focus();
-    this.clearUnreadCount();
-  }
-
-  hideChat() {
-    this.isOpen = false;
-    this.chatWindow?.classList.remove('translate-y-0');
-    this.chatWindow?.classList.add('translate-y-full');
-  }
-
-  clearSystemMessage() {
-    setTimeout(() => {
-      const systemMessage = this.chatMessages?.querySelector('.text-center');
-      if (systemMessage) {
-        systemMessage.remove();
-      }
-    }, 3000);
-  }
-
-  sendMessage() {
-    if (!this.chatInput) return;
-    
-    const message = this.chatInput.value.trim();
-    if (!message) return;
-
-    // Use the existing WebSocket functionality
-    if (currentUser) {
-      sendLobbyMessage(message);
-      this.chatInput.value = '';
-      this.scrollToBottom();
-    } else {
-      this.addSystemMessage('Please log in to send messages');
-    }
-  }
-
-    // ...existing code...
-  
-  addMessage(author: string, text: string, isOwn: boolean = false, time?: string) {
-    if (!this.chatMessages) return;
-  
-    if (!time) {
-      time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    }
-  
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `flex items-start gap-2 mb-3 ${isOwn ? 'flex-row-reverse' : ''}`;
-  
-    const avatar = document.createElement('div');
-    avatar.className = `w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs flex-shrink-0 ${
-      isOwn 
-        ? 'bg-gradient-to-r from-indigo-500 to-purple-600' 
-        : 'bg-gradient-to-r from-gray-500 to-gray-600'
-    }`;
-    avatar.textContent = author.charAt(0).toUpperCase();
-  
-    const content = document.createElement('div');
-    content.className = `max-w-[75%] ${isOwn ? 'items-end' : 'items-start'} flex flex-col`;
-  
-    // Username label (only show for other users, or show "You" for own messages)
-    const usernameDiv = document.createElement('div');
-    usernameDiv.className = `text-xs font-medium mb-1 px-1 ${
-      isOwn 
-        ? 'text-indigo-600 text-right' 
-        : 'text-gray-600 text-left'
-    }`;
-    usernameDiv.textContent = isOwn ? 'You' : author;
-  
-    const bubble = document.createElement('div');
-    bubble.className = `px-4 py-2 rounded-2xl text-sm shadow-sm ${
-      isOwn 
-        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-br-md' 
-        : 'bg-white border border-gray-200 text-gray-800 rounded-bl-md'
-    }`;
-    bubble.textContent = text;
-  
-    const timeDiv = document.createElement('div');
-    timeDiv.className = `text-xs text-gray-500 mt-1 px-1 ${isOwn ? 'text-right' : 'text-left'}`;
-    timeDiv.textContent = time;
-  
-    content.appendChild(usernameDiv);
-    content.appendChild(bubble);
-    content.appendChild(timeDiv);
-    messageDiv.appendChild(avatar);
-    messageDiv.appendChild(content);
-  
-    this.chatMessages.appendChild(messageDiv);
-    this.scrollToBottom();
-  
-    // If chat is closed and message is from someone else, increment unread count
-    if (!this.isOpen && !isOwn) {
-      this.incrementUnreadCount();
-    }
-  }
-  
-  // ...existing code...
-
-  addSystemMessage(text: string) {
-    if (!this.chatMessages) return;
-    
-    const messageDiv = document.createElement('div');
-    messageDiv.className = 'text-center text-gray-500 text-sm py-2 italic';
-    messageDiv.textContent = text;
-    this.chatMessages.appendChild(messageDiv);
-    this.scrollToBottom();
-  }
-
-  scrollToBottom() {
-    if (this.chatMessages) {
-      this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-    }
-  }
-
-  showTypingIndicator(user: string) {
-    if (this.typingIndicator) {
-      this.typingIndicator.textContent = `${user} is typing...`;
-      this.typingIndicator.classList.remove('hidden');
-    }
-  }
-
-  hideTypingIndicator() {
-    this.typingIndicator?.classList.add('hidden');
-  }
-
-  incrementUnreadCount() {
-    this.unreadCount++;
-    this.updateUnreadBadge();
-  }
-
-  clearUnreadCount() {
-    this.unreadCount = 0;
-    this.updateUnreadBadge();
-  }
-
-  updateUnreadBadge() {
-    if (this.unreadCount > 0) {
-      this.chatBadge?.classList.remove('hidden');
-      if (this.unreadCountEl) {
-        this.unreadCountEl.textContent = this.unreadCount > 99 ? '99+' : this.unreadCount.toString();
-      }
-    } else {
-      this.chatBadge?.classList.add('hidden');
-    }
-  }
-
-  updateOnlineCount(count: number) {
-    const onlineCountEl = document.getElementById('onlineCount');
-    if (onlineCountEl) {
-      onlineCountEl.textContent = count.toString();
-    }
-  }
-}
-
-// Global chat instance
-let bottomChatInstance: BottomChat | null = null;
+type Message = {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  text: string;
+  timestamp: Date;
+  isFromMe: boolean;
+};
 
 export async function renderChat(container: HTMLElement | null) {
   if (!container) return;
+  const friends = [
+        { id: "1", name: "Alice", status: "online" },
+        { id: "2", name: "Bob", status: "offline" },
+        { id: "3", name: "Charlie", status: "online" },
+      ];
+  container.innerHTML = await loadHtml("/html/chat.component.html");
+  new ChatComponent("chat-root", friends);
+}
 
-  // Hide the navbar on home page
-  // const navbar = document.getElementById("navbar");
-  // if (navbar) {
-  //   navbar.classList.add("hidden");
-  // }
+class ChatComponent {
+  private container: HTMLElement;
+  private friends: Friend[];
+  private openChats: Map<string, HTMLElement>;
+  private messages: Map<string, Message[]>; // friendId -> messages
+  private currentUserId: string = "me";
 
-  // Fetch the component's HTML template
-  container.innerHTML = await loadHtml("/html/chat.html");
+  constructor(containerId: string, friends: any) {
+    this.container = document.getElementById(containerId)!;
+    this.friends = friends;
+    this.openChats = new Map();
+    this.messages = new Map();
+    this.initializeMessages();
+    this.render();
+  }
+
+  private initializeMessages() {
+    // Initialize empty message arrays for each friend
+    this.friends.forEach(friend => {
+      this.messages.set(friend.id, []);
+    });
+
+    // Add some sample messages for demonstration
+    this.addSampleMessages();
+  }
+
+  private addSampleMessages() {
+    // Add some sample messages to make the chat feel alive
+    this.addMessage("1", "Hey! How are you doing?", false);
+    this.addMessage("1", "I'm doing great, thanks for asking!", true);
+    this.addMessage("2", "Are we still meeting tomorrow?", false);
+    this.addMessage("3", "Just finished that project we discussed!", false);
+  }
+
+  private addMessage(friendId: string, text: string, isFromMe: boolean) {
+    const message: Message = {
+      id: Date.now().toString() + Math.random(),
+      senderId: isFromMe ? this.currentUserId : friendId,
+      receiverId: isFromMe ? friendId : this.currentUserId,
+      text: text,
+      timestamp: new Date(),
+      isFromMe: isFromMe
+    };
+
+    if (!this.messages.has(friendId)) {
+      this.messages.set(friendId, []);
+    }
+    
+    this.messages.get(friendId)!.push(message);
+    
+    // Update the chat window if it's open
+    this.updateChatMessages(friendId);
+  }
+
+  private updateChatMessages(friendId: string) {
+    const chatWindow = this.openChats.get(friendId);
+    if (!chatWindow) return;
+
+    const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
+    const messages = this.messages.get(friendId) || [];
+    
+    messagesContainer.innerHTML = messages.map(message => `
+      <div class="mb-2 ${message.isFromMe ? 'text-right' : 'text-left'}">
+        <div class="inline-block p-2 rounded-lg max-w-xs ${
+          message.isFromMe 
+            ? 'bg-blue-500 text-white ml-auto' 
+            : 'bg-gray-200 text-gray-800'
+        }">
+          <div class="text-xs">${message.text}</div>
+          <div class="text-xs opacity-70 mt-1">
+            ${message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+    // Scroll to bottom
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  private sendMessage(friendId: string, text: string) {
+    if (!text.trim()) return;
+    
+    this.addMessage(friendId, text.trim(), true);
+    
+    // Simulate receiving a response after a short delay
+    setTimeout(() => {
+      const responses = [
+        "That's interesting!",
+        "I see what you mean",
+        "Thanks for letting me know!",
+        "Got it!",
+        "Sounds good to me",
+        "I'll think about it",
+        "Nice!",
+        "👍"
+      ];
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)]!;
+      this.addMessage(friendId, randomResponse, false);
+    }, 500 + Math.random() * 2000); // Random delay between 0.5-2.5 seconds
+  }
+
+  private render() {
+    this.container.innerHTML = `
+      <div class="flex flex-col w-64 h-full bg-white border-r shadow-md">
+        <div class="px-4 py-2 border-b font-semibold">Friends</div>
+        <ul id="friends-list" class="flex-1 overflow-y-auto"></ul>
+      </div>
+      <div id="chat-windows" class="fixed bottom-0 right-0 flex gap-2 p-2"></div>
+    `;
+
+    const list = this.container.querySelector("#friends-list")!;
+    this.friends.forEach((friend) => {
+      const li = document.createElement("li");
+      li.className =
+        "flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-100";
+      li.innerHTML = `
+        <span>${friend.name}</span>
+        <span class="w-3 h-3 rounded-full ${
+          friend.status === "online" ? "bg-green-500" : "bg-gray-400"
+        }"></span>
+      `;
+      li.addEventListener("click", () => this.openChat(friend));
+      list.appendChild(li);
+    });
+  }
+
+  private openChat(friend: Friend) {
+    // If chat exists but is minimized, restore it instead of creating a new one
+    if (this.openChats.has(friend.id)) {
+      const existingChat = this.openChats.get(friend.id)!;
+      const messagesSection = existingChat.querySelector("#messages")!.parentElement!;
+      const inputSection = existingChat.querySelector("#message-input")!.parentElement!;
+      
+      // If it's minimized, restore it
+      if (messagesSection.classList.contains("hidden")) {
+        messagesSection.classList.remove("hidden");
+        inputSection.classList.remove("hidden");
+        existingChat.classList.remove("h-auto");
+        existingChat.classList.add("h-80");
+        
+        // Update minimize button
+        const minimizeBtn = existingChat.querySelector(".minimize") as HTMLButtonElement;
+        minimizeBtn.textContent = "_";
+        
+        // Focus on input
+        const messageInput = existingChat.querySelector("#message-input") as HTMLInputElement;
+        messageInput.focus();
+      }
+      return;
+    }
+
+    const chatContainer = document.createElement("div");
+    chatContainer.className =
+      "w-64 h-80 bg-white shadow-lg border rounded-lg flex flex-col";
+    chatContainer.innerHTML = `
+      <div class="flex justify-between items-center p-2 bg-blue-600 text-white rounded-t-lg">
+        <span>${friend.name}</span>
+        <div class="flex gap-2">
+          <button class="minimize px-1 hover:bg-blue-700 rounded">_</button>
+          <button class="close px-1 hover:bg-blue-700 rounded">×</button>
+        </div>
+      </div>
+      <div class="flex-1 p-2 overflow-y-auto text-sm bg-gray-50" id="messages"></div>
+      <div class="p-2 border-t bg-white">
+        <div class="flex gap-1">
+          <input type="text" class="flex-1 border rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500 min-w-0" 
+                 placeholder="Type a message..." id="message-input"/>
+          <button class="bg-blue-500 text-white px-2 py-1 rounded text-sm hover:bg-blue-600 focus:outline-none flex-shrink-0" 
+                  id="send-button">Send</button>
+        </div>
+      </div>
+    `;
+
+    // Add event listeners
+    const messageInput = chatContainer.querySelector("#message-input") as HTMLInputElement;
+    const sendButton = chatContainer.querySelector("#send-button") as HTMLButtonElement;
+
+    const sendMessageHandler = () => {
+      const text = messageInput.value.trim();
+      if (text) {
+        this.sendMessage(friend.id, text);
+        messageInput.value = '';
+      }
+    };
+
+    // Send message on button click
+    sendButton.addEventListener("click", sendMessageHandler);
+
+    // Send message on Enter key press
+    messageInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        sendMessageHandler();
+      }
+    });
+
+    // Close chat
+    chatContainer
+      .querySelector(".close")!
+      .addEventListener("click", () => this.closeChat(friend.id));
+
+    // Minimize/expand chat
+    chatContainer
+      .querySelector(".minimize")!
+      .addEventListener("click", () => {
+        const messagesSection = chatContainer.querySelector("#messages")!.parentElement!;
+        const inputSection = chatContainer.querySelector("#message-input")!.parentElement!;
+        const isMinimized = messagesSection.classList.contains("hidden");
+        
+        if (isMinimized) {
+          // Restore the chat
+          messagesSection.classList.remove("hidden");
+          inputSection.classList.remove("hidden");
+          chatContainer.classList.remove("h-auto");
+          chatContainer.classList.add("h-80");
+        } else {
+          // Minimize the chat
+          messagesSection.classList.add("hidden");
+          inputSection.classList.add("hidden");
+          chatContainer.classList.remove("h-80");
+          chatContainer.classList.add("h-auto");
+        }
+        
+        // Change minimize button text
+        const minimizeBtn = chatContainer.querySelector(".minimize") as HTMLButtonElement;
+        minimizeBtn.textContent = isMinimized ? "_" : "□";
+      });
+
+    this.container.querySelector("#chat-windows")!.appendChild(chatContainer);
+    this.openChats.set(friend.id, chatContainer);
+    
+    // Load existing messages
+    this.updateChatMessages(friend.id);
+    
+    // Focus on input
+    messageInput.focus();
+  }
+
+  private closeChat(friendId: string) {
+    const chat = this.openChats.get(friendId);
+    if (chat) {
+      chat.remove();
+      this.openChats.delete(friendId);
+    }
+  }
   
-  // Initialize chat functionality after HTML is loaded
-  initializeChatFunctionality();
 }
-
-function initializeChatFunctionality() {
-  // Initialize the bottom chat UI
-  bottomChatInstance = new BottomChat();
-
-  // Get user info from token
-  function getUserFromToken() {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log(payload);
-        return {
-          id: payload.id || payload.userId || payload.sub,
-          username: payload.username || payload.name || 'User',
-          email: payload.email
-        };
-      } catch (error) {
-        console.error('Error parsing token:', error);
-        return null;
-      }
-    }
-    return null;
-  }
-
-  // Connect to WebSocket
-  function connectToLobby(userId: string, gameId: string): WebSocket {
-    const url = CHAT_SERVICE_URL + `?userId=${userId}&gameId=${gameId}`;
-    lobbySocket = new WebSocket(url);
-    
-    lobbySocket.onopen = function(event) {
-      console.log('Connected to chat server');
-      bottomChatInstance?.addSystemMessage('Connected to chat! 🎉');
-    };
-    
-    lobbySocket.onmessage = function(event) {
-      try {
-        const data = JSON.parse(event.data);
-        handleIncomingMessage(data);
-      } catch (error) {
-        // Handle plain text messages
-        bottomChatInstance?.addMessage('System', event.data, false);
-      }
-    };
-    
-    lobbySocket.onclose = function(event) {
-      console.log('Disconnected from chat server');
-      bottomChatInstance?.addSystemMessage('Disconnected from chat');
-    };
-    
-    lobbySocket.onerror = function(error) {
-      console.error('WebSocket error:', error);
-      bottomChatInstance?.addSystemMessage('Connection error');
-    };
-    
-    return lobbySocket;
-  }
-
-  // Handle incoming messages
-  function handleIncomingMessage(data: any) {
-    switch (data.type) {
-      case 'message':
-        const isOwnMessage = data.username === currentUser?.username;
-        bottomChatInstance?.addMessage(data.username, data.text, isOwnMessage, formatTime(data.timestamp));
-        break;
-      case 'user_joined':
-        bottomChatInstance?.addSystemMessage(`${data.username} joined the chat`);
-        bottomChatInstance?.updateOnlineCount(data.onlineCount);
-        break;
-      case 'user_left':
-        bottomChatInstance?.addSystemMessage(`${data.username} left the chat`);
-        bottomChatInstance?.updateOnlineCount(data.onlineCount);
-        break;
-      case 'online_count':
-        bottomChatInstance?.updateOnlineCount(data.count);
-        break;
-      default:
-        console.log('Unknown message type:', data);
-    }
-  }
-
-  // Format timestamp
-  function formatTime(timestamp: string) {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
-
-  // Initialize chat
-  function initializeChat() {
-    // Get user from token
-    currentUser = getUserFromToken();
-    
-    if (!currentUser) {
-      // For testing, use hardcoded user
-      currentUser = { id: "bene", username: "ebeezer" };
-    }
-
-    // Update UI with user info
-    bottomChatInstance?.addSystemMessage(`Welcome ${currentUser.username}! 👋`);
-    
-    // Connect to WebSocket
-    try {
-      connectToLobby(currentUser.username, GAME_ID);
-    } catch (error) {
-      console.error('Failed to connect to chat:', error);
-      bottomChatInstance?.addSystemMessage('Failed to connect to chat server');
-    }
-  }
-
-  // Clean up WebSocket connection when page unloads
-  window.addEventListener('beforeunload', function() {
-    if (lobbySocket) {
-      lobbySocket.close();
-    }
-  });
-
-  // Initialize chat functionality
-  initializeChat();
-}
-
-// Send message via WebSocket (moved outside class to maintain existing functionality)
-function sendLobbyMessage(message: string) {
-  if (lobbySocket && lobbySocket.readyState === WebSocket.OPEN) {
-       const messageData = {
-        type: 'message',
-        channel: 'lobby',
-        gameId: '123',
-        content: message,
-        username: currentUser.username,
-        timestamp: new Date().toISOString()
-      };
-      lobbySocket.send(JSON.stringify(messageData));
-  } else {
-    console.error('WebSocket is not open.');
-    bottomChatInstance?.addSystemMessage('Not connected to chat server');
-  }
-}
-
-// Export functions that might be needed elsewhere
-export function getChatInstance() {
-  return bottomChatInstance;
-}
-
-export function addChatMessage(author: string, text: string, isOwn: boolean = false, time?: string) {
-  bottomChatInstance?.addMessage(author, text, isOwn, time);
-}
-
-export function addSystemMessage(text: string) {
-  bottomChatInstance?.addSystemMessage(text);
-}
+export { ChatComponent };
