@@ -1,9 +1,13 @@
+import { OutgoingMessage, PrivateSendMessage } from "../interfaces/message.interfaces.js";
+import chatService from "../services/chat.service.js";
+import { getUserFriends } from "../services/friendshipService.js";
 import { loadHtml } from "../utils/htmlLoader.js";
+import { getCurrentUsername } from "../utils/userUtils.js";
 
 type Friend = {
   id: string;
-  name: string;
-  status: "online" | "offline";
+  username: string;
+  status?: "online" | "offline";
 };
 
 type Message = {
@@ -17,13 +21,17 @@ type Message = {
 
 export async function renderChat(container: HTMLElement | null) {
   if (!container) return;
-  const friends = [
-        { id: "1", name: "Alice", status: "online" },
-        { id: "2", name: "Bob", status: "offline" },
-        { id: "3", name: "Charlie", status: "online" },
-      ];
+  const friends = await getUserFriends();
   container.innerHTML = await loadHtml("/html/chat.component.html");
-  new ChatComponent("chat-root", friends);
+  const c = new ChatComponent("chat-root", friends);
+  
+
+  if (c.chatService.conn) {
+    c.chatService.conn.addEventListener('message', (e) => console.log('Message bene que disse:', e.data));
+    c.chatService.conn.addEventListener('close', () => {
+        console.log('Disconnected from chat-service.');
+    });
+  }
 }
 
 class ChatComponent {
@@ -31,34 +39,18 @@ class ChatComponent {
   private friends: Friend[];
   private openChats: Map<string, HTMLElement>;
   private messages: Map<string, Message[]>; // friendId -> messages
-  private currentUserId: string = "me";
+  private currentUserId: string = getCurrentUsername() as string;
+  public chatService: chatService = new chatService();
 
   constructor(containerId: string, friends: any) {
     this.container = document.getElementById(containerId)!;
     this.friends = friends;
     this.openChats = new Map();
     this.messages = new Map();
-    this.initializeMessages();
+    // this.initializeMessages();
     this.render();
   }
 
-  private initializeMessages() {
-    // Initialize empty message arrays for each friend
-    this.friends.forEach(friend => {
-      this.messages.set(friend.id, []);
-    });
-
-    // Add some sample messages for demonstration
-    this.addSampleMessages();
-  }
-
-  private addSampleMessages() {
-    // Add some sample messages to make the chat feel alive
-    this.addMessage("1", "Hey! How are you doing?", false);
-    this.addMessage("1", "I'm doing great, thanks for asking!", true);
-    this.addMessage("2", "Are we still meeting tomorrow?", false);
-    this.addMessage("3", "Just finished that project we discussed!", false);
-  }
 
   private addMessage(friendId: string, text: string, isFromMe: boolean) {
     const message: Message = {
@@ -85,18 +77,19 @@ class ChatComponent {
     if (!chatWindow) return;
 
     const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
-    const messages = this.messages.get(friendId) || [];
+    // const messages = this.messages.get(friendId) || [];
+    const messages : any[] = this.chatService.getConversation(friendId);
     
     messagesContainer.innerHTML = messages.map(message => `
-      <div class="mb-2 ${message.isFromMe ? 'text-right' : 'text-left'}">
+      <div class="mb-2 ${message.senderId == this.currentUserId ? 'text-right' : 'text-left'}">
         <div class="inline-block p-2 rounded-lg max-w-xs ${
-          message.isFromMe 
+          message.senderId == this.currentUserId 
             ? 'bg-blue-500 text-white ml-auto' 
             : 'bg-gray-200 text-gray-800'
         }">
-          <div class="text-xs">${message.text}</div>
+          <div class="text-xs">${message.content}</div>
           <div class="text-xs opacity-70 mt-1">
-            ${message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+            ${message.ts.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
           </div>
         </div>
       </div>
@@ -106,44 +99,21 @@ class ChatComponent {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
-  private sendMessage(friendId: string, text: string) {
-    if (!text.trim()) return;
+  private sendMessage(friendId: string, message: PrivateSendMessage) {
+    if (!message.content.trim()) return;
     
-    this.addMessage(friendId, text.trim(), true);
-    
-    // Simulate receiving a response after a short delay
-    setTimeout(() => {
-      const responses = [
-        "That's interesting!",
-        "I see what you mean",
-        "Thanks for letting me know!",
-        "Got it!",
-        "Sounds good to me",
-        "I'll think about it",
-        "Nice!",
-        "👍"
-      ];
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)]!;
-      this.addMessage(friendId, randomResponse, false);
-    }, 500 + Math.random() * 2000); // Random delay between 0.5-2.5 seconds
+    this.addMessage(friendId, message.content.trim(), true);
+    this.chatService.sendPrivateMessage(message);
   }
 
   private render() {
-    this.container.innerHTML = `
-      <div class="flex flex-col w-64 h-full bg-white border-r shadow-md">
-        <div class="px-4 py-2 border-b font-semibold">Friends</div>
-        <ul id="friends-list" class="flex-1 overflow-y-auto"></ul>
-      </div>
-      <div id="chat-windows" class="fixed bottom-0 right-0 flex gap-2 p-2"></div>
-    `;
-
     const list = this.container.querySelector("#friends-list")!;
     this.friends.forEach((friend) => {
       const li = document.createElement("li");
       li.className =
         "flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-100";
       li.innerHTML = `
-        <span>${friend.name}</span>
+        <span>${friend.username}</span>
         <span class="w-3 h-3 rounded-full ${
           friend.status === "online" ? "bg-green-500" : "bg-gray-400"
         }"></span>
@@ -183,7 +153,7 @@ class ChatComponent {
       "w-64 h-80 bg-white shadow-lg border rounded-lg flex flex-col";
     chatContainer.innerHTML = `
       <div class="flex justify-between items-center p-2 bg-blue-600 text-white rounded-t-lg">
-        <span>${friend.name}</span>
+        <span>${friend.username}</span>
         <div class="flex gap-2">
           <button class="minimize px-1 hover:bg-blue-700 rounded">_</button>
           <button class="close px-1 hover:bg-blue-700 rounded">×</button>
@@ -204,10 +174,18 @@ class ChatComponent {
     const messageInput = chatContainer.querySelector("#message-input") as HTMLInputElement;
     const sendButton = chatContainer.querySelector("#send-button") as HTMLButtonElement;
 
+
     const sendMessageHandler = () => {
       const text = messageInput.value.trim();
-      if (text) {
-        this.sendMessage(friend.id, text);
+      const message : PrivateSendMessage =  {
+        kind : 'private/send',
+        type : 'TEXT',
+        recipientId : friend.username,
+        content : text,
+        ts : Date.now()
+      }
+      if (message) {
+        this.sendMessage(friend.id, message);
         messageInput.value = '';
       }
     };

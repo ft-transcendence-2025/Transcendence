@@ -1,28 +1,36 @@
-// import axios from "axios";
-// import dotenv from 'dotenv';
+import { BASE_URL } from "../config/config.js";
+import { request, getHeaders } from "../utils/api.js";
+import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
 
-// dotenv.config({
-// 	path: './.env'
-// });
+const USER_BASE_URL = `${BASE_URL}/friendships`;
+const username = getCurrentUsername();
 
-// 	app.post('/', friendshipController.sendFriendRequest); // enviar pedido
-// 	app.get('/requests/:userId', friendshipController.getFriendRequests); // ver pedidos recebidos
-// 	app.patch('/respond/:friendshipId', friendshipController.respondToFriendRequest); // aceitar/rejeitar
-// 	app.get('/list/:userId', friendshipController.listFriends); // listar amigos
-// 	app.delete('/', friendshipController.removeFriend); // remover amizade
+// API functions
+export const getUserFriends = () =>
+  request(`${USER_BASE_URL}/list/${username}`, {
+    method: "GET",
+    headers: getHeaders(),
+  });
 
-// const BASE_URL = process.env.NODE_ENV == "production" ? "http://user-management:3000/friendships" : "http://localhost:3000/friendships";
+// export const getUserByUsername = (username: string) =>
+//   request(`${USER_BASE_URL}/${username}`);
 
-// const BASE_URL =
-//   window.location.hostname === "localhost"
-//     ? "http://localhost:3000/friendships"
-//     : "http://user-management:3000/friendships";
-//
-// export const sendFriendRequest = (body: any) => axios.post(`${BASE_URL}`, body);
-// export const getFriendRequests = (username: string) =>
-//   axios.get(`${BASE_URL}/requests/${username}`);
-// export const listFriends = (username: string) =>
-//   axios.get(`${BASE_URL}/list/${username}`);
-// export const respondToFriendRequest = (friendshipId: string, body: any) =>
-//   axios.patch(`${BASE_URL}/respond/${friendshipId}`, body);
-// export const removeFriend = (body: any) => axios.delete(`${BASE_URL}`, body);
+// export const updateUser = (username: string, body: any) =>
+//   request(`${USER_BASE_URL}/${username}`, {
+//     method: "PUT",
+//     headers: getHeaders(),
+//     body: JSON.stringify(body),
+//   });
+
+// export const disableUser = (username: string) =>
+//   request(`${USER_BASE_URL}/${username}`, {
+//     method: "PATCH",
+//     headers: getHeaders(),
+//   });
+
+// export const deleteUser = (username: string) =>
+//   request<void>(`${USER_BASE_URL}/${username}`, {
+//     method: "DELETE",
+//     headers: getHeaders(),
+//   });
+

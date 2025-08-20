@@ -1,57 +1,45 @@
 import { BASE_URL } from "../config/config.js";
+import { IncomingMessage, OutgoingMessage } from "../interfaces/message.interfaces.js";
 import { request, getHeaders } from "../utils/api.js";
+import { getCurrentUsername } from "../utils/userUtils.js";
 
-const CHAT_SERVICE_URL = `wss://localhost:5000/ws`;
+const CHAT_SERVICE_URL = `wss://localhost:5000/ws/chat`;
+const MESSAGE_SERVICE = `${BASE_URL}/chat/conversations`
 
-// export interface Message {
-//   id: string;
-//   username: string;
-//   email: string;
-//   active: boolean;
-//   createdAt: string;
-// }
+export default class chatService {
+	public conn: WebSocket | null = null;
+	public username : any
+	public url : any;
+	public lobbyConnections : any ;
 
-// API functions
-// export const getUsers = () =>
-//   request<User[]>(`${USER_BASE_URL}/`, {
-// 	method: "GET",
-// 	headers: getHeaders(),
-//   });
+	constructor() {
+		try {
+			this.username = getCurrentUsername();
+			this.url = CHAT_SERVICE_URL + `?userId=${this.username}`;
+			this.conn  = new WebSocket(this.url);
+			this.lobbyConnections = new Map()
+			console.log("User successfully connected to chat-service.")
+		} catch (error) {
+			console.error("Couldn't connect user to chat-service: ", error);
+		}
+	}
 
-// export const getUserByUsername = (username: string) =>
-//   request<User>(`${USER_BASE_URL}/${username}`);
+	sendPrivateMessage(message: OutgoingMessage) {
+		if (this.conn && this.conn.readyState === WebSocket.OPEN) {
+			this.conn.send(JSON.stringify(message));
+		} else {
+			console.error("WebSocket is not open.");
+		}
+	}
 
-// export const updateUser = (username: string, body: any) =>
-//   request<User>(`${USER_BASE_URL}/${username}`, {
-// 	method: "PUT",
-// 	headers: getHeaders(),
-// 	body: JSON.stringify(body),
-//   });
-
-// export const disableUser = (username: string) =>
-//   request<User>(`${USER_BASE_URL}/${username}`, {
-// 	method: "PATCH",
-// 	headers: getHeaders(),
-//   });
-
-// export const deleteUser = (username: string) =>
-//   request<void>(`${USER_BASE_URL}/${username}`, {
-// 	method: "DELETE",
-// 	headers: getHeaders(),
-//   });
-let lobbySocket: WebSocket | null = null;
-
-export function connectToLobby(userId: string, gameId: string): WebSocket {
-	const url = CHAT_SERVICE_URL + `?userId=${userId}&gameId=${gameId}`;
-	lobbySocket = new WebSocket(url);
-	return lobbySocket;
-}
-
-export function sendLobbyMessage(message: string) {
-	if (lobbySocket && lobbySocket.readyState === WebSocket.OPEN) {
-		lobbySocket.send(message);
-	} else {
-		console.error("WebSocket is not open.");
+	getConversation(friendUsername: string) {
+		const url = MESSAGE_SERVICE + `/${this.username}/${friendUsername}`
+		const conversation : any = request(url, {
+			method: "GET",
+    		headers: getHeaders(),
+		})
+		return conversation?.messages || [];
 	}
 }
+
 
