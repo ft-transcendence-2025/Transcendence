@@ -32,8 +32,8 @@ export async function handlePrivateMessage(users: Map<string, any>, senderId: st
     data: { senderId, conversationId: conversation.id, content, type, delivered: false },
   });
 
-  const senderConn = users.get(senderId);
-  if (senderConn) senderConn.socket.send(JSON.stringify({ event: 'private/message', echo: true, ...saved }));
+  // const senderConn = users.get(senderId);
+  // if (senderConn) senderConn.socket.send(JSON.stringify({ event: 'private/message', echo: true, ...saved }));
 
   const recipientConn = users.get(recipientId);
   if (recipientConn) {
