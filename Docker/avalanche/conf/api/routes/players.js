@@ -44,7 +44,7 @@ async function playerRoutes(fastify, options) {
         } catch (err) {
             fastify.log.error(`Error fetching matches for player ${playerId}: ${err.message}`);
             if (err.reason && err.reason.includes('PlayerDoesNotHaveMatches')) {
-                res.code(404).send({ error: `No matches found for player ID ${playerId}` });
+                res.code(404).send({ error: `No matches found for playerId ${playerId}` });
             } else {
                 res.code(500).send({ error: 'Internal server error' });
             }

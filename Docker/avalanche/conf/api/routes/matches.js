@@ -16,7 +16,7 @@ async function matchRoutes(fastify, options) {
                 BigInt(params.endTime),
                 params.remoteMatch
             );
-            await tx.wait();  // Confirm
+            await tx.wait();
             return { txHash: tx.hash, message: 'Match created' };
         } catch (err) {
             res.code(500).send({ error: err.reason || err.message });

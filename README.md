@@ -115,15 +115,15 @@ Base URL: http://localhost:3000 (when running via docker-compose)
 - **Request body (application/json)**:
     ```json
     {
-        "tournamentId": "1",    // string (numeric) — required
-        "player1": "1001",      // string (numeric) — required
-        "player2": "1002",      // string (numeric) — required
-        "score1": "10",         // string (numeric) — required
-        "score2": "5",          // string (numeric) — required
-        "winner": "1001",       // string (numeric) — required
-        "startTime": "1630000000", // string (unix timestamp) — required
-        "endTime": "1630003600",   // string (unix timestamp) — required
-        "remoteMatch": true      // boolean — required
+        "tournamentId": "1",
+        "player1": "1001",
+        "player2": "1002",
+        "score1": "10",
+        "score2": "5",
+        "winner": "1001",
+        "startTime": "1630000000",
+        "endTime": "1630003600",
+        "remoteMatch": true
     }    
     ```
 - **Success response**: 200 OK
@@ -135,7 +135,6 @@ Base URL: http://localhost:3000 (when running via docker-compose)
     ```
 - **Errors**:
      * 400 Bad Request - validation errors (missing or invalid fields). (body: ``` { "error": "tournamentId must be a numeric string" } ```).
-     * 403 Forbidden — signer is not contract owner (owner-only operation). (body: ``` { "error": "not contract owner" } ```).
      * 500 Internal Server Error - blockchain/contract access error (body: ``` { "error": "message" } ```).
        
 - **Request Example**:
@@ -217,7 +216,7 @@ Base URL: http://localhost:3000 (when running via docker-compose)
           "winner": "10",
           "startTime": "10",
           "endTime": "600",
-          "remoteMatch": true
+          "remoteMatch": false
         }
       ]
   } 
