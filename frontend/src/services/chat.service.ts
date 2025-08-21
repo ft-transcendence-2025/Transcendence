@@ -16,14 +16,16 @@ export default class chatService {
 		try {
 			this.username = getCurrentUsername();
 			this.url = CHAT_SERVICE_URL + `?userId=${this.username}`;
-			this.conn  = new WebSocket(this.url);
+			this.connect();
 			this.lobbyConnections = new Map()
-			console.log("User successfully connected to chat-service.")
 		} catch (error) {
 			console.error("Couldn't connect user to chat-service: ", error);
 		}
 	}
 
+	connect() {
+		this.conn  = new WebSocket(this.url);
+	}
 	sendPrivateMessage(message: OutgoingMessage) {
 		if (this.conn && this.conn.readyState === WebSocket.OPEN) {
 			this.conn.send(JSON.stringify(message));
@@ -32,13 +34,13 @@ export default class chatService {
 		}
 	}
 
-	getConversation(friendUsername: string) {
-		const url = MESSAGE_SERVICE + `/${this.username}/${friendUsername}`
-		const conversation : any = request(url, {
+	async getConversation(friendUsername: string) {
+		const url = MESSAGE_SERVICE + `/${this.username}/${friendUsername}`;
+		const conversation: any = await request(url, {
 			method: "GET",
-    		headers: getHeaders(),
-		})
-		return conversation?.messages || [];
+			headers: getHeaders(),
+		});
+		return conversation?.messages;
 	}
 }
 
