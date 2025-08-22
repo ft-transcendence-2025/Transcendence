@@ -44,7 +44,7 @@ class ChatComponent {
   container: HTMLElement;
   friends: Friend[];
   openChats: Map<string, HTMLElement>;
-  messages: Map<string, HTMLElement>;
+  // messages: Map<string, HTMLElement>;
   currentUserId: string = getCurrentUsername() as string;
   public chatService: chatService = new chatService();
 
@@ -52,7 +52,7 @@ class ChatComponent {
     this.container = document.getElementById(containerId)!;
     this.friends = friends;
     this.openChats = new Map();
-    this.messages = new Map();
+    // this.messages = new Map();
 
     this.render();
   }
@@ -61,30 +61,33 @@ class ChatComponent {
     const chatWindow = this.openChats.get(friendId);
     if (!chatWindow) return;
     const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
+
     const messages: [any] = await this.chatService.getConversation(friendId);
 
-
-    messagesContainer.innerHTML = messages.map(message => `
-      <div class="mb-2 ${(message.senderId == this.currentUserId) ? 'text-right' : 'text-left'}">
-        <div class="inline-block p-2 rounded-lg max-w-xs ${(message.senderId == this.currentUserId)
-        ? 'bg-green-500 text-white ml-auto'
-        : 'bg-gray-200 text-gray-800'
-      }">
-          <div class="text-xs">${message.content}</div>
-          <div class="text-xs opacity-70 mt-1">
-            ${new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+    if (messages) {
+      messagesContainer.innerHTML = messages.map(message => `
+        <div class="mb-2 ${(message.senderId == this.currentUserId) ? 'text-right' : 'text-left'}">
+          <div class="inline-block p-2 rounded-lg max-w-xs ${(message.senderId == this.currentUserId)
+          ? 'bg-green-500 text-white ml-auto'
+          : 'bg-gray-200 text-gray-800'
+        }">
+            <div class="text-xs">${message.content}</div>
+            <div class="text-xs opacity-70 mt-1">
+              ${new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </div>
           </div>
         </div>
-      </div>
-    `).join('');
-
-    // Scroll to bottom
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      `).join('');
+  
+      // Scroll to bottom
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
   }
 
   async sendMessage(friendId: string, message: PrivateSendMessage) {
     if (!message.content.trim()) return;
     this.chatService.sendPrivateMessage(message);
+    await new Promise(resolve => setTimeout(resolve, 100));
     await this.updateChatMessages(friendId);
   }
 
