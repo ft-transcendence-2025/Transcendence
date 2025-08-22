@@ -14,6 +14,12 @@ const chatProxy: FastifyPluginAsync = async (app: FastifyInstance) => {
     rewritePrefix: "/",
   });
 
+  const wsReconnect = {
+    logs: true,
+    pingInterval: 3_000,
+    reconnectOnClose: true,
+  }
+
   // SOCKET CONNECTIONS
   app.register(proxy, {
     upstream: upstream,
@@ -21,6 +27,7 @@ const chatProxy: FastifyPluginAsync = async (app: FastifyInstance) => {
     prefix: "/ws/chat",
     rewritePrefix: "/ws",
     websocket: true,
+    wsReconnect
   });
 };
 
