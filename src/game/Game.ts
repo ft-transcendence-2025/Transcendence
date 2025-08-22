@@ -16,6 +16,7 @@ export interface GameState {
   score: {
     player1: number,
     player2: number,
+    winner: 1 | 2 | null,
   },
   isPaused: boolean,
 };
@@ -39,6 +40,7 @@ export class Game {
       score: {
         player1: 0,
         player2: 0,
+        winner: null,
       },
       isPaused: false,
     };
@@ -91,12 +93,22 @@ export class GameRoom {
           this.game.gameState.score.player2++;
         this.game.ball.isRunning = false;
         this.game.ball.reset(this.game.canvas);
+        this.checkWinner();
       }
       this.game.paddleLeft.update(this.game.canvas);
       this.game.paddleRight.update(this.game.canvas);
 
       this.broadcast();
     }, this.FPS60);
+  }
+
+  private checkWinner(): void {
+    if (this.game.gameState.score.player1 === 3) {
+      this.game.gameState.score.winner = 1;
+    }
+    else if (this.game.gameState.score.player2 === 3) {
+      this.game.gameState.score.winner = 2;
+    }
   }
 
   public stopGameLoop() {
@@ -193,17 +205,6 @@ export class GameRoom {
     }
   }
 
-  private handleMessage(ws: WebSocket, msg: PayLoad) {
-    if (ws === this.player1) {
-      console.log(msg);
-      // this.updatePaddle(msg, this.game.paddleLeft);
-    }
-    else if (ws === this.player2) {
-      console.log(msg);
-      // this.updatePaddle(msg, this.game.paddleRight);
-    }
-  }
-
   private handleEvents(msg: PayLoad) {
     if (!this.game.gameState.isPaused) {
       if (msg.type === "keydown") {
@@ -215,6 +216,17 @@ export class GameRoom {
           this.game.paddleRight.state.moving.down = true;
           else if (msg.key === "ArrowUp")
             this.game.paddleRight.state.moving.up = true;
+        if (msg.key === " ") {
+          if (!this.game.ball.isRunning)
+            this.game.ball.angle = getRandomAngle();
+          if (this.game.gameState.score.winner) {
+            this.game.gameState.score.player1 = 0;
+            this.game.gameState.score.player2 = 0;
+            this.game.gameState.score.winner = null;
+          }
+          else
+            this.game.ball.isRunning = true;
+        }
       }
     }
     if (msg.type === "keyup") {
@@ -227,8 +239,6 @@ export class GameRoom {
         else if (msg.key === "ArrowUp")
           this.game.paddleRight.state.moving.up = false;
     }
-    else if (msg.key === " ")
-      this.game.ball.isRunning = true;
     else if (msg.key === "p" || msg.key === "P")
       this.game.gameState.isPaused = !this.game.gameState.isPaused;
   }
