@@ -5,6 +5,7 @@ export interface BallState {
   x: number,
   y: number,
   radius: number,
+  isRunning: boolean,
 };
 
 enum Player {
@@ -22,7 +23,7 @@ export class Ball {
   public state: BallState;
   public angle: number = getRandomAngle();
   public readonly radius: number = 8;
-  private defaultSpeed: number = 8;
+  private defaultSpeed: number = 10;
   public currentSpeed: number = this.defaultSpeed / 2;;
 
   private firstHit: boolean = false;
@@ -34,15 +35,20 @@ export class Ball {
       x: canvas.width / 2,
       y: canvas.height / 2,
       radius: this.radius,
+      isRunning: this.isRunning,
     };
   }
 
   // Check if a player scored a point
   public pointScored(canvas: Canvas): Player.player1 | Player.player2 | 0 {
-    if (this.state.x + this.radius < 0)
+    if (this.state.x + this.radius < 0) {
+      this.reset(canvas);
       return Player.player2;
-    else if (this.state.x - this.radius > canvas.width)
+    }
+    else if (this.state.x - this.radius > canvas.width) {
+      this.reset(canvas);
       return Player.player1;
+    }
     return 0;
   }
 
@@ -57,7 +63,7 @@ export class Ball {
   }
 
   private increaseBallSpeed(): void {
-    const maxSpeed: number = 100;
+    const maxSpeed: number = 15;
     const speedUpTime: number = 5000;
 
     // Every 5 seconds the ball increases speed 5%

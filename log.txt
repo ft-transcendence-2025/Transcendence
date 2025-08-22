@@ -1,0 +1,17 @@
+
+> server-side-pong@1.0.0 dev
+> npm run build && npm-run-all --parallel watch:* serve
+
+
+> server-side-pong@1.0.0 build
+> npm run clean && npm-run-all --parallel build:*
+
+
+> server-side-pong@1.0.0 clean
+> rm -rf dist
+
+
+> server-side-pong@1.0.0 build:ts
+> tsc
+ q
+src/routes.ts(15,11): error TS2339: Property 'setCookie' does not exist on type 'FastifyReply<RouteGenericInterface, RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, unknown, FastifySchema, FastifyTypeProviderDefault, unknown>'.

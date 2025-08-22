@@ -16,7 +16,7 @@ export class Ball {
         this.strokeColor = "#253031";
         this.angle = getRandomAngle();
         this.radius = 8;
-        this.defaultSpeed = 8;
+        this.defaultSpeed = 10;
         this.currentSpeed = this.defaultSpeed / 2;
         this.firstHit = false;
         this.startTime = performance.now();
@@ -25,14 +25,19 @@ export class Ball {
             x: canvas.width / 2,
             y: canvas.height / 2,
             radius: this.radius,
+            isRunning: this.isRunning,
         };
     }
     // Check if a player scored a point
     pointScored(canvas) {
-        if (this.state.x + this.radius < 0)
+        if (this.state.x + this.radius < 0) {
+            this.reset(canvas);
             return Player.player2;
-        else if (this.state.x - this.radius > canvas.width)
+        }
+        else if (this.state.x - this.radius > canvas.width) {
+            this.reset(canvas);
             return Player.player1;
+        }
         return 0;
     }
     move() {
