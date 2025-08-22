@@ -1,7 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserNickname } from "../utils/userUtils.js";
-import { getUserAvatar } from "../utils/userUtils.js";
+import { getUserDisplayName, getUserAvatar } from "../utils/userUtils.js";
 
 // Tournament data structure
 interface TournamentData {
@@ -100,12 +99,12 @@ function enablePlayerCustomization(enable: boolean) {
 
 async function populateRemotePlayers() {
   // Get current user
-  const currentNickname = await getUserNickname();
+  const currentDisplayName = await getUserDisplayName();
   const currentAvatarUrl = await getUserAvatar();
 
   // Mock data - this has to come from API !!!!!!!
   const remotePlayers = [
-    { username: currentNickname || "You", avatar: currentAvatarUrl, isUrl: true },
+    { username: currentDisplayName || "You", avatar: currentAvatarUrl, isUrl: true },
     { username: "Player 2", avatar: "gorilla.png", isUrl: false },
     { username: "Player 3", avatar: "meerkat.png", isUrl: false },
     { username: "Player 4", avatar: "rabbit.png", isUrl: false },
@@ -253,11 +252,11 @@ function collectLocalTournamentData() {
 
 async function collectRemoteTournamentData() {
   // Get current user
-  const currentNickname = await getUserNickname();
+  const currentDisplayName = await getUserDisplayName();
 
   // Mock data - this has to come from API !!!!!!!
   const players = [
-    { username: currentNickname || "You", avatar: "panda.png" },
+    { username: currentDisplayName || "You", avatar: "panda.png" },
     { username: "Player 2", avatar: "gorilla.png" },
     { username: "Player 3", avatar: "meerkat.png" },
     { username: "Player 4", avatar: "rabbit.png" },
