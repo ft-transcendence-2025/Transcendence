@@ -5,21 +5,35 @@
   <div class="absolute inset-0 bg-(--color-primary)/40"></div>
 
   <!-- Centered content -->
-  <div class="relative z-10 mx-auto max-w-2xl text-center">
+  <div class="relative z-10 mx-auto max-w-4xl text-center">
     <h2
-      class="text-stroke font-greek mb-6 text-9xl text-(--color-accent) drop-shadow-lg"
+      class="text-stroke font-greek mb-8 text-9xl text-(--color-accent) drop-shadow-lg"
     >
       Welcome To The Jungle
     </h2>
+
+    <!-- Animated Pong Game Container -->
+    <div class="relative mx-auto mb-8 h-24 w-full max-w-4xl">
+      <div
+        class="animate-paddle-left absolute top-1/2 left-0 h-20 w-3 -translate-y-1/2 rounded-full bg-white/90 shadow-lg"
+      ></div>
+      <div
+        class="animate-paddle-right absolute top-1/2 right-0 h-20 w-3 -translate-y-1/2 rounded-full bg-white/90 shadow-lg"
+      ></div>
+      <div
+        class="animate-pong-ball absolute z-40 h-4 w-4 rounded-full bg-white/90 shadow-lg"
+      ></div>
+    </div>
+
     <p
-      class="rounded-lg animate-pulse bg-white/60 p-6 shadow-lg drop-shadow-md backdrop-blur-sm"
+      class="animate-pulse rounded-lg bg-white/80 p-6 shadow-lg drop-shadow-md backdrop-blur-sm"
     >
       <a
         href="/login"
         id="login-link"
         class="px-3 py-2 text-2xl font-semibold hover:text-white"
         data-link="true"
-        >Enter</a
+        >Enter Pong</a
       >
     </p>
   </div>
