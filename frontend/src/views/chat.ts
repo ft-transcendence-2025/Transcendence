@@ -74,14 +74,12 @@ class ChatComponent {
     const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
 
     const messages = this.messages.get(friendId);
-    if (messages && messages.length > 0) {
-      console.log(messages[messages.length - 1].recipientId, " and ", this.currentUserId);
-    }
+
     if (messages) {
       messagesContainer.innerHTML = messages.map(message => `
         <div class="mb-2 ${(message.recipientId || message.senderId == this.currentUserId) ? 'text-right' : 'text-left'}">
           <div class="inline-block p-2 rounded-lg max-w-xs ${(message.recipientId || message.senderId == this.currentUserId)
-          ? 'bg-green-500 text-white ml-auto'
+          ? 'bg-green-600 text-white ml-auto'
           : 'bg-gray-200 text-gray-800'
         }">
             <div class="text-xs">${message.content}</div>
@@ -109,7 +107,7 @@ class ChatComponent {
       messagesContainer.innerHTML = messages.map(message => `
         <div class="mb-2 ${(message.senderId == this.currentUserId) ? 'text-right' : 'text-left'}">
           <div class="inline-block p-2 rounded-lg max-w-xs ${(message.senderId == this.currentUserId)
-          ? 'bg-green-500 text-white ml-auto'
+          ? 'bg-green-600 text-white ml-auto'
           : 'bg-gray-200 text-gray-800'
         }">
             <div class="text-xs">${message.content}</div>
@@ -183,7 +181,7 @@ class ChatComponent {
     chatContainer.className =
       "w-74 h-90 bg-white shadow-lg border rounded-lg flex flex-col";
     chatContainer.innerHTML = `
-      <div class="flex justify-between items-center p-2 bg-green-600 text-white rounded-t-lg">
+      <div class="flex justify-between items-center p-2 bg-green-700 text-white rounded-t-lg">
       <span>
         <span class="inline-block w-8 h-8 rounded-full bg-gray-300 border-2 border-white overflow-hidden align-middle">
         <img src="${friendAvatar.src}" class="w-8 h-8 object-cover" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
@@ -191,16 +189,16 @@ class ChatComponent {
       </span>
       <span>${friend.username}</span>
       <div class="flex gap-2">
-        <button class="close px-1 hover:bg-green-700 rounded">x</button>
+        <button class="close px-1 hover:bg-green-800 rounded">x</button>
       </div>
       </div>
       <div class="flex-1 p-2 overflow-y-auto text-sm bg-radial-[at_50%_75%] from-white to-green-10 to-75%" id="messages">
       </div>
       <div class="p-2 border-t bg-white">
       <div class="flex gap-1">
-        <input type="text" class="flex-1 border rounded px-2 py-1 text-sm focus:outline-none focus:border-green-500 min-w-0" 
+        <input type="text" class="flex-1 border rounded px-2 py-1 text-sm focus:outline-none focus:border-green-600 min-w-0" 
         placeholder="Type a message..." id="message-input"/>
-        <button class="bg-green-500 text-white px-2 py-1 rounded text-sm hover:bg-green-600 focus:outline-none flex-shrink-0" 
+        <button class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700 focus:outline-none flex-shrink-0" 
         id="send-button">Send</button>
       </div>
       </div>
