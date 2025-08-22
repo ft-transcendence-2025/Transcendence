@@ -23,19 +23,30 @@ export async function renderChat(container: HTMLElement | null) {
   if (!container) return;
   const friends = await getUserFriends();
   container.innerHTML = await loadHtml("/html/chat.component.html");
-  
+
   const c = new ChatComponent("chat-root", friends);
 
 
   if (c.chatService.conn) {
-    c.chatService.conn.addEventListener('message', (e) => {
+
+    c.chatService.conn.onmessage = (e: MessageEvent) => {
       const message: PrivateMessageResponse = JSON.parse(e.data);
       if (message.senderId != c.currentUserId) {
+        let temp = c.messages.get(message.senderId);
+        if (temp) {
+          temp.push(message);
+          c.messages.set(message.senderId, temp);
+        } else {
+          c.messages.set(message.senderId, [message]);
+        }
         c.updateChatMessages(message.senderId);
       }
-    });
+    };
+
     c.chatService.conn.addEventListener('close', () => {
+      console.log("connection lost!");
       c.chatService.connect();
+      console.log("reconnected!");
     });
   }
 }
@@ -44,7 +55,7 @@ class ChatComponent {
   container: HTMLElement;
   friends: Friend[];
   openChats: Map<string, HTMLElement>;
-  // messages: Map<string, HTMLElement>;
+  messages: Map<string, any[]>;
   currentUserId: string = getCurrentUsername() as string;
   public chatService: chatService = new chatService();
 
@@ -52,7 +63,7 @@ class ChatComponent {
     this.container = document.getElementById(containerId)!;
     this.friends = friends;
     this.openChats = new Map();
-    // this.messages = new Map();
+    this.messages = new Map();
 
     this.render();
   }
@@ -62,7 +73,37 @@ class ChatComponent {
     if (!chatWindow) return;
     const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
 
+    const messages = this.messages.get(friendId);
+    if (messages && messages.length > 0) {
+      console.log(messages[messages.length - 1].recipientId, " and ", this.currentUserId);
+    }
+    if (messages) {
+      messagesContainer.innerHTML = messages.map(message => `
+        <div class="mb-2 ${(message.recipientId || message.senderId == this.currentUserId) ? 'text-right' : 'text-left'}">
+          <div class="inline-block p-2 rounded-lg max-w-xs ${(message.recipientId || message.senderId == this.currentUserId)
+          ? 'bg-green-500 text-white ml-auto'
+          : 'bg-gray-200 text-gray-800'
+        }">
+            <div class="text-xs">${message.content}</div>
+            <div class="text-xs opacity-70 mt-1">
+              ${new Date(message.ts || message.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Scroll to bottom
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }
+
+  async updateChatHistory(friendId: string) {
+    const chatWindow = this.openChats.get(friendId);
+    if (!chatWindow) return;
+    const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
+
     const messages: [any] = await this.chatService.getConversation(friendId);
+    this.messages.set(friendId, messages);
 
     if (messages) {
       messagesContainer.innerHTML = messages.map(message => `
@@ -78,7 +119,7 @@ class ChatComponent {
           </div>
         </div>
       `).join('');
-  
+
       // Scroll to bottom
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
@@ -87,7 +128,13 @@ class ChatComponent {
   async sendMessage(friendId: string, message: PrivateSendMessage) {
     if (!message.content.trim()) return;
     this.chatService.sendPrivateMessage(message);
-    await new Promise(resolve => setTimeout(resolve, 100));
+    let temp = this.messages.get(friendId);
+    if (temp) {
+      temp.push(message);
+      this.messages.set(friendId, temp);
+    } else {
+      this.messages.set(friendId, [message]);
+    }
     await this.updateChatMessages(friendId);
   }
 
@@ -108,9 +155,9 @@ class ChatComponent {
   }
 
   async openChat(friend: Friend) {
-    
+
     let friendAvatar = document.createElement("img");
-    friendAvatar.src =  await getUserAvatar(friend.username);
+    friendAvatar.src = await getUserAvatar(friend.username);
 
     if (this.openChats.has(friend.username)) {
       const existingChat = this.openChats.get(friend.username)!;
@@ -199,7 +246,7 @@ class ChatComponent {
     this.openChats.set(friend.username, chatContainer);
 
     // Load existing messages
-    this.updateChatMessages(friend.username);
+    this.updateChatHistory(friend.username);
 
     // Focus on input
     messageInput.focus();
