@@ -2,6 +2,7 @@ import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getUserAvatar } from "../utils/userUtils.js";
 import { getFriendsContent } from "../views/friends.js";
+import { getNotificationsContent } from "../views/notifications.js";
 import { openModal } from "./modalManager.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
@@ -27,9 +28,10 @@ export async function renderNavbar(container: HTMLElement | null) {
   notificationIcon?.addEventListener("click", async (e) => {
     e.preventDefault();
     // JUST PLACEHOLDERS:
-    const notificationContent = document.createElement("div");
-    notificationContent.className = "p-4";
-    notificationContent.textContent = "No notifications yet.";
+    // const notificationContent = document.createElement("div");
+    // notificationContent.className = "p-4";
+    // notificationContent.textContent = "No notifications yet.";
+    const notificationContent = await getNotificationsContent();
     openModal(notificationContent, notificationIcon);
   });
 
