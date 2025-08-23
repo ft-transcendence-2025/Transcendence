@@ -1,25 +1,46 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getUserAvatar } from "../utils/userUtils.js";
-import { renderFriendsDialog } from "../views/friends.js";
+import { getFriendsContent } from "../views/friends.js";
+import { openModal } from "./modalManager.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
   if (!container) return;
 
   // Fetch the component's HTML template
   container.innerHTML = await loadHtml("/html/navbar.html");
-  
-  const friendsListIcon = document.getElementById("friends-list");
-  friendsListIcon?.addEventListener("click", (event) => {
-    console.log("click on friends");
-    event.preventDefault();
-    renderFriendsDialog();
-  });
+
+  const friendsIcon = document.getElementById("friends-list");
+  const notificationIcon = document.getElementById("notifications");
+  const profileIcon = document.getElementById("profile");
   const loginLink = document.getElementById("login-link");
   const dashboardLink = document.getElementById("dashboard-link");
   const registerLink = document.getElementById("register-link");
   const logoutLink = document.getElementById("logout-link");
   const userMenu = document.getElementById("user-menu");
+
+  friendsIcon?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    openModal(await getFriendsContent(), friendsIcon);
+  });
+
+  notificationIcon?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    // JUST PLACEHOLDERS:
+    const notificationContent = document.createElement("div");
+    notificationContent.className = "p-4";
+    notificationContent.textContent = "No notifications yet.";
+    openModal(notificationContent, notificationIcon);
+  });
+
+  profileIcon?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    // JUST PLACEHOLDERS:
+    const profileContent = document.createElement("div");
+    profileContent.className = "p-4";
+    profileContent.textContent = "User Profile";
+    openModal(profileContent, profileIcon);
+  });
 
   const token = localStorage.getItem("authToken");
 

@@ -1,5 +1,5 @@
 <link rel="stylesheet"
-	href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=person_heart" />
+	href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
 <nav class="bg-(--color-primary) p-4">
 	<div class="container mx-auto flex justify-between items-center">
@@ -16,14 +16,29 @@
 			<a href="/dashboard" id="dashboard-link" class="hover:text-white font-greek text-3xl font-bold px-3 hidden"
 				data-link="true">Jungle Pong</a>
 		</div>
+		<!-- Right: Action Icons and Logout -->
+		<div class="flex items-center space-x-6">
+			<!-- Friends -->
+			<button id="friends-list" class="material-symbols-outlined text-3xl hover:text-white focus:outline-none cursor-pointer"
+				title="Friends">
+				person_heart
+			</button>
 
-		<div class="flex items-center ml-auto cursor-pointer">
-			<span id="friends-list" class="material-symbols-outlined">person_heart</span>
-		</div>
-		<!-- Right: Logout -->
-		<div class="flex space-x-4">
-			<a href="#" id="logout-link" class="hover:text-white text-md font-bold px-3 py-2 hidden"
-				data-link="true">Logout</a>
+			<!-- Notifications -->
+			<button id="notifications" class="material-symbols-outlined text-3xl hover:text-white focus:outline-none cursor-pointer"
+				title="Notifications">
+				notifications
+			</button>
+
+			<!-- Profile (opens modal with profile info) -->
+			<button id="profile" class="material-symbols-outlined text-3xl hover:text-white focus:outline-none cursor-pointer"
+				title="Profile">
+				account_circle
+			</button>
+
+			<!-- Logout -->
+			<!-- <a href="#" id="logout-link" class="hover:text-white text-md font-bold px-3 py-2 hidden"
+				data-link="true">Logout</a> -->
 		</div>
 	</div>
 </nav>

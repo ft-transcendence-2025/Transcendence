@@ -80,3 +80,22 @@
   /* -webkit-text-stroke: 2px rgba(57, 103, 51, 0.8); */
   -webkit-text-stroke: 2px #2e3a29;
 }
+
+/* Default margin */
+.modal-content {
+  margin-right: 4rem;
+}
+
+/* Adjust margin for smaller screens */
+@media (max-width: 768px) {
+  .modal-content {
+    margin-right: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    margin-right: 1rem;
+  }
+}
+

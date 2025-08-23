@@ -1,30 +1,23 @@
-import { loadHtml } from "../utils/htmlLoader.js";
-import { getUsers } from "../services/userService.js";
+// src/views/friends.ts
 import { getUserFriends } from "../services/friendshipService.js";
-import { getCurrentUsername, getUserAvatar } from "../utils/userUtils.js";
+import { getUserAvatar } from "../utils/userUtils.js";
 import { ChatComponent, Friend } from "./chat.js";
 import { PrivateMessageResponse } from "../interfaces/message.interfaces.js";
 
+// Renders the friends list inside a provided container
 export async function renderFriends(container: HTMLElement | null) {
   if (!container) return;
-
-  // Limpar o container antes de renderizar
   container.innerHTML = "";
 
   try {
     const c = new ChatComponent("chat-root", []);
-
     if (c.chatService.conn) {
       c.chatService.conn.onmessage = (e: MessageEvent) => {
         const message: PrivateMessageResponse = JSON.parse(e.data);
-        if (message.senderId != c.currentUserId) {
-          let temp = c.messages.get(message.senderId);
-          if (temp) {
-            temp.push(message);
-            c.messages.set(message.senderId, temp);
-          } else {
-            c.messages.set(message.senderId, [message]);
-          }
+        if (message.senderId !== c.currentUserId) {
+          let temp = c.messages.get(message.senderId) || [];
+          temp.push(message);
+          c.messages.set(message.senderId, temp);
           c.updateChatMessages(message.senderId);
         }
       };
@@ -54,49 +47,26 @@ export async function renderFriends(container: HTMLElement | null) {
       container.appendChild(li);
     });
   } catch (error) {
-    console.error("Failed to fetch users:", error);
-    container.innerHTML = "<p>Error loading user list.</p>";
+    console.error("Failed to fetch friends:", error);
+    container.innerHTML = "<p>Error loading friends list.</p>";
   }
 }
-export async function renderFriendsDialog() {
-  // Verificar se o dialog já existe
-  let dialog = document.getElementById("friends-dialog");
-  if (dialog) {
-    dialog.remove(); // Remover dialog existente para evitar duplicatas
-    return;
-  }
 
-  // Criar o container do dialog
-  dialog = document.createElement("div");
-  dialog.id = "friends-dialog";
-  dialog.className =
-    "fixed top-16 right-0 w-120 z-50 flex items-start";
+// Returns the content for the friends modal
+export async function getFriendsContent(): Promise<HTMLElement> {
+  const container = document.createElement("div");
+  container.className = "w-full";
 
-  // Criar o conteúdo do dialog
-  const dialogContent = document.createElement("div");
-  dialogContent.className =
-    "bg-white/30 backdrop-blur-sm w-3/4 max-w-lg rounded-lg shadow-lg p-6 relative absolute";
+  const title = document.createElement("h2");
+  title.className = "text-lg font-semibold mb-4";
+  title.textContent = "Friends";
+  container.appendChild(title);
 
-  // Botão de fechar
-  const closeButton = document.createElement("button");
-  closeButton.className =
-    "absolute top-2 right-2 text-gray-500 hover:text-gray-700";
-  closeButton.innerHTML = "&times;";
-  closeButton.addEventListener("click", () => dialog?.remove());
-  dialogContent.appendChild(closeButton);
+  const list = document.createElement("ul");
+  list.className = "overflow-y-auto max-h-96";
+  container.appendChild(list);
 
-  // Container da lista de amigos
-  const friendsContainer = document.createElement("ul");
-  friendsContainer.id = "friends-dialog-list";
-  friendsContainer.className = "overflow-y-auto max-h-96";
-  dialogContent.appendChild(friendsContainer);
+  await renderFriends(list);
 
-  // Adicionar o conteúdo ao dialog
-  dialog.appendChild(dialogContent);
-
-  // Adicionar o dialog ao body
-  document.body.appendChild(dialog);
-
-  // Renderizar a lista de amigos dentro do dialog
-  await renderFriends(friendsContainer);
+  return container;
 }
