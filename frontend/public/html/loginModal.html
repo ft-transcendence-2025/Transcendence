@@ -21,31 +21,30 @@
       <div class="mt-2 px-7 py-3">
         <!-- Error message container -->
         <div
-          id="error-message"
-          class="mb-4 hidden rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+          class="error-message mb-4 hidden rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
           role="alert"
         >
-          <span id="error-text"></span>
+          <span class="error-text"></span>
         </div>
 
         <form class="space-y-4">
           <div>
-            <label for="username" class="sr-only">Username</label>
+            <label for="login-username" class="sr-only">Username</label>
             <input
               type="text"
               name="username"
-              id="username"
+              id="login-username"
               class="w-full rounded-md border border-gray-300 bg-white px-3 py-2"
               placeholder="Username"
               required
             />
           </div>
           <div>
-            <label for="password" class="sr-only">Password</label>
+            <label for="login-password" class="sr-only">Password</label>
             <input
               type="password"
               name="password"
-              id="password"
+              id="login-password"
               class="w-full rounded-md border border-gray-300 bg-white px-3 py-2"
               placeholder="Password"
               required
