@@ -13,11 +13,11 @@ contract PongGameLedger is Ownable{
     struct Match {
         uint256 tournamentId;
         uint256 matchId;
-        uint256 player1; //This could be the wallet address.
-        uint256 player2; //The same.
+        string  player1; //This could be the wallet address.
+        string  player2; //The same.
         uint256 score1;
         uint256 score2;
-        uint256 winner;
+        string  winner;
         uint256 startTime;
         uint256 endTime;
         bool    remoteMatch;
@@ -34,11 +34,11 @@ contract PongGameLedger is Ownable{
     event MatchCreated(
         uint256 indexed tournamentId,
         uint256 indexed matchId,
-        uint256 player1,
-        uint256 player2,
+        string  player1,
+        string  player2,
         uint256 score1,
         uint256 score2,
-        uint256 winner,
+        string  winner,
         uint256 startTime,
         uint256 endTime,
         bool    remoteMatch
@@ -51,7 +51,7 @@ contract PongGameLedger is Ownable{
     }
 
     /// @notice Mapping association playerId => array of match
-    mapping(uint256 playerId => MatchList[] matchList) public matchesByPlayer;
+    mapping(string playerId => MatchList[] matchList) public matchesByPlayer;
 
     /// @notice Initializes the contract with the owner (msg.sender)
     constructor() Ownable(msg.sender) {}
@@ -59,26 +59,37 @@ contract PongGameLedger is Ownable{
 
     //Possible errors, to communicate off-chain.
     error InvalidPlayers();
-    error InvalidWinner(uint256 winner);
+    error InvalidWinner(string winner);
     error InvalidTimeStamps();
     error MatchDoesNotExist(uint256 matchId);
     error TournamentDoesNotHaveMatches(uint256 tournamentId);
-    error PlayerDoesNotHaveMatches(uint256 playerId);
+    error PlayerDoesNotHaveMatches(string playerId);
+    error EmptyPlayerNotAllowed(string field);
 
     /// @notice This contract manages tournament matches with creation functionality
     function newMatch(
         uint256 tournamentId,
-        uint256 player1,
-        uint256 player2,
+        string  memory player1,
+        string  memory player2,
         uint256 score1,
         uint256 score2,
-        uint256 winner,
+        string  memory winner,
         uint256 startTime,
         uint256 endTime,
         bool    remoteMatch
     ) public onlyOwner {
-        if(player1 == player2) revert InvalidPlayers();
-        if(winner != player1 && winner != player2) revert InvalidWinner(winner);
+
+        if (bytes(player1).length == 0) revert EmptyPlayerNotAllowed("Player1");
+        if (bytes(player2).length == 0) revert EmptyPlayerNotAllowed("Player2");
+        if (bytes(winner).length == 0) revert EmptyPlayerNotAllowed("Winner");
+        
+        
+        bytes32 player1Hash = keccak256(abi.encodePacked(player1));
+        bytes32 player2Hash = keccak256(abi.encodePacked(player2));
+        bytes32 winnerHash = keccak256(abi.encodePacked(winner));
+
+        if(player1Hash == player2Hash) revert InvalidPlayers();
+        if(winnerHash != player1Hash && winnerHash != player2Hash) revert InvalidWinner(winner);
         if(startTime > endTime) revert InvalidTimeStamps();
 
         uint256 matchId = matchCountPerTournament[tournamentId];
@@ -118,11 +129,11 @@ contract PongGameLedger is Ownable{
     function getMatch(uint256 tournamentId, uint matchId) public view returns (
         uint256 tId,
         uint256 mId,
-        uint256 pl1,
-        uint256 pl2,
+        string  memory pl1,
+        string  memory pl2,
         uint256 scr1,
         uint256 scr2,
-        uint256 win,
+        string  memory win,
         uint256 sTime,
         uint256 eTime,
         bool    rmatch,
@@ -162,7 +173,7 @@ contract PongGameLedger is Ownable{
 
     /// @notice This function returns an array with all matches from a player
     /// @dev Future versions it can have a pagination feature to be more gas efficient
-    function getMatchesByPlayer(uint playerId)
+    function getMatchesByPlayer(string memory playerId)
         public view returns (Match[] memory) {
             uint256 totalMatches = matchesByPlayer[playerId].length;
             if (totalMatches == 0) revert PlayerDoesNotHaveMatches(playerId);

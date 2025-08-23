@@ -7,11 +7,11 @@ async function matchRoutes(fastify, options) {
         try {
             const tx = await fastify.contract.getContract().newMatch(
                 BigInt(params.tournamentId),
-                BigInt(params.player1),
-                BigInt(params.player2),
+                params.player1,
+                params.player2,
                 BigInt(params.score1),
                 BigInt(params.score2),
-                BigInt(params.winner),
+                params.winner,
                 BigInt(params.startTime),
                 BigInt(params.endTime),
                 params.remoteMatch
@@ -19,7 +19,12 @@ async function matchRoutes(fastify, options) {
             await tx.wait();
             return { txHash: tx.hash, message: 'Match created' };
         } catch (err) {
-            res.code(500).send({ error: err.reason || err.message });
+            fastify.log.error(`Error saving the match: ${err.message}`);
+            if (err.reason && err.reason.includes('EmptyPlayerNotAllowed')){
+                res.code(400).send({ error: `Invalid Input: Player ID and/or Winner cannot be empty - Player 1: ${player1} - Player 2: ${player2} - Winner: ${winner}` });
+            } else {
+                res.code(500).send({ error: err.reason || err.message });
+            }
         }
     });
 }

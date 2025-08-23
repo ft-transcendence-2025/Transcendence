@@ -222,7 +222,7 @@ Base URL: http://localhost:3000 (when running via docker-compose)
   } 
     ```
 - **Errors**:
-     * 400 Bad Request - invalid/non-numeric path parameters.
+     * 400 Bad Request - invalid path parameters.
      * 404 Not Found - no matches found for the given playerId.
      * 500 Internal Server Error - blockchain/contract access error (body: ``` { "error": "message" } ```).
        
