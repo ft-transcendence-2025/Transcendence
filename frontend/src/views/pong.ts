@@ -1,6 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserNickname } from "../utils/userUtils.js";
+import { getUserDisplayName } from "../utils/userUtils.js";
 import { Game } from "./game/Game.js";
 import { GameMode, PaddleSide } from "./game/utils.js";
 
@@ -27,7 +27,7 @@ export async function renderPong(container: HTMLElement | null) {
   // ws.addEventListener('message', e => console.log('msg', e.data));
   // ws.addEventListener('close', e => console.log('closed', e.code, e.reason));
   // ws.addEventListener('error', e => console.error('error', e));
-
+  
   // Initialize the game based on the selected mode
   if (gameMode === "ai") {
     const game = new Game(GameMode.PvE, PaddleSide.Left);
@@ -55,9 +55,9 @@ async function updatePlayerNames(gameMode: string) {
       player1Element.textContent = "AI";
     }
     if (player2Element) {
-      // Fetch nickname asynchronously
-      const currentNickname = await getUserNickname();
-      player2Element.textContent = currentNickname;
+      // Fetch display name asynchronously
+      const currentDisplayName = await getUserDisplayName();
+      player2Element.textContent = currentDisplayName;
     }
   } else if (gameMode === "2player") {
     // Player vs Player mode

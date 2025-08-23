@@ -1,11 +1,11 @@
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getUsers } from "../services/userService.js";
 
-export async function renderUserList(container: HTMLElement | null) {
+export async function renderFriends(container: HTMLElement | null) {
   if (!container) return;
 
   // Fetch the component's HTML template
-  container.innerHTML = await loadHtml("/html/userList.html");
+  container.innerHTML = await loadHtml("/html/friends.html");
 
   // Fetch users from the API
   try {

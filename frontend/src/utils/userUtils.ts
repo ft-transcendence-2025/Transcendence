@@ -9,9 +9,9 @@ export interface DecodedToken {
 }
 
 /**
- * Decode JWT token without verification (client-side only)
- * This should not be used for security validation, only for reading user info
- */
+ ** Decode JWT token without verification (client-side only)
+ ** This should not be used for security validation, only for reading user info
+ **/
 export function decodeJWT(token: string): DecodedToken | null {
   try {
     // JWT has 3 parts separated by dots: header.payload.signature
@@ -40,8 +40,8 @@ export function decodeJWT(token: string): DecodedToken | null {
 }
 
 /**
- * Get current user info from stored token
- */
+ ** Get current user info from stored token
+ **/
 export function getCurrentUser(): DecodedToken | null {
   const token = localStorage.getItem("authToken");
   if (!token) {
@@ -52,31 +52,33 @@ export function getCurrentUser(): DecodedToken | null {
 }
 
 /**
- * Check if user is authenticated
- */
+ ** Check if user is authenticated
+ **/
 export function isAuthenticated(): boolean {
   const user = getCurrentUser();
   return user !== null;
 }
 
 /**
- * Get current username from token
- */
+ ** Get current username from token
+ **/
 export function getCurrentUsername(): string | null {
   const user = getCurrentUser();
   return user?.username || null;
 }
 
 /**
- * Get player's display name (nickname with fallback to username)
- * This function tries to fetch the nickname from the profile, falls back to username
- */
-export async function getUserNickname(username?: string): Promise<string> {
+ ** Get player's nickname only (no fallback to username)
+ ** Returns null if no nickname is set
+ **/
+export async function getUserNickname(
+  username?: string,
+): Promise<string | null> {
   try {
     const targetUsername = username || getCurrentUsername();
 
     if (!targetUsername) {
-      return "Guest";
+      return null;
     }
 
     // Get profile to fetch nickname
@@ -85,15 +87,38 @@ export async function getUserNickname(username?: string): Promise<string> {
     );
     const profile = await getProfileByUsername(targetUsername);
 
-    // Return nickname if available, otherwise fallback to username
-    return profile.nickName || targetUsername;
+    return profile.nickName || null;
   } catch (error) {
-    // If profile fetch fails, fallback to username or Guest
+    console.warn("Could not fetch user nickname:", error);
+    return null;
+  }
+}
+
+/**
+ ** Get user's display name:
+ ** nickname with fallback to username with fallback to "Guest"
+ **/
+export async function getUserDisplayName(username?: string): Promise<string> {
+  try {
+    const targetUsername = username || getCurrentUsername();
+
+    if (!targetUsername) {
+      return "Guest";
+    }
+
+    const nickname = await getUserNickname(username);
+
+    // Return nickname if available, otherwise fallback to username
+    return nickname || targetUsername;
+  } catch (error) {
     console.warn("Could not fetch profile for display name:", error);
     return username || getCurrentUsername() || "Guest";
   }
 }
 
+/**
+ ** Get user's avatar URL with fallback to panda avatar
+ **/
 export async function getUserAvatar(username?: string): Promise<string> {
   try {
     const targetUsername = username || getCurrentUsername();

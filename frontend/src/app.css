@@ -23,6 +23,57 @@
   --font-greek: "Caesar Dressing", "system-ui";
   --font-montserrat: "Montserrat", "sans-serif";
   --font-poppins: "Poppins", "sans-serif";
+
+  --animate-pong-ball: pong-ball 5s ease-in-out infinite;
+  --animate-paddle-left: paddle-left 5s ease-in-out infinite;
+  --animate-paddle-right: paddle-right 5s ease-in-out infinite;
+}
+
+@keyframes pong-ball {
+  0% {
+    left: 10px;
+    top: 50%;
+  }
+  50% {
+    left: calc(100% - 25px);
+    top: 65%;
+  }
+  100% {
+    left: 10px;
+    top: 50%;
+  }
+}
+
+@keyframes paddle-left {
+  0%,
+  4% {
+    transform: translateY(-50%) translateY(50px);
+  }
+  8%,
+  92% {
+    transform: translateY(-50%) translateY(30px);
+  }
+  90% {
+    transform: translateY(-50%) translateY(40px);
+  }
+  100% {
+    transform: translateY(-50%) translateY(50px);
+  }
+}
+
+@keyframes paddle-right {
+  0%,
+  40% {
+    transform: translateY(-50%) translateY(30px);
+  }
+  
+  50% {
+    transform: translateY(-50%) translateY(80px);
+  }
+  55%,
+  100% {
+    transform: translateY(-50%) translateY(30px);
+  }
 }
 
 .text-stroke {
