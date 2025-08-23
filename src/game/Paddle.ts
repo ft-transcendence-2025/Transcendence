@@ -24,7 +24,8 @@ export interface PaddleState {
   attr: {
     width: number,
     height: number,
-  }
+  },
+  speed: number,
 }
 
 export class Paddle {
@@ -51,7 +52,8 @@ export class Paddle {
       attr: {
         width: this.width,
         height: this.height,
-      }
+      },
+      speed: this.speed,
     }
   }
 

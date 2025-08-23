@@ -233,11 +233,11 @@ export class GameRoom {
       if (msg.key === "s" || msg.key === "S")
         this.game.paddleLeft.state.moving.down = false;
       else if (msg.key === "w" || msg.key === "W")
-          this.game.paddleLeft.state.moving.up = false;
+        this.game.paddleLeft.state.moving.up = false;
       if (msg.key === "ArrowDown")
         this.game.paddleRight.state.moving.down = false;
       else if (msg.key === "ArrowUp")
-          this.game.paddleRight.state.moving.up = false;
+        this.game.paddleRight.state.moving.up = false;
     }
     else if (msg.key === "p" || msg.key === "P")
       this.game.gameState.isPaused = !this.game.gameState.isPaused;
