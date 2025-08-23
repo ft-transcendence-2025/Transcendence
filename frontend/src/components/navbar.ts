@@ -1,13 +1,20 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getUserAvatar } from "../utils/userUtils.js";
+import { renderFriendsDialog } from "../views/friends.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
   if (!container) return;
 
   // Fetch the component's HTML template
   container.innerHTML = await loadHtml("/html/navbar.html");
-
+  
+  const friendsListIcon = document.getElementById("friends-list");
+  friendsListIcon?.addEventListener("click", (event) => {
+    console.log("click on friends");
+    event.preventDefault();
+    renderFriendsDialog();
+  });
   const loginLink = document.getElementById("login-link");
   const dashboardLink = document.getElementById("dashboard-link");
   const registerLink = document.getElementById("register-link");
@@ -104,4 +111,6 @@ async function toggleUserMenuSidebar() {
   } else {
     console.error("Navbar element not found");
   }
+
+
 }
