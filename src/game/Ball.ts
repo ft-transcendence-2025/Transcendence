@@ -6,6 +6,7 @@ export interface BallState {
   y: number,
   radius: number,
   isRunning: boolean,
+  angle: number,
 };
 
 enum Player {
@@ -36,6 +37,7 @@ export class Ball {
       y: canvas.height / 2,
       radius: this.radius,
       isRunning: this.isRunning,
+      angle: this.angle,
     };
   }
 
@@ -58,8 +60,8 @@ export class Ball {
     else if (this.firstHit === true && this.currentSpeed < this.defaultSpeed)
       this.currentSpeed = this.defaultSpeed;
 
-    this.state.x += Math.cos(this.angle) * this.currentSpeed;
-    this.state.y += Math.sin(this.angle) * this.currentSpeed;
+    this.state.x += Math.cos(this.state.angle) * this.currentSpeed;
+    this.state.y += Math.sin(this.state.angle) * this.currentSpeed;
   }
 
   private increaseBallSpeed(): void {
@@ -80,15 +82,16 @@ export class Ball {
     this.currentSpeed = this.defaultSpeed;
     this.state.x = canvas.width / 2;
     this.state.y = canvas.height / 2;
+    this.state.isRunning = false;
   }
 
   public checkCeilingFloorCollision(canvas: Canvas): void {
     if (this.state.y - this.radius <= 0) {
       this.state.y = this.radius;
-      this.angle *= -1;
+      this.state.angle *= -1;
     } else if (this.state.y + this.radius >= canvas.height) {
       this.state.y = canvas.height - this.radius;
-      this.angle *= -1;
+      this.state.angle *= -1;
     }
   }
 
@@ -109,11 +112,11 @@ export class Ball {
       // Adjust ball position to avoid sticking
       if (paddle.side === PaddleSide.Left) {
         this.state.x = paddle.state.position.x + paddle.width + this.radius;
-        this.angle = clamped * maxBounceAngle;
+        this.state.angle = clamped * maxBounceAngle;
       }
       else if (paddle.side === PaddleSide.Right) {
         this.state.x = paddle.state.position.x - this.radius;
-        this.angle = Math.PI - clamped * maxBounceAngle; // Set angle to PI - bounceAngle (leftward)
+        this.state.angle = Math.PI - clamped * maxBounceAngle; // Set angle to PI - bounceAngle (leftward)
       }
       this.increaseBallSpeed();
     }

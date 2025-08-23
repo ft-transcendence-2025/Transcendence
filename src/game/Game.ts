@@ -79,7 +79,7 @@ export class GameRoom {
     this.gameInterval = setInterval(() => {
       let point;
 
-      if (this.game.ball.isRunning && !this.game.gameState.isPaused) {
+      if (this.game.gameState.ball.isRunning && !this.game.gameState.isPaused) {
         this.game.ball.checkCeilingFloorCollision(this.game.canvas);
         this.game.ball.checkPaddleCollision(this.game.paddleLeft);
         this.game.ball.checkPaddleCollision(this.game.paddleRight);
@@ -91,7 +91,7 @@ export class GameRoom {
           this.game.gameState.score.player1++;
         else 
           this.game.gameState.score.player2++;
-        this.game.ball.isRunning = false;
+        this.game.gameState.ball.isRunning = false;
         this.game.ball.reset(this.game.canvas);
         this.checkWinner();
       }
@@ -210,11 +210,11 @@ export class GameRoom {
       if (msg.type === "keydown") {
         if (msg.key === "s" || msg.key === "S")
           this.game.paddleLeft.state.moving.down = true;
-          else if (msg.key === "w" || msg.key === "W")
+        else if (msg.key === "w" || msg.key === "W")
             this.game.paddleLeft.state.moving.up = true;
         if (msg.key === "ArrowDown")
           this.game.paddleRight.state.moving.down = true;
-          else if (msg.key === "ArrowUp")
+        else if (msg.key === "ArrowUp")
             this.game.paddleRight.state.moving.up = true;
         if (msg.key === " ") {
           if (!this.game.ball.isRunning)
@@ -225,18 +225,18 @@ export class GameRoom {
             this.game.gameState.score.winner = null;
           }
           else
-            this.game.ball.isRunning = true;
+            this.game.gameState.ball.isRunning = true;
         }
       }
     }
     if (msg.type === "keyup") {
       if (msg.key === "s" || msg.key === "S")
         this.game.paddleLeft.state.moving.down = false;
-        else if (msg.key === "w" || msg.key === "W")
+      else if (msg.key === "w" || msg.key === "W")
           this.game.paddleLeft.state.moving.up = false;
       if (msg.key === "ArrowDown")
         this.game.paddleRight.state.moving.down = false;
-        else if (msg.key === "ArrowUp")
+      else if (msg.key === "ArrowUp")
           this.game.paddleRight.state.moving.up = false;
     }
     else if (msg.key === "p" || msg.key === "P")

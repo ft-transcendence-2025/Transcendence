@@ -29,7 +29,7 @@ export interface PaddleState {
 
 export class Paddle {
   public readonly width: number = 15;
-  public readonly height: number = 90;
+  public readonly height: number = 100;
   private color: string = "#5FAD56";
   private strokeColor: string = "#396733";
   private strokeWidth: number = 0;
