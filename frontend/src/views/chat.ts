@@ -7,7 +7,7 @@ import { getCurrentUsername, getUserAvatar } from "../utils/userUtils.js";
 type Friend = {
   id: string;
   username: string;
-  status?: "online" | "offline";
+  status?: "ONLINE" | "offline";
 };
 
 type Message = {
@@ -138,14 +138,19 @@ class ChatComponent {
 
   render() {
     const list = this.container.querySelector("#friends-list")!;
-    this.friends.forEach((friend) => {
+    this.friends.forEach(async (friend) => {
+      let friendAvatar = document.createElement("img");
+      friendAvatar.src = await getUserAvatar(friend.username);
+
       const li = document.createElement("li");
       li.className =
-        "flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-100";
+        "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary-light)";
       li.innerHTML = `
-        <span>${friend.username}</span>
-        <span class="w-3 h-3 rounded-full ${friend.status === "online" ? "bg-green-500" : "bg-gray-400"
-        }"></span>
+      <span class="relative inline-block w-8 h-8 rounded-full border-2 ${friend.status === "ONLINE" ? "border-green-400 shadow-[0_0_4px_1px_rgba(34,197,94,0.25)]" : "border-gray-400 shadow-[0_0_4px_1px_rgba(156,163,175,0.18)]"} bg-gray-300 overflow-hidden align-middle">
+        <img src="${friendAvatar.src}" class="w-8 h-8 object-cover" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
+        <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full ${friend.status === "ONLINE" ? "bg-green-400 shadow-[0_0_3px_1px_rgba(34,197,94,0.35)]" : "bg-gray-400 shadow-[0_0_3px_1px_rgba(156,163,175,0.22)]"} border-2 border-white"></span>
+      </span>
+      <span class="ml-5">${friend.username}</span>
       `;
       li.addEventListener("click", () => this.openChat(friend));
       list.appendChild(li);
