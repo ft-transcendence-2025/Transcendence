@@ -20,19 +20,15 @@ export async function renderPong(container: HTMLElement | null) {
   // Update the player names based on game mode
   await updatePlayerNames(gameMode);
 
+  let game: Game;
 
   // Initialize the game based on the selected mode
-  if (gameMode === "ai") {
-    const game = new Game(GameMode.PvE, PaddleSide.Left);
-    // game.gameLoop();
-  } else if (gameMode === "2player") {
-    const game = new Game();
-    // game.gameLoop();
-  } else if (gameMode === "remote") {
-    // TODO: Implement remote game mode
-    const game = new Game();
-    // game.gameLoop();
-  }
+  if (gameMode === "ai")
+    game = new Game(GameMode.PvE, PaddleSide.Right);
+  else if (gameMode === "2player")
+    game = new Game(GameMode.PvP);
+  else if (gameMode === "remote")
+    game = new Game(GameMode.Online);
 }
 
 /**

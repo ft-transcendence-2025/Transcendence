@@ -11,6 +11,7 @@ export enum PaddleState {
 export enum GameMode {
   PvP = 0,
   PvE = 1,
+  Online = 3,
 }
 
 export function degreesToRadians(degree: number): number {
@@ -27,3 +28,4 @@ export function getRandomAngle(): number {
     return degreesToRadians(randomDeg) + Math.PI;
   return degreesToRadians(randomDeg);
 }
+

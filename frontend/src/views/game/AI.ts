@@ -1,6 +1,5 @@
-import { Paddle } from "./Paddle.js";
 import { PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
-import { Ball } from "./Ball.js";
+import { GameState } from "./Game.js";
 
 interface Point {
 	x: number;
@@ -22,42 +21,47 @@ export class AI {
 	private angularCoeficient: number = 0;
 	private linearCoeficient: number = 0;
 	private targetY: number = 0;
-	private ballIsMoving: boolean = false;
-	public paddle: Paddle;
 	private dir: number = 0;
+  private gameState: GameState | null;
+  private side: PaddleSide;
+  private ws: WebSocket;
 
-	constructor(canvas: HTMLCanvasElement, side: PaddleSide, ball: Ball) {
-		this.paddle = new Paddle(canvas, side);
+	constructor(ws: WebSocket, canvas: HTMLCanvasElement, side: PaddleSide, gameState: GameState | null) {
+    this.gameState = gameState;
+    this.ws = ws;
+    this.side = side;
 
-		this.prevPoint = { x: ball.x, y: ball.y };
-		this.currPoint = { x: ball.x, y: ball.y };
+    this.currPoint = { x: canvas.height/2, y: canvas.width/2};
+    this.prevPoint = { x: canvas.height/2, y: canvas.width/2};
 
-		this.predictPossition(canvas, side, ball);
-		this.move(canvas);
+    setInterval(() => {
+      this.predictPossition(canvas, side, gameState);
+      this.move(canvas);
+    }, 50);
 	}
 
-	private predictPossition(canvas: HTMLCanvasElement, side: PaddleSide, ball: Ball): void {
-		setInterval(() => {
-			this.currPoint.x = ball.x;
-			this.currPoint.y = ball.y;
+  public updateGameState(gameState: GameState | null): void {
+    this.gameState = gameState;
+  }
 
-			this.dir = this.currPoint.x - this.prevPoint.x;
+	public predictPossition(canvas: HTMLCanvasElement, side: PaddleSide, gameState: GameState | null): void {
+    if (this.gameState) {
+      this.currPoint.x = this.gameState.ball.x;
+      this.currPoint.y = this.gameState.ball.y;
 
-			// Check if ball is moving
-			if (this.prevPoint.x === this.currPoint.x && this.prevPoint.y === this.currPoint.y ||
-				this.ballIsOpossite(side)) {
-				this.ballIsMoving = false;
-				this.targetY = canvas.height/2;
-				this.prevPoint = { ...this.currPoint };
-				return;
-			}
-			else
-				this.ballIsMoving = true;
+      this.dir = this.currPoint.x - this.prevPoint.x;
 
-			this.targetY = this.getTargetY(canvas, side, ball);
-			this.prevPoint = { ...this.currPoint };
-      console.log("hi");
-		}, 100);
+      // Check if ball is moving
+      if (!this.gameState.ball.isRunning || this.ballIsOpossite(side))
+        this.targetY = canvas.height/2;
+      else
+        this.targetY = this.getTargetY(canvas, side);
+
+
+      this.prevPoint = { ...this.currPoint };
+    }
+    else
+        this.targetY = canvas.height/2;
 	}
 
 	private ballIsOpossite(side: PaddleSide): boolean {
@@ -69,61 +73,64 @@ export class AI {
 		return false;
 	}
 
-	private getTargetY(canvas: HTMLCanvasElement, side: PaddleSide, ball: Ball): number {
-		let y: number = -1;
-		let x: number = 0;
+	private getTargetY(canvas: HTMLCanvasElement, side: PaddleSide): number {
 		const maxBounces: number = 10;
 		let nbrBounces: number = 0;
-		const targetX = this.paddle.side === PaddleSide.Right ? canvas.width : 0;
+		const targetX = side === PaddleSide.Right ? canvas.width : 0;
+    let x: number = 0;
+		let y: number = this.getYatX(targetX);
 
-		this.angularCoeficient = Math.tan(ball.angle);
-		this.linearCoeficient = this.getLinearCoeficient({x: this.currPoint.x, y: this.currPoint.y});
 
-		y = this.getYatX(targetX);
-		while ((y < 0 || y > canvas.height) && nbrBounces < maxBounces) {
-			if (this.angularCoeficient > 0) {
-				if (this.currPoint.x > this.prevPoint.x) { // Going bottom Right
-					y = this.getYatX(canvas.width);
-					if (y > canvas.height) { // Ball bouces bottom
-						x = this.getXatY(canvas.height);
-						this.angularCoeficient *= -1;
-						this.linearCoeficient = this.getLinearCoeficient({x: x , y: canvas.height});
-					}
-				}
-				else { // Going Top left
-					y = this.getYatX(0);
-					if (y < 0) { // Ball bouces top
-						x = this.getXatY(0);
-						this.angularCoeficient *= -1;
-						this.linearCoeficient = this.getLinearCoeficient({x: x, y: 0});
-					}
-				}
-			}
-			else if (this.angularCoeficient < 0) {
-				if (this.currPoint.x > this.prevPoint.x) { // Going top Right
-					y = this.getYatX(canvas.width);
-					if (y < 0) { // Ball bouces top
-						x = this.getXatY(0);
-						this.angularCoeficient *= -1;
-						this.linearCoeficient = this.getLinearCoeficient({x: x, y: 0});
-					}
-				}
-				else { // Going Bottom left
-					y = this.getYatX(0);
-					if (y > canvas.height) { // Ball bouces bottom
-						x = this.getXatY(canvas.height);
-						this.angularCoeficient *= -1;
-						this.linearCoeficient = this.getLinearCoeficient({x: x, y: canvas.height});
-					}
-				}
-			}
-			else // Horizontal
-				y = this.linearCoeficient;
-			nbrBounces++;
-		}
+    if (this.gameState) {
+      this.angularCoeficient = Math.tan(this.gameState.ball.angle);
+      this.linearCoeficient = this.getLinearCoeficient({x: this.currPoint.x, y: this.currPoint.y});
+
+      while ((y < 0 || y > canvas.height) && nbrBounces < maxBounces) {
+        if (this.angularCoeficient > 0) {
+          if (this.currPoint.x > this.prevPoint.x) { // Going bottom Right
+            y = this.getYatX(canvas.width);
+            if (y > canvas.height) { // Ball bouces bottom
+              x = this.getXatY(canvas.height);
+              this.angularCoeficient *= -1;
+              this.linearCoeficient = this.getLinearCoeficient({x: x , y: canvas.height});
+            }
+          }
+          else { // Going Top left
+            y = this.getYatX(0);
+            if (y < 0) { // Ball bouces top
+              x = this.getXatY(0);
+              this.angularCoeficient *= -1;
+              this.linearCoeficient = this.getLinearCoeficient({x: x, y: 0});
+            }
+          }
+        }
+        else if (this.angularCoeficient < 0) {
+          if (this.currPoint.x > this.prevPoint.x) { // Going top Right
+            y = this.getYatX(canvas.width);
+            if (y < 0) { // Ball bouces top
+              x = this.getXatY(0);
+              this.angularCoeficient *= -1;
+              this.linearCoeficient = this.getLinearCoeficient({x: x, y: 0});
+            }
+          }
+          else { // Going Bottom left
+            y = this.getYatX(0);
+            if (y > canvas.height) { // Ball bouces bottom
+              x = this.getXatY(canvas.height);
+              this.angularCoeficient *= -1;
+              this.linearCoeficient = this.getLinearCoeficient({x: x, y: canvas.height});
+            }
+          }
+        }
+        else // Horizontal
+          y = this.linearCoeficient;
+        nbrBounces++;
+      }
+    }
 		return y;
 	}
 
+	// b = y - xa
 	private getLinearCoeficient(point: Point): number {
 		return point.y - (point.x * this.angularCoeficient);
 	}
@@ -140,25 +147,63 @@ export class AI {
 		return (y - this.linearCoeficient) / this.angularCoeficient;
 	}
 
-	private move(canvas: HTMLCanvasElement): void {
-		const tolerance = this.paddle.height / 8;
+  public move(canvas: HTMLCanvasElement): void {
+    if (this.gameState) {
+      const tolerance = this.gameState.paddleLeft.attr.height / 8;
+      let paddleCenter: number;
 
-		setInterval(() => {
-			const paddleCenter = this.paddle.y + this.paddle.height/2;
+      if (this.side === PaddleSide.Left)
+        paddleCenter = this.gameState.paddleLeft.position.y + this.gameState.paddleLeft.attr.height/2;
+      else
+        paddleCenter = this.gameState.paddleRight.position.y + this.gameState.paddleLeft.attr.height/2;
 
-			if (paddleCenter > this.targetY - tolerance &&
-				paddleCenter < this.targetY + tolerance) {
-				this.paddle.state.down = false;
-				this.paddle.state.up = false;
-			}
-			else if (paddleCenter > this.targetY + tolerance) {
-				this.paddle.state.down = false;
-				this.paddle.state.up = true;
-			}
-			else if (paddleCenter < this.targetY - tolerance) {
-				this.paddle.state.up = false;
-				this.paddle.state.down = true;
-			}
-		}, 10)
-	}
+      if (paddleCenter > this.targetY - tolerance &&
+        paddleCenter < this.targetY + tolerance) { // Stop
+        if (this.side === PaddleSide.Left) {
+          this.handleKeyUp("w");
+          this.handleKeyUp("s");
+        }
+        else if  (this.side === PaddleSide.Right){
+          this.handleKeyUp("ArrowUp");
+          this.handleKeyUp("ArrowDown");
+        }
+      }
+      else if (paddleCenter > this.targetY + tolerance) { // Move Up
+        if (this.side === PaddleSide.Left) {
+          this.handleKeyDown("w");
+          this.handleKeyUp("s");
+        }
+        else if (this.side === PaddleSide.Right) {
+          this.handleKeyDown("ArrowUp");
+          this.handleKeyUp("ArrowDown");
+        }
+      }
+      else if (paddleCenter < this.targetY - tolerance) { // Move Down
+        if (this.side === PaddleSide.Left) {
+          this.handleKeyDown("s");
+          this.handleKeyUp("w");
+        }
+        else if (this.side === PaddleSide.Right) {
+          this.handleKeyUp("ArrowUp");
+          this.handleKeyDown("ArrowDown");
+        }
+      }
+    }
+  }
+
+  private handleKeyDown(key: string): void {
+    const payLoad = {
+      type: "keydown",
+      key: key,
+    };
+    this.ws.send(JSON.stringify(payLoad));
+  }
+
+  private handleKeyUp(key: string): void {
+    const payLoad = {
+      type: "keyup",
+      key: key,
+    };
+    this.ws.send(JSON.stringify(payLoad));
+  }
 }

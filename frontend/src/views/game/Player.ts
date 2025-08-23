@@ -1,12 +1,12 @@
-import { Paddle } from  "./Paddle.js";
 import { PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
+import { GameState } from "./Game.js";
 
 export class Player {
-  public paddle: Paddle;
   private side: PaddleSide;
+  private ws: WebSocket;
 
-  constructor(canvas: HTMLCanvasElement, side: PaddleSide) {
-    this.paddle = new Paddle(canvas, side);
+  constructor(ws: WebSocket, canvas: HTMLCanvasElement, side: PaddleSide) {
+    this.ws = ws;
     this.side = side;
 
     canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -14,26 +14,47 @@ export class Player {
   }
 
   private handleKeyDown(event: KeyboardEvent): void {
-    // Prevent default for all game control keys
-    if (["s", "S", "w", "W", "ArrowDown", "ArrowUp"].includes(event.key)) {
-      event.preventDefault();
-    }
     if (this.side === PaddleSide.Left) {
-      if (event.key === "s" || event.key === "S") this.paddle.state.down = true;
-      if (event.key === "w" || event.key === "W") this.paddle.state.up = true;
-    } else if (this.side === PaddleSide.Right) {
-      if (event.key === "ArrowDown") this.paddle.state.down = true;
-      if (event.key === "ArrowUp") this.paddle.state.up = true;
+      if (["s", "S", "w", "W"].includes(event.key)) {
+        event.preventDefault();
+        const payLoad = {
+          type: "keydown",
+          key: event.key,
+        };
+        this.ws.send(JSON.stringify(payLoad));
+      }
+    }
+    else if (this.side === PaddleSide.Right) {
+      if (["ArrowDown", "ArrowUp"].includes(event.key)) {
+        event.preventDefault();
+        const payLoad = {
+          type: "keydown",
+          key: event.key,
+        };
+        this.ws.send(JSON.stringify(payLoad));
+      }
     }
   }
 
   private handleKeyUp(event: KeyboardEvent): void {
     if (this.side === PaddleSide.Left) {
-      if (event.key === "s" || event.key === "S") this.paddle.state.down = false;
-      if (event.key === "w" || event.key === "W") this.paddle.state.up = false;
-    } else if (this.side === PaddleSide.Right) {
-      if (event.key === "ArrowDown") this.paddle.state.down = false;
-      if (event.key === "ArrowUp") this.paddle.state.up = false;
+      if (["s", "S", "w", "W"].includes(event.key)) {
+        const payLoad = {
+          type: "keyup",
+          key: event.key,
+        };
+        this.ws.send(JSON.stringify(payLoad));
+      }
+    }
+    else if (this.side === PaddleSide.Right) {
+      if (["ArrowDown", "ArrowUp"].includes(event.key)) {
+        event.preventDefault();
+        const payLoad = {
+          type: "keyup",
+          key: event.key,
+        };
+        this.ws.send(JSON.stringify(payLoad));
+      }
     }
   }
 }
