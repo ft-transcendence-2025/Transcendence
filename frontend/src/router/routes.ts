@@ -2,12 +2,13 @@ import { renderHome } from "../views/home.js";
 import { render404 } from "../views/404.js";
 import { openLoginModal } from "../components/loginModal.js";
 import { openRegisterModal } from "../components/registerModal.js";
-import { renderUserList } from "../views/userList.js";
+import { renderFriends } from "../views/friends.js";
 import { renderDashboard } from "../views/dashboard.js";
 import { renderPong } from "../views/pong.js";
 import { renderTournament } from "../views/tournament.js";
 import { renderUserProfile } from "../views/userProfile.js";
 import { renderTournamentTree } from "../views/tournamentTree.js";
+import { renderStats } from "../views/stats.js";
 
 interface Route {
   path: string;
@@ -17,7 +18,6 @@ interface Route {
 export const routes: Route[] = [
   { path: "/", action: renderHome },
   { path: "/404", action: render404 },
-  { path: "/users", action: renderUserList },
   { path: "/profile", action: renderUserProfile },
   { path: "/register", action: openRegisterModal },
   { path: "/login", action: openLoginModal },
@@ -25,5 +25,6 @@ export const routes: Route[] = [
   { path: "/pong", action: renderPong },
   { path: "/tournament", action: renderTournament },
   { path: "/tournament-tree", action: renderTournamentTree },
-  { path: "/friends", action: renderUserList }, // substitute when friends are implemented
+  { path: "/stats", action: renderStats },
+  { path: "/friends", action: renderFriends },
 ];
