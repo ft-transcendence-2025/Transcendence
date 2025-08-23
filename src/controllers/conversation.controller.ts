@@ -36,5 +36,3 @@ export const listConversations = async (req: FastifyRequest, res: FastifyReply) 
 	});
 	res.code(200).send(conversations);
 }
-
-//   fastify.get("/", conversationController.listConversations);
