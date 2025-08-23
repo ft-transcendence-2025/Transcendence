@@ -27,7 +27,7 @@ export async function renderFriends(container: HTMLElement | null) {
     friends.forEach(async (friend) => {
       const li = document.createElement("li");
       li.className =
-        "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary-light)";
+        "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary)/30 rounded-xl";
       li.innerHTML = `
         <span class="relative inline-block w-8 h-8 rounded-full border-2 ${
           friend.status === "ONLINE"
