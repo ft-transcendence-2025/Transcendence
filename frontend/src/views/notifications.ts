@@ -66,11 +66,13 @@ export async function getNotificationsContent(requests: any[]): Promise<HTMLElem
         li.innerHTML = `
             <img src="${request.avatar}" class="w-8 h-8 object-cover" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
             <span class="ml-5">${request.requesterUsername}</span>
-            <div class="ml-3 flex gap-2">
-              <button class="accept-btn px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">Accept</button>
-              <button class="reject-btn px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Reject</button>
+            <div class="ml-3 flex gap-4 ml-auto justify-end">
+              <button title="Accept" class="material-symbols-outlined text-3xl hover:text-(--color-primary) focus:outline-none cursor-pointer">check_circle</button>
+              <button title="Reject" class="material-symbols-outlined text-3xl hover:text-(--color-accent) focus:outline-none cursor-pointer">cancel</button>
             </div>
         `;
+        li.style.display = "flex";
+        li.style.alignItems = "center";
         ul.appendChild(li);
       }
     }
