@@ -65,17 +65,23 @@
   </div>
 
   <!-- Overall Win Rate Progress Bar -->
-  <div class="mb-8 rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md">
+  <div
+    class="mb-8 rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+  >
     <div class="mb-4 flex items-center justify-between">
       <h3 class="text-xl font-bold">Overall Win Rate</h3>
-      <span id="overall-win-percentage" class="text-2xl font-bold text-(--color-primary)">61.0%</span>
+      <span
+        id="overall-win-percentage"
+        class="text-2xl font-bold text-(--color-primary)"
+        >61.0%</span
+      >
     </div>
     <div class="relative">
       <div class="h-4 w-full rounded-full bg-gray-200">
-        <div 
-          id="win-rate-progress-bar" 
+        <div
+          id="win-rate-progress-bar"
           class="h-4 rounded-full bg-(--color-primary)"
-          style="width: 61.0%"
+          style="width: 61%"
         ></div>
       </div>
       <div class="mt-2 flex justify-between text-sm text-gray-600">
@@ -86,136 +92,120 @@
     </div>
   </div>
 
-  <!-- Progress Bar TO DO -->
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <!-- 1v1 games vs Tournament split -->
+    <div
+      class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+    >
+      <h3 class="mb-4 text-xl font-bold">Split by game type</h3>
 
-  <!-- 
-
-  <div class="mb-8 rounded-lg bg-white p-6 shadow-lg">
-    <h3 class="mb-4 text-xl font-bold">Win Rate</h3>
-    <div class="mb-2 flex items-center justify-between">
-      <span class="text-gray-700">Overall Win Percentage</span>
-      <span class="text-2xl font-bold text-green-600">70.1%</span>
-    </div>
-
-   
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-     
-      <div class="rounded-lg bg-white p-6 shadow-lg">
-        <h3 class="mb-4 text-xl font-bold">Game Type Breakdown</h3>
-
-        
-        <div class="mb-4">
-          <div class="mb-2 flex items-center justify-between">
-            <span class="font-medium">1v1 Pong</span>
-            <span class="text-sm text-gray-600">82 games</span>
-          </div>
-          <div class="flex items-center space-x-4">
-            <div class="flex-1">
-              <div class="mb-1 text-sm text-gray-600">Win Rate: 75.6%</div>
-              <div class="h-2 w-full rounded-full bg-gray-200">
-                <div
-                  class="h-2 rounded-full bg-blue-500"
-                  style="width: 75.6%"
-                ></div>
-              </div>
-            </div>
-            <div class="text-sm">
-              <span class="font-semibold text-green-600">62W</span> /
-              <span class="font-semibold text-red-600">20L</span>
-            </div>
-          </div>
+      <!-- 1v1 Games -->
+      <div class="mb-4">
+        <div class="mb-2 flex items-center justify-between">
+          <span class="font-medium">1v1 Games</span>
+          <span id="1v1-games-played" class="text-sm text-gray-600"
+            >45 played</span
+          >
         </div>
-
-       
-        <div class="mb-4">
-          <div class="mb-2 flex items-center justify-between">
-            <span class="font-medium">Tournaments</span>
-            <span class="text-sm text-gray-600">45 games</span>
-          </div>
-          <div class="flex items-center space-x-4">
-            <div class="flex-1">
-              <div class="mb-1 text-sm text-gray-600">Win Rate: 60.0%</div>
-              <div class="h-2 w-full rounded-full bg-gray-200">
-                <div
-                  class="h-2 rounded-full bg-purple-500"
-                  style="width: 60%"
-                ></div>
-              </div>
-            </div>
-            <div class="text-sm">
-              <span class="font-semibold text-green-600">27W</span> /
-              <span class="font-semibold text-red-600">18L</span>
-            </div>
-          </div>
+        <div class="flex items-center justify-between text-sm">
+          <span id="1v1-wins" class="font-semibold text-(--color-primary)"
+            >28 Wins</span
+          >
+          <span id="1v1-losses" class="font-semibold text-(--color-accent)"
+            >17 Losses</span
+          >
+          <span id="1v1-win-rate" class="font-bold text-(--color-primary)"
+            >62.2%</span
+          >
         </div>
       </div>
 
-      
-      <div class="rounded-lg bg-white p-6 shadow-lg">
-        <h3 class="mb-4 text-xl font-bold">Recent Performance</h3>
+      <!-- Tournament Games -->
+      <div>
+        <div class="mb-2 flex items-center justify-between">
+          <span class="font-medium">Tournaments</span>
+          <span id="tournament-games-played" class="text-sm text-gray-600"
+            >6 played</span
+          >
+        </div>
+        <div class="flex items-center justify-between text-sm">
+          <span id="tournament-wins" class="font-semibold text-(--color-primary)"
+            >1 Wins</span
+          >
+          <span
+            id="tournament-win-rate"
+            class="font-bold text-(--color-primary)"
+            >16.7%</span
+          >
+        </div>
+      </div>
+    </div>
 
-       
-        <div class="mb-4">
-          <div class="mb-3 flex items-center justify-between">
-            <span class="font-medium">Last 10 Games</span>
-          </div>
-          <div class="flex space-x-1">
-            
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-green-500"
-            >
-              <i class="fas fa-check text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-green-500"
-            >
-              <i class="fas fa-check text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-red-500"
-            >
-              <i class="fas fa-times text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-green-500"
-            >
-              <i class="fas fa-check text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-green-500"
-            >
-              <i class="fas fa-check text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-red-500"
-            >
-              <i class="fas fa-times text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-green-500"
-            >
-              <i class="fas fa-check text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-green-500"
-            >
-              <i class="fas fa-check text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-red-500"
-            >
-              <i class="fas fa-times text-xs text-white"></i>
-            </div>
-            <div
-              class="flex h-6 w-6 items-center justify-center rounded-full bg-green-500"
-            >
-              <i class="fas fa-check text-xs text-white"></i>
-            </div>
-          </div>
-          <div class="mt-2 text-xs text-gray-500">Most recent → Oldest</div>
+    <!-- Match History -->
+    <div
+      class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+    >
+      <h3 class="mb-4 text-xl font-bold">Recent Matches</h3>
+
+      <div id="recent-matches-container" class="space-y-3">
+        <!-- Column Header -->
+        <div
+          class="grid grid-cols-3 gap-4 border-b border-gray-300 pb-2 text-sm font-semibold text-gray-600"
+        >
+          <span>Opponent</span>
+          <span class="text-center">Score</span>
+          <span class="text-center">Result</span>
+        </div>
+
+        <!-- Match Rows -->
+        <div
+          class="match-row grid grid-cols-3 gap-4 border-b border-gray-200 pb-2 text-sm"
+        >
+          <span class="match-opponent font-medium">vs Bené</span>
+          <span class="match-score text-center text-gray-600">3-2</span>
+          <span class="match-result text-center font-semibold text-(--color-primary)"
+            >W</span
+          >
+        </div>
+
+        <div
+          class="match-row grid grid-cols-3 gap-4 border-b border-gray-200 pb-2 text-sm"
+        >
+          <span class="match-opponent font-medium">vs Papaija</span>
+          <span class="match-score text-center text-gray-600">1-3</span>
+          <span class="match-result text-center font-semibold text-(--color-accent)"
+            >L</span
+          >
+        </div>
+
+        <div
+          class="match-row grid grid-cols-3 gap-4 border-b border-gray-200 pb-2 text-sm"
+        >
+          <span class="match-opponent font-medium">vs Leila</span>
+          <span class="match-score text-center text-gray-600">2-1</span>
+          <span class="match-result text-center font-semibold text-(--color-primary)"
+            >W</span
+          >
+        </div>
+
+        <div
+          class="match-row grid grid-cols-3 gap-4 border-b border-gray-200 pb-2 text-sm"
+        >
+          <span class="match-opponent font-medium">vs Jhonas</span>
+          <span class="match-score text-center text-gray-600">3-1</span>
+          <span class="match-result text-center font-semibold text-(--color-primary)"
+            >W</span
+          >
+        </div>
+
+        <div class="match-row grid grid-cols-3 gap-4 text-sm">
+          <span class="match-opponent font-medium">vs Tricotico</span>
+          <span class="match-score text-center text-gray-600">2-3</span>
+          <span class="match-result text-center font-semibold text-(--color-accent)"
+            >L</span
+          >
         </div>
       </div>
     </div>
   </div>
-  -->
 </div>
