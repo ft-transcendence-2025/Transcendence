@@ -3,6 +3,7 @@ import { getUserFriends } from "../services/friendshipService.js";
 import { getUserAvatar } from "../utils/userUtils.js";
 import { ChatComponent, Friend } from "./chat.js";
 import { PrivateMessageResponse } from "../interfaces/message.interfaces.js";
+import { chatManager } from "../app.js";
 
 // Renders the friends list inside a provided container
 export async function renderFriends(container: HTMLElement | null) {
@@ -10,19 +11,6 @@ export async function renderFriends(container: HTMLElement | null) {
   container.innerHTML = "";
 
   try {
-    const c = new ChatComponent("chat-root", []);
-    if (c.chatService.conn) {
-      c.chatService.conn.onmessage = (e: MessageEvent) => {
-        const message: PrivateMessageResponse = JSON.parse(e.data);
-        if (message.senderId !== c.currentUserId) {
-          let temp = c.messages.get(message.senderId) || [];
-          temp.push(message);
-          c.messages.set(message.senderId, temp);
-          c.updateChatMessages(message.senderId);
-        }
-      };
-    }
-
     const friends: Friend[] = (await getUserFriends()) as Friend[];
     friends.forEach(async (friend) => {
       const li = document.createElement("li");
@@ -43,7 +31,7 @@ export async function renderFriends(container: HTMLElement | null) {
         </span>
         <span class="ml-5">${friend.username}</span>
       `;
-      li.addEventListener("click", () => c.openChat(friend));
+      li.addEventListener("click", () => chatManager.openChat(friend));
       container.appendChild(li);
     });
   } catch (error) {

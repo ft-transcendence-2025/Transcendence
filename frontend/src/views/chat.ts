@@ -19,24 +19,6 @@ export async function renderChat(container: HTMLElement | null) {
   if (!container) return;
   const friends = await getUserFriends();
   container.innerHTML = await loadHtml("/html/chat.component.html");
-
-  const c = new ChatComponent("chat-root", friends);
-
-  if (c.chatService.conn) {
-    c.chatService.conn.onmessage = (e: MessageEvent) => {
-      const message: PrivateMessageResponse = JSON.parse(e.data);
-      if (message.senderId != c.currentUserId) {
-        let temp = c.messages.get(message.senderId);
-        if (temp) {
-          temp.push(message);
-          c.messages.set(message.senderId, temp);
-        } else {
-          c.messages.set(message.senderId, [message]);
-        }
-        c.updateChatMessages(message.senderId);
-      }
-    };
-  }
 }
 
 class ChatComponent {
@@ -53,7 +35,7 @@ class ChatComponent {
     this.openChats = new Map();
     this.messages = new Map();
 
-    this.render();
+    // this.render();
   }
 
   async updateChatMessages(friendId: string) {

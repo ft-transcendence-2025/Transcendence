@@ -1,5 +1,10 @@
 import { renderNavbar } from "./components/navbar.js";
+import { PrivateMessageResponse } from "./interfaces/message.interfaces.js";
 import { router, navigateTo } from "./router/router.js";
+import { ChatComponent } from "./views/chat.js";
+
+
+export const chatManager = new ChatComponent("chat-root", []);
 
 // Function to close all open modals
 function closeAllModals() {
@@ -23,6 +28,18 @@ window.addEventListener("popstate", () => {
 
 // listen for dom to be fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
+
+  if (chatManager.chatService.conn) {
+    chatManager.chatService.conn.onmessage = (e: MessageEvent) => {
+      const message: PrivateMessageResponse = JSON.parse(e.data);
+      if (message.senderId !== chatManager.currentUserId) {
+        let temp = chatManager.messages.get(message.senderId) || [];
+        temp.push(message);
+        chatManager.messages.set(message.senderId, temp);
+        chatManager.updateChatMessages(message.senderId);
+      }
+    };
+  }
   await renderNavbar(navbarElement); // render the navbar component
   // global click listener for navigation links (data-links)
   document.body.addEventListener("click", (event) => {
