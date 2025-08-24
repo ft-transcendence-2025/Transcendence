@@ -1,6 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserDisplayName } from "../utils/userUtils.js";
+import { getUserDisplayName, getCurrentUserAvatar } from "../utils/userUtils.js";
 import { Game } from "./game/Game.js";
 import { GameMode, PaddleSide } from "./game/utils.js";
 
@@ -18,8 +18,8 @@ export async function renderPong(container: HTMLElement | null) {
   const gameMode = urlParams.get("mode") || "2player"; // default to "2player"
 
   // Update the player names based on game mode
-  await updatePlayerNames(gameMode);
-
+  await updatePlayerInfo(gameMode);
+  
   // const url = (location.protocol === "https:" ? "wss:" : "ws:") + "//" + location.host + "/ws/game";
   // const ws = new WebSocket(url);
   //
@@ -27,7 +27,7 @@ export async function renderPong(container: HTMLElement | null) {
   // ws.addEventListener('message', e => console.log('msg', e.data));
   // ws.addEventListener('close', e => console.log('closed', e.code, e.reason));
   // ws.addEventListener('error', e => console.error('error', e));
-  
+
   // Initialize the game based on the selected mode
   if (gameMode === "ai") {
     const game = new Game(GameMode.PvE, PaddleSide.Left);
@@ -43,29 +43,39 @@ export async function renderPong(container: HTMLElement | null) {
 }
 
 /**
- * Update the player usernames based on game mode
- */
-async function updatePlayerNames(gameMode: string) {
+** Update the player usernames based on game mode
+**/
+async function updatePlayerInfo(gameMode: string) {
+  const userDisplayName = await getUserDisplayName();
+  const userAvatar = await getCurrentUserAvatar();
   const player1Element = document.getElementById("player1-name");
   const player2Element = document.getElementById("player2-name");
+  const player1Avatar = document.getElementById(
+    "player1-avatar",
+  ) as HTMLImageElement;
+  const player2Avatar = document.getElementById(
+    "player2-avatar",
+  ) as HTMLImageElement;
 
   if (gameMode === "ai") {
     // AI vs Player mode
     if (player1Element) {
       player1Element.textContent = "AI";
+      player1Avatar.src = "/assets/avatars/robot.png"; // Set AI avatar
     }
     if (player2Element) {
-      // Fetch display name asynchronously
-      const currentDisplayName = await getUserDisplayName();
-      player2Element.textContent = currentDisplayName;
+      player2Element.textContent = userDisplayName;
+      player2Avatar.src = userAvatar; // Set user avatar
     }
   } else if (gameMode === "2player") {
     // Player vs Player mode
     if (player1Element) {
-      player1Element.textContent = "Player 1";
+      player1Element.textContent = userDisplayName;
+      player1Avatar.src = userAvatar; // Set user avatar
     }
     if (player2Element) {
       player2Element.textContent = "Player 2";
+      player2Avatar.src = "/assets/avatars/meerkat.png"; // Default avatar for Player 2
     }
   } else if (gameMode === "remote") {
     // TODO Remote mode, fetch player names from the server
@@ -79,8 +89,8 @@ async function updatePlayerNames(gameMode: string) {
 }
 
 /**
- * Open and close game instructions modal
- */
+** Open and close game instructions modal
+**/
 function renderInstructionsModal() {
   const instructionsModal = document.getElementById("instructions-modal");
   const instructionsBtn = document.getElementById("instructions-btn");

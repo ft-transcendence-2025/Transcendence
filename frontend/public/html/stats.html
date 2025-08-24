@@ -92,10 +92,10 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-    <!-- 1v1 games vs Tournament split -->
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
+    <!-- Game Mode Stats - Takes 2/5 of the space -->
     <div
-      class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+      class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md lg:col-span-2"
     >
       <h3 class="mb-4 text-xl font-bold">Game Mode Stats</h3>
 
@@ -129,7 +129,9 @@
           >
         </div>
         <div class="flex items-center justify-between text-sm">
-          <span id="tournament-wins" class="font-semibold text-(--color-primary)"
+          <span
+            id="tournament-wins"
+            class="font-semibold text-(--color-primary)"
             >1 Wins</span
           >
           <span
@@ -141,17 +143,18 @@
       </div>
     </div>
 
-    <!-- Match History -->
+    <!-- Match History - Takes 3/5 of the space -->
     <div
-      class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+      class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md lg:col-span-3"
     >
       <h3 class="mb-4 text-xl font-bold">Recent Matches</h3>
 
       <div id="recent-matches-container" class="space-y-3">
         <!-- Column Header -->
         <div
-          class="grid grid-cols-3 gap-4 border-b border-gray-300 pb-2 text-sm font-semibold text-gray-600"
+          class="grid grid-cols-4 gap-4 border-b border-gray-300 pb-2 text-sm font-semibold text-gray-600"
         >
+          <span>Date</span>
           <span>Opponent</span>
           <span class="text-center">Score</span>
           <span class="text-center">Result</span>
@@ -159,49 +162,59 @@
 
         <!-- Match Rows -->
         <div
-          class="match-row grid grid-cols-3 gap-4 border-b border-gray-200 pb-2 text-sm"
+          class="match-row grid grid-cols-4 gap-4 border-b border-gray-200 pb-2 text-sm"
         >
+          <span class="match-date text-gray-500">Aug 22</span>
           <span class="match-opponent font-medium">vs Bené</span>
           <span class="match-score text-center text-gray-600">3-2</span>
-          <span class="match-result text-center font-semibold text-(--color-primary)"
+          <span
+            class="match-result text-center font-semibold text-(--color-primary)"
             >W</span
           >
         </div>
 
         <div
-          class="match-row grid grid-cols-3 gap-4 border-b border-gray-200 pb-2 text-sm"
+          class="match-row grid grid-cols-4 gap-4 border-b border-gray-200 pb-2 text-sm"
         >
+          <span class="match-date text-gray-500">Aug 21</span>
           <span class="match-opponent font-medium">vs Papaija</span>
           <span class="match-score text-center text-gray-600">1-3</span>
-          <span class="match-result text-center font-semibold text-(--color-accent)"
+          <span
+            class="match-result text-center font-semibold text-(--color-accent)"
             >L</span
           >
         </div>
 
         <div
-          class="match-row grid grid-cols-3 gap-4 border-b border-gray-200 pb-2 text-sm"
+          class="match-row grid grid-cols-4 gap-4 border-b border-gray-200 pb-2 text-sm"
         >
+          <span class="match-date text-gray-500">Aug 15</span>
           <span class="match-opponent font-medium">vs Leila</span>
           <span class="match-score text-center text-gray-600">2-1</span>
-          <span class="match-result text-center font-semibold text-(--color-primary)"
+          <span
+            class="match-result text-center font-semibold text-(--color-primary)"
             >W</span
           >
         </div>
 
         <div
-          class="match-row grid grid-cols-3 gap-4 border-b border-gray-200 pb-2 text-sm"
+          class="match-row grid grid-cols-4 gap-4 border-b border-gray-200 pb-2 text-sm"
         >
+          <span class="match-date text-gray-500">Jul 28</span>
           <span class="match-opponent font-medium">vs Jhonas</span>
           <span class="match-score text-center text-gray-600">3-1</span>
-          <span class="match-result text-center font-semibold text-(--color-primary)"
+          <span
+            class="match-result text-center font-semibold text-(--color-primary)"
             >W</span
           >
         </div>
 
-        <div class="match-row grid grid-cols-3 gap-4 text-sm">
+        <div class="match-row grid grid-cols-4 gap-4 text-sm">
+          <span class="match-date text-gray-500">Jul 25</span>
           <span class="match-opponent font-medium">vs Tricotico</span>
           <span class="match-score text-center text-gray-600">2-3</span>
-          <span class="match-result text-center font-semibold text-(--color-accent)"
+          <span
+            class="match-result text-center font-semibold text-(--color-accent)"
             >L</span
           >
         </div>
