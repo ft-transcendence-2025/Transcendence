@@ -6,17 +6,17 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-light: #afd6aa;
-  --color-primary: #5fad56;
-  --color-primary-dark: #396733;
-  --color-primary-darker: #223d1e;
+  --color-primary-light: #a1d0be;
+  --color-primary: #43A17E;
+  --color-primary-dark: #2e7058;
+  --color-primary-darker: #21503f;
 
-  --color-secondary: #f4b942;
-  --color-secondary-light: #fae3b3;
-  --color-secondary-dark: #aa812e;
-  --color-secondary-darker: #7a5c21;
-  --color-background: #fff8e5;
-  --color-text-primary: #2e3a29;
+  --color-secondary: #FFC116;
+  --color-secondary-light: #ffe08a;
+  --color-secondary-dark: #cc9a11;
+  --color-secondary-darker: #7f600b;
+  --color-background: #F0F7F4;
+  --color-text-primary: #183A37;
   --color-accent: #fe4e00;
 
   --font-press-start: "Press Start 2P", "system-ui";

@@ -11,7 +11,7 @@ export class Ball {
 
   // line around the circle
   private strokeWidth: number = 1;
-  private strokeColor: string = "#253031";
+  private strokeColor: string = "#183A37";
 
   public x: number;
   public y: number;
