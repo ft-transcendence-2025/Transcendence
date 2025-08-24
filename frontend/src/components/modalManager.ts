@@ -15,8 +15,8 @@ export function openModal(content: HTMLElement, trigger: HTMLElement) {
     const modalContent = modal.querySelector("div.modal-content");
     if (modalContent) {
       modalContent.innerHTML = ""; // Clear existing content
-      const closeButton = createCloseButton();
-      modalContent.appendChild(closeButton);
+      // const closeButton = createCloseButton();
+      // modalContent.appendChild(closeButton);
       modalContent.appendChild(content);
     }
     currentTrigger = trigger;
@@ -43,8 +43,8 @@ export function openModal(content: HTMLElement, trigger: HTMLElement) {
   modalContent.className =
     "modal-content bg-white/65 backdrop-blur-sm rounded-lg shadow-lg p-6 relative w-full max-w-sm h-full"; // Full height, constrained width
 
-  const closeButton = createCloseButton();
-  modalContent.appendChild(closeButton);
+  // const closeButton = createCloseButton();
+  // modalContent.appendChild(closeButton);
   modalContent.appendChild(content);
   newModal.appendChild(modalContent);
 
@@ -58,11 +58,11 @@ export function closeModal() {
   currentTrigger = null;
 }
 
-function createCloseButton(): HTMLElement {
-  const closeButton = document.createElement("button");
-  closeButton.className =
-    "absolute top-2 right-2 text-gray-500 hover:text-gray-700";
-  closeButton.innerHTML = "&times;";
-  closeButton.addEventListener("click", closeModal);
-  return closeButton;
-}
+// function createCloseButton(): HTMLElement {
+//   const closeButton = document.createElement("button");
+//   closeButton.className =
+//     "absolute top-2 right-2 text-gray-500 hover:text-gray-700";
+//   closeButton.innerHTML = "&times;";
+//   closeButton.addEventListener("click", closeModal);
+//   return closeButton;
+// }

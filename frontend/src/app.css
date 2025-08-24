@@ -99,3 +99,27 @@
   }
 }
 
+#search-results {
+  width: 100%; /* Match the width of the search bar */
+  max-height: 200px; /* Limit the height of the dropdown */
+  overflow-y: auto; /* Add scroll if results exceed max height */
+}
+
+#search-results li {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#search-results li:hover {
+  background-color: #f3f4f6; /* Light gray hover effect */
+}
+
+#search-results img {
+  width: 2rem; /* Match the height of the search bar */
+  height: 2rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
