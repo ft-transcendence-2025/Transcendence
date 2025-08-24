@@ -1,7 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserDisplayName } from "../utils/userUtils.js";
-import { getUserAvatar } from "../utils/userUtils.js";
+import { getUserDisplayName, getCurrentUserAvatar } from "../utils/userUtils.js";
 import { Game } from "./game/Game.js";
 import { GameMode, PaddleSide } from "./game/utils.js";
 
@@ -48,7 +47,7 @@ export async function renderPong(container: HTMLElement | null) {
 **/
 async function updatePlayerInfo(gameMode: string) {
   const userDisplayName = await getUserDisplayName();
-  const userAvatar = await getUserAvatar();
+  const userAvatar = await getCurrentUserAvatar();
   const player1Element = document.getElementById("player1-name");
   const player2Element = document.getElementById("player2-name");
   const player1Avatar = document.getElementById(
@@ -76,6 +75,7 @@ async function updatePlayerInfo(gameMode: string) {
     }
     if (player2Element) {
       player2Element.textContent = "Player 2";
+      player2Avatar.src = "/assets/avatars/meerkat.png"; // Default avatar for Player 2
     }
   } else if (gameMode === "remote") {
     // TODO Remote mode, fetch player names from the server

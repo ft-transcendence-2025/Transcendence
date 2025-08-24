@@ -1,6 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserDisplayName, getUserAvatar } from "../utils/userUtils.js";
+import { getUserDisplayName, getCurrentUserAvatar } from "../utils/userUtils.js";
 
 // Tournament data structure
 interface TournamentData {
@@ -100,7 +100,7 @@ function enablePlayerCustomization(enable: boolean) {
 async function populateRemotePlayers() {
   // Get current user
   const currentDisplayName = await getUserDisplayName();
-  const currentAvatarUrl = await getUserAvatar();
+  const currentAvatarUrl = await getCurrentUserAvatar();
 
   // Mock data - this has to come from API !!!!!!!
   const remotePlayers = [
