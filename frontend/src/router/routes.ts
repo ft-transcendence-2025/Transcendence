@@ -1,7 +1,7 @@
 import { renderHome } from "../views/home.js";
 import { render404 } from "../views/404.js";
-import { openLoginModal } from "../components/loginModal.js";
-import { openRegisterModal } from "../components/registerModal.js";
+import { openLoginModal } from "../components/login.js";
+import { openRegisterModal } from "../components/register.js";
 import { renderFriends } from "../views/friends.js";
 import { renderDashboard } from "../views/dashboard.js";
 import { renderPong } from "../views/pong.js";
