@@ -58,9 +58,30 @@ export const updateProfile = async (
   });
 };
 
-// Avatar has a separate path /profiles/:username/avatar
-export const getUserAvatar = (username: string): string => {
-  return `${PROFILE_BASE_URL}/${username}/avatar`;
+/*
+ ** Avatar has a separate path /profiles/:username/avatar
+ ** Gets user's avatar URL with panda as fallback
+ */
+export const getUserAvatar = async (username: string): Promise<string> => {
+  try {
+    const response = await fetch(`${PROFILE_BASE_URL}/${username}/avatar`, {
+      method: "HEAD", // Just check if exists, don't download the image
+      headers: getHeaders(),
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      return `${PROFILE_BASE_URL}/${username}/avatar`;
+    } else {
+      return "/assets/avatars/panda.png";
+    }
+  } catch (error) {
+    console.error(
+      `Failed to check avatar for ${username}, using panda fallback:`,
+      error,
+    );
+    return "/assets/avatars/panda.png";
+  }
 };
 
 export const saveUserAvatar = async (

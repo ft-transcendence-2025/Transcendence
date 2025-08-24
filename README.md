@@ -44,7 +44,7 @@ frontend/
 ├── package.json             # Dependencies and scripts
 ├── tsconfig.json           # TypeScript configuration
 ├── tailwind.config.js      # Tailwind CSS configuration
-└── .env                     
+└── .env
 ```
 
 ## Code Organization
@@ -87,3 +87,7 @@ frontend/
 - **`router.ts`**: Route handling and navigation logic
 - **`navbar.ts`**: Authentication state and navigation
 - **Component Views**: Individual page controllers in `/views/`
+
+### Avatars
+
+[Flaticon](https://www.flaticon.com/)
