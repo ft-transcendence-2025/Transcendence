@@ -5,7 +5,7 @@ import {
   PrivateSendMessage,
 } from "../interfaces/message.interfaces.js";
 import chatService from "../services/chat.service.js";
-import { getUserFriends } from "../services/friendshipService.js";
+import { getUserFriends } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername, getUserAvatar } from "../utils/userUtils.js";
 

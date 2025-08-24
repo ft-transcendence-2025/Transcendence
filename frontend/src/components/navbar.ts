@@ -1,4 +1,5 @@
 import { navigateTo } from "../router/router.js";
+import { getPendingRequests } from "../services/friendship.service.js";
 import { getUsers } from "../services/userService.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getUserAvatar } from "../utils/userUtils.js";
@@ -42,6 +43,7 @@ export async function renderNavbar(container: HTMLElement | null) {
             <span class="text-sm">${user.username}</span>
           </li>
         `;
+        
         })
       ).then((results) => results.join(""));
 
@@ -80,8 +82,15 @@ export async function renderNavbar(container: HTMLElement | null) {
     // const notificationContent = document.createElement("div");
     // notificationContent.className = "p-4";
     // notificationContent.textContent = "No notifications yet.";
-    const notificationContent = await getNotificationsContent();
-    openModal(notificationContent, notificationIcon);
+    // const notificationContent = await getNotificationsContent();
+    const requestsRaw = await getPendingRequests() as any[];
+    const requests = await Promise.all(
+      requestsRaw.map(async req => ({
+      requesterUsername: req.requesterUsername,
+      avatar: await getUserAvatar(req.requesterUsername)
+      }))
+    );
+    openModal(await getNotificationsContent(requests), notificationIcon);
   });
 
   profileIcon?.addEventListener("click", async (e) => {

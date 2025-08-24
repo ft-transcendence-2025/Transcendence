@@ -1,5 +1,5 @@
 // src/views/friends.ts
-import { getUserFriends } from "../services/friendshipService.js";
+import { getUserFriends } from "../services/friendship.service.js";
 import { getUserAvatar } from "../utils/userUtils.js";
 import { ChatComponent, Friend } from "./chat.js";
 import { PrivateMessageResponse } from "../interfaces/message.interfaces.js";
