@@ -1,87 +1,100 @@
-import { chatManager } from "../app";
-import { getPendingRequests, getUserFriends } from "../services/friendship.service";
-import { getUserAvatar } from "../utils/userUtils";
-import { Friend } from "./chat";
+// src/views/notifications.ts
+import { FriendshipStatus, getPendingRequests, respondRequest } from "../services/friendship.service.js";
+import { getUserAvatar } from "../utils/userUtils.js";
 
-
-
-// Returns the content for the notifications modal with tabs
-export async function getNotificationsContent(requests: any[]): Promise<HTMLElement> {
-  // Create the main container for the notifications modal
+export async function getNotificationsContent(): Promise<HTMLElement> {
   const container = document.createElement("div");
   container.className = "notifications-modal w-full h-full flex flex-col";
 
-  // Create the tabs navigation
-  const tabs = document.createElement("div");
-  tabs.className = "tabs flex rounded-t-lg overflow-hidden";
-
-  const tabButtons = ["Friend Requests", "Game Invites"];
-  const tabContents: HTMLElement[] = [];
-
-  tabButtons.forEach((tabName, index) => {
-    const tabButton = document.createElement("button");
-    tabButton.className = `tab-button flex-1 py-2 font-bold text-(--color-text-primary) transition-colors cursor-pointer ${index === 0 ? "border-b-2 border-(--color-primary) text-(--color-primary-dark)" : ""
-      }`;
-    tabButton.innerHTML = tabName;
-
-    tabButton.addEventListener("click", () => {
-      // Switch tab content visibility
-      tabContents.forEach((content, i) => {
-        content.style.display = i === index ? "block" : "none";
-      });
-
-      tabs.querySelectorAll(".tab-button").forEach((btn, i) => {
-        btn.classList.toggle("border-b-2", i === index);
-        btn.classList.toggle("border-(--color-primary)", i === index);
-        btn.classList.toggle("text-(--color-primary-dark)", i === index);
-        btn.classList.toggle("text-(--color-text-primary)", i !== index);
-      });
-    });
-
-    tabs.appendChild(tabButton);
-
-    const tabContent = document.createElement("div");
-    tabContent.className = "tab-content flex-1 p-4";
-    tabContent.style.display = index === 0 ? "block" : "none";
-    tabContents.push(tabContent);
-  });
-
-  // Add the tabs to the container
-  container.appendChild(tabs);
-
-  // Add the content containers below the tabs
-  tabContents.forEach((tabContent) => {
-    container.appendChild(tabContent);
-  });
-
-  // Add placeholder content for each tab
-  tabContents[0].innerHTML = "<ul></ul>";
+  // Fetch all requests first
+  let requests: { requesterUsername: string; avatar: string , id: string }[] = [];
   try {
-    const ul = tabContents[0].querySelector("ul");
-    if (ul) {
-      for (const request of requests) {
-        const li = document.createElement("li");
-        li.className =
-          "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary)/30 rounded-xl";
-        li.innerHTML = `
-            <img src="${request.avatar}" class="w-8 h-8 object-cover" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
-            <span class="ml-5">${request.requesterUsername}</span>
-            <div class="ml-3 flex gap-4 ml-auto justify-end">
-              <button title="Accept" class="material-symbols-outlined text-3xl hover:text-(--color-primary) focus:outline-none cursor-pointer">check_circle</button>
-              <button title="Reject" class="material-symbols-outlined text-3xl hover:text-(--color-accent) focus:outline-none cursor-pointer">cancel</button>
-            </div>
-        `;
-        li.style.display = "flex";
-        li.style.alignItems = "center";
-        ul.appendChild(li);
-      }
-    }
-  } catch (error) {
-    console.error("Failed to fetch friends:", error);
-    container.innerHTML = "<p>Error loading friends list.</p>";
+    const raw = (await getPendingRequests()) as any[];
+    requests = await Promise.all(
+      raw.map(async (req) => ({
+        requesterUsername: req.requesterUsername,
+        avatar: await getUserAvatar(req.requesterUsername),
+        id: req.id
+      }))
+    );
+  } catch (err) {
+    console.error("Failed to fetch notifications:", err);
   }
 
-  tabContents[1].innerHTML = "<p>Game Invites content goes here.</p>";
+  // Tabs
+  const tabs = document.createElement("div");
+  tabs.className = "tabs flex rounded-t-lg overflow-hidden";
+  container.appendChild(tabs);
+
+  const tabContents: HTMLElement[] = [];
+  ["Friend Requests", "Game Invites"].forEach((label, index) => {
+    const btn = document.createElement("button");
+    btn.className = `tab-button flex-1 py-2 font-bold ${index === 0
+        ? "border-b-2 border-(--color-primary) text-(--color-primary-dark)"
+        : "text-(--color-text-primary)"
+      }`;
+    btn.textContent = label;
+    tabs.appendChild(btn);
+
+    const content = document.createElement("div");
+    content.className = "tab-content flex-1 p-4";
+    content.style.display = index === 0 ? "block" : "none";
+    tabContents.push(content);
+    container.appendChild(content);
+
+    btn.addEventListener("click", () => {
+      tabContents.forEach((tab, i) => {
+        tab.style.display = i === index ? "block" : "none";
+      });
+      tabs.querySelectorAll(".tab-button").forEach((b, i) => {
+        b.classList.toggle("border-b-2", i === index);
+        b.classList.toggle("border-(--color-primary)", i === index);
+        b.classList.toggle("text-(--color-primary-dark)", i === index);
+        b.classList.toggle("text-(--color-text-primary)", i !== index);
+      });
+    });
+  });
+
+  // Fill first tab (friend requests)
+  const ul = document.createElement("ul");
+  if (requests.length > 0) {
+    requests.forEach((req) => {
+      const li = document.createElement("li");
+      li.className =
+        "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary)/30 rounded-xl";
+      li.innerHTML = `
+      <img src="${req.avatar}" class="w-8 h-8 object-cover" 
+        onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
+      <span class="ml-5">${req.requesterUsername}</span>
+      <div class="ml-3 flex gap-4 ml-auto justify-end">
+        <button title="Accept" class="accept-btn material-symbols-outlined text-3xl hover:text-(--color-primary)">check_circle</button>
+        <button title="Reject" class="reject-btn material-symbols-outlined text-3xl hover:text-(--color-accent)">cancel</button>
+      </div>
+      `;
+      ul.appendChild(li);
+
+      const acceptBtn = li.querySelector(".accept-btn") as HTMLButtonElement;
+      const rejectBtn = li.querySelector(".reject-btn") as HTMLButtonElement;
+
+      acceptBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        await respondRequest(req.id, FriendshipStatus.ACCEPTED);
+        li.remove();
+      });
+
+      rejectBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        await respondRequest(req.id, FriendshipStatus.DECLINED);
+        li.remove();
+      });
+    });
+  } else {
+    ul.innerHTML = "<p>No friend requests.</p>";
+  }
+  tabContents[0].appendChild(ul);
+
+  // Fill second tab
+  tabContents[1].innerHTML = "<p>Lika eh a melhor!</p>";
 
   return container;
 }

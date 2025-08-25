@@ -16,7 +16,7 @@ export enum FriendshipStatus {
   PENDING = "PENDING",
   ACCEPTED = "ACCEPTED",
   BLOCKED = "BLOCKED",
-  REJECTED = "REJECTED",
+  DECLINED = "DECLINED",
 }
 
 // API functions
@@ -47,7 +47,7 @@ export const getPendingRequests = () =>
   });
 
 export const respondRequest = (friendshipId: string, accept: FriendshipStatus) =>
-  request(`${FRIEND_BASE_URL}/response/${friendshipId}`, {
+  request(`${FRIEND_BASE_URL}/respond/${friendshipId}`, {
     method: "PATCH",
     headers: getHeaders(),
     body: JSON.stringify({ status: accept }),

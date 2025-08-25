@@ -84,13 +84,7 @@ export async function renderNavbar(container: HTMLElement | null) {
     // notificationContent.textContent = "No notifications yet.";
     // const notificationContent = await getNotificationsContent();
     const requestsRaw = await getPendingRequests() as any[];
-    const requests = await Promise.all(
-      requestsRaw.map(async req => ({
-      requesterUsername: req.requesterUsername,
-      avatar: await getUserAvatar(req.requesterUsername)
-      }))
-    );
-    openModal(await getNotificationsContent(requests), notificationIcon);
+    openModal(await getNotificationsContent(), notificationIcon);
   });
 
   profileIcon?.addEventListener("click", async (e) => {
