@@ -13,12 +13,11 @@ import { renderChat } from "../views/chat.js";
 
 interface Route {
   path: string;
-  action: (container: HTMLElement | null) => Promise<void>;
+  action: (container: HTMLElement | null, params: Record<string, any>) => Promise<void>;
 }
 
 export const routes: Route[] = [
   { path: "/", action: renderHome },
-  { path: "/chat", action: renderChat },
   { path: "/404", action: render404 },
   { path: "/profile", action: renderUserProfile },
   { path: "/register", action: openRegisterModal },
