@@ -25,6 +25,7 @@ export class AI {
   private gameState: GameState | null;
   private side: PaddleSide;
   private ws: WebSocket;
+  private loopIntervalId: number;
 
 	constructor(ws: WebSocket, canvas: HTMLCanvasElement, side: PaddleSide, gameState: GameState | null) {
     this.gameState = gameState;
@@ -34,11 +35,17 @@ export class AI {
     this.currPoint = { x: canvas.height/2, y: canvas.width/2};
     this.prevPoint = { x: canvas.height/2, y: canvas.width/2};
 
-    setInterval(() => {
+    this.loopIntervalId = setInterval(() => {
       this.predictPossition(canvas, side, gameState);
       this.move(canvas);
-    }, 50);
+    }, 20);
 	}
+
+  public cleanup(): void {
+    if (this.ws)
+      this.ws.close();
+    clearInterval(this.loopIntervalId);
+  }
 
   public updateGameState(gameState: GameState | null): void {
     this.gameState = gameState;
@@ -51,7 +58,6 @@ export class AI {
 
       this.dir = this.currPoint.x - this.prevPoint.x;
 
-      // Check if ball is moving
       if (!this.gameState.ball.isRunning || this.ballIsOpossite(side))
         this.targetY = canvas.height/2;
       else
@@ -149,7 +155,7 @@ export class AI {
 
   public move(canvas: HTMLCanvasElement): void {
     if (this.gameState) {
-      const tolerance = this.gameState.paddleLeft.attr.height / 8;
+      const tolerance = this.gameState.paddleLeft.attr.height / 2;
       let paddleCenter: number;
 
       if (this.side === PaddleSide.Left)

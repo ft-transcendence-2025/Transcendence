@@ -1,7 +1,7 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getUserNickname } from "../utils/userUtils.js";
-import { Game } from "./game/Game.js";
+import { SinglePlayerGame } from "./game/Game.js";
 import { GameMode, PaddleSide } from "./game/utils.js";
 
 export async function renderPong(container: HTMLElement | null) {
@@ -20,16 +20,24 @@ export async function renderPong(container: HTMLElement | null) {
   // Update the player names based on game mode
   await updatePlayerNames(gameMode);
 
-  let game: Game;
+  enterGame(gameMode);
 
-  // Initialize the game based on the selected mode
-  if (gameMode === "ai")
-    game = new Game(GameMode.PvE, PaddleSide.Right);
-  else if (gameMode === "2player")
-    game = new Game(GameMode.PvP);
-  else if (gameMode === "remote")
-    game = new Game(GameMode.Online);
 }
+
+
+async function enterGame(gameMode: string) {
+  try {
+    const response = await fetch("http://localhost:4000/getgame/singleplayer", {
+      credentials: "include"
+    });
+    const data = await response.json();
+    const singlePlayerGame = new SinglePlayerGame(gameMode, data);
+
+  } catch (error) {
+    console.error("Failed to fetch game:", error);
+  }
+}
+
 
 /**
  * Update the player usernames based on game mode

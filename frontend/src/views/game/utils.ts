@@ -29,3 +29,9 @@ export function getRandomAngle(): number {
   return degreesToRadians(randomDeg);
 }
 
+export interface FetchData {
+  state: string,
+  gameMode: string,
+  id: number,
+}
+

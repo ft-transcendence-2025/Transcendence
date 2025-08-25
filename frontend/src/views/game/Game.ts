@@ -1,8 +1,8 @@
-import { PaddleSide, GameMode, degreesToRadians, getRandomAngle } from "./utils.js";
+import { FetchData, PaddleSide, GameMode, degreesToRadians, getRandomAngle } from "./utils.js";
 import { Player } from "./Player.js";
 import { AI } from "./AI.js";
 
-const MINUTE: number = 100;
+const SECOND: number = 100;
 
 interface Canvas {
   width: number,
@@ -19,6 +19,7 @@ interface BallState {
 
 
 interface PaddleState {
+  connected: boolean,
   moving: {
     up: boolean,
     down: boolean,
@@ -35,6 +36,8 @@ interface PaddleState {
 }
 
 export interface GameState {
+  status: string,
+  role: string,
   canvas: Canvas,
   paddleLeft: PaddleState,
   paddleRight: PaddleState,
@@ -53,13 +56,14 @@ interface CreatedGame {
   id: number,
 }
 
-export class Game {
+export class SinglePlayerGame {
   private canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
   private ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
   private player1: Player | null = null;
   private player2: Player | null = null;
   private AI: AI | null = null;
+  private updateAIIntervalId: number | null = null;
 
   private ballMoving: boolean = false;
   private winningPoint: number = 3;
@@ -68,88 +72,122 @@ export class Game {
 
   private gameState: GameState | null = null;
 
-  constructor(...args: [GameMode] | [GameMode, PaddleSide]) {
+  constructor(gameMode: string, data: FetchData) {
     this.canvas.tabIndex = 0;
     this.canvas.style.outline = "none";
     this.canvas.focus();
     this.canvas.width = 1000;
     this.canvas.height = 500;
 
-    if (args[0] === GameMode.PvP || args[0] === GameMode.PvE) {
-      try {
-        this.fetchData("http://localhost:4000/pong/getgame/singleplayer")
-          .then((data) => {
-            if (!data)
-              throw("data is null");
-            this.ws = new WebSocket(`ws://localhost:4000/pong/game/${data.id}`)
-            this.openSocket();
-            if (args[0] === GameMode.PvP) {
-              this.player1 = new Player(this.ws, this.canvas, PaddleSide.Left);
-              this.player2 = new Player(this.ws, this.canvas, PaddleSide.Right);
-            }
-            else if (args[0] === GameMode.PvE) {
-              if (args[1] === PaddleSide.Left) {
-                this.player1 = new Player(this.ws, this.canvas, PaddleSide.Left);
-                this.AI = new AI(this.ws, this.canvas, PaddleSide.Right, this.gameState);
-                if (this.AI) {
-                  this.updateAIGameState(PaddleSide.Right);
-                }
-              }
-              else {
-                this.player1 = new Player(this.ws, this.canvas, PaddleSide.Right);
-                this.AI = new AI(this.ws, this.canvas, PaddleSide.Left, this.gameState);
-                if (this.AI) {
-                  this.updateAIGameState(PaddleSide.Left);
-                }
-              }
-            }
-          })
-      }
-      catch (e) {
-        console.log(e);
-      }
-    }
+    this.joinGame(`ws://localhost:4000/game/singleplayer/${data.id}`, gameMode);
 
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
-  private updateAIGameState(side: PaddleSide): void {
-    setInterval(() => {
-      if (this.AI) {
-        this.AI.updateGameState(this.gameState);
-      }
-    }, MINUTE);
+  public joinGame(url: string, gameMode: string): void {
+    if (!this.ws) {
+      this.ws = new WebSocket(url)
+      if (!this.ws)
+        throw("Failed To Connect WebSocket");
+      this.openSocket(gameMode);
+    }
   }
 
-  private openSocket() {
+  private openSocket(gameMode: string) {
     if (!this.ws)
       throw("ws is undefined");
-    this.ws.addEventListener('open', () => {
+    this.ws.addEventListener("open", () => {
       if (!this.ws)
         throw("ws is undefined");
+
+      if (gameMode === "2player") {
+        this.startSinglePvP();
+      }
+      else if (gameMode === "ai") {
+        this.startSinglePvE(PaddleSide.Right);
+      }
+
       this.ws.addEventListener("message", (event) => {
         this.gameState = JSON.parse(event.data) as GameState;
         if (!this.gameState)
           throw("gameState is undefined");
-        this.canvas.width = this.gameState.canvas.width;
-        this.canvas.height = this.gameState.canvas.height;
       });
-      this.gameLoop();
     });
+    this.gameLoop();
   };
 
-  private async fetchData(url: string): Promise<CreatedGame | null> {
-    try {
-      const response = await fetch(url, {credentials: "include"});
-      if (!response.ok)
-        throw new Error('Network response was not ok');
-      const data = await response.json();
-      return data;
+  private startSinglePvE(side: PaddleSide | undefined): void {
+    if (this.player1) {
+      this.player1 = null;
     }
-    catch (error) {
-      console.error('Error:', error);
+    if (this.player2) {
+      this.player2 = null;
     }
-    return null;
+    if (this.ws) {
+      const cookies = document.cookie.split(";");
+      cookies.forEach((cookie) => {
+        const mode = cookie.split("=");
+        if (mode[0].trim() === "GameMode") {
+          if (mode[1].trim() === "SinglePvP") {
+            const payLoad = {
+              type: "command",
+              key: "reset",
+            };
+            if (this.ws)
+              this.ws.send(JSON.stringify(payLoad));
+          }
+        }
+      });
+      document.cookie = "GameMode=SinglePvE";
+      if (side === PaddleSide.Left) {
+        this.player1 = new Player(this.ws, this.canvas, PaddleSide.Left);
+        this.AI = new AI(this.ws, this.canvas, PaddleSide.Right, this.gameState);
+      }
+      else {
+        this.player1 = new Player(this.ws, this.canvas, PaddleSide.Right);
+        this.AI = new AI(this.ws, this.canvas, PaddleSide.Left, this.gameState);
+      }
+      if (this.AI) {
+        this.updateAIGameState();
+      }
+    }
+  }
+
+  private startSinglePvP(): void {
+    if (this.AI) {
+      if (this.updateAIIntervalId)
+        clearInterval(this.updateAIIntervalId);
+      this.updateAIIntervalId = null;
+      this.AI = null;
+    }
+    if (this.ws) {
+      const cookies = document.cookie.split(";");
+      cookies.forEach((cookie) => {
+        const mode = cookie.split("=");
+        if (mode[0].trim() === "GameMode") {
+          if (mode[1].trim() === "SinglePvE") {
+            const payLoad = {
+              type: "command",
+              key: "reset",
+            };
+            if (this.ws)
+              this.ws.send(JSON.stringify(payLoad));
+          }
+        }
+      });
+      document.cookie = "GameMode=SinglePvP";
+      this.player1 = new Player(this.ws, this.canvas, PaddleSide.Left);
+      this.player2 = new Player(this.ws, this.canvas, PaddleSide.Right);
+    }
+  };
+
+
+  private updateAIGameState(): void {
+    this.updateAIIntervalId = setInterval(() => {
+      if (this.AI) {
+        this.AI.updateGameState(this.gameState);
+      }
+    }, SECOND);
   }
 
   public gameLoop(): void {
@@ -158,11 +196,13 @@ export class Game {
       return ;
     }
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.renderBall();
-    this.renderPaddle(this.gameState.paddleLeft);
-    this.renderPaddle(this.gameState.paddleRight);
-    this.checkPoints();
-    this.checkIsGamePaused();
+    if (this.gameState.status === "playing") {
+      this.renderBall();
+      this.renderPaddle(this.gameState.paddleLeft);
+      this.renderPaddle(this.gameState.paddleRight);
+      this.checkPoints();
+      this.checkIsGamePaused();
+    }
 
     requestAnimationFrame(this.gameLoop.bind(this));
   }
