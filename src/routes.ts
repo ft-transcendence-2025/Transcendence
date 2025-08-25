@@ -1,22 +1,22 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { Game, GameState, GameRoom} from "./game/Game.js";
-import WebSocket, { WebSocketServer } from 'ws'
-import { wss } from "./server.js";
-import { gameRooms, lastActivity } from "./server.js";
+import { Game, GameState} from "./game/Game.js";
+import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
+import { singlePlayerGameRooms, lastActivity } from "./server.js";
 
-let gameId = 0;
+let singlePlayerGameId = 0;
+// let multiPlayerGameId = 0;
 
-export async function routes(fastify: FastifyInstance) {
+export async function singlePlayerRoute(fastify: FastifyInstance) {
   fastify.get("/getgame/singleplayer", (req, reply) => {
     const cookies = req.cookies;
 
     // Create game if cookie.GameId is not found
-    if (cookies.GameId === undefined) {
-      createGame(reply);
+    if (cookies.singlePlayerGameId === undefined) {
+      createSinglePlayerGame(reply, singlePlayerGameId++);
     }
     else { // Joing game if cookie.GameId is found
-      const cookieGameId: number = parseInt(cookies.GameId);
-      if (gameRooms.has(cookieGameId)) {
+      const cookieGameId: number = parseInt(cookies.singlePlayerGameId);
+      if (singlePlayerGameRooms.has(cookieGameId)) {
         lastActivity.set(cookieGameId, Date.now());
         reply.send({
           state: "Joined",
@@ -24,37 +24,63 @@ export async function routes(fastify: FastifyInstance) {
           id: cookieGameId,
         });
       }
-      else // Has gameId cookie but game does not exist
-        createGame(reply);
+      else { // Has gameId cookie but game does not exist
+        reply.clearCookie("singlePlayerGameId", {
+          path: "/"
+        });
+        createSinglePlayerGame(reply, singlePlayerGameId++);
+      }
     }
   });
+}
 
-  fastify.get("/getgame/multiplayer", (req, reply) => {
-    const gameRoom = new GameRoom(gameId, "multiplayer");
-    gameRooms.set(gameId, gameRoom);
-
-    reply.send({
-      state: "Created",
-      gameMode: "multiplayer",
-      id: gameId++,
-    });
-  });
-};
-
-function createGame(reply: FastifyReply) {
-  const gameRoom = new GameRoom(gameId, "singleplayer");
-  gameRooms.set(gameId, gameRoom);
+function createSinglePlayerGame(reply: FastifyReply, gameId: number) {
+  singlePlayerGameRooms.set(gameId, new SinglePlayerGameRoom(gameId));
   lastActivity.set(gameId, Date.now());
 
-  reply.setCookie("GameId", gameId.toString(), {
+  
+  reply.setCookie("singlePlayerGameId", gameId.toString(), {
     path: "/",
     sameSite: "none",
     secure: true,
     httpOnly: true,
   });
+
   reply.send({
     state: "Created",
     gameMode: "singleplayer",
-    id: gameId++,
+    id: gameId,
   });
 }
+
+// export async function multiPlayerRoute(fastify: FastifyInstance) {
+//   fastify.get("/getgame/multiplayer", (req, reply) => {
+//     const cookies = req.cookies;
+//
+//     // Create game if cookie.GameId is not found
+//     if (cookies.multiPlayerGameId === undefined) {
+//       // createGame(reply, "multiplayer", multiPlayerGameId++);
+//       console.log("Something");
+//     }
+//     else { // Joing game if cookie.GameId is found
+//       const cookieGameId: number = parseInt(cookies.multiPlayerGameId);
+//       if (multiPlayerGameRooms.has(cookieGameId)) {
+//         // lastActivity.set(cookieGameId, Date.now());
+//         console.log("Joined multiplayer", cookieGameId);
+//         reply.send({
+//           state: "Joined",
+//           gameMode: "multiplayer",
+//           id: cookieGameId,
+//         });
+//       }
+//       else { // Has gameId cookie but game does not exist
+//         reply.clearCookie("multiPlayerGameId", {
+//           path: "/"
+//         });
+//         console.log("Something");
+//         // createGame(reply, "multiplayer", multiPlayerGameId++);
+//       }
+//     }
+//   });
+// }
+

@@ -16,6 +16,7 @@ interface PaddlePositionState {
 }
 
 export interface PaddleState {
+  connected: boolean,
   moving: {
     up: boolean,
     down: boolean,
@@ -41,6 +42,7 @@ export class Paddle {
   constructor(canvas: Canvas, side: PaddleSide) {
     this.side = side;
     this.state = {
+      connected: false,
       moving: {
         up: false,
         down: false,
