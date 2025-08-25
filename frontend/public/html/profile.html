@@ -1,0 +1,57 @@
+<div class="flex min-h-screen bg-(--color-background) font-poppins text-(--color-text-primary)">
+  <!-- Sidebar -->
+  <aside class="w-72 bg-(--color-primary-darker) text-white p-6 flex flex-col gap-8">
+    <!-- Avatar and User Info -->
+    <div class="flex flex-col items-center text-center">
+      <img
+        src="/assets/avatars/bear.png"
+        alt="Avatar"
+        class="h-24 w-24 rounded-full border-4 border-(--color-secondary) object-cover mb-4"
+      />
+      <h2 class="text-xl font-bold">UglyNinja.ezWk</h2>
+      <p class="text-sm text-(--color-secondary-light)">Portugal</p>
+      <button class="mt-3 px-4 py-2 bg-(--color-secondary) text-(--color-text-primary) rounded-lg text-sm font-semibold hover:bg-(--color-secondary-dark)">Edit my profile</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-bold border-b border-(--color-secondary-dark) pb-1">Statistics</h3>
+      <ul class="space-y-2 text-sm">
+        <li class="flex items-center justify-between">
+          <span>Games played</span>
+          <span class="font-semibold">1</span>
+        </li>
+        <li class="flex items-center justify-between">
+          <span>Member for</span>
+          <span class="font-semibold">2 days</span>
+        </li>
+        <li class="flex items-center justify-between">
+          <span>Liked games</span>
+          <span class="font-semibold">0</span>
+        </li>
+        <li class="flex items-center justify-between">
+          <span>Playstreak</span>
+          <span class="font-semibold">1 day</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Activity -->
+    <div>
+      <h3 class="text-lg font-bold border-b border-(--color-secondary-dark) pb-1 mb-2">Activity</h3>
+      <div class="flex items-center space-x-3">
+        <img src="/assets/games/pieceofcake.jpg" alt="Piece of Cake" class="h-14 w-14 rounded object-cover" />
+        <span class="text-sm">Most played</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <section class="bg-white rounded-lg shadow p-8 h-full flex flex-col items-center justify-center text-center">
+      <h2 class="text-2xl font-bold mb-4">Liked games</h2>
+      <p class="mb-6 text-gray-600">Your liked games will appear here</p>
+      <button class="px-6 py-3 bg-(--color-primary) text-white rounded-lg font-semibold hover:bg-(--color-primary-dark)">Let's play some games</button>
+    </section>
+  </main>
+</div>
