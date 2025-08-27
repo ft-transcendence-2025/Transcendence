@@ -6,13 +6,14 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { setupRoomCleanup } from "./utils.js";
-import { singlePlayerRoute } from "./routes.js";
+import { gameRoute } from "./routes.js";
 import { WebSocketConnection } from "./WebSocketConnection.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
+import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
 
 export const singlePlayerGameRooms = new Map<number, SinglePlayerGameRoom>();
-// export const multiPlayerGameRooms = new Map<number, GameRoom>();
-export const lastActivity = new Map<number, number>();
+export const remoteGameRooms = new Map<number, RemoteGameRoom>();
+export const singlePlayerLastActivity = new Map<number, number>();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -25,8 +26,7 @@ export const fastify = Fastify({
 });
 
 fastify.register(cookie);
-fastify.register(singlePlayerRoute);
-// fastify.register(multiPlayerRoute);
+fastify.register(gameRoute);
 
 fastify.listen({ port: 4000, host: "0.0.0.0" }, (err, address) => {
   if (err) {

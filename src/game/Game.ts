@@ -47,7 +47,4 @@ export class Game {
       isPaused: false,
     };
   };
-
 }
-
-

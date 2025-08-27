@@ -1,7 +1,8 @@
 import WebSocket, { WebSocketServer } from 'ws'
 import { PayLoad } from "./game/Game.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
-import { fastify, singlePlayerGameRooms } from "./server.js";
+import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
+import { fastify, singlePlayerGameRooms, remoteGameRooms } from "./server.js";
 
 export class WebSocketConnection {
   private server: any;
@@ -17,39 +18,87 @@ export class WebSocketConnection {
 
   public connection(): void {
     this.wss.on("connection", (ws: WebSocket, request: any, context: any) => {
-      let gameRoom: SinglePlayerGameRoom | undefined;
       const gameId: number = context.gameId;
       const mode: string = context.mode;
 
       if (mode === "singleplayer") {
-        gameRoom = singlePlayerGameRooms.get(gameId);
-        if (gameRoom === undefined) {
-          ws.close();
-          return;
+        this.singlePlayerConnection(ws, gameId);
+      }
+      else if (mode === "remote") {
+        this.remoteConnection(ws, gameId);
+      }
+    });
+
+    this.wss.on("error", (e) => {
+      console.log(e);
+    });
+  }
+
+  private remoteConnection(ws: WebSocket, gameId: number) {
+    let gameRoom: RemoteGameRoom | undefined = remoteGameRooms.get(gameId);
+    if (gameRoom === undefined) {
+      ws.close();
+      return;
+    }
+    else {
+      gameRoom.addPlayer(ws);
+      gameRoom.startGameLoop();
+    }
+
+    ws.on("message", (data) => {
+      const msg: PayLoad = JSON.parse(data.toString());
+      if (gameRoom !== undefined) {
+        gameRoom.handleEvents(msg);
+      }
+    });
+
+    ws.on("close", () => {
+      if (gameRoom !== undefined) {
+        if (gameRoom.player1 === ws){
+          gameRoom.player1.close();
+          gameRoom.player1 = null;
         }
-        else {
-          gameRoom.addClient(ws);
-          gameRoom.startGameLoop();
+        if (gameRoom.player2 === ws){
+          gameRoom.player2.close();
+          gameRoom.player2 = null;
         }
       }
-
-      ws.on('message', (data) => {
-        const msg: PayLoad = JSON.parse(data.toString());
-        if (gameRoom !== undefined) {
-          gameRoom.handleEvents(msg);
-        }
-      });
-
-
-      ws.on("error", (e) => {
-        console.log(e);
-        if (gameRoom !== undefined) {
-          singlePlayerGameRooms.delete(gameRoom.id);
-          gameRoom.cleanup(); 
-        }
-      });
     });
-    this.wss.on("error", (e) => { console.log(e); });
+
+    ws.on("error", (e) => {
+      console.log(e);
+      if (gameRoom !== undefined) {
+        remoteGameRooms.delete(gameRoom.id);
+        gameRoom.cleanup(); 
+      }
+    });
+  }
+
+  private singlePlayerConnection(ws: WebSocket, gameId: number) {
+    let gameRoom: SinglePlayerGameRoom | undefined = singlePlayerGameRooms.get(gameId);
+    if (gameRoom === undefined) {
+      ws.close();
+      return;
+    }
+    else {
+      gameRoom.addClient(ws);
+      gameRoom.startGameLoop();
+    }
+
+    ws.on('message', (data) => {
+      const msg: PayLoad = JSON.parse(data.toString());
+      if (gameRoom !== undefined) {
+        gameRoom.handleEvents(msg);
+      }
+    });
+
+    ws.on("error", (e) => {
+      console.log(e);
+      if (gameRoom !== undefined) {
+        singlePlayerGameRooms.delete(gameRoom.id);
+        gameRoom.cleanup(); 
+      }
+    });
   }
 
   public upgrade(): void {
@@ -61,6 +110,15 @@ export class WebSocketConnection {
       if (pathname.startsWith("/game/singleplayer/")) {
         gameId = parseInt(pathname.split('/')[3]);
         mode = "singleplayer";
+
+        if (isNaN(gameId)) {
+          socket.destroy();
+          return;
+        }
+      }
+      else if (pathname.startsWith("/game/remote/")) {
+        gameId = parseInt(pathname.split('/')[3]);
+        mode = "remote";
 
         if (isNaN(gameId)) {
           socket.destroy();

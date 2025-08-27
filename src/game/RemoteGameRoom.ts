@@ -1,23 +1,28 @@
 import WebSocket from 'ws'
-import { Game, PayLoad,  } from "./Game.js";
+import { Game, PayLoad } from "./Game.js";
 import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
 
-export class SinglePlayerGameRoom {
+export class RemoteGameRoom {
   public FPS60 = 1000/60;
   public id: number;
   public game: Game;
-  public client: WebSocket | null = null;
+  public player1: WebSocket | null = null;
+  public player2: WebSocket | null = null;
   private gameInterval: NodeJS.Timeout | null = null;
 
-  constructor(id: number) {
-    this.id = id;
+  constructor(gameId: number) {
+    this.id = gameId;
     this.game = new Game();
   }
 
   public cleanup() {
-    if (this.client) {
-      this.client.close();
-      this.client = null;
+    if (this.player1) {
+      this.player1.close();
+      this.player1 = null;
+    }
+    if (this.player2) {
+      this.player2.close();
+      this.player2 = null;
     }
     if (this.gameInterval) {
       clearInterval(this.gameInterval);
@@ -25,47 +30,54 @@ export class SinglePlayerGameRoom {
     }
   }
 
-  public addClient(ws: WebSocket): void {
-    if (!this.client) {
-      this.client = ws;
-    }
-    else {
-      this.client.close();
-      this.client = ws;
-    }
+  public addPlayer(ws: WebSocket) {
+    if (!this.player1 || this.player1 === ws)
+      this.player1 = ws;
+    else if (!this.player2 || this.player2 === ws)
+      this.player2 = ws;
   }
 
   public broadcast() {
-    if (this.client && this.client.readyState === WebSocket.OPEN) {
-      this.client.send(JSON.stringify(this.game.gameState));
+    if (this.player1 && this.player1.readyState === WebSocket.OPEN) {
+      this.player1.send(JSON.stringify(this.game.gameState));
+    }
+    if (this.player2 && this.player2.readyState === WebSocket.OPEN) {
+      this.player2.send(JSON.stringify(this.game.gameState));
     }
   }
 
-  public startGameLoop() {
+  public startGameLoop(): void {
     if (this.gameInterval)
       return;
-    this.game.gameState.status = "playing";
     this.gameInterval = setInterval(() => {
       let point;
+      if (this.player1 && this.player2) {
+        this.game.gameState.status = "playing";
+      }
+      else {
+        this.game.gameState.status = "waiting for players";
+      }
 
-      if (this.game.gameState.ball.isRunning && !this.game.gameState.isPaused) {
-        this.game.ball.checkCeilingFloorCollision(this.game.canvas);
-        this.game.ball.checkPaddleCollision(this.game.paddleLeft);
-        this.game.ball.checkPaddleCollision(this.game.paddleRight);
-        this.game.ball.move();
+      if (this.game.gameState.status === "playing") {
+        if (this.game.gameState.ball.isRunning && !this.game.gameState.isPaused) {
+          this.game.ball.checkCeilingFloorCollision(this.game.canvas);
+          this.game.ball.checkPaddleCollision(this.game.paddleLeft);
+          this.game.ball.checkPaddleCollision(this.game.paddleRight);
+          this.game.ball.move();
+        }
+        point = this.game.ball.pointScored(this.game.canvas);
+        if (point !== 0) {
+          if (point === 1)
+            this.game.gameState.score.player1++;
+            else 
+            this.game.gameState.score.player2++;
+          this.game.gameState.ball.isRunning = false;
+          this.game.ball.reset(this.game.canvas);
+          this.checkWinner();
+        }
+        this.game.paddleLeft.update(this.game.canvas);
+        this.game.paddleRight.update(this.game.canvas);
       }
-      point = this.game.ball.pointScored(this.game.canvas);
-      if (point !== 0) {
-        if (point === 1)
-          this.game.gameState.score.player1++;
-          else 
-          this.game.gameState.score.player2++;
-        this.game.gameState.ball.isRunning = false;
-        this.game.ball.reset(this.game.canvas);
-        this.checkWinner();
-      }
-      this.game.paddleLeft.update(this.game.canvas);
-      this.game.paddleRight.update(this.game.canvas);
 
       this.broadcast();
     }, this.FPS60);
