@@ -59,11 +59,9 @@ export class RemoteGame {
         throw("ws is undefined");
 
       if (this.side === "left") {
-        console.log("Left side");
         this.player = new Player(this.ws, this.canvas, PaddleSide.Left);
       }
       else if (this.side === "right") {
-        console.log("Right side");
         this.player = new Player(this.ws, this.canvas, PaddleSide.Right);
       }
       this.ws.addEventListener("message", (event) => {
