@@ -82,10 +82,19 @@ function enterGameRoom(reply: FastifyReply, gameId: number): void {
 }
 
 function searchGameRoom(): number {
-   for (const [id, gameRoom] of remoteGameRooms) {
-    if (!gameRoom.player1 || !gameRoom.player2)
+  for (const [id, gameRoom] of remoteGameRooms) {
+    if (!gameRoom.player1 && !gameRoom.player2) {
+      if (gameRoom.game.gameState.score.player1 === 0 && gameRoom.game.gameState.score.player2 === 0) {
+        return id;
+      }
+      else {
+        continue;
+      }
+    }
+    if (!gameRoom.player1 || !gameRoom.player2) {
       return id;
-   }
+    }
+  }
   return -1;
 }
 

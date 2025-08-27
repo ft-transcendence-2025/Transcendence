@@ -4,6 +4,7 @@ import path from "node:path";
 import cookie from '@fastify/cookie'; 
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from "fs";
 
 import { setupRoomCleanup } from "./utils.js";
 import { gameRoute } from "./routes.js";
@@ -17,12 +18,15 @@ export const singlePlayerLastActivity = new Map<number, number>();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-
 export const fastify = Fastify({
   logger: {
     level: "info",
     file: "./log/server.log",
-  }
+  },
+  // https: {
+  //   key: readFileSync("/etc/server/ssl/private.key"),
+  //   cert: readFileSync("/etc/server/ssl/certificate.crt")
+  // }
 });
 
 fastify.register(cookie);
