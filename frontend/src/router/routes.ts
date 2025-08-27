@@ -14,7 +14,7 @@ import { renderProfile } from "../views/profile.js";
 
 interface Route {
   path: string;
-  action: (container: HTMLElement | null, params: Record<string, any>) => Promise<void>;
+  action: (container: HTMLElement | null) => Promise<void>;
 }
 
 export const routes: Route[] = [

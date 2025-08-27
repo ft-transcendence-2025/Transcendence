@@ -34,16 +34,12 @@ class ChatComponent {
     this.friends = friends;
     this.openChats = new Map();
     this.messages = new Map();
-
-    // this.render();
   }
 
   async updateChatMessages(friendId: string) {
     const chatWindow = this.openChats.get(friendId);
     if (!chatWindow) return;
-    const messagesContainer = chatWindow.querySelector(
-      "#messages",
-    ) as HTMLElement;
+    const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
 
     const messages = this.messages.get(friendId);
 
@@ -54,20 +50,22 @@ class ChatComponent {
         <div class="mb-2 ${message.recipientId || message.senderId == this.currentUserId ? "text-right" : "text-left"}">
           <div class="inline-block p-2 rounded-lg max-w-xs ${
             message.recipientId || message.senderId == this.currentUserId
-              ? "bg-green-600 text-white ml-auto"
-              : "bg-gray-200 text-gray-800"
+              ? "bg-[var(--color-primary)] text-[var(--color-background)] ml-auto"
+              : "bg-[var(--color-secondary-light)] text-[var(--color-text-primary)]"
           }">
             <div class="text-xs">${message.content}</div>
             <div class="text-xs opacity-70 mt-1">
-              ${new Date(message.ts || message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              ${new Date(message.ts || message.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
           </div>
         </div>
-      `,
+      `
         )
         .join("");
 
-      // Scroll to bottom
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
@@ -75,9 +73,7 @@ class ChatComponent {
   async updateChatHistory(friendId: string) {
     const chatWindow = this.openChats.get(friendId);
     if (!chatWindow) return;
-    const messagesContainer = chatWindow.querySelector(
-      "#messages",
-    ) as HTMLElement;
+    const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
 
     const messages: [any] = await this.chatService.getConversation(friendId);
     this.messages.set(friendId, messages);
@@ -89,20 +85,22 @@ class ChatComponent {
         <div class="mb-2 ${message.senderId == this.currentUserId ? "text-right" : "text-left"}">
           <div class="inline-block p-2 rounded-lg max-w-xs ${
             message.senderId == this.currentUserId
-              ? "bg-green-600 text-white ml-auto"
-              : "bg-gray-200 text-gray-800"
+              ? "bg-[var(--color-primary)] text-[var(--color-background)] ml-auto"
+              : "bg-[var(--color-secondary-light)] text-[var(--color-text-primary)]"
           }">
             <div class="text-xs">${message.content}</div>
             <div class="text-xs opacity-70 mt-1">
-              ${new Date(message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              ${new Date(message.createdAt).toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
           </div>
         </div>
-      `,
+      `
         )
         .join("");
 
-      // Scroll to bottom
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
   }
@@ -120,50 +118,22 @@ class ChatComponent {
     await this.updateChatMessages(friendId);
   }
 
-  render() {
-    // const list = this.container.querySelector("#friends-list")!;
-    // this.friends.forEach(async (friend) => {
-    //   let friendAvatar = document.createElement("img");
-    //   friendAvatar.src = await getUserAvatar(friend.username);
-
-    //   const li = document.createElement("li");
-    //   li.className =
-    //     "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary-light)";
-    //   li.innerHTML = `
-    //   <span class="relative inline-block w-8 h-8 rounded-full border-2 ${friend.status === "ONLINE" ? "border-green-400 shadow-[0_0_4px_1px_rgba(34,197,94,0.25)]" : "border-gray-400 shadow-[0_0_4px_1px_rgba(156,163,175,0.18)]"} bg-gray-300 overflow-hidden align-middle">
-    //     <img src="${friendAvatar.src}" class="w-8 h-8 object-cover" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
-    //     <span class="absolute bottom-0 right-0 w-3 h-3 rounded-full ${friend.status === "ONLINE" ? "bg-green-400 shadow-[0_0_3px_1px_rgba(34,197,94,0.35)]" : "bg-gray-400 shadow-[0_0_3px_1px_rgba(156,163,175,0.22)]"} border-2 border-white"></span>
-    //   </span>
-    //   <span class="ml-5">${friend.username}</span>
-    //   `;
-    //   li.addEventListener("click", () => this.openChat(friend));
-    //   list.appendChild(li);
-    // });
-    console.log("tentei renderizar algo!");
-  }
-
   async openChat(friend: Friend) {
     let friendAvatar = document.createElement("img");
     friendAvatar.src = await getUserAvatar(friend.username);
 
     if (this.openChats.has(friend.username)) {
       const existingChat = this.openChats.get(friend.username)!;
-      const messagesSection =
-        existingChat.querySelector("#messages")!.parentElement!;
-      const inputSection =
-        existingChat.querySelector("#message-input")!.parentElement!;
+      const messagesSection = existingChat.querySelector("#messages")!.parentElement!;
+      const inputSection = existingChat.querySelector("#message-input")!.parentElement!;
 
-      // If it's minimized, restore it
       if (messagesSection.classList.contains("hidden")) {
         messagesSection.classList.remove("hidden");
         inputSection.classList.remove("hidden");
         existingChat.classList.remove("h-auto");
         existingChat.classList.add("h-80");
 
-        // Focus on input
-        const messageInput = existingChat.querySelector(
-          "#message-input",
-        ) as HTMLInputElement;
+        const messageInput = existingChat.querySelector("#message-input") as HTMLInputElement;
         messageInput.focus();
       }
       return;
@@ -171,38 +141,33 @@ class ChatComponent {
 
     const chatContainer = document.createElement("div");
     chatContainer.className =
-      "w-74 h-90 bg-white shadow-lg border rounded-lg flex flex-col";
+      "w-74 h-90 bg-[var(--color-background)] shadow-lg border rounded-lg flex flex-col";
     chatContainer.innerHTML = `
-      <div class="flex justify-between items-center p-2 bg-green-700 text-white rounded-t-lg">
-      <span>
-        <span class="inline-block w-8 h-8 rounded-full bg-gray-300 border-2 border-white overflow-hidden align-middle">
-        <img src="${friendAvatar.src}" class="w-8 h-8 object-cover" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
+      <div class="flex justify-between items-center p-2 bg-[var(--color-primary-dark)] text-[var(--color-background)] rounded-t-lg">
+        <span>
+          <span class="inline-block w-8 h-8 rounded-full bg-gray-300 border-2 border-white overflow-hidden align-middle">
+            <img src="${friendAvatar.src}" class="w-8 h-8 object-cover" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
+          </span>
         </span>
-      </span>
-      <span>${friend.username}</span>
-      <div class="flex gap-2">
-        <button class="close px-1 hover:bg-green-800 rounded">x</button>
+        <span>${friend.username}</span>
+        <div class="flex gap-2">
+          <button class="close px-1 hover:bg-[var(--color-primary-darker)] rounded">x</button>
+        </div>
       </div>
+      <div class="flex-1 p-2 overflow-y-auto text-sm bg-[var(--color-background)]" id="messages">
       </div>
-      <div class="flex-1 p-2 overflow-y-auto text-sm bg-radial-[at_50%_75%] from-white to-green-10 to-75%" id="messages">
-      </div>
-      <div class="p-2 border-t bg-white">
-      <div class="flex gap-1">
-        <input type="text" class="flex-1 border rounded px-2 py-1 text-sm focus:outline-none focus:border-green-600 min-w-0" 
-        placeholder="Type a message..." id="message-input"/>
-        <button class="bg-green-600 text-white px-2 py-1 rounded text-sm hover:bg-green-700 focus:outline-none flex-shrink-0" 
-        id="send-button">Send</button>
-      </div>
+      <div class="p-2 border-t bg-[var(--color-background)]">
+        <div class="flex gap-1">
+          <input type="text" class="flex-1 border rounded px-2 py-1 text-sm focus:outline-none focus:border-[var(--color-primary)] min-w-0"
+          placeholder="Type a message..." id="message-input"/>
+          <button class="bg-[var(--color-primary)] text-[var(--color-background)] px-2 py-1 rounded text-sm hover:bg-[var(--color-primary-dark)] focus:outline-none flex-shrink-0"
+          id="send-button">Send</button>
+        </div>
       </div>
     `;
 
-    // Add event listeners
-    const messageInput = chatContainer.querySelector(
-      "#message-input",
-    ) as HTMLInputElement;
-    const sendButton = chatContainer.querySelector(
-      "#send-button",
-    ) as HTMLButtonElement;
+    const messageInput = chatContainer.querySelector("#message-input") as HTMLInputElement;
+    const sendButton = chatContainer.querySelector("#send-button") as HTMLButtonElement;
 
     const sendMessageHandler = () => {
       const text = messageInput.value.trim();
@@ -219,28 +184,21 @@ class ChatComponent {
       }
     };
 
-    // Send message on button click
     sendButton.addEventListener("click", sendMessageHandler);
 
-    // Send message on Enter key press
     messageInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") {
         sendMessageHandler();
       }
     });
 
-    // Close chat
-    chatContainer
-      .querySelector(".close")!
-      .addEventListener("click", () => this.closeChat(friend.username));
+    chatContainer.querySelector(".close")!.addEventListener("click", () => this.closeChat(friend.username));
 
     this.container.querySelector("#chat-windows")!.appendChild(chatContainer);
     this.openChats.set(friend.username, chatContainer);
 
-    // Load existing messages
     this.updateChatHistory(friend.username);
 
-    // Focus on input
     messageInput.focus();
   }
 

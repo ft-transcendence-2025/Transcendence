@@ -5,6 +5,7 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import { getUserAvatar } from "../utils/userUtils.js";
 import { getFriendsContent } from "../views/friends.js";
 import { getNotificationsContent } from "../views/notifications.js";
+import { getProfileModalContent } from "../views/modalProfile.js";
 import { openModal } from "./modalManager.js";
 import renderSearchBar from "./searchBar.js";
 
@@ -35,11 +36,7 @@ export async function renderNavbar(container: HTMLElement | null) {
 
   profileIcon?.addEventListener("click", async (e) => {
     e.preventDefault();
-    // JUST PLACEHOLDERS:
-    const profileContent = document.createElement("div");
-    profileContent.className = "p-4";
-    profileContent.textContent = "User Profile";
-    openModal(profileContent, profileIcon);
+    openModal(await getProfileModalContent(), profileIcon);
   });
 
   const token = localStorage.getItem("authToken");

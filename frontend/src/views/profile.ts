@@ -6,15 +6,21 @@ import {
 	getJungleAvatarFile,
 	CreateProfileRequest,
 } from "../services/profileService.js";
+import { navigateTo } from "../router/router.js";
+
+// function getUsernameFromQueryString(): string | null {
+// 	const params = new URLSearchParams(window.location.search);
+// 	return params.get("username");
+// }
 
 let currentProfile: any = null;
 let selectedAvatar: string | null = null;
 let customAvatarFile: File | null = null;
 
-export async function renderProfile(container: HTMLElement | null, params: Record<string, any>) {
+export async function renderProfile(container: HTMLElement | null) {
 	if (!container) return;
-	console.log("Rendering profile with params:", params);
-	const { username } = params;
+	const params = new URLSearchParams(window.location.search);
+	const username = params.get("username");
 
 	if (!username) {
 		container.innerHTML = "<p>User not found.</p>";
@@ -26,6 +32,7 @@ export async function renderProfile(container: HTMLElement | null, params: Recor
 
 	try {
 		const profile = await getProfileByUsername(username);
+		console.log("profile de ", username, " :", profile);
 		populateProfileView(profile);
 		showProfileView();
 	} catch (error: any) {
@@ -39,13 +46,17 @@ export async function renderProfile(container: HTMLElement | null, params: Recor
 function populateProfileView(profile: any) {
 	currentProfile = profile;
 
-	const avatarImg = document.getElementById("profile-avatar") as HTMLImageElement;
+	const avatarImg = document.getElementById("user-avatar") as HTMLImageElement;
 	if (avatarImg) {
 		avatarImg.src = getUserAvatar(profile.userUsername);
 		avatarImg.onerror = () => {
 			avatarImg.src = "/assets/avatars/panda.png";
 		};
 	}
+
+	const createdAt = profile.createdAt ? new Date(profile.createdAt) : null;
+	const now = new Date();
+	const daysSinceCreated = createdAt ? Math.floor((now.getTime() - createdAt.getTime()) / (1000 * 60 * 60 * 24)) : null;
 
 	const fields = [
 		{ id: "display-username", value: profile.userUsername },
@@ -54,6 +65,7 @@ function populateProfileView(profile: any) {
 		{ id: "display-lastname", value: profile.lastName || "Not set" },
 		{ id: "display-bio", value: profile.bio || "No bio available" },
 		{ id: "display-gender", value: profile.gender || "Not set" },
+		{ id: "display-createdAt", value: `${daysSinceCreated !== null ? `${daysSinceCreated} days` : "0 days"}` },
 	];
 
 	fields.forEach((field) => {

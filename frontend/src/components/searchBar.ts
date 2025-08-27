@@ -50,7 +50,7 @@ export default async function renderSearchBar() {
 					item.addEventListener("click", () => {
 						const username = item.getAttribute("data-username");
 						if (username) {
-							navigateTo("/friend-profile", document.getElementById("content"), { username });
+							navigateTo(`/friend-profile?username=${username}`, document.getElementById("content"));
 						}
 						searchResults.classList.add("hidden");
 						if (searchInput) searchInput.value = "";
