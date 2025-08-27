@@ -1,6 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getTournamentData } from "./tournament.js";
+import { getTournamentData } from "./tournamentSetup.js";
 
 export async function renderTournamentTree(container: HTMLElement | null) {
   if (!container) return;

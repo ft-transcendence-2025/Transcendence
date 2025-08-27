@@ -74,10 +74,10 @@ function setupRemoteTournament() {
 function enablePlayerCustomization(enable: boolean) {
   for (let i = 1; i <= 4; i++) {
     const inputField = document.getElementById(
-      `player-${i}-name`,
+      `t-player-${i}-name`,
     ) as HTMLInputElement;
     const avatarContainer = document.getElementById(
-      `avatar-player-${i}`,
+      `t-avatar-player-${i}`,
     )?.parentElement;
 
     if (inputField) {
@@ -113,10 +113,10 @@ async function populateRemotePlayers() {
   // Update player names and avatars in the UI
   remotePlayers.forEach((player, index) => {
     const playerNameElement = document.getElementById(
-      `player-${index + 1}-name`,
+      `t-player-${index + 1}-name`,
     ) as HTMLInputElement;
     const avatarImg = document.getElementById(
-      `avatar-player-${index + 1}`,
+      `t-avatar-player-${index + 1}`,
     ) as HTMLImageElement;
 
     if (playerNameElement) {
@@ -144,7 +144,7 @@ async function populateRemotePlayers() {
 // Avatar management functions (for local tournaments)
 function updateAvatar(slot: number, index: number): void {
   const img = document.getElementById(
-    `avatar-player-${slot}`,
+    `t-avatar-player-${slot}`,
   ) as HTMLImageElement;
   if (!img) return;
 
@@ -172,7 +172,7 @@ function initializeAvatars() {
   // Add event listeners for navigation buttons
   for (let slot = 1; slot <= 4; slot++) {
     const avatarContainer = document.getElementById(
-      `avatar-player-${slot}`,
+      `t-avatar-player-${slot}`,
     )?.parentElement;
     if (avatarContainer) {
       const buttons = avatarContainer.querySelectorAll("button");
@@ -227,10 +227,10 @@ function collectLocalTournamentData() {
 
   for (let i = 1; i <= 4; i++) {
     const nameInput = document.getElementById(
-      `player-${i}-name`,
+      `t-player-${i}-name`,
     ) as HTMLInputElement;
     const avatarImg = document.getElementById(
-      `avatar-player-${i}`,
+      `t-avatar-player-${i}`,
     ) as HTMLImageElement;
 
     const username =
