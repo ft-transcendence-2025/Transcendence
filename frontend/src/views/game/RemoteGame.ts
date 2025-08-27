@@ -1,41 +1,7 @@
-import { FetchData, PaddleSide, GameMode, degreesToRadians, getRandomAngle } from "./utils.js";
+import { Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, degreesToRadians, getRandomAngle } from "./utils.js";
 import { Player } from "./Player.js";
-import { AI } from "./AI.js";
 
-const SECOND: number = 100;
-
-interface Canvas {
-  width: number,
-  height: number,
-};
-
-interface BallState {
-  x: number,
-  y: number,
-  radius: number,
-  isRunning: boolean,
-  angle: number,
-};
-
-
-interface PaddleState {
-  connected: boolean,
-  moving: {
-    up: boolean,
-    down: boolean,
-  },
-  position: {
-    x: number,
-    y: number,
-  },
-  attr: {
-    width: number,
-    height: number,
-  }
-  speed: number,
-}
-
-export interface GameState {
+export interface RemoteGameState {
   status: string,
   role: string,
   canvas: Canvas,
@@ -50,144 +16,63 @@ export interface GameState {
   isPaused: false,
 };
 
-interface CreatedGame {
-  state: string,
-  gameMode: string,
-  id: number,
-}
-
-export class SinglePlayerGame {
+export class RemoteGame {
   private canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
   private ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
-
-  private player1: Player | null = null;
-  private player2: Player | null = null;
-  private AI: AI | null = null;
   private updateAIIntervalId: number | null = null;
 
-  private ballMoving: boolean = false;
-  private winningPoint: number = 3;
-  private CreatedGame: CreatedGame | null = null;
+  private player: Player | null = null;
   private ws: WebSocket | null = null;
+  private side: string | null = null;
 
-  private gameState: GameState | null = null;
+  private gameState: RemoteGameState | null = null;
+  private ballMoving: boolean = false;
 
-  constructor(gameMode: string, data: FetchData) {
+
+  constructor(data: FetchData) {
     this.canvas.tabIndex = 0;
     this.canvas.style.outline = "none";
     this.canvas.focus();
     this.canvas.width = 1000;
     this.canvas.height = 500;
 
-    this.joinGame(`ws://localhost:4000/game/singleplayer/${data.id}`, gameMode);
+    this.side = data.side;
+    this.joinGame(`ws://localhost:4000/game/remote/${data.id}`);
 
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
-  public joinGame(url: string, gameMode: string): void {
+  public joinGame(url: string): void {
     if (!this.ws) {
       this.ws = new WebSocket(url)
       if (!this.ws)
         throw("Failed To Connect WebSocket");
-      this.openSocket(gameMode);
+      this.openSocket();
     }
   }
 
-  private openSocket(gameMode: string) {
+  private openSocket(): void {
     if (!this.ws)
       throw("ws is undefined");
     this.ws.addEventListener("open", () => {
       if (!this.ws)
         throw("ws is undefined");
 
-      if (gameMode === "2player") {
-        this.startSinglePvP();
+      if (this.side === "left") {
+        console.log("Left side");
+        this.player = new Player(this.ws, this.canvas, PaddleSide.Left);
       }
-      else if (gameMode === "ai") {
-        this.startSinglePvE(PaddleSide.Right);
+      else if (this.side === "right") {
+        console.log("Right side");
+        this.player = new Player(this.ws, this.canvas, PaddleSide.Right);
       }
-
       this.ws.addEventListener("message", (event) => {
-        this.gameState = JSON.parse(event.data) as GameState;
+        this.gameState = JSON.parse(event.data) as RemoteGameState;
         if (!this.gameState)
           throw("gameState is undefined");
       });
     });
     this.gameLoop();
-  };
-
-  private startSinglePvE(side: PaddleSide | undefined): void {
-    if (this.player1) {
-      this.player1 = null;
-    }
-    if (this.player2) {
-      this.player2 = null;
-    }
-    if (this.ws) {
-      const cookies = document.cookie.split(";");
-      cookies.forEach((cookie) => {
-        const mode = cookie.split("=");
-        if (mode[0].trim() === "GameMode") {
-          if (mode[1].trim() === "SinglePvP") {
-            const payLoad = {
-              type: "command",
-              key: "reset",
-            };
-            if (this.ws)
-              this.ws.send(JSON.stringify(payLoad));
-          }
-        }
-      });
-      document.cookie = "GameMode=SinglePvE";
-      if (side === PaddleSide.Left) {
-        this.player1 = new Player(this.ws, this.canvas, PaddleSide.Left);
-        this.AI = new AI(this.ws, this.canvas, PaddleSide.Right, this.gameState);
-      }
-      else {
-        this.player1 = new Player(this.ws, this.canvas, PaddleSide.Right);
-        this.AI = new AI(this.ws, this.canvas, PaddleSide.Left, this.gameState);
-      }
-      if (this.AI) {
-        this.updateAIGameState();
-      }
-    }
-  }
-
-  private startSinglePvP(): void {
-    if (this.AI) {
-      if (this.updateAIIntervalId)
-        clearInterval(this.updateAIIntervalId);
-      this.updateAIIntervalId = null;
-      this.AI = null;
-    }
-    if (this.ws) {
-      const cookies = document.cookie.split(";");
-      cookies.forEach((cookie) => {
-        const mode = cookie.split("=");
-        if (mode[0].trim() === "GameMode") {
-          if (mode[1].trim() === "SinglePvE") {
-            const payLoad = {
-              type: "command",
-              key: "reset",
-            };
-            if (this.ws)
-              this.ws.send(JSON.stringify(payLoad));
-          }
-        }
-      });
-      document.cookie = "GameMode=SinglePvP";
-      this.player1 = new Player(this.ws, this.canvas, PaddleSide.Left);
-      this.player2 = new Player(this.ws, this.canvas, PaddleSide.Right);
-    }
-  };
-
-
-  private updateAIGameState(): void {
-    this.updateAIIntervalId = setInterval(() => {
-      if (this.AI) {
-        this.AI.updateGameState(this.gameState);
-      }
-    }, SECOND);
   }
 
   public gameLoop(): void {
@@ -196,15 +81,28 @@ export class SinglePlayerGame {
       return ;
     }
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    if (this.gameState.status === "playing") {
-      this.renderBall();
-      this.renderPaddle(this.gameState.paddleLeft);
-      this.renderPaddle(this.gameState.paddleRight);
-      this.checkPoints();
-      this.checkIsGamePaused();
-    }
-
+    this.renderBall();
+    this.renderPaddle(this.gameState.paddleLeft);
+    this.renderPaddle(this.gameState.paddleRight);
+    this.checkPoints();
+    this.checkIsGamePaused();
+    this.checkIsWaiting();
     requestAnimationFrame(this.gameLoop.bind(this));
+  }
+  private checkIsWaiting(): void {
+    const display = document.getElementById("reconnect-overlay") as HTMLCanvasElement;
+
+    if (this.gameState && this.gameState.status === "playing") {
+      if (display) {
+        display.classList.add("hidden");
+      }
+
+    }
+    else if (this.gameState && this.gameState.status === "waiting for players") {
+      if (display) {
+        display.classList.remove("hidden");
+      }
+    }
   }
 
   private checkIsGamePaused(): void {
@@ -268,7 +166,6 @@ export class SinglePlayerGame {
     }
   }
 
-  // Display Game Over Div with the winner and final score
   private gameOver(player: 1 | 2): void {
     const gameOverText = document.getElementById("game-over") as HTMLDivElement;
     if (gameOverText) {
@@ -287,15 +184,15 @@ export class SinglePlayerGame {
       gameOverText.classList.add('hidden');
   }
 
-  // Press Space to start the ball rolling
-  // If the game is over Space will reset the game
   private handleKeyDown(event: KeyboardEvent): void {
     if (["ArrowDown", "ArrowUp"].includes(event.key)) {
       event.preventDefault();
     }
-    if (["p", "P", " "].includes(event.key)) {
-      event.preventDefault();
-      this.sendPayLoad(event);
+    if (this.gameState && this.gameState.status !== "waiting for players") {
+      if (["p", "P", " "].includes(event.key)) {
+        event.preventDefault();
+        this.sendPayLoad(event);
+      }
     }
   }
 

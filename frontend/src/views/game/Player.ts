@@ -1,5 +1,4 @@
 import { PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
-import { GameState } from "./Game.js";
 
 export class Player {
   private side: PaddleSide;

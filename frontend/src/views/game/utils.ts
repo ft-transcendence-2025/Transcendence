@@ -1,11 +1,28 @@
+export interface Canvas {
+  width: number,
+  height: number,
+};
+
 export enum PaddleSide {
   Left = 0,
   Right = 1,
 };
 
-export enum PaddleState {
-  Up = 0,
-  Down = 1,
+export interface PaddleState {
+  connected: boolean,
+  moving: {
+    up: boolean,
+    down: boolean,
+  },
+  position: {
+    x: number,
+    y: number,
+  },
+  attr: {
+    width: number,
+    height: number,
+  }
+  speed: number,
 }
 
 export enum GameMode {
@@ -13,6 +30,16 @@ export enum GameMode {
   PvE = 1,
   Online = 3,
 }
+
+export interface BallState {
+  x: number,
+  y: number,
+  radius: number,
+  isRunning: boolean,
+  angle: number,
+};
+
+export const SECOND: number = 100;
 
 export function degreesToRadians(degree: number): number {
   return degree * Math.PI/180;
@@ -31,7 +58,7 @@ export function getRandomAngle(): number {
 
 export interface FetchData {
   state: string,
+  side: string,
   gameMode: string,
   id: number,
 }
-
