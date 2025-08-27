@@ -27,7 +27,7 @@ export interface CreateProfileRequest {
 }
 
 // Profile API functions
-export const createProfile = (
+export const createProfile = async (
   username: string,
   profileData: CreateProfileRequest,
 ): Promise<UserProfile> => {

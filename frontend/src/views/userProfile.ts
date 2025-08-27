@@ -209,14 +209,12 @@ async function handleCreateProfile(username: string) {
 
   try {
     const profile = await createProfile(username, profileData);
-    console.log("Profile created successfully:", profile);
     showSuccessMessage("Profile created successfully!");
 
     // Switch to profile view and populate with new data
     await populateProfileView(profile);
     showProfileView();
   } catch (error: any) {
-    console.error("Error creating profile:", error);
     showErrorMessage(`Error creating profile: ${error.message}`);
   }
 }
@@ -241,7 +239,6 @@ async function handleUpdateProfile(username: string) {
 
   try {
     const profile = await updateProfile(username, profileData);
-    console.log("Profile updated successfully:", profile);
     showSuccessMessage("Profile updated successfully!");
 
     // Fetch the updated profile
