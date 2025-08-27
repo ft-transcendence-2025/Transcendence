@@ -2,6 +2,7 @@
 
 - Get http://localhost:4000/getgame/remote
 
+```
 	return {
 
 		state: "Joined" | "Created",
@@ -13,10 +14,12 @@
 		id: gameId,
   
 	}
+```
 
 
 - Get http://localhost:4000/getgame/singleplayer
-  
+
+  ```
 	return {
 
 		state: "Joined" | "Created",
@@ -26,7 +29,8 @@
 		id: GameId,
   
 	}
-
+  ```
+  
 
 #### WebSocket 
 
@@ -34,6 +38,7 @@
 
 - ws://localhost:4000/game/multiplayer/${GameId}
 
+```
  gameState {
  
 	  status: string,
@@ -59,7 +64,9 @@
 	  isPaused: boolean,
    
 }
+```
 
+```
  PaddleState {
  
   connected: boolean,
@@ -85,7 +92,8 @@
   speed: number,
   
 }
-
+```
+```
  PaddlePositionState {
  
   x: number,
@@ -93,7 +101,8 @@
   y: number,
   
 }
-
+```
+```
  BallState {
  
   x: number,
@@ -107,3 +116,5 @@
   angle: number,
   
 };
+
+```
