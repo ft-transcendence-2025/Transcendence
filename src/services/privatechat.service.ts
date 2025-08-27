@@ -17,6 +17,12 @@ export async function sendPendingMessages(userId: string, socket: any) {
 export async function handlePrivateMessage(users: Map<string, any>, senderId: string, msg: any) {
   const { recipientId, content, type = 'TEXT' } = msg;
   if (!recipientId || !content) return;
+  const sender = users.get(senderId);
+
+  if (sender.blockedUsersList.includes(recipientId)) {
+    sender.socket.send("Message not delivered.");
+    return ;
+  }
 
   let conversation = await prisma.conversation.findFirst({
     where: {

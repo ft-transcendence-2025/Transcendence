@@ -6,11 +6,13 @@ type WS = any;
 
 const users = new Map<string, any>();
 
-export function chatHandler(socket: WS, request: any) {
+export async function chatHandler(socket: WS, request: any) {
   const userId = request.query.userId;
-  const conn = { socket, userId, games: new Set<string>(), lastPong: Date.now() };
+  const blockedUsersList: string[] = await fetch(`http://user-management:3000/friendships/blockedUsersList/${userId}`)
+    .then(res => res.json());
+  const conn = { socket, userId, games: new Set<string>(), lastPong: Date.now(), blockedUsersList };
   users.set(userId, conn);
-
+  console.log("lista de usuários bloqueados para ", userId, " : ", blockedUsersList);
   // Send ready + pending messages
   socket.send(JSON.stringify({ event: 'system/ready', userId, ts: Date.now() }));
   sendPendingMessages(userId, socket);
