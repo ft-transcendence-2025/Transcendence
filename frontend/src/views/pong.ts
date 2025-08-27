@@ -68,14 +68,35 @@ async function updatePlayerInfo(gameMode: string) {
       player2Avatar.src = userAvatar; // Set user avatar
     }
   } else if (gameMode === "2player") {
-    // Player vs Player mode
-    if (player1Element) {
-      player1Element.textContent = userDisplayName;
-      player1Avatar.src = userAvatar; // Set user avatar
-    }
-    if (player2Element) {
-      player2Element.textContent = "Player 2";
-      player2Avatar.src = "/assets/avatars/meerkat.png"; // Default avatar for Player 2
+    // 2P mode - fetch local storage data from 2P modal if available
+    const gameData = localStorage.getItem("2playerGameData");
+    
+    if (gameData) {
+      // Use custom player data from setup modal
+      const data = JSON.parse(gameData);
+      
+      if (player1Element) {
+        player1Element.textContent = data.player1.name;
+        player1Avatar.src = data.player1.avatar;
+      }
+      
+      if (player2Element) {
+        player2Element.textContent = data.player2.name;
+        player2Avatar.src = data.player2.avatar;
+      }
+      
+      // Clear the data after use
+      localStorage.removeItem("2playerGameData");
+    } else {
+      // Fallback to default behavior
+      if (player1Element) {
+        player1Element.textContent = userDisplayName;
+        player1Avatar.src = userAvatar;
+      }
+      if (player2Element) {
+        player2Element.textContent = "Player 2";
+        player2Avatar.src = "/assets/avatars/meerkat.png";
+      }
     }
   } else if (gameMode === "remote") {
     // TODO Remote mode, fetch player names from the server

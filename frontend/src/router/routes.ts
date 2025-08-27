@@ -5,7 +5,7 @@ import { openRegisterModal } from "../components/register.js";
 import { renderFriends } from "../views/friends.js";
 import { renderDashboard } from "../views/dashboard.js";
 import { renderPong } from "../views/pong.js";
-import { renderTournament } from "../views/tournament.js";
+import { renderTournament } from "../views/tournamentSetup.js";
 import { renderUserProfile } from "../views/userProfile.js";
 import { renderTournamentTree } from "../views/tournamentTree.js";
 import { renderStats } from "../views/stats.js";
