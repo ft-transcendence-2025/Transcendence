@@ -1,4 +1,4 @@
-import WebSocket from 'ws'
+import WebSocket from "ws"
 import { Game, PayLoad } from "./Game.js";
 import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
 

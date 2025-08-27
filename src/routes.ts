@@ -36,31 +36,19 @@ export async function gameRoute(fastify: FastifyInstance) {
 
   fastify.get("/getgame/remote", (req, reply) => {
     const cookies = req.cookies;
-
     if (cookies.remoteGameId === undefined) {
-      createRemoteGame(reply, remoteGameId++);
+      const id = searchGameRoom();
+      if (id === -1) {
+        createRemoteGame(reply, remoteGameId++);
+      }
+      else {
+        enterGameRoom(reply, id);
+      }
     }
     else {
       const cookieGameId: number = parseInt(cookies.remoteGameId);
       if (remoteGameRooms.has(cookieGameId)) {
-        const gameRoom = remoteGameRooms.get(cookieGameId);
-        let side: string = "full";
-
-        if (gameRoom) {
-          if (!gameRoom.player1) {
-            side = "left";
-          }
-          else if (!gameRoom.player2) {
-            side = "right";
-          }
-        }
-
-        reply.send({
-          state: "Joined",
-          side: side,
-          gameMode: "remotegame",
-          id: cookieGameId,
-        });
+        enterGameRoom(reply, cookieGameId);
       }
       else {
         reply.clearCookie("remoteGameId", {
@@ -70,6 +58,35 @@ export async function gameRoute(fastify: FastifyInstance) {
       }
     }
   });
+}
+
+function enterGameRoom(reply: FastifyReply, gameId: number): void {
+  const gameRoom = remoteGameRooms.get(gameId);
+  let side: string = "full";
+
+  if (gameRoom) {
+    if (!gameRoom.player1) {
+      side = "left";
+    }
+    else if (!gameRoom.player2) {
+      side = "right";
+    }
+  }
+
+  reply.send({
+    state: "Joined",
+    side: side,
+    gameMode: "remotegame",
+    id: gameId,
+  });
+}
+
+function searchGameRoom(): number {
+   for (const [id, gameRoom] of remoteGameRooms) {
+    if (!gameRoom.player1 || !gameRoom.player2)
+      return id;
+   }
+  return -1;
 }
 
 function createRemoteGame(reply: FastifyReply, gameId: number) {
@@ -95,7 +112,6 @@ function createSinglePlayerGame(reply: FastifyReply, gameId: number) {
   singlePlayerGameRooms.set(gameId, new SinglePlayerGameRoom(gameId));
   singlePlayerLastActivity.set(gameId, Date.now());
 
-  
   reply.setCookie("singlePlayerGameId", gameId.toString(), {
     path: "/",
     sameSite: "none",
