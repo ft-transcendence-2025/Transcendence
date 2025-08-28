@@ -23,10 +23,6 @@ export const fastify = Fastify({
     level: "info",
     file: "./log/server.log",
   },
-  // https: {
-  //   key: readFileSync("/etc/server/ssl/private.key"),
-  //   cert: readFileSync("/etc/server/ssl/certificate.crt")
-  // }
 });
 
 fastify.register(cookie);
