@@ -8,36 +8,22 @@
       <div
         class="flex flex-col items-center rounded-lg border-2 border-(--color-primary-light) p-4 shadow-md"
       >
-        <h3 class="mb-4 text-lg font-semibold">Player 1</h3>
+        <h3 class="mb-4 text-lg font-semibold text-gray-600">Player 1</h3>
         <form class="flex w-full flex-col items-center space-y-4">
-          <!-- Avatar Selection -->
+          <!-- Avatar Display (Current User) -->
           <div class="flex flex-col items-center">
-            <!-- Avatar Navigation -->
-            <div class="flex items-center space-x-3">
-              <button
-                type="button"
-                class="text-2xl hover:text-(--color-primary)"
-              >
-                &lt;
-              </button>
-              <img
-                id="t-avatar-player-1"
-                alt="Avatar"
-                class="h-16 w-16 rounded-full border-2 border-(--color-primary-dark) object-cover"
-              />
-              <button
-                type="button"
-                class="text-2xl hover:text-(--color-primary)"
-              >
-                &gt;
-              </button>
-            </div>
+            <img
+              id="t-avatar-player-1"
+              alt="Player 1 Avatar"
+              class="h-16 w-16 rounded-full border-2 border-gray-400 object-cover"
+            />
           </div>
           <input
             id="t-player-1-name"
             type="text"
-            placeholder="LazyLoader"
-            class="w-full rounded border border-(--color-primary-light) bg-white p-2 text-center text-sm"
+            placeholder="Player 1"
+            class="w-full cursor-not-allowed rounded border border-(--color-primary-light) bg-gray-100 p-2 text-center text-sm text-gray-600 focus:ring-0 focus:outline-none"
+            readonly
           />
         </form>
       </div>
