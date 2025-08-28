@@ -1,17 +1,17 @@
 <div id="dashboard" class="mx-auto max-w-6xl p-4 py-8">
   <!-- Local Games Section -->
   <div class="mb-12">
-    <h2 class="mb-6 text-3xl font-bold">Local Games</h2>
-    <div class="grid grid-cols-1 justify-items-center gap-6 md:grid-cols-3">
+    <div class="grid grid-cols-1 justify-items-center gap-8 md:grid-cols-3">
       <!-- Pong 1 Player -->
       <a
         href="/pong?mode=ai"
         data-link="true"
-        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/single_tree.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/single_tree.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
         ></div>
+        <i class="fas fa-home absolute top-4 left-4 text-white text-xl drop-shadow-lg"></i>
         <div class="relative w-full p-6">
           <h3
             class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
@@ -27,14 +27,14 @@
       </a>
 
       <!-- Local Pong 2 Players -->
-      <a
-        href="/pong?mode=2player"
-        data-link="true"
-        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+      <button
+        id="local-2player-btn"
+        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg cursor-pointer border-none"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
         ></div>
+          <i class="fas fa-home absolute top-4 left-4 text-white text-xl drop-shadow-lg"></i>
         <div class="relative w-full p-6">
           <h3
             class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
@@ -47,17 +47,18 @@
             Play offline
           </p>
         </div>
-      </a>
+      </button>
 
       <!-- Local Tournament -->
       <a
         href="/tournament?type=local"
         data-link="true"
-        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
         ></div>
+          <i class="fas fa-home absolute top-4 left-4 text-white text-xl drop-shadow-lg"></i>
         <div class="relative w-full p-6">
           <h3
             class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
@@ -76,17 +77,17 @@
 
   <!-- Remote Games Section -->
   <div>
-    <h2 class="mb-6 text-3xl font-bold">Remote Games</h2>
-    <div class="grid grid-cols-1 justify-items-center gap-6 md:grid-cols-2">
+    <div class="grid grid-cols-1 justify-items-center gap-8 md:grid-cols-2">
       <!-- Remote Pong 2 Players -->
       <a
         href="/pong?mode=remote"
         data-link="true"
-        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
         ></div>
+          <i class="fas fa-globe absolute top-4 left-4 text-white text-xl drop-shadow-lg"></i>
         <div class="relative w-full p-6">
           <h3
             class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
@@ -105,11 +106,12 @@
       <a
         href="/tournament?type=remote"
         data-link="true"
-        class="group relative block flex h-48 w-full max-w-sm items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
       >
         <div
-          class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent
+          class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
         ></div>
+        <i class="fas fa-globe absolute top-4 left-4 text-white text-xl drop-shadow-lg"></i>
         <div class="relative w-full p-6">
           <h3
             class="absolute right-6 bottom-4 left-6 text-xl font-semibold text-white drop-shadow-lg transition-transform duration-300 group-hover:-translate-y-6"
@@ -123,6 +125,93 @@
           </p>
         </div>
       </a>
+    </div>
+    <div
+  </div>
+</div>
+
+<!-- 2-Player Setup Modal -->
+<div id="2p-setup-modal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+  <div class="modal-content bg-(--color-background) rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-2xl font-bold text-(--color-text-primary)">Customize Player 2</h2>
+      <button id="2p-close-modal-btn" class="text-2xl text-gray-400 hover:text-gray-600">×</button>
+    </div>
+
+    <!-- 2-Player Setup Content -->
+    <div class="mx-auto max-w-4xl">
+      <!-- 2x1 Grid -->
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <!-- Player 1 -->
+        <div class="flex flex-col items-center rounded-lg border-2 border-(--color-primary-light) p-4 shadow-md">
+          <h3 class="mb-4 text-lg font-semibold">Player 1</h3>
+          <div class="flex w-full flex-col items-center space-y-4">
+            <!-- Avatar Display (Current User) -->
+            <div class="flex flex-col items-center">
+              <img
+                id="2p-avatar-player-1"
+                alt="Player 1 Avatar"
+                class="h-16 w-16 rounded-full border-2 border-gray-400 object-cover"
+              />
+            </div>
+            <input
+              id="2p-name-player-1"
+              type="text"
+              placeholder="Player 1"
+              class="w-full rounded border border-(--color-primary-light) bg-gray-100 p-2 text-center text-sm text-gray-600 cursor-not-allowed focus:outline-none focus:ring-0"
+              readonly
+            />
+          </div>
+        </div>
+
+        <!-- Player 2 -->
+        <div class="flex flex-col items-center rounded-lg border-2 border-(--color-primary-light) p-4 shadow-md">
+          <h3 class="mb-4 text-lg font-semibold">Player 2</h3>
+          <div class="flex w-full flex-col items-center space-y-4">
+            <!-- Avatar Selection -->
+            <div class="flex flex-col items-center">
+              <div class="flex items-center space-x-3">
+                <button
+                  type="button"
+                  id="2p-prev-avatar"
+                  class="text-2xl hover:text-(--color-primary) transition-colors"
+                >
+                  &lt;
+                </button>
+                <img
+                  id="2p-avatar-player-2"
+                  alt="Player 2 Avatar"
+                  class="h-16 w-16 rounded-full border-2 border-(--color-primary-dark) object-cover"
+                />
+                <button
+                  type="button"
+                  id="2p-next-avatar"
+                  class="text-2xl hover:text-(--color-primary)"
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
+            <input
+              id="2p-name-player-2"
+              type="text"
+              placeholder="Player 2"
+              class="w-full rounded border border-(--color-primary-light) bg-white p-2 text-center text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Start Game Button -->
+      <div class="mt-8 flex justify-center">
+        <button
+          id="2p-start-game"
+          class="rounded-lg bg-(--color-primary) px-8 py-3 text-lg font-semibold text-(--color-text-primary) shadow-md transition hover:bg-(--color-primary-dark) hover:text-white"
+        >
+          Start Game
+        </button>
+      </div>
     </div>
   </div>
 </div>

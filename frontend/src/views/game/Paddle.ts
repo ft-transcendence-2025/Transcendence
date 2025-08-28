@@ -1,12 +1,17 @@
-import { PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
+import {
+  PaddleSide,
+  PaddleState,
+  degreesToRadians,
+  getRandomAngle,
+} from "./utils.js";
 
 export class Paddle {
   public x: number = 0;
   public y: number;
   public readonly width: number = 15;
   public readonly height: number = 90;
-  private color: string = "#5FAD56";
-  private strokeColor: string = "#396733";
+  private color: string = "#43A17E";
+  private strokeColor: string = "#21503f";
   private strokeWidth: number = 0;
   public speed: number = 4;
   public side: PaddleSide;

@@ -4,14 +4,14 @@ import { navigateTo } from "../router/router.js";
 import { renderHome } from "../views/home.js";
 
 export async function openRegisterModal(container: HTMLElement | null = null) {
-  // If container is provided, render home page as backdrop first
+  // If container is provided, render home page as backdrop first (without animations)
   if (container) {
-    await renderHome(container);
+    await renderHome(container, true);
   }
 
   // Inject the modal HTML if it doesn't exist
   if (!document.getElementById("register-modal")) {
-    const modalHtml = await loadHtml("/html/registerModal.html");
+    const modalHtml = await loadHtml("/html/register.html");
     document.body.insertAdjacentHTML("beforeend", modalHtml);
   }
 
@@ -20,8 +20,8 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
 
   // Helper function to show error messages
   const showError = (message: string) => {
-    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
-    const errorText = modal.querySelector("#error-text") as HTMLElement;
+    const errorContainer = modal.querySelector(".error-message") as HTMLElement;
+    const errorText = modal.querySelector(".error-text") as HTMLElement;
     if (errorContainer && errorText) {
       errorText.textContent = message;
       errorContainer.classList.remove("hidden");
@@ -30,7 +30,7 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
 
   // Helper function to hide error messages
   const hideError = () => {
-    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
+    const errorContainer = modal.querySelector(".error-message") as HTMLElement;
     if (errorContainer) {
       errorContainer.classList.add("hidden");
     }
@@ -69,8 +69,11 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
   };
 
   // Setup password toggles
-  setupPasswordToggle("password", "toggle-password");
-  setupPasswordToggle("confirmPassword", "toggle-confirm-password");
+  setupPasswordToggle("register-password", "register-toggle-password");
+  setupPasswordToggle(
+    "register-confirm-password",
+    "register-toggle-confirm-password",
+  );
 
   // Show the modal
   modal.style.display = "flex";
@@ -90,6 +93,14 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
     // Only validate that passwords match on frontend
     if (data.password !== data.confirmPassword) {
       showError("Passwords do not match");
+      return;
+    }
+
+    // Validate password strength (matches backend validation)
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,20}$/;
+    if (!passwordRegex.test(data.password)) {
+      showError("Incorrect password format");
       return;
     }
 
