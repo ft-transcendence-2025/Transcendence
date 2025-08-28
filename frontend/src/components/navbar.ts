@@ -55,7 +55,7 @@ export async function renderNavbar(container: HTMLElement | null) {
     ) as HTMLImageElement;
     if (userAvatar) {
       try {
-        const avatarUrl = await getUserAvatar();
+        const avatarUrl = await getCurrentUserAvatar();
         userAvatar.src = avatarUrl;
         // Default to panda on error
         userAvatar.onerror = () => {

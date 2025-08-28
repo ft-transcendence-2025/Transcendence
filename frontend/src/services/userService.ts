@@ -19,7 +19,10 @@ export const getUsers = () =>
   });
 
 export const getUserByUsername = (username: string) =>
-  request<User>(`${USER_BASE_URL}/${username}`);
+  request<User>(`${USER_BASE_URL}/${username}`, {
+    method: "GET",
+    headers: getHeaders(),
+  });
 
 export const updateUser = (username: string, body: any) =>
   request<User>(`${USER_BASE_URL}/${username}`, {
