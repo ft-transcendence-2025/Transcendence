@@ -1,6 +1,7 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getTournamentData } from "./tournamentSetup.js";
+import { getCurrentUserAvatar } from "../utils/userUtils.js";
 
 // Store tournament data locally for game access
 let storedTournamentData: any = null;
@@ -69,19 +70,19 @@ function setupGameStartListeners() {
   const gameButtons = document.querySelectorAll("[data-game]");
 
   gameButtons.forEach((button) => {
-    button.addEventListener("click", (e) => {
+    button.addEventListener("click", async (e) => {
       const gameNumber = (e.target as HTMLElement).getAttribute("data-game");
       const gameState = (e.target as HTMLElement).getAttribute("data-state");
 
       // Only start games that are ready
       if (gameState === "ready") {
-        startTournamentGame(gameNumber);
+        await startTournamentGame(gameNumber);
       }
     });
   });
 }
 
-function startTournamentGame(gameNumber: string | null) {
+async function startTournamentGame(gameNumber: string | null) {
   if (!gameNumber || !storedTournamentData) {
     console.error("No game number or tournament data available");
     return;
@@ -102,17 +103,30 @@ function startTournamentGame(gameNumber: string | null) {
     return;
   }
 
+  // For Player 1 in Game 1 (current user), get their actual avatar
+  let player1Avatar, player2Avatar;
+  
+  if (gameNumber === "1" && storedTournamentData.type === "local") {
+    // Player 1 is always the current user in local tournaments
+    player1Avatar = await getCurrentUserAvatar();
+    player2Avatar = `/assets/avatars/${player2Data.avatar}`;
+  } else {
+    // For Game 2 or remote tournaments, use stored avatar filenames
+    player1Avatar = `/assets/avatars/${player1Data.avatar}`;
+    player2Avatar = `/assets/avatars/${player2Data.avatar}`;
+  }
+
   // Create game data similar to 2-player modal
   const gameData = {
     mode: "tournament",
     gameNumber: gameNumber,
     player1: {
       name: player1Data.username,
-      avatar: `/assets/avatars/${player1Data.avatar}`,
+      avatar: player1Avatar,
     },
     player2: {
       name: player2Data.username,
-      avatar: `/assets/avatars/${player2Data.avatar}`,
+      avatar: player2Avatar,
     },
   };
 

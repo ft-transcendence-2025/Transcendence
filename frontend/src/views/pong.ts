@@ -119,20 +119,20 @@ async function updatePlayerInfo(gameMode: string) {
         player2Avatar.src = data.player2.avatar;
       }
 
-      // Don't clear tournament data yet - we might need it for winner handling
+      // Don't clear tournament data yet - might need it for winner handling
     } else {
-      // Fallback to default behavior
+      // Fallback
       if (player1Element) {
-        player1Element.textContent = "Tournament Player 1";
-        player1Avatar.src = "/assets/avatars/bear.png";
+        player1Element.textContent = "Player 1";
+        player1Avatar.src = "/assets/avatars/panda.png";
       }
       if (player2Element) {
-        player2Element.textContent = "Tournament Player 2";
-        player2Avatar.src = "/assets/avatars/cat.png";
+        player2Element.textContent = "Player 2";
+        player2Avatar.src = "/assets/avatars/bear.png";
       }
     }
   } else if (gameMode === "remote") {
-    // TODO Remote mode, fetch player names from the server
+    // TODO Remote mode.................................
     if (player1Element) {
       player1Element.textContent = "Remote Player 1";
     }
