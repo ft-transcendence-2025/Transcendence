@@ -24,7 +24,7 @@ export class SinglePlayerGame {
     this.canvas.width = 1000;
     this.canvas.height = 500;
 
-    this.joinGame(`ws://localhost:4000/game/singleplayer/${data.id}`, gameMode);
+    this.joinGame(`wss://${window.location.host}/ws/game/singleplayer/${data.id}`, gameMode);
 
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
   }

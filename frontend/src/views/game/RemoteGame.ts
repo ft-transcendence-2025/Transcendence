@@ -22,8 +22,7 @@ export class RemoteGame {
     this.canvas.height = 500;
 
     this.side = data.side;
-    this.joinGame(`ws://localhost:4000/game/remote/${data.id}`);
-
+    this.joinGame(`wss://${window.location.host}/ws/game/remote/${data.id}`);
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
@@ -51,7 +50,6 @@ export class RemoteGame {
       }
       this.ws.addEventListener("message", (event) => {
         this.gameState = JSON.parse(event.data) as GameState;
-         
         if (!this.gameState)
           throw("gameState is undefined");
       });

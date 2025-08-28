@@ -24,15 +24,17 @@ export async function renderPong(container: HTMLElement | null) {
 
 async function enterGame(gameMode: string) {
   try {
+    const baseUrl = window.location.origin; 
+
     if (gameMode === "remote") {
-      const response = await fetch("http://localhost:4000/getgame/remote", {
+      const response = await fetch(`${baseUrl}/api/getgame/remote`, {
         credentials: "include"
       });
       const data = await response.json();
       const remoteGame = new RemoteGame(data);
     }
     else {
-      const response = await fetch("http://localhost:4000/getgame/singleplayer", {
+      const response = await fetch(`${baseUrl}/api/getgame/singleplayer`, {
         credentials: "include"
       });
       const data = await response.json();
