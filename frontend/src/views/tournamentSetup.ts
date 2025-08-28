@@ -70,7 +70,7 @@ function setupRemoteTournament() {
   // Populate Player 1 with current user data
   populatePlayer1Data();
 
-  // Hide avatar selection and input fields for remote tournament (all players)
+  // Do not allow customization for any players
   enablePlayerCustomization(false);
 
   // Populate with current user and fetch other players
@@ -242,13 +242,14 @@ function setupLocalEventListeners() {
   if (startButton) {
     startButton.addEventListener("click", async (e) => {
       e.preventDefault();
+      console.log("Start tournament button clicked!");
       // Only proceed if data collection succeeds (no duplicates)
       if (await collectLocalTournamentData()) {
         const container = document.getElementById("content");
         navigateTo("/tournament-tree", container);
       }
     });
-  }
+  };
 }
 
 function setupRemoteEventListeners() {
@@ -269,6 +270,7 @@ function setupRemoteEventListeners() {
 }
 
 async function collectLocalTournamentData() {
+  console.log("collectLocalTournamentData function called");
   const players = [];
   const playerNames = new Set(); // To track duplicate names
 
@@ -290,21 +292,20 @@ async function collectLocalTournamentData() {
     }
     playerNames.add(username);
 
-    let avatarFilename;
+    let avatarData;
     if (i === 1) {
-      // For Player 1 (current user), get the current user avatar
-      const avatarUrl = await getCurrentUserAvatar();
-      // Extract filename from URL with fallback
-      avatarFilename = avatarUrl?.split("/").pop() || "panda.png";
+      // dummy avatar for Player 1 for data consistency
+      // The actual user avatar URL will be handled in tournamentTree
+      avatarData = "panda.png";
     } else {
-      // For Players 2-4, use the selected avatar
+      // For Players 2-4, extract filename from local avatar path
       const avatarSrc = avatarImg?.src || "";
-      avatarFilename = avatarSrc.split("/").pop() || avatars[i - 2];
+      avatarData = avatarSrc.split("/").pop() || avatars[i - 2];
     }
 
     players.push({
       username: username,
-      avatar: avatarFilename,
+      avatar: avatarData,
     });
   }
 
@@ -313,7 +314,8 @@ async function collectLocalTournamentData() {
     players: players,
   };
 
-  return true; // Success
+  console.log("Tournament data collected:", tournamentData);
+  return true;
 }
 
 async function collectRemoteTournamentData() {
