@@ -1,6 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserAvatar } from "../utils/userUtils.js";
+import { getCurrentUser, getCurrentUserAvatar } from "../utils/userUtils.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
   if (!container) return;
@@ -30,7 +30,7 @@ export async function renderNavbar(container: HTMLElement | null) {
     ) as HTMLImageElement;
     if (userAvatar) {
       try {
-        const avatarUrl = await getUserAvatar();
+        const avatarUrl = await getCurrentUserAvatar();
         userAvatar.src = avatarUrl;
         // Default to panda on error
         userAvatar.onerror = () => {

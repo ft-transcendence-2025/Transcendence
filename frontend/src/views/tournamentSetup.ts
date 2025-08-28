@@ -1,7 +1,6 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserNickname } from "../utils/userUtils.js";
-import { getUserAvatar } from "../utils/userUtils.js";
+import { getUserDisplayName, getCurrentUserAvatar } from "../utils/userUtils.js";
 
 // Tournament data structure
 interface TournamentData {
@@ -75,10 +74,10 @@ function setupRemoteTournament() {
 function enablePlayerCustomization(enable: boolean) {
   for (let i = 1; i <= 4; i++) {
     const inputField = document.getElementById(
-      `player-${i}-name`,
+      `t-player-${i}-name`,
     ) as HTMLInputElement;
     const avatarContainer = document.getElementById(
-      `avatar-player-${i}`,
+      `t-avatar-player-${i}`,
     )?.parentElement;
 
     if (inputField) {
@@ -100,12 +99,12 @@ function enablePlayerCustomization(enable: boolean) {
 
 async function populateRemotePlayers() {
   // Get current user
-  const currentNickname = await getUserNickname();
-  const currentAvatarUrl = await getUserAvatar();
+  const currentDisplayName = await getUserDisplayName();
+  const currentAvatarUrl = await getCurrentUserAvatar();
 
   // Mock data - this has to come from API !!!!!!!
   const remotePlayers = [
-    { username: currentNickname || "You", avatar: currentAvatarUrl, isUrl: true },
+    { username: currentDisplayName || "You", avatar: currentAvatarUrl, isUrl: true },
     { username: "Player 2", avatar: "gorilla.png", isUrl: false },
     { username: "Player 3", avatar: "meerkat.png", isUrl: false },
     { username: "Player 4", avatar: "rabbit.png", isUrl: false },
@@ -114,10 +113,10 @@ async function populateRemotePlayers() {
   // Update player names and avatars in the UI
   remotePlayers.forEach((player, index) => {
     const playerNameElement = document.getElementById(
-      `player-${index + 1}-name`,
+      `t-player-${index + 1}-name`,
     ) as HTMLInputElement;
     const avatarImg = document.getElementById(
-      `avatar-player-${index + 1}`,
+      `t-avatar-player-${index + 1}`,
     ) as HTMLImageElement;
 
     if (playerNameElement) {
@@ -145,7 +144,7 @@ async function populateRemotePlayers() {
 // Avatar management functions (for local tournaments)
 function updateAvatar(slot: number, index: number): void {
   const img = document.getElementById(
-    `avatar-player-${slot}`,
+    `t-avatar-player-${slot}`,
   ) as HTMLImageElement;
   if (!img) return;
 
@@ -173,7 +172,7 @@ function initializeAvatars() {
   // Add event listeners for navigation buttons
   for (let slot = 1; slot <= 4; slot++) {
     const avatarContainer = document.getElementById(
-      `avatar-player-${slot}`,
+      `t-avatar-player-${slot}`,
     )?.parentElement;
     if (avatarContainer) {
       const buttons = avatarContainer.querySelectorAll("button");
@@ -228,10 +227,10 @@ function collectLocalTournamentData() {
 
   for (let i = 1; i <= 4; i++) {
     const nameInput = document.getElementById(
-      `player-${i}-name`,
+      `t-player-${i}-name`,
     ) as HTMLInputElement;
     const avatarImg = document.getElementById(
-      `avatar-player-${i}`,
+      `t-avatar-player-${i}`,
     ) as HTMLImageElement;
 
     const username =
@@ -253,11 +252,11 @@ function collectLocalTournamentData() {
 
 async function collectRemoteTournamentData() {
   // Get current user
-  const currentNickname = await getUserNickname();
+  const currentDisplayName = await getUserDisplayName();
 
   // Mock data - this has to come from API !!!!!!!
   const players = [
-    { username: currentNickname || "You", avatar: "panda.png" },
+    { username: currentDisplayName || "You", avatar: "panda.png" },
     { username: "Player 2", avatar: "gorilla.png" },
     { username: "Player 3", avatar: "meerkat.png" },
     { username: "Player 4", avatar: "rabbit.png" },

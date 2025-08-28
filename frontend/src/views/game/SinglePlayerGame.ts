@@ -1,23 +1,6 @@
-import { Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, SECOND, degreesToRadians, getRandomAngle } from "./utils.js";
+import { GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, SECOND, degreesToRadians, getRandomAngle } from "./utils.js";
 import { Player } from "./Player.js";
 import { AI } from "./AI.js";
-
-
-
-export interface SinglePlayerGameState {
-  status: string,
-  role: string,
-  canvas: Canvas,
-  paddleLeft: PaddleState,
-  paddleRight: PaddleState,
-  ball: BallState,
-  score: {
-    player1: number,
-    player2: number,
-    winner: 1 | 2 | null,
-  },
-  isPaused: false,
-};
 
 export class SinglePlayerGame {
   private canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
@@ -32,7 +15,7 @@ export class SinglePlayerGame {
   private winningPoint: number = 3;
   private ws: WebSocket | null = null;
 
-  private gameState: SinglePlayerGameState | null = null;
+  private gameState: GameState | null = null;
 
   constructor(gameMode: string, data: FetchData) {
     this.canvas.tabIndex = 0;
@@ -70,7 +53,7 @@ export class SinglePlayerGame {
       }
 
       this.ws.addEventListener("message", (event) => {
-        this.gameState = JSON.parse(event.data) as SinglePlayerGameState;
+        this.gameState = JSON.parse(event.data) as GameState;
         if (!this.gameState)
           throw("gameState is undefined");
       });

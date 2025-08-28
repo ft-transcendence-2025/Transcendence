@@ -29,7 +29,7 @@ export async function renderUserProfile(container: HTMLElement | null) {
   try {
     // Try to get existing profile
     const profile = await getProfileByUsername(username);
-    populateProfileView(profile);
+    await populateProfileView(profile);
     showProfileView();
   } catch (error: any) {
     if (
@@ -98,7 +98,7 @@ function showProfileView() {
   if (profileView) profileView.classList.remove("hidden");
 }
 
-function populateProfileView(profile: any) {
+async function populateProfileView(profile: any) {
   currentProfile = profile; // Store for later use
 
   // Set avatar
@@ -106,7 +106,7 @@ function populateProfileView(profile: any) {
     "profile-avatar",
   ) as HTMLImageElement;
   if (avatarImg) {
-    avatarImg.src = getUserAvatar(profile.userUsername);
+    avatarImg.src = await getUserAvatar(profile.userUsername);
     avatarImg.onerror = () => {
       avatarImg.src = "/assets/avatars/panda.png"; // Default on panda
     };
@@ -209,14 +209,12 @@ async function handleCreateProfile(username: string) {
 
   try {
     const profile = await createProfile(username, profileData);
-    console.log("Profile created successfully:", profile);
     showSuccessMessage("Profile created successfully!");
 
     // Switch to profile view and populate with new data
-    populateProfileView(profile);
+    await populateProfileView(profile);
     showProfileView();
   } catch (error: any) {
-    console.error("Error creating profile:", error);
     showErrorMessage(`Error creating profile: ${error.message}`);
   }
 }
@@ -241,13 +239,12 @@ async function handleUpdateProfile(username: string) {
 
   try {
     const profile = await updateProfile(username, profileData);
-    console.log("Profile updated successfully:", profile);
     showSuccessMessage("Profile updated successfully!");
 
     // Fetch the updated profile
     const updatedProfile = await getProfileByUsername(username);
 
-    populateProfileView(updatedProfile);
+    await populateProfileView(updatedProfile);
     showProfileView();
   } catch (error: any) {
     console.error("Error updating profile:", error);
@@ -360,8 +357,7 @@ async function changeAvatar(username: string) {
       "profile-avatar",
     ) as HTMLImageElement;
     if (avatarImg) {
-      // Add cache buster to force reload
-      avatarImg.src = `${getUserAvatar(username)}?t=${Date.now()}`;
+      avatarImg.src = await getUserAvatar(username);
     }
 
     showSuccessMessage("Avatar updated successfully!");

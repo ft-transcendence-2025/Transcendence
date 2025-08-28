@@ -1,20 +1,5 @@
-import { Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, degreesToRadians, getRandomAngle } from "./utils.js";
+import { GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, degreesToRadians, getRandomAngle } from "./utils.js";
 import { Player } from "./Player.js";
-
-export interface RemoteGameState {
-  status: string,
-  role: string,
-  canvas: Canvas,
-  paddleLeft: PaddleState,
-  paddleRight: PaddleState,
-  ball: BallState,
-  score: {
-    player1: number,
-    player2: number,
-    winner: 1 | 2 | null,
-  },
-  isPaused: false,
-};
 
 export class RemoteGame {
   private canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
@@ -25,7 +10,7 @@ export class RemoteGame {
   private ws: WebSocket | null = null;
   private side: string | null = null;
 
-  private gameState: RemoteGameState | null = null;
+  private gameState: GameState | null = null;
   private ballMoving: boolean = false;
 
 
@@ -65,7 +50,8 @@ export class RemoteGame {
         this.player = new Player(this.ws, this.canvas, PaddleSide.Right);
       }
       this.ws.addEventListener("message", (event) => {
-        this.gameState = JSON.parse(event.data) as RemoteGameState;
+        this.gameState = JSON.parse(event.data) as GameState;
+         
         if (!this.gameState)
           throw("gameState is undefined");
       });

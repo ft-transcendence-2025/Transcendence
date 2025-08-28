@@ -1,19 +1,9 @@
-import { PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
-import { SinglePlayerGameState } from "./SinglePlayerGame.js";
+import { GameState, PaddleSide, PaddleState, degreesToRadians, getRandomAngle } from "./utils.js";
 
 interface Point {
 	x: number;
 	y: number;
 }
-
-enum BallDir {
-	upLeft = 0,
-	upRight = 1,
-	downLeft = 2,
-	downRight = 3,
-	horLeft = 4,
-	horRight = 5,
-};
 
 export class AI {
 	private currPoint: Point = { x: 0, y: 0 };
@@ -22,12 +12,12 @@ export class AI {
 	private linearCoeficient: number = 0;
 	private targetY: number = 0;
 	private dir: number = 0;
-  private gameState: SinglePlayerGameState | null;
+  private gameState: GameState | null;
   private side: PaddleSide;
   private ws: WebSocket;
   private loopIntervalId: number;
 
-	constructor(ws: WebSocket, canvas: HTMLCanvasElement, side: PaddleSide, gameState: SinglePlayerGameState | null) {
+	constructor(ws: WebSocket, canvas: HTMLCanvasElement, side: PaddleSide, gameState: GameState | null) {
     this.gameState = gameState;
     this.ws = ws;
     this.side = side;
@@ -47,11 +37,11 @@ export class AI {
     clearInterval(this.loopIntervalId);
   }
 
-  public updateGameState(gameState: SinglePlayerGameState | null): void {
+  public updateGameState(gameState: GameState | null): void {
     this.gameState = gameState;
   }
 
-	public predictPossition(canvas: HTMLCanvasElement, side: PaddleSide, gameState: SinglePlayerGameState | null): void {
+	public predictPossition(canvas: HTMLCanvasElement, side: PaddleSide, gameState: GameState | null): void {
     if (this.gameState) {
       this.currPoint.x = this.gameState.ball.x;
       this.currPoint.y = this.gameState.ball.y;

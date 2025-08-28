@@ -1,3 +1,18 @@
+export interface GameState {
+  status: string,
+  role: string,
+  canvas: Canvas,
+  paddleLeft: PaddleState,
+  paddleRight: PaddleState,
+  ball: BallState,
+  score: {
+    player1: number,
+    player2: number,
+    winner: 1 | 2 | null,
+  },
+  isPaused: false,
+};
+
 export interface Canvas {
   width: number,
   height: number,

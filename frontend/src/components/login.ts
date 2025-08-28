@@ -6,14 +6,14 @@ import { renderHome } from "../views/home.js";
 
 // This function will find the modal on the page and open it.
 export async function openLoginModal(container: HTMLElement | null = null) {
-  // If container is provided, render home page as backdrop first
+  // If container is provided, render home page as backdrop first (without animations)
   if (container) {
-    await renderHome(container);
+    await renderHome(container, true);
   }
 
   // Inject the modal HTML if it doesn't exist
   if (!document.getElementById("login-modal")) {
-    const modalHtml = await loadHtml("/html/loginModal.html");
+    const modalHtml = await loadHtml("/html/login.html");
     document.body.insertAdjacentHTML("beforeend", modalHtml);
   }
 
@@ -25,8 +25,8 @@ export async function openLoginModal(container: HTMLElement | null = null) {
 
   // Helper function to show error messages
   const showError = (message: string) => {
-    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
-    const errorText = modal.querySelector("#error-text") as HTMLElement;
+    const errorContainer = modal.querySelector(".error-message") as HTMLElement;
+    const errorText = modal.querySelector(".error-text") as HTMLElement;
     if (errorContainer && errorText) {
       errorText.textContent = message;
       errorContainer.classList.remove("hidden");
@@ -35,7 +35,7 @@ export async function openLoginModal(container: HTMLElement | null = null) {
 
   // Helper function to hide error messages
   const hideError = () => {
-    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
+    const errorContainer = modal.querySelector(".error-message") as HTMLElement;
     if (errorContainer) {
       errorContainer.classList.add("hidden");
     }
@@ -86,7 +86,7 @@ function closeModal() {
     modal.style.display = "none";
 
     // Clear any error messages when closing (scoped to modal)
-    const errorContainer = modal.querySelector("#error-message") as HTMLElement;
+    const errorContainer = modal.querySelector(".error-message") as HTMLElement;
     if (errorContainer) {
       errorContainer.classList.add("hidden");
     }
