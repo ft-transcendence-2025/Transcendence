@@ -1,4 +1,3 @@
-import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import {
   getUserDisplayName,

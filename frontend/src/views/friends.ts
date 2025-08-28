@@ -1,8 +1,7 @@
 // src/views/friends.ts
 import { getUserFriends } from "../services/friendship.service.js";
-import { getUserAvatar } from "../utils/userUtils.js";
-import { ChatComponent, Friend } from "./chat.js";
-import { PrivateMessageResponse } from "../interfaces/message.interfaces.js";
+import { getUserAvatar } from "../services/profileService.js";
+import {  Friend } from "./chat.js";
 import { chatManager } from "../app.js";
 import { closeModal } from "../components/modalManager.js";
 

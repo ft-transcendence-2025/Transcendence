@@ -4,14 +4,8 @@ import {
 	getUserAvatar,
 	saveUserAvatar,
 	getJungleAvatarFile,
-	CreateProfileRequest,
 } from "../services/profileService.js";
-import { navigateTo } from "../router/router.js";
 
-// function getUsernameFromQueryString(): string | null {
-// 	const params = new URLSearchParams(window.location.search);
-// 	return params.get("username");
-// }
 
 let currentProfile: any = null;
 let selectedAvatar: string | null = null;
@@ -43,12 +37,12 @@ export async function renderProfile(container: HTMLElement | null) {
 	setupEventListeners(username);
 }
 
-function populateProfileView(profile: any) {
+async function populateProfileView(profile: any) {
 	currentProfile = profile;
 
 	const avatarImg = document.getElementById("user-avatar") as HTMLImageElement;
 	if (avatarImg) {
-		avatarImg.src = getUserAvatar(profile.userUsername);
+		avatarImg.src = await getUserAvatar(profile.userUsername);
 		avatarImg.onerror = () => {
 			avatarImg.src = "/assets/avatars/panda.png";
 		};

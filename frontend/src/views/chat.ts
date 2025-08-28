@@ -1,15 +1,12 @@
 import {
-  IncomingMessage,
-  OutgoingMessage,
-  PrivateMessageResponse,
   PrivateSendMessage,
 } from "../interfaces/message.interfaces.js";
 import { navigateTo } from "../router/router.js";
 import chatService from "../services/chat.service.js";
 import { getUserFriends } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername, getUserAvatar } from "../utils/userUtils.js";
-
+import { getCurrentUsername } from "../utils/userUtils.js";
+import { getUserAvatar } from "../services/profileService.js";
 export type Friend = {
   id: string;
   username: string;
@@ -49,17 +46,16 @@ class ChatComponent {
         .map(
           (message) => `
         <div class="mb-2 ${message.recipientId || message.senderId == this.currentUserId ? "text-right" : "text-left"}">
-          <div class="inline-block p-2 rounded-lg max-w-xs ${
-            message.recipientId || message.senderId == this.currentUserId
+          <div class="inline-block p-2 rounded-lg max-w-xs ${message.recipientId || message.senderId == this.currentUserId
               ? "bg-[var(--color-primary)] text-[var(--color-background)] ml-auto"
               : "bg-[var(--color-secondary-light)] text-[var(--color-text-primary)]"
-          }">
+            }">
             <div class="text-xs">${message.content}</div>
             <div class="text-xs opacity-70 mt-1">
               ${new Date(message.ts || message.createdAt).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
             </div>
           </div>
         </div>
@@ -84,17 +80,16 @@ class ChatComponent {
         .map(
           (message) => `
         <div class="mb-2 ${message.senderId == this.currentUserId ? "text-right" : "text-left"}">
-          <div class="inline-block p-2 rounded-lg max-w-xs ${
-            message.senderId == this.currentUserId
+          <div class="inline-block p-2 rounded-lg max-w-xs ${message.senderId == this.currentUserId
               ? "bg-[var(--color-primary)] text-[var(--color-background)] ml-auto"
               : "bg-[var(--color-secondary-light)] text-[var(--color-text-primary)]"
-          }">
+            }">
             <div class="text-xs">${message.content}</div>
             <div class="text-xs opacity-70 mt-1">
               ${new Date(message.createdAt).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
             </div>
           </div>
         </div>

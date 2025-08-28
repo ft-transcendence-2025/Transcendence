@@ -1,13 +1,12 @@
 import { navigateTo } from "../router/router.js";
 import { getPendingRequests } from "../services/friendship.service.js";
-import { getUsers } from "../services/userService.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserAvatar } from "../utils/userUtils.js";
 import { getFriendsContent } from "../views/friends.js";
 import { getNotificationsContent } from "../views/notifications.js";
 import { getProfileModalContent } from "../views/modalProfile.js";
 import { openModal } from "./modalManager.js";
 import renderSearchBar from "./searchBar.js";
+import { getCurrentUserAvatar } from "../utils/userUtils.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
   if (!container) return;

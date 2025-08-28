@@ -30,7 +30,7 @@ container.className = "w-full h-full flex text-white rounded-[25px]";
 
   try {
     profile = await getProfileByUsername(finalUsername);
-    avatarUrl = getUserAvatar(finalUsername);
+    avatarUrl = await getUserAvatar(finalUsername);
   } catch (error) {
     console.error("Error loading profile for modal:", error);
   }
