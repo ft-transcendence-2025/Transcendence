@@ -1,7 +1,10 @@
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getUserDisplayName, getCurrentUserAvatar } from "../utils/userUtils.js";
 import { SinglePlayerGame } from "./game/SinglePlayerGame.js";
 import { RemoteGame } from "./game/RemoteGame.js";
+import {
+  getUserDisplayName,
+  getCurrentUserAvatar,
+} from "../utils/userUtils.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -47,8 +50,8 @@ async function enterGame(gameMode: string) {
 
 
 /**
-** Update the player usernames based on game mode
-**/
+ ** Update the player usernames based on game mode
+ **/
 async function updatePlayerInfo(gameMode: string) {
   const userDisplayName = await getUserDisplayName();
   const userAvatar = await getCurrentUserAvatar();
@@ -74,21 +77,21 @@ async function updatePlayerInfo(gameMode: string) {
   } else if (gameMode === "2player") {
     // 2P mode - fetch local storage data from 2P modal if available
     const gameData = localStorage.getItem("2playerGameData");
-    
+
     if (gameData) {
       // Use custom player data from setup modal
       const data = JSON.parse(gameData);
-      
+
       if (player1Element) {
         player1Element.textContent = data.player1.name;
         player1Avatar.src = data.player1.avatar;
       }
-      
+
       if (player2Element) {
         player2Element.textContent = data.player2.name;
         player2Avatar.src = data.player2.avatar;
       }
-      
+
       // Clear the data after use
       localStorage.removeItem("2playerGameData");
     } else {
@@ -102,8 +105,38 @@ async function updatePlayerInfo(gameMode: string) {
         player2Avatar.src = "/assets/avatars/meerkat.png";
       }
     }
+  } else if (gameMode === "tournament") {
+    // Tournament mode - fetch tournament game data
+    const gameData = localStorage.getItem("tournamentGameData");
+
+    if (gameData) {
+      // Use tournament player data
+      const data = JSON.parse(gameData);
+
+      if (player1Element) {
+        player1Element.textContent = data.player1.name;
+        player1Avatar.src = data.player1.avatar;
+      }
+
+      if (player2Element) {
+        player2Element.textContent = data.player2.name;
+        player2Avatar.src = data.player2.avatar;
+      }
+
+      // Don't clear tournament data yet - might need it for winner handling
+    } else {
+      // Fallback
+      if (player1Element) {
+        player1Element.textContent = "Player 1";
+        player1Avatar.src = "/assets/avatars/panda.png";
+      }
+      if (player2Element) {
+        player2Element.textContent = "Player 2";
+        player2Avatar.src = "/assets/avatars/bear.png";
+      }
+    }
   } else if (gameMode === "remote") {
-    // TODO Remote mode, fetch player names from the server
+    // TODO Remote mode.................................
     if (player1Element) {
       player1Element.textContent = "Remote Player 1";
     }
@@ -114,8 +147,8 @@ async function updatePlayerInfo(gameMode: string) {
 }
 
 /**
-** Open and close game instructions modal
-**/
+ ** Open and close game instructions modal
+ **/
 function renderInstructionsModal() {
   const instructionsModal = document.getElementById("instructions-modal");
   const instructionsBtn = document.getElementById("instructions-btn");
