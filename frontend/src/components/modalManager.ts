@@ -29,8 +29,12 @@ export function openModal(content: HTMLElement, trigger: HTMLElement) {
   const newModal = document.createElement("div");
   newModal.id = "app-modal";
   newModal.className =
-    "fixed inset-0 bg-black/50 z-40 flex justify-end items-start"; // Full-screen background, align to right and top
-  newModal.style.top = "4.5rem"; // Push modal content below the navbar
+    "absolute inset-0 w-full bg-black/50 z-40 flex justify-end items-end"; // Full-screen background, align to right and top
+  const nav = document.querySelector("nav");
+  if (nav) {
+    const navHeight = nav.offsetHeight;
+    newModal.style.top = `${navHeight}px`; // Position modal below the navbar
+  }
 
   // Close modal when clicking outside the content
   newModal.addEventListener("click", (event) => {
@@ -41,14 +45,14 @@ export function openModal(content: HTMLElement, trigger: HTMLElement) {
 
   const modalContent = document.createElement("div");
   modalContent.className =
-    "modal-content bg-white/65 backdrop-blur-sm rounded-lg shadow-lg p-6 relative w-full max-w-sm h-full"; // Full height, constrained width
+    "modal-content bg-[var(--color-primary-darker)]/45 backdrop-blur-sm rounded-lg shadow-lg p-6 relative w-full max-w-sm h-full"; // Full height, constrained width
 
   // const closeButton = createCloseButton();
   // modalContent.appendChild(closeButton);
   modalContent.appendChild(content);
   newModal.appendChild(modalContent);
-
   document.body.appendChild(newModal);
+
   currentTrigger = trigger;
 }
 

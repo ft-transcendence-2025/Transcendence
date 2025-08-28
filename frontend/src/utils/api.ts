@@ -24,7 +24,7 @@ export function getAccessToken() {
   return accessToken ?? localStorage.getItem("authToken");
 }
 
-async function refreshAccessToken(): Promise<boolean> {
+export async function refreshAccessToken(): Promise<boolean> {
   try {
     const res = await fetch(`${BASE_URL}/auth/refresh`, {
       method: "POST",

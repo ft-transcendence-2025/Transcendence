@@ -3,52 +3,32 @@
 
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=productivity" />
 
-<nav class="bg-(--color-primary) p-4">
-	<div class="container mx-auto flex justify-between items-center">
-		<!-- Left: User Menu -->
-		<!-- <div class="w-10 h-10 flex items-center justify-center">
-			<div id="user-menu" class="w-10 h-10 rounded-full flex items-center justify-center hidden">
-				<img id="user-menu-avatar" alt="User avatar"
-					class="w-10 h-10 object-cover rounded-full border-2 border-(--color-primary-dark)">
-			</div>
-		</div> -->
 
-		<!-- Center: Dashboard -->
-		<div class="flex space-x-4">
-			<a href="/dashboard" id="dashboard-link" class="hover:text-white font-greek text-3xl font-bold px-3 hidden"
-				data-link="true">Jungle Pong</a>
-		</div>
-		<!-- Right: Action Icons and Logout -->
+<nav class="bg-[var(--color-primary)] p-4">
+	<div class="w-full flex justify-between items-center">
+		<!-- Left: Jungle Pong -->
+		<a href="/dashboard" id="dashboard-link" class="hover:text-white font-greek text-3xl font-bold px-3"
+			data-link="true">Jungle Pong</a>
+
+		<!-- Right: Search + Icons -->
 		<div class="flex items-center space-x-6">
 			<div id="search-container" class="relative">
 				<input type="text" id="user-search" class="border rounded px-2 py-1 pl-8 bg-green-100 placeholder-green-700 text-green-900" placeholder="Search users..." />
 				<span class="material-symbols-outlined absolute left-2 top-1/2 transform -translate-y-1/2 text-green-600 pointer-events-none">search</span>
 				<ul id="search-results" class="absolute bg-white border rounded shadow-lg hidden z-50"></ul>
 			</div>
-			<!-- Friends -->
-			<button id="friends-list"
-				class="material-symbols-outlined text-3xl hover:text-white focus:outline-none cursor-pointer"
-				title="Friends">
+
+			<button id="friends-list" class="material-symbols-outlined text-3xl hover:text-white cursor-pointer" title="Friends">
 				person_heart
 			</button>
 
-			<!-- Notifications -->
-			<button id="notifications"
-				class="material-symbols-outlined text-3xl hover:text-white focus:outline-none cursor-pointer"
-				title="Notifications">
+			<button id="notifications" class="material-symbols-outlined text-3xl hover:text-white cursor-pointer" title="Notifications">
 				notifications
 			</button>
 
-			<!-- Profile (opens modal with profile info) -->
-			<button id="profile"
-				class="material-symbols-outlined text-3xl hover:text-white focus:outline-none cursor-pointer"
-				title="Profile">
+			<button id="profile" class="material-symbols-outlined text-3xl hover:text-white cursor-pointer" title="Profile">
 				account_circle
 			</button>
-
-			<!-- Logout -->
-			<!-- <a href="#" id="logout-link" class="hover:text-white text-md font-bold px-3 py-2 hidden"
-				data-link="true">Logout</a> -->
 		</div>
-	</div>
+	</div>	
 </nav>

@@ -16,6 +16,7 @@
   --color-secondary-dark: #aa812e;
   --color-secondary-darker: #7a5c21;
   --color-background: #fff8e5;
+  --color-background-darker: #e6ddb8;
   --color-text-primary: #2e3a29;
   --color-accent: #fe4e00;
 
@@ -83,19 +84,19 @@
 
 /* Default margin */
 .modal-content {
-  margin-right: 4rem;
+  margin-right: 5px;
 }
 
 /* Adjust margin for smaller screens */
 @media (max-width: 768px) {
   .modal-content {
-    margin-right: 2rem;
+    margin-right: 4px;
   }
 }
 
 @media (max-width: 480px) {
   .modal-content {
-    margin-right: 1rem;
+    margin-right: 4px;
   }
 }
 

@@ -1,5 +1,8 @@
 <div
-  class="font-poppins flex min-h-screen bg-(--color-background) text-(--color-text-primary)"
+  class="font-poppins flex bg-[var(--color-background)] text-[var(--color-text-primary)]"
+  style="min-height: calc(100vh - 70px);"
+- This sets the min-height to the full viewport height minus the navbar (assuming navbar height is 72px; adjust if your navbar is a different height).
+- Also, replaced the Tailwind-like custom property syntax with valid CSS variable usage for background and text color.
 >
   <!-- Sidebar -->
   <aside
@@ -17,11 +20,25 @@
       <p id="user-location" class="text-sm text-(--color-secondary-light)">
         Portugal
       </p>
-      <button
+      <!-- <button
         class="mt-3 rounded-lg bg-(--color-secondary) px-4 py-2 text-sm font-semibold text-(--color-text-primary) hover:bg-(--color-secondary-dark)"
       >
         Edit my profile
-      </button>
+      </button> -->
+      <div class="mt-3 flex gap-2">
+        <button
+          class="rounded-lg bg-(--color-secondary) px-4 py-2 text-sm font-semibold text-(--color-text-primary) hover:bg-(--color-secondary-dark)"
+        >
+          Edit my profile
+        </button>
+        <button
+          id="block-button"
+          class="material-symbols-outlined bg-accent text-3xl rounded-lg px-4 py-2 hover:text-white focus:outline-none cursor-pointer"
+          title="Block User"
+        >
+          account_circle_off
+        </button>
+      </div>
     </div>
 
     <!-- Stats -->

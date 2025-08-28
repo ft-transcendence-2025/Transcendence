@@ -3,7 +3,7 @@ import { getProfileByUsername, getUserAvatar } from "../services/profileService.
 
 export async function getProfileModalContent(username?: string): Promise<HTMLElement> {
   const container = document.createElement("div");
-container.className = "w-full h-full flex bg-(--color-primary-darker)/35 text-white rounded-[25px]";
+container.className = "w-full h-full flex text-white rounded-[25px]";
 
   // If no username provided, try to get current user's profile
   if (!username) {

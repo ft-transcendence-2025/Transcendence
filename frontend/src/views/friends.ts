@@ -4,6 +4,7 @@ import { getUserAvatar } from "../utils/userUtils.js";
 import { ChatComponent, Friend } from "./chat.js";
 import { PrivateMessageResponse } from "../interfaces/message.interfaces.js";
 import { chatManager } from "../app.js";
+import { closeModal } from "../components/modalManager.js";
 
 // Renders the friends list inside a provided container
 export async function renderFriends(container: HTMLElement | null) {
@@ -31,7 +32,10 @@ export async function renderFriends(container: HTMLElement | null) {
         </span>
         <span class="ml-5">${friend.username}</span>
       `;
-      li.addEventListener("click", () => chatManager.openChat(friend));
+      li.addEventListener("click", () => {
+        chatManager.openChat(friend)
+        closeModal();
+      });
       container.appendChild(li);
     });
   } catch (error) {

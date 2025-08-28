@@ -4,6 +4,7 @@ import {
   PrivateMessageResponse,
   PrivateSendMessage,
 } from "../interfaces/message.interfaces.js";
+import { navigateTo } from "../router/router.js";
 import chatService from "../services/chat.service.js";
 import { getUserFriends } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
@@ -144,27 +145,35 @@ class ChatComponent {
       "w-74 h-90 bg-[var(--color-background)] shadow-lg border rounded-lg flex flex-col";
     chatContainer.innerHTML = `
       <div class="flex justify-between items-center p-2 bg-[var(--color-primary-dark)] text-[var(--color-background)] rounded-t-lg">
-        <span>
-          <span class="inline-block w-8 h-8 rounded-full bg-gray-300 border-2 border-white overflow-hidden align-middle">
-            <img src="${friendAvatar.src}" class="w-8 h-8 object-cover" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
-          </span>
+      <span>
+        <span class="inline-block w-8 h-8 rounded-full bg-gray-300 border-2 border-white overflow-hidden align-middle">
+        <img id="friend-avatar" src="${friendAvatar.src}" class="w-8 h-8 object-cover cursor-pointer" onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
         </span>
-        <span>${friend.username}</span>
-        <div class="flex gap-2">
-          <button class="close px-1 hover:bg-[var(--color-primary-darker)] rounded">x</button>
-        </div>
+      </span>
+      <span>${friend.username}</span>
+      <div class="flex gap-2">
+        <button class="close px-1 hover:bg-[var(--color-primary-darker)] rounded">x</button>
+      </div>
       </div>
       <div class="flex-1 p-2 overflow-y-auto text-sm bg-[var(--color-background)]" id="messages">
       </div>
       <div class="p-2 border-t bg-[var(--color-background)]">
-        <div class="flex gap-1">
-          <input type="text" class="flex-1 border rounded px-2 py-1 text-sm focus:outline-none focus:border-[var(--color-primary)] min-w-0"
-          placeholder="Type a message..." id="message-input"/>
-          <button class="bg-[var(--color-primary)] text-[var(--color-background)] px-2 py-1 rounded text-sm hover:bg-[var(--color-primary-dark)] focus:outline-none flex-shrink-0"
-          id="send-button">Send</button>
-        </div>
+      <div class="flex gap-1">
+        <input type="text" class="flex-1 border rounded px-2 py-1 text-sm focus:outline-none focus:border-[var(--color-primary)] min-w-0"
+        placeholder="Type a message..." id="message-input"/>
+        <button class="bg-[var(--color-primary)] text-[var(--color-background)] px-2 py-1 rounded text-sm hover:bg-[var(--color-primary-dark)] focus:outline-none flex-shrink-0"
+        id="send-button">Send</button>
+      </div>
       </div>
     `;
+
+    // Example: Add event listener to the username span
+    const friendAvatarImg = chatContainer.querySelector("#friend-avatar");
+    if (friendAvatarImg) {
+      friendAvatarImg.addEventListener("click", () => {
+        navigateTo(`/friend-profile?username=${friend.username}`, document.getElementById("content"));
+      });
+    }
 
     const messageInput = chatContainer.querySelector("#message-input") as HTMLInputElement;
     const sendButton = chatContainer.querySelector("#send-button") as HTMLButtonElement;

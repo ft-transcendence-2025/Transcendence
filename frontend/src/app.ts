@@ -1,6 +1,7 @@
 import { renderNavbar } from "./components/navbar.js";
 import { PrivateMessageResponse } from "./interfaces/message.interfaces.js";
 import { router, navigateTo } from "./router/router.js";
+import { refreshAccessToken } from "./utils/api.js";
 import { ChatComponent } from "./views/chat.js";
 
 
@@ -28,6 +29,13 @@ window.addEventListener("popstate", () => {
 
 // listen for dom to be fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
+
+  const token = window.localStorage.getItem("authToken")
+  if(!token || !await refreshAccessToken()) {
+    alert("You are not authenticated. Please log in to continue.");
+    navigateTo("/login", document.getElementById("content"));
+    return;
+  }
 
   if (chatManager.chatService.conn) {
     chatManager.chatService.conn.onmessage = (e: MessageEvent) => {
