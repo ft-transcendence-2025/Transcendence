@@ -1,0 +1,56 @@
+version: "3.9"
+services:
+  nginx:
+    build: ./Front-End
+    ports:
+      - "5000:443" # Porta 443 do container exposta como 5000 no host
+      - "8080:80"
+    networks:
+      - public
+      - internal
+    depends_on:
+      - api-gateway-1
+      - api-gateway-2
+
+  api-gateway-1:
+    build: ./API-Gateway
+    networks:
+      - internal
+
+  api-gateway-2:
+    build: ./API-Gateway
+    networks:
+      - internal
+
+  user-management:
+    build: ./User-Management
+    networks:
+      - internal
+
+  blockchain:
+    build:
+      context: ./Blockchain/avalanche
+      dockerfile: Dockerfile
+    image: avalanche
+    container_name: blockchain
+    restart: unless-stopped
+    volumes:
+      - avalanche-data:/app/avalanche-data
+    secrets:
+      - avalanche_private_key
+    networks:
+      - internal
+    
+secrets:
+  avalanche_private_key:
+    file: ./Blockchain/secrets/avalanche_private_key.txt
+
+volumes:
+  avalanche-data:
+
+networks:
+  public:
+  internal:
+
+
+
