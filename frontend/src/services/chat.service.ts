@@ -3,7 +3,7 @@ import { IncomingMessage, OutgoingMessage } from "../interfaces/message.interfac
 import { request, getHeaders } from "../utils/api.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 
-const CHAT_SERVICE_URL = `wss://localhost:5000/ws/chat`;
+const CHAT_SERVICE_URL = `wss://localhost:5001/ws/chat`;
 const MESSAGE_SERVICE = `${BASE_URL}/chat/conversations`
 
 export default class chatService {

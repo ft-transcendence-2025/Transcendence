@@ -5,6 +5,10 @@ import {
 	saveUserAvatar,
 	getJungleAvatarFile,
 } from "../services/profileService.js";
+import { UserBlockMessageResponse } from "../interfaces/message.interfaces.js";
+import { Friend } from "../views/chat.js";
+import { chatManager } from "../app.js";
+import { blockUser, respondRequest } from "../services/friendship.service.js";
 
 
 let currentProfile: any = null;
@@ -81,6 +85,20 @@ function setupEventListeners(username: string) {
 	if (changeAvatarBtn) {
 		changeAvatarBtn.addEventListener("click", () => {
 			openAvatarModal();
+		});
+	}
+
+	const blockUserBtn = document.getElementById("block-button");
+	if (blockUserBtn) {
+		blockUserBtn.addEventListener("click", () => {
+			blockUser(username);
+			if (chatManager) {
+				const message: UserBlockMessageResponse = {
+					kind: "user/block",
+					recipientId: username,
+				};
+				chatManager.sendMessage(username, message);
+			}
 		});
 	}
 

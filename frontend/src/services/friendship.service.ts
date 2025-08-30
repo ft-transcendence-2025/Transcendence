@@ -59,3 +59,10 @@ export const removeFriend = (friendUsername: string) =>
     headers: getHeaders(),
     body: JSON.stringify({ fromUserId: username, toUserId: friendUsername }),
   });
+
+export const blockUser = (friendUsername: string) =>
+  request(`${FRIEND_BASE_URL}/block`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ fromUserId: username, toUserId: friendUsername }),
+  });

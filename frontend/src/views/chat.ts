@@ -1,5 +1,6 @@
 import {
   PrivateSendMessage,
+  UserBlockMessageResponse,
 } from "../interfaces/message.interfaces.js";
 import { navigateTo } from "../router/router.js";
 import chatService from "../services/chat.service.js";
@@ -101,17 +102,20 @@ class ChatComponent {
     }
   }
 
-  async sendMessage(friendId: string, message: PrivateSendMessage) {
-    if (!message.content.trim()) return;
+  async sendMessage(friendId: string, message: PrivateSendMessage | UserBlockMessageResponse) {
+    if ("content" in message && (!message.content || !message.content.trim())) return;
     this.chatService.sendPrivateMessage(message);
-    let temp = this.messages.get(friendId);
-    if (temp) {
-      temp.push(message);
-      this.messages.set(friendId, temp);
-    } else {
-      this.messages.set(friendId, [message]);
+    console.log(message);
+    if (message.kind === "private/send") {
+      let temp = this.messages.get(friendId);
+      if (temp) {
+        temp.push(message);
+        this.messages.set(friendId, temp);
+      } else {
+        this.messages.set(friendId, [message]);
+      }
+      await this.updateChatMessages(friendId);
     }
-    await this.updateChatMessages(friendId);
   }
 
   async openChat(friend: Friend) {

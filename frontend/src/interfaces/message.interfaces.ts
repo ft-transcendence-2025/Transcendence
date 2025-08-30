@@ -35,7 +35,8 @@ export type OutgoingMessage =
   | PrivateSendMessage
   | LobbyJoinMessage
   | LobbyLeaveMessage
-  | LobbySendMessage;
+  | LobbySendMessage
+  | UserBlockMessageResponse
 
 // System response messages
 export interface SystemReadyMessage {
@@ -67,10 +68,16 @@ export interface LobbyMessageResponse {
   ts: number;
 }
 
+export interface UserBlockMessageResponse {
+  kind: 'user/block';
+  recipientId: string;
+}
+
 // Union type for all Incoming messages
 export type IncomingMessage = 
   | SystemReadyMessage
   | SystemErrorMessage
   | PrivateMessageResponse
-  | LobbyMessageResponse;
+  | LobbyMessageResponse
+  | UserBlockMessageResponse;
 
