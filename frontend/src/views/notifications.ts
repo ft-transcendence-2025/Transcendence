@@ -29,8 +29,8 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
   const tabContents: HTMLElement[] = [];
   ["Friend Requests", "Game Invites"].forEach((label, index) => {
     const btn = document.createElement("button");
-    btn.className = `tab-button flex-1 py-2 font-bold ${index === 0
-        ? "border-b-2 border-(--color-primary) text-(--color-primary-dark)"
+    btn.className = `tab-button flex-1 py-2 font-bold cursor-pointer ${index === 0
+        ? "border-b-2 border-(--color-primary) text-(--color-secondary-light)"
         : "text-(--color-text-primary)"
       }`;
     btn.textContent = label;
@@ -49,7 +49,7 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
       tabs.querySelectorAll(".tab-button").forEach((b, i) => {
         b.classList.toggle("border-b-2", i === index);
         b.classList.toggle("border-(--color-primary)", i === index);
-        b.classList.toggle("text-(--color-primary-dark)", i === index);
+        b.classList.toggle("text-(--color-secondary-light)", i === index);
         b.classList.toggle("text-(--color-text-primary)", i !== index);
       });
     });
@@ -66,7 +66,7 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
       <img src="${req.avatar}" class="w-8 h-8 object-cover" 
         onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
       <span class="ml-5">${req.requesterUsername}</span>
-      <div class="ml-3 flex gap-4 ml-auto justify-end">
+      <div class="flex gap-4 ml-auto justify-end">
         <button title="Accept" class="accept-btn material-symbols-outlined text-3xl hover:text-(--color-primary)">check_circle</button>
         <button title="Reject" class="reject-btn material-symbols-outlined text-3xl hover:text-(--color-accent)">cancel</button>
       </div>
