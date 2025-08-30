@@ -1,6 +1,7 @@
 
 import { handlePrivateMessage, sendPendingMessages } from '../services/privatechat.service';
 import { handleLobbyMessage, joinLobby, leaveLobby } from '../services/lobby.service';
+import { handleUserStatus, USER_STATUS } from '../lib/userPresenceHandler';
 
 type WS = any;
 
@@ -12,7 +13,7 @@ export async function chatHandler(socket: WS, request: any) {
     .then(res => res.json());
   const conn = { socket, userId, games: new Set<string>(), lastPong: Date.now(), blockedUsersList };
   users.set(userId, conn);
-  console.log("lista de usuários bloqueados para ", userId, " : ", blockedUsersList);
+  handleUserStatus(userId, USER_STATUS.ONLINE);
   // Send ready + pending messages
   socket.send(JSON.stringify({ event: 'system/ready', userId, ts: Date.now() }));
   sendPendingMessages(userId, socket);
@@ -25,7 +26,7 @@ export async function chatHandler(socket: WS, request: any) {
       socket.send(JSON.stringify({ event: 'system/error', message: 'invalid JSON' }));
       return;
     }
-    
+
     switch (msg.kind) {
       case 'private/send':
         await handlePrivateMessage(users, userId, msg);
@@ -50,5 +51,6 @@ export async function chatHandler(socket: WS, request: any) {
 
   socket.on('close', () => {
     users.delete(userId);
+    handleUserStatus(userId, USER_STATUS.OFFLINE);
   });
 }
