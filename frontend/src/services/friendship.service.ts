@@ -61,8 +61,8 @@ export const removeFriend = (friendUsername: string) =>
   });
 
 export const blockUser = (friendUsername: string) =>
-  request(`${FRIEND_BASE_URL}/block`, {
-    method: "POST",
+  request(`${FRIEND_BASE_URL}/block/${friendUsername}`, {
+    method: "PATCH",
     headers: getHeaders(),
-    body: JSON.stringify({ fromUserId: username, toUserId: friendUsername }),
+    body: JSON.stringify({ blockedBy: username }),
   });
