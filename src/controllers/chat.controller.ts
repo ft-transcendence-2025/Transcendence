@@ -1,5 +1,5 @@
 
-import { handlePrivateMessage, sendPendingMessages } from '../services/privatechat.service';
+import { handleBlockUser, handlePrivateMessage, sendPendingMessages } from '../services/privatechat.service';
 import { handleLobbyMessage, joinLobby, leaveLobby } from '../services/lobby.service';
 import { handleUserStatus, USER_STATUS } from '../lib/userPresenceHandler';
 
@@ -42,6 +42,10 @@ export async function chatHandler(socket: WS, request: any) {
 
       case 'lobby/send':
         handleLobbyMessage(users, userId, msg);
+        break;
+
+      case 'user/block':
+        handleBlockUser(users, userId, msg);
         break;
 
       default:

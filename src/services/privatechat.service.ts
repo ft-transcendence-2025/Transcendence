@@ -19,9 +19,10 @@ export async function handlePrivateMessage(users: Map<string, any>, senderId: st
   if (!recipientId || !content) return;
   const sender = users.get(senderId);
 
+  console.log("Blocked users:", sender.blockedUsersList);
   if (sender.blockedUsersList.includes(recipientId)) {
     sender.socket.send("Message not delivered.");
-    return ;
+    return;
   }
 
   let conversation = await prisma.conversation.findFirst({
@@ -43,7 +44,30 @@ export async function handlePrivateMessage(users: Map<string, any>, senderId: st
 
   const recipientConn = users.get(recipientId);
   if (recipientConn) {
-	await prisma.message.update({ where: { id: saved.id }, data: { delivered: true } });
+    await prisma.message.update({ where: { id: saved.id }, data: { delivered: true } });
     recipientConn.socket.send(JSON.stringify({ event: 'private/message', ...saved }));
+  }
+}
+
+
+export async function handleBlockUser(users: Map<string, any>, userId: string, msg: any) {
+  const { recipientId } = msg;
+
+  const user = users.get(userId);
+  if (!user) return;
+
+  console.log(`User ${userId} is blocking ${recipientId}`);
+  if (!user.blockedUsersList.includes(recipientId)) {
+    user.blockedUsersList.push(recipientId);
+    const targetUser = users.get(recipientId);
+    if (targetUser && !targetUser.blockedUsersList.includes(userId)) {
+      targetUser.blockedUsersList.push(userId);
+    }
+  } else {
+    user.blockedUsersList = user.blockedUsersList.filter((id: string) => id !== recipientId);
+    const targetUser = users.get(recipientId);
+    if (targetUser) {
+      targetUser.blockedUsersList = targetUser.blockedUsersList.filter((id: string) => id !== userId);
+    }
   }
 }
