@@ -20,7 +20,7 @@ contract PongGameLedger is Ownable{
         string  winner;
         uint256 startTime;
         uint256 endTime;
-        bool    remoteMatch;
+        bool    finalMatch;
         bool    exists;
     }
 
@@ -41,7 +41,7 @@ contract PongGameLedger is Ownable{
         string  winner,
         uint256 startTime,
         uint256 endTime,
-        bool    remoteMatch
+        bool    finalMatch
     );
    
     /// @notice Structure helps associate a PlayerId with its matches
@@ -65,6 +65,7 @@ contract PongGameLedger is Ownable{
     error TournamentDoesNotHaveMatches(uint256 tournamentId);
     error PlayerDoesNotHaveMatches(string playerId);
     error EmptyPlayerNotAllowed(string field);
+    error FinalMatchAlreadyExists(uint256 tournamentId);
 
     /// @notice This contract manages tournament matches with creation functionality
     function newMatch(
@@ -76,7 +77,7 @@ contract PongGameLedger is Ownable{
         string  memory winner,
         uint256 startTime,
         uint256 endTime,
-        bool    remoteMatch
+        bool    finalMatch
     ) public onlyOwner {
 
         if (bytes(player1).length == 0) revert EmptyPlayerNotAllowed("Player1");
@@ -92,6 +93,15 @@ contract PongGameLedger is Ownable{
         if(winnerHash != player1Hash && winnerHash != player2Hash) revert InvalidWinner(winner);
         if(startTime > endTime) revert InvalidTimeStamps();
 
+        if (tournamentId != 0 && finalMatch) {
+            uint256 totalMatches = matchCountPerTournament[tournamentId];
+            for (uint256 i = 0; i < totalMatches; i++) {
+                if (matches[tournamentId][i].finalMatch) {
+                    revert FinalMatchAlreadyExists(tournamentId);
+                }
+            }
+        }
+
         uint256 matchId = matchCountPerTournament[tournamentId];
         //Adding the data from the struct into the mapping.
         matches[tournamentId][matchId] = Match(
@@ -104,7 +114,7 @@ contract PongGameLedger is Ownable{
             winner,
             startTime,
             endTime,
-            remoteMatch,
+            finalMatch,
             true
         );
 
@@ -117,7 +127,7 @@ contract PongGameLedger is Ownable{
         matchesByPlayer[player2].push(newMatchData);
         matchCountPerTournament[tournamentId]++;
 
-        emit MatchCreated(tournamentId, matchId, player1, player2, score1, score2, winner, startTime, endTime, remoteMatch);
+        emit MatchCreated(tournamentId, matchId, player1, player2, score1, score2, winner, startTime, endTime, finalMatch);
     }
 
     /// @notice Returns the number of matches for a specific tournament
@@ -151,7 +161,7 @@ contract PongGameLedger is Ownable{
             m.winner,
             m.startTime,
             m.endTime,
-            m. remoteMatch,
+            m. finalMatch,
             m.exists
         );
     }

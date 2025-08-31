@@ -58,7 +58,7 @@ async function tournamentRoutes(fastify, options) {
                     winner: match.win.toString(),
                     startTime: match.sTime.toString(),
                     endTime: match.eTime.toString(),
-                    remoteMatch: match.remoteMatch,
+                    finalMatch: match.finalMatch,
                 };
             return { match: formattedMatch };
         } catch (err) {
@@ -108,7 +108,7 @@ async function tournamentRoutes(fastify, options) {
                     winner: match.winner.toString(),
                     startTime: match.startTime.toString(),
                     endTime: match.endTime.toString(),
-                    remoteMatch: match.remoteMatch,
+                    finalMatch: match.finalMatch,
                 };
             });
 

@@ -14,14 +14,22 @@ async function matchRoutes(fastify, options) {
                 params.winner,
                 BigInt(params.startTime),
                 BigInt(params.endTime),
-                params.remoteMatch
+                params.finalMatch
             );
             await tx.wait();
             return { txHash: tx.hash, message: 'Match created' };
         } catch (err) {
             fastify.log.error(`Error saving the match: ${err.message}`);
             if (err.reason && err.reason.includes('EmptyPlayerNotAllowed')){
-                res.code(400).send({ error: `Invalid Input: Player ID and/or Winner cannot be empty - Player 1: ${player1} - Player 2: ${player2} - Winner: ${winner}` });
+                res.code(400).send({ error: `Invalid Input: Player ID cannot be empty - Player 1: ${player1} - Player 2: ${player2}.` });
+            } else if (err.reason && err.reason.includes('InvalidPlayers')) {
+                res.code(400).send({ error: `Invalid Input: Player IDs cannot be equal - Player 1: ${player1} - Player 2: ${player2}.` });
+            } else if (err.reason && err.reason.includes('InvalidWinner')) {
+                res.code(400).send({ error: `Invalid Input: Winner must be Player 1: ${player1} or Player 2: ${player2}.` });
+            } else if (err.reason && err.reason.includes('InvalidTimeStamps')) {
+                res.code(400).send({ error: `Invalid Input: Final timestamp: ${endTime} cannot be smaller than Initial timestamp: ${startTime}.` });
+            } else if (err.reason && err.reason.includes('FinalMatchAlreadyExists')) {
+                res.code(400).send({ error: `Invalid Input: The tournament ${tournamentId} already have a final match.` });
             } else {
                 res.code(500).send({ error: err.reason || err.message });
             }

@@ -22,7 +22,7 @@ async function playerRoutes(fastify, options) {
                     winner: match.winner.toString(),
                     startTime: match.startTime.toString(),
                     endTime: match.endTime.toString(),
-                    remoteMatch: match.remoteMatch,
+                    finalMatch: match.finalMatch,
             }));
 
             return { 

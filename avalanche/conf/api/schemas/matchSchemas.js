@@ -2,7 +2,7 @@ const newMatchSchema = {
     schema: {
         body: {
             type: 'object',
-            required: ['tournamentId', 'player1', 'player2', 'score1', 'score2', 'winner', 'startTime', 'endTime', 'remoteMatch'],
+            required: ['tournamentId', 'player1', 'player2', 'score1', 'score2', 'winner', 'startTime', 'endTime', 'finalMatch'],
             properties: {
                 tournamentId: { type: 'string' },
                 player1: { type: 'string' },
@@ -12,7 +12,7 @@ const newMatchSchema = {
                 winner: { type: 'string' },
                 startTime: { type: 'string' },
                 endTime: { type: 'string' },
-                remoteMatch: { type: 'boolean' }
+                finalMatch: { type: 'boolean' }
             }
         }
     }
