@@ -159,9 +159,14 @@ export async function renderStats(container: HTMLElement | null) {
   const tournamentGamesCount = document.getElementById("tournament-games-played");
   if (tournamentGamesCount) {
     if (playerMatchesResponse?.matches) {
-      totalTournamentGames = playerMatchesResponse?.matches?.reduce((count, match) => {
-        return match.tournamentId !== "0" ? count + 1: count;
-      }, 0);
+      
+      // Build a set of tournament Ids (to remove duplicates)
+      const uniqueTournamentIds = new Set (
+        playerMatchesResponse.matches
+          .filter(match => match.tournamentId !== "0")
+          .map(match => match.tournamentId)
+      );
+      totalTournamentGames = uniqueTournamentIds.size;
       tournamentGamesCount.textContent = `${totalTournamentGames.toString()} played`;
     } else {
       tournamentGamesCount.textContent = "0 played"
