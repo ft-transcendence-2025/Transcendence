@@ -1,7 +1,7 @@
-import { singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
+import { tournaments, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
 
 export function setupRoomCleanup(): void {
-  const timeOut: number = 3000;
+  const timeOut: number = 1000 * 30; // 30 seconds
 
   setInterval(() => {
     const now = Date.now();
@@ -21,6 +21,20 @@ export function setupRoomCleanup(): void {
         singlePlayerLastActivity.set(id, now);
 
         console.log(`Single player game ${id}, running`);
+      }
+    }
+  }, timeOut);
+}
+
+export function setuptournamentCleanup(): void {
+  const timeOut: number = 1000 * 60 * 30; // 30 minutes
+
+  setInterval(() => {
+    const now = Date.now();
+    for  (const [id, tournament] of tournaments) {
+      if (now - tournament.startTime > timeOut) {
+        console.log("tournament Deleted id:", id);
+        tournaments.delete(id);
       }
     }
   }, timeOut);

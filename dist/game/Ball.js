@@ -26,6 +26,7 @@ export class Ball {
             y: canvas.height / 2,
             radius: this.radius,
             isRunning: this.isRunning,
+            angle: this.angle,
         };
     }
     // Check if a player scored a point
@@ -45,11 +46,11 @@ export class Ball {
             this.currentSpeed = this.defaultSpeed / 2; // Ball start slow before hiting the first paddle
         else if (this.firstHit === true && this.currentSpeed < this.defaultSpeed)
             this.currentSpeed = this.defaultSpeed;
-        this.state.x += Math.cos(this.angle) * this.currentSpeed;
-        this.state.y += Math.sin(this.angle) * this.currentSpeed;
+        this.state.x += Math.cos(this.state.angle) * this.currentSpeed;
+        this.state.y += Math.sin(this.state.angle) * this.currentSpeed;
     }
     increaseBallSpeed() {
-        const maxSpeed = 100;
+        const maxSpeed = 15;
         const speedUpTime = 5000;
         // Every 5 seconds the ball increases speed 5%
         if (performance.now() - this.startTime >= speedUpTime &&
@@ -64,15 +65,16 @@ export class Ball {
         this.currentSpeed = this.defaultSpeed;
         this.state.x = canvas.width / 2;
         this.state.y = canvas.height / 2;
+        this.state.isRunning = false;
     }
     checkCeilingFloorCollision(canvas) {
         if (this.state.y - this.radius <= 0) {
             this.state.y = this.radius;
-            this.angle *= -1;
+            this.state.angle *= -1;
         }
         else if (this.state.y + this.radius >= canvas.height) {
             this.state.y = canvas.height - this.radius;
-            this.angle *= -1;
+            this.state.angle *= -1;
         }
     }
     // The ball angle change arcordingly to where it hit the paddle
@@ -89,11 +91,11 @@ export class Ball {
             // Adjust ball position to avoid sticking
             if (paddle.side === PaddleSide.Left) {
                 this.state.x = paddle.state.position.x + paddle.width + this.radius;
-                this.angle = clamped * maxBounceAngle;
+                this.state.angle = clamped * maxBounceAngle;
             }
             else if (paddle.side === PaddleSide.Right) {
                 this.state.x = paddle.state.position.x - this.radius;
-                this.angle = Math.PI - clamped * maxBounceAngle; // Set angle to PI - bounceAngle (leftward)
+                this.state.angle = Math.PI - clamped * maxBounceAngle; // Set angle to PI - bounceAngle (leftward)
             }
             this.increaseBallSpeed();
         }

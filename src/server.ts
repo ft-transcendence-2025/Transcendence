@@ -6,12 +6,14 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from "fs";
 
-import { setupRoomCleanup } from "./utils.js";
-import { gameRoute } from "./routes.js";
+import { setupRoomCleanup, setuptournamentCleanup } from "./utils.js";
+import { tournament, getgame } from "./routes.js";
 import { WebSocketConnection } from "./WebSocketConnection.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
+import { Tournament } from "./tournament.js";
 
+export const tournaments = new Map<number, Tournament>();
 export const singlePlayerGameRooms = new Map<number, SinglePlayerGameRoom>();
 export const remoteGameRooms = new Map<number, RemoteGameRoom>();
 export const singlePlayerLastActivity = new Map<number, number>();
@@ -26,7 +28,8 @@ export const fastify = Fastify({
 });
 
 fastify.register(cookie);
-fastify.register(gameRoute);
+fastify.register(getgame, { prefix: "/getgame" });
+fastify.register(tournament, { prefix: "/tournament" });
 
 fastify.listen({ port: 4000, host: "0.0.0.0" }, (err, address) => {
   if (err) {
@@ -37,4 +40,4 @@ fastify.listen({ port: 4000, host: "0.0.0.0" }, (err, address) => {
 
 new WebSocketConnection(fastify.server);
 setupRoomCleanup();
-
+setuptournamentCleanup();

@@ -12,13 +12,14 @@ var PaddleMovingState;
 export class Paddle {
     constructor(canvas, side) {
         this.width = 15;
-        this.height = 90;
+        this.height = 100;
         this.color = "#5FAD56";
         this.strokeColor = "#396733";
         this.strokeWidth = 0;
         this.speed = 9;
         this.side = side;
         this.state = {
+            connected: false,
             moving: {
                 up: false,
                 down: false,
@@ -30,7 +31,8 @@ export class Paddle {
             attr: {
                 width: this.width,
                 height: this.height,
-            }
+            },
+            speed: this.speed,
         };
     }
     update(canvas) {
