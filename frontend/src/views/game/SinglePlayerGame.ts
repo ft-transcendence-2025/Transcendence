@@ -1,6 +1,7 @@
 import { GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, SECOND, degreesToRadians, getRandomAngle } from "./utils.js";
 import { Player } from "./Player.js";
 import { AI } from "./AI.js";
+import { navigateTo } from "../../router/router.js";
 
 export class SinglePlayerGame {
   private canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
@@ -15,6 +16,7 @@ export class SinglePlayerGame {
   private winningPoint: number = 3;
   private ws: WebSocket | null = null;
 
+  private gameMode: string;
   private gameState: GameState | null = null;
 
   constructor(gameMode: string, data: FetchData) {
@@ -23,6 +25,7 @@ export class SinglePlayerGame {
     this.canvas.focus();
     this.canvas.width = 1000;
     this.canvas.height = 500;
+    this.gameMode = gameMode;
 
     this.joinGame(`wss://${window.location.host}/ws/game/singleplayer/${data.id}`, gameMode);
 
@@ -34,8 +37,46 @@ export class SinglePlayerGame {
       this.ws = new WebSocket(url)
       if (!this.ws)
         throw("Failed To Connect WebSocket");
+      if (gameMode === "localtournament") {
+        this.setUpAvatars();
+      }
       this.openSocket(gameMode);
     }
+  }
+
+  private setUpAvatars() {
+    const player1 = document.getElementById("player1-name");
+    const player2 = document.getElementById("player2-name");
+    const storeData = localStorage.getItem("LocalTournamentAvatarMap");
+    if (storeData) {
+      const players = JSON.parse(storeData);
+
+      if (player1) {
+        const player1Name = player1.innerHTML.trim();
+        for (let i = 0; i < players.length; ++i) {
+          if (players[i].username === player1Name) {
+            const avatar = document.getElementById("player1-avatar");
+            if (avatar) {
+              avatar.setAttribute("src", `../assets/avatars/${players[i].avatar}`); 
+            }
+            break ;
+          }
+        }
+      }
+      if (player2) {
+        const player2Name = player2.innerHTML.trim();
+        for (let i = 0; i < players.length; ++i) {
+          if (players[i].username === player2Name) {
+            const avatar = document.getElementById("player2-avatar");
+            if (avatar) {
+              avatar.setAttribute("src", `../assets/avatars/${players[i].avatar}`); 
+            }
+            break ;
+          }
+        }
+      }
+    }
+
   }
 
   private openSocket(gameMode: string) {
@@ -45,7 +86,7 @@ export class SinglePlayerGame {
       if (!this.ws)
         throw("ws is undefined");
 
-      if (gameMode === "2player") {
+      if (gameMode === "2player" || gameMode === "localtournament") {
         this.startSinglePvP();
       }
       else if (gameMode === "ai") {
@@ -213,6 +254,8 @@ export class SinglePlayerGame {
 
   // Display Game Over Div with the winner and final score
   private gameOver(player: 1 | 2): void {
+    let winnerName: string;
+
     const gameOverText = document.getElementById("game-over") as HTMLDivElement;
     if (gameOverText) {
       const gameOverIsHidden = gameOverText.classList.contains("hidden");
@@ -220,8 +263,22 @@ export class SinglePlayerGame {
         gameOverText.classList.remove('hidden');
     }
     const winnerText = document.getElementById("winner-text") as HTMLDivElement;
-    if (winnerText)
-      winnerText.innerHTML = `Player ${player} WINS!`;
+    if (winnerText) {
+      if (player === 1) {
+        const player1Name = document.getElementById("player1-name") as HTMLDivElement;
+        if (player1Name) {
+          winnerName = player1Name.innerHTML;
+          winnerText.innerHTML = `${winnerName} WINS!`;
+        }
+      }
+      else if (player === 2) {
+        const player2Name = document.getElementById("player2-name") as HTMLDivElement;
+        if (player2Name) {
+          winnerName = player2Name.innerHTML;
+          winnerText.innerHTML = `${winnerName} WINS!`;
+        }
+      }
+    }
   }
 
   private hiddeGameOver(): void {
@@ -239,6 +296,64 @@ export class SinglePlayerGame {
     if (["p", "P", " "].includes(event.key)) {
       event.preventDefault();
       this.sendPayLoad(event);
+      if (this.gameMode === "localtournament" &&
+        this.gameState && this.gameState.score.winner) {
+        this.tournomentMatchWinner();
+        const container = document.getElementById("content");
+        navigateTo("/tournament-tree", container);
+      }
+    }
+  }
+
+  private async tournomentMatchWinner() {
+    const baseUrl = window.location.origin;
+    let winnerName: string = "placeholder";
+
+    if (this.gameState && this.gameState.score.winner === 1) {
+      const player1Name = document.getElementById("player1-name") as HTMLDivElement;
+      if (player1Name) {
+        winnerName = player1Name.innerHTML;
+      }
+    }
+    else {
+      const player2Name = document.getElementById("player2-name") as HTMLDivElement;
+      if (player2Name) {
+        winnerName = player2Name.innerHTML;
+      }
+    }
+
+    const localTournamentState = localStorage.getItem("localTournamentState");
+    if (localTournamentState) {
+      let matchNumber: number = 1;
+      const tournamentState = JSON.parse(localTournamentState);
+      if (tournamentState.match1.winner === null) {
+        matchNumber = 1;
+        tournamentState.match1.winner = winnerName;
+        tournamentState.match3.player1 = winnerName;
+      }
+      else if (tournamentState.match2.winner === null) {
+        matchNumber = 2;
+        tournamentState.match2.winner = winnerName;
+        tournamentState.match3.player2 = winnerName;
+      }
+      else if (tournamentState.match3.winner === null) {
+        matchNumber = 3;
+        tournamentState.match3.winner = winnerName;
+      }
+
+      localStorage.setItem("localTournamentState", JSON.stringify(tournamentState))
+
+      const response = await fetch(`${baseUrl}/api/tournoment/matchwinner`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json" 
+        },
+        body: JSON.stringify({
+          id: tournamentState.id,
+          match: matchNumber,
+          winner: winnerName,
+        })
+      });
     }
   }
 
