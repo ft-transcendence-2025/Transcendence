@@ -40,6 +40,18 @@ services:
       - avalanche_private_key
     networks:
       - internal
+  
+  pong:
+    build:
+      context: ./Pong
+      dockerfile: Dockerfile
+    image: pong
+    container_name: pong
+    restart: unless-stopped
+    volumes:
+      - ./Pong/src:/pong/src    
+    networks:
+      - internal
     
 secrets:
   avalanche_private_key:
@@ -47,6 +59,7 @@ secrets:
 
 volumes:
   avalanche-data:
+  pong-src:
 
 networks:
   public:
