@@ -63,12 +63,44 @@ export class SinglePlayerGameRoom {
         this.game.gameState.ball.isRunning = false;
         this.game.ball.reset(this.game.canvas);
         this.checkWinner();
+        this.registeringWinner();
       }
       this.game.paddleLeft.update(this.game.canvas);
       this.game.paddleRight.update(this.game.canvas);
 
       this.broadcast();
     }, this.FPS60);
+  }
+
+  private async registeringWinner() {
+    try {
+    if (this.game.gameState.score.winner) {
+      console.log("ENVIANDO JOGO")
+      const data = await fetch("http://blockchain:3000/matches", {
+        method: "POST",
+        headers: {
+          'Content-Type': "application/Json"
+        },
+        body: JSON.stringify({
+          tournamentId: 0,
+          player1: "BoiManso",
+          player2: "Uatilla",
+          score1: 0,
+          score2: 3,
+          winner: "Uatilla",
+          startTime: 2021210205,
+          endTime: 2021210210,
+          finalMatch: true
+        })
+      });
+      console.log("DONE");
+      if (!data.ok) {
+        console.log("FALHOU A REQUISICAO", data);
+      }
+    }
+    } catch(err: any){
+      console.log("DEU RUIM MEU CHAPA");
+    }
   }
 
   private checkWinner(): void {

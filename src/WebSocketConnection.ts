@@ -86,7 +86,7 @@ export class WebSocketConnection {
     }
 
     ws.on('message', (data) => {
-      const msg: PayLoad = JSON.parse(data.toString());
+      const msg: PayLoad = JSON.parse(data.toString()); //POST MATCH
       if (gameRoom !== undefined) {
         gameRoom.handleEvents(msg);
       }
