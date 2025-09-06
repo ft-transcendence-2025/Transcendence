@@ -31,7 +31,6 @@ export async function renderProfile(container: HTMLElement | null) {
 
 	try {
 		const profile = await getProfileByUsername(username);
-		console.log("profile de ", username, " :", profile);
 		populateProfileView(profile);
 		showProfileView();
 	} catch (error: any) {

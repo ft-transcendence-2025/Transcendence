@@ -106,7 +106,6 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
 
     // Remove confirmPassword from data before sending to server
     const { confirmPassword, ...registrationData } = data;
-    console.log(registrationData); // debug
 
     try {
       await register(registrationData);

@@ -47,7 +47,7 @@ export class AI {
 			if (this.prevPoint.x === this.currPoint.x && this.prevPoint.y === this.currPoint.y ||
 				this.ballIsOpossite(side)) {
 				this.ballIsMoving = false;
-				this.targetY = canvas.height/2;
+				this.targetY = canvas.height / 2;
 				this.prevPoint = { ...this.currPoint };
 				return;
 			}
@@ -56,7 +56,6 @@ export class AI {
 
 			this.targetY = this.getTargetY(canvas, side, ball);
 			this.prevPoint = { ...this.currPoint };
-      console.log("hi");
 		}, 100);
 	}
 
@@ -77,7 +76,7 @@ export class AI {
 		const targetX = this.paddle.side === PaddleSide.Right ? canvas.width : 0;
 
 		this.angularCoeficient = Math.tan(ball.angle);
-		this.linearCoeficient = this.getLinearCoeficient({x: this.currPoint.x, y: this.currPoint.y});
+		this.linearCoeficient = this.getLinearCoeficient({ x: this.currPoint.x, y: this.currPoint.y });
 
 		y = this.getYatX(targetX);
 		while ((y < 0 || y > canvas.height) && nbrBounces < maxBounces) {
@@ -87,7 +86,7 @@ export class AI {
 					if (y > canvas.height) { // Ball bouces bottom
 						x = this.getXatY(canvas.height);
 						this.angularCoeficient *= -1;
-						this.linearCoeficient = this.getLinearCoeficient({x: x , y: canvas.height});
+						this.linearCoeficient = this.getLinearCoeficient({ x: x, y: canvas.height });
 					}
 				}
 				else { // Going Top left
@@ -95,7 +94,7 @@ export class AI {
 					if (y < 0) { // Ball bouces top
 						x = this.getXatY(0);
 						this.angularCoeficient *= -1;
-						this.linearCoeficient = this.getLinearCoeficient({x: x, y: 0});
+						this.linearCoeficient = this.getLinearCoeficient({ x: x, y: 0 });
 					}
 				}
 			}
@@ -105,7 +104,7 @@ export class AI {
 					if (y < 0) { // Ball bouces top
 						x = this.getXatY(0);
 						this.angularCoeficient *= -1;
-						this.linearCoeficient = this.getLinearCoeficient({x: x, y: 0});
+						this.linearCoeficient = this.getLinearCoeficient({ x: x, y: 0 });
 					}
 				}
 				else { // Going Bottom left
@@ -113,7 +112,7 @@ export class AI {
 					if (y > canvas.height) { // Ball bouces bottom
 						x = this.getXatY(canvas.height);
 						this.angularCoeficient *= -1;
-						this.linearCoeficient = this.getLinearCoeficient({x: x, y: canvas.height});
+						this.linearCoeficient = this.getLinearCoeficient({ x: x, y: canvas.height });
 					}
 				}
 			}
@@ -144,7 +143,7 @@ export class AI {
 		const tolerance = this.paddle.height / 8;
 
 		setInterval(() => {
-			const paddleCenter = this.paddle.y + this.paddle.height/2;
+			const paddleCenter = this.paddle.y + this.paddle.height / 2;
 
 			if (paddleCenter > this.targetY - tolerance &&
 				paddleCenter < this.targetY + tolerance) {

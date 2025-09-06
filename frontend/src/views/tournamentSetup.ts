@@ -242,7 +242,6 @@ function setupLocalEventListeners() {
   if (startButton) {
     startButton.addEventListener("click", async (e) => {
       e.preventDefault();
-      console.log("Start tournament button clicked!");
       // Only proceed if data collection succeeds (no duplicates)
       if (await collectLocalTournamentData()) {
         const container = document.getElementById("content");
@@ -270,7 +269,6 @@ function setupRemoteEventListeners() {
 }
 
 async function collectLocalTournamentData() {
-  console.log("collectLocalTournamentData function called");
   const players = [];
   const playerNames = new Set(); // To track duplicate names
 
@@ -314,7 +312,6 @@ async function collectLocalTournamentData() {
     players: players,
   };
 
-  console.log("Tournament data collected:", tournamentData);
   return true;
 }
 
