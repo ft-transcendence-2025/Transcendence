@@ -75,17 +75,32 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
 
       const acceptBtn = li.querySelector(".accept-btn") as HTMLButtonElement;
       const rejectBtn = li.querySelector(".reject-btn") as HTMLButtonElement;
+      acceptBtn.style.cursor = "pointer";
+      rejectBtn.style.cursor = "pointer";
 
       acceptBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.ACCEPTED);
         li.remove();
+        location.reload();
       });
 
       rejectBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.DECLINED);
         li.remove();
+        location.reload();
+      });
+
+      // Redirect to user profile on li click (excluding button clicks)
+      li.addEventListener("click", (e) => {
+        if (
+          (e.target as HTMLElement).closest(".accept-btn") ||
+          (e.target as HTMLElement).closest(".reject-btn")
+        ) {
+          return;
+        }
+        window.location.href = `/friend-profile?username=${encodeURIComponent(req.requesterUsername)}`;
       });
     });
   } else {
