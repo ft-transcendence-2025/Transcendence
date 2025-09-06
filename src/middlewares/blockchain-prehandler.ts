@@ -12,7 +12,10 @@ export const blockchainPreHandler = (app: any) => async (
     request: FastifyRequest, 
     reply: FastifyReply
   ) => {
+    // Exige autenticação = UM JWT VALIDO
     await app.authenticate(request, reply);
+
+    // Exige autorização
 
     const match = request.url.match(/^\/api\/blockchain\/players\/([^/]+)\/matches$/);
     if (!match) {
