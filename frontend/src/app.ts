@@ -4,8 +4,11 @@ import { router, navigateTo } from "./router/router.js";
 import { refreshAccessToken } from "./utils/api.js";
 import { ChatComponent } from "./views/chat.js";
 
+export let chatManager = new ChatComponent("chat-root", []);
 
-export const chatManager = new ChatComponent("chat-root", []);
+export function reloadChatManager() {
+  chatManager = new ChatComponent("chat-root", []);
+}
 
 // Function to close all open modals
 function closeAllModals() {
@@ -30,11 +33,14 @@ window.addEventListener("popstate", () => {
 // listen for dom to be fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
 
-  const token = window.localStorage.getItem("authToken")
-  if(!token || !await refreshAccessToken()) {
-    alert("You are not authenticated. Please log in to continue.");
-    navigateTo("/login", document.getElementById("content"));
-    return;
+  const currentPath = window.location.pathname;
+  if (currentPath !== "/login" && currentPath !== "/register" && currentPath !== "/") {
+    const token = window.localStorage.getItem("authToken");
+    if (!token || !await refreshAccessToken()) {
+      alert("You are not authenticated. Please log in to continue.");
+      navigateTo("/login", document.getElementById("content"));
+      return;
+    }
   }
 
   if (chatManager.chatService.conn) {

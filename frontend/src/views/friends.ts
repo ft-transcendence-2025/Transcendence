@@ -11,7 +11,8 @@ export async function renderFriends(container: HTMLElement | null) {
   container.innerHTML = "";
 
   try {
-    const friends: Friend[] = (await getUserFriends()) as Friend[];
+    const friendsResult = await getUserFriends();
+    const friends: Friend[] = Array.isArray(friendsResult) ? friendsResult : [];
     // Sort friends: ONLINE first, then others
     friends.sort((a, b) => {
       if (a.status === "ONLINE" && b.status !== "ONLINE") return -1;

@@ -5,7 +5,7 @@ import { Friend } from "../views/chat.js";
 
 const FRIEND_BASE_URL = `${BASE_URL}/friendships`;
 const USER_BASE_URL = `${BASE_URL}/users`;
-const username = getCurrentUsername();
+
 
 export type FriendshipRequest = {
   fromUserId: string;
@@ -21,10 +21,10 @@ export enum FriendshipStatus {
 
 // API functions
 export const getUserFriends = () =>
-  request(`${FRIEND_BASE_URL}/list/${username}`, {
-    method: "GET",
-    headers: getHeaders(),
-  });
+request(`${FRIEND_BASE_URL}/list/${getCurrentUsername()}`, {
+  method: "GET",
+  headers: getHeaders(),
+});
 
 // Fetch all users
 export const getAllUsers = () =>
@@ -37,11 +37,11 @@ export const sendFriendRequest = (friendUsername: string) =>
   request(`${FRIEND_BASE_URL}`, {
     method: "POST",
     headers: getHeaders(),
-    body: JSON.stringify({ fromUserId: username, toUserId: friendUsername }),
+    body: JSON.stringify({ fromUserId: getCurrentUsername(), toUserId: friendUsername }),
   });
 
 export const getPendingRequests = () =>
-  request(`${FRIEND_BASE_URL}/requests/${username}`, {
+  request(`${FRIEND_BASE_URL}/requests/${getCurrentUsername()}`, {
     method: "GET",
     headers: getHeaders(),
   });
@@ -57,12 +57,12 @@ export const removeFriend = (friendUsername: string) =>
   request(`${FRIEND_BASE_URL}/`, {
     method: "DELETE",
     headers: getHeaders(),
-    body: JSON.stringify({ fromUserId: username, toUserId: friendUsername }),
+    body: JSON.stringify({ fromUserId: getCurrentUsername(), toUserId: friendUsername }),
   });
 
 export const blockUser = (friendUsername: string) =>
   request(`${FRIEND_BASE_URL}/block/${friendUsername}`, {
     method: "PATCH",
     headers: getHeaders(),
-    body: JSON.stringify({ blockedBy: username }),
+    body: JSON.stringify({ blockedBy: getCurrentUsername() }),
   });

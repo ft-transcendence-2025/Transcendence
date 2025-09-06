@@ -16,7 +16,6 @@ export type Friend = {
 
 export async function renderChat(container: HTMLElement | null) {
   if (!container) return;
-  const friends = await getUserFriends();
   container.innerHTML = await loadHtml("/html/chat.component.html");
 }
 
@@ -105,7 +104,6 @@ class ChatComponent {
   async sendMessage(friendId: string, message: PrivateSendMessage | UserBlockMessageResponse) {
     if ("content" in message && (!message.content || !message.content.trim())) return;
     this.chatService.sendPrivateMessage(message);
-    console.log(message);
     if (message.kind === "private/send") {
       let temp = this.messages.get(friendId);
       if (temp) {

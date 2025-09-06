@@ -1,9 +1,10 @@
 // src/views/modalProfile.ts
+import { navigateTo } from "../router/router.js";
 import { getProfileByUsername, getUserAvatar } from "../services/profileService.js";
 
 export async function getProfileModalContent(username?: string): Promise<HTMLElement> {
   const container = document.createElement("div");
-container.className = "w-full h-full flex text-white rounded-[25px]";
+  container.className = "w-full h-full flex text-white rounded-[25px]";
 
   // If no username provided, try to get current user's profile
   if (!username) {
@@ -42,7 +43,7 @@ container.className = "w-full h-full flex text-white rounded-[25px]";
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - createdDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 1) {
       memberDuration = "1 day";
     } else if (diffDays < 30) {
@@ -129,9 +130,7 @@ container.className = "w-full h-full flex text-white rounded-[25px]";
   const editBtn = container.querySelector("#edit-profile-btn");
   if (editBtn) {
     editBtn.addEventListener("click", () => {
-      // Navigate to profile edit page or open edit modal
-      // You can implement this based on your routing system
-      window.location.href = `/profile?username=${finalUsername}&edit=true`;
+      navigateTo(`/profile?username=${finalUsername}&edit=true`, document.getElementById("content"));
     });
   }
 
