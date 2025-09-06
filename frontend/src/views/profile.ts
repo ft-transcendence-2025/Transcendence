@@ -8,7 +8,8 @@ import {
 import { UserBlockMessageResponse } from "../interfaces/message.interfaces.js";
 import { Friend } from "../views/chat.js";
 import { chatManager } from "../app.js";
-import { blockUser, respondRequest } from "../services/friendship.service.js";
+import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, unblockUser } from "../services/friendship.service.js";
+import { getCurrentUser } from "../utils/userUtils.js";
 
 
 let currentProfile: any = null;
@@ -44,6 +45,8 @@ export async function renderProfile(container: HTMLElement | null) {
 async function populateProfileView(profile: any) {
 	currentProfile = profile;
 
+	let loggedInUsername = getCurrentUser()?.username || null;
+
 	const avatarImg = document.getElementById("user-avatar") as HTMLImageElement;
 	if (avatarImg) {
 		avatarImg.src = await getUserAvatar(profile.userUsername);
@@ -70,6 +73,38 @@ async function populateProfileView(profile: any) {
 		const element = document.getElementById(field.id);
 		if (element) element.textContent = field.value;
 	});
+	// Show the Edit Profile button only if the profile belongs to the logged-in user
+	const editProfileButton = document.getElementById("edit-profile-button");
+	if (editProfileButton) {
+		if (profile.userUsername === loggedInUsername) {
+			editProfileButton.classList.remove("hidden");
+		} else {
+			editProfileButton.classList.add("hidden");
+		}
+	}
+
+	const blockButton = document.getElementById("block-button");
+	if (blockButton) {
+		const friendshipStatus = await getFriendshipStatus(profile.userUsername) as any;
+		// If the logged-in user has blocked the profile user
+		if (friendshipStatus.status === 'BLOCKED' && friendshipStatus.blockedBy === loggedInUsername) {
+			blockButton.textContent = "lock_open";
+			blockButton.title = "Unblock User";
+			blockButton.classList.remove("hidden");
+		}
+		// If the logged-in user is blocked by the profile user (cannot block back)
+		else if (friendshipStatus.status === 'BLOCKED' && friendshipStatus.blockedBy !== loggedInUsername) {
+			blockButton.textContent = "person_off";
+			blockButton.title = "Unblock User";
+			blockButton.style.display = "none";
+		}
+		// No block relationship
+		else {
+			blockButton.textContent = "account_circle_off";
+			blockButton.title = "Block User";
+			blockButton.classList.remove("hidden");
+		}
+	}
 }
 
 function showProfileView() {
@@ -90,161 +125,162 @@ function setupEventListeners(username: string) {
 
 	const blockUserBtn = document.getElementById("block-button");
 	if (blockUserBtn) {
-		blockUserBtn.addEventListener("click", () => {
-			blockUser(username);
-			if (chatManager) {
-				const message: UserBlockMessageResponse = {
-					kind: "user/block",
-					recipientId: username,
-				};
-				chatManager.sendMessage(username, message);
+		blockUserBtn.addEventListener("click", async () => {
+			const isUnblock = blockUserBtn.textContent === "lock_open";
+			if (isUnblock) {
+				unblockUser(username); // Unblock the user
+				console.log("User unblocked");
+			} else {
+				blockUser(username);
+				console.log("User blocked");
 			}
+			location.reload();
 		});
+
+		setupAvatarModalEventListeners(username);
 	}
 
-	setupAvatarModalEventListeners(username);
-}
-
-function openAvatarModal() {
-	const modal = document.getElementById("avatar-modal");
-	if (modal) {
-		modal.classList.remove("hidden");
-		modal.classList.add("flex");
-		selectedAvatar = null;
-		customAvatarFile = null;
-		updateSaveButton();
-	}
-}
-
-function closeAvatarModal() {
-	const modal = document.getElementById("avatar-modal");
-	if (modal) {
-		modal.classList.add("hidden");
-		modal.classList.remove("flex");
-		selectedAvatar = null;
-		customAvatarFile = null;
-		clearAvatarSelections();
-		clearCustomFileInput();
-	}
-}
-
-function clearAvatarSelections() {
-	const avatarOptions = document.querySelectorAll(".avatar-option");
-	avatarOptions.forEach((option) => {
-		option.classList.remove("border-(--color-primary)");
-		option.classList.add("border-transparent");
-	});
-}
-
-function clearCustomFileInput() {
-	const fileInput = document.getElementById("custom-avatar-upload") as HTMLInputElement;
-	if (fileInput) fileInput.value = "";
-}
-
-function updateSaveButton() {
-	const saveBtn = document.getElementById("save-avatar-btn") as HTMLButtonElement;
-	if (saveBtn) saveBtn.disabled = !(selectedAvatar || customAvatarFile);
-}
-
-async function changeAvatar(username: string) {
-	try {
-		const saveBtn = document.getElementById("save-avatar-btn") as HTMLButtonElement;
-		if (saveBtn) {
-			saveBtn.disabled = true;
-			saveBtn.textContent = "Saving...";
-		}
-
-		let avatarFile: File;
-		if (customAvatarFile) {
-			avatarFile = customAvatarFile;
-		} else if (selectedAvatar) {
-			avatarFile = await getJungleAvatarFile(selectedAvatar);
-		} else {
-			throw new Error("No avatar selected");
-		}
-
-		await saveUserAvatar(username, avatarFile);
-
-		const avatarImg = document.getElementById("profile-avatar") as HTMLImageElement;
-		if (avatarImg) avatarImg.src = `${getUserAvatar(username)}?t=${Date.now()}`;
-
-		closeAvatarModal();
-	} catch (error: any) {
-		console.error("Error changing avatar:", error);
-	} finally {
-		const saveBtn = document.getElementById("save-avatar-btn") as HTMLButtonElement;
-		if (saveBtn) {
-			saveBtn.disabled = false;
-			saveBtn.textContent = "Save Avatar";
+	function openAvatarModal() {
+		const modal = document.getElementById("avatar-modal");
+		if (modal) {
+			modal.classList.remove("hidden");
+			modal.classList.add("flex");
+			selectedAvatar = null;
+			customAvatarFile = null;
+			updateSaveButton();
 		}
 	}
-}
 
-function setupAvatarModalEventListeners(username: string) {
-	const avatarOptions = document.querySelectorAll(".avatar-option");
-	avatarOptions.forEach((option) => {
-		option.addEventListener("click", () => {
+	function closeAvatarModal() {
+		const modal = document.getElementById("avatar-modal");
+		if (modal) {
+			modal.classList.add("hidden");
+			modal.classList.remove("flex");
+			selectedAvatar = null;
+			customAvatarFile = null;
 			clearAvatarSelections();
 			clearCustomFileInput();
-			customAvatarFile = null;
+		}
+	}
 
-			option.classList.remove("border-transparent");
-			option.classList.add("border-(--color-primary)");
-
-			const avatarName = option.getAttribute("data-avatar");
-			if (avatarName) {
-				selectedAvatar = avatarName;
-				updateSaveButton();
-			}
+	function clearAvatarSelections() {
+		const avatarOptions = document.querySelectorAll(".avatar-option");
+		avatarOptions.forEach((option) => {
+			option.classList.remove("border-(--color-primary)");
+			option.classList.add("border-transparent");
 		});
-	});
+	}
 
-	const fileInput = document.getElementById("custom-avatar-upload") as HTMLInputElement;
-	if (fileInput) {
-		fileInput.addEventListener("change", (e) => {
-			const target = e.target as HTMLInputElement;
-			const file = target.files?.[0];
+	function clearCustomFileInput() {
+		const fileInput = document.getElementById("custom-avatar-upload") as HTMLInputElement;
+		if (fileInput) fileInput.value = "";
+	}
 
-			if (file) {
-				if (!file.type.startsWith("image/")) {
-					target.value = "";
-					return;
-				}
-				if (file.size > 2 * 1024 * 1024) {
-					target.value = "";
-					return;
-				}
+	function updateSaveButton() {
+		const saveBtn = document.getElementById("save-avatar-btn") as HTMLButtonElement;
+		if (saveBtn) saveBtn.disabled = !(selectedAvatar || customAvatarFile);
+	}
 
-				clearAvatarSelections();
-				selectedAvatar = null;
+	async function changeAvatar(username: string) {
+		try {
+			const saveBtn = document.getElementById("save-avatar-btn") as HTMLButtonElement;
+			if (saveBtn) {
+				saveBtn.disabled = true;
+				saveBtn.textContent = "Saving...";
+			}
 
-				customAvatarFile = file;
-				updateSaveButton();
+			let avatarFile: File;
+			if (customAvatarFile) {
+				avatarFile = customAvatarFile;
+			} else if (selectedAvatar) {
+				avatarFile = await getJungleAvatarFile(selectedAvatar);
 			} else {
+				throw new Error("No avatar selected");
+			}
+
+			await saveUserAvatar(username, avatarFile);
+
+			const avatarImg = document.getElementById("profile-avatar") as HTMLImageElement;
+			if (avatarImg) avatarImg.src = `${getUserAvatar(username)}?t=${Date.now()}`;
+
+			closeAvatarModal();
+		} catch (error: any) {
+			console.error("Error changing avatar:", error);
+		} finally {
+			const saveBtn = document.getElementById("save-avatar-btn") as HTMLButtonElement;
+			if (saveBtn) {
+				saveBtn.disabled = false;
+				saveBtn.textContent = "Save Avatar";
+			}
+		}
+	}
+
+	function setupAvatarModalEventListeners(username: string) {
+		const avatarOptions = document.querySelectorAll(".avatar-option");
+		avatarOptions.forEach((option) => {
+			option.addEventListener("click", () => {
+				clearAvatarSelections();
+				clearCustomFileInput();
 				customAvatarFile = null;
-				updateSaveButton();
-			}
-		});
-	}
 
-	const cancelBtn = document.getElementById("cancel-avatar-btn");
-	if (cancelBtn) cancelBtn.addEventListener("click", closeAvatarModal);
+				option.classList.remove("border-transparent");
+				option.classList.add("border-(--color-primary)");
 
-	const saveBtn = document.getElementById("save-avatar-btn");
-	if (saveBtn) {
-		saveBtn.addEventListener("click", async () => {
-			if (selectedAvatar || customAvatarFile) {
-				await changeAvatar(username);
-			}
+				const avatarName = option.getAttribute("data-avatar");
+				if (avatarName) {
+					selectedAvatar = avatarName;
+					updateSaveButton();
+				}
+			});
 		});
-	}
 
-	const modal = document.getElementById("avatar-modal");
-	if (modal) {
-		modal.addEventListener("click", (e) => {
-			if (e.target === modal) {
-				closeAvatarModal();
-			}
-		});
+		const fileInput = document.getElementById("custom-avatar-upload") as HTMLInputElement;
+		if (fileInput) {
+			fileInput.addEventListener("change", (e) => {
+				const target = e.target as HTMLInputElement;
+				const file = target.files?.[0];
+
+				if (file) {
+					if (!file.type.startsWith("image/")) {
+						target.value = "";
+						return;
+					}
+					if (file.size > 2 * 1024 * 1024) {
+						target.value = "";
+						return;
+					}
+
+					clearAvatarSelections();
+					selectedAvatar = null;
+
+					customAvatarFile = file;
+					updateSaveButton();
+				} else {
+					customAvatarFile = null;
+					updateSaveButton();
+				}
+			});
+		}
+
+		const cancelBtn = document.getElementById("cancel-avatar-btn");
+		if (cancelBtn) cancelBtn.addEventListener("click", closeAvatarModal);
+
+		const saveBtn = document.getElementById("save-avatar-btn");
+		if (saveBtn) {
+			saveBtn.addEventListener("click", async () => {
+				if (selectedAvatar || customAvatarFile) {
+					await changeAvatar(username);
+				}
+			});
+		}
+
+		const modal = document.getElementById("avatar-modal");
+		if (modal) {
+			modal.addEventListener("click", (e) => {
+				if (e.target === modal) {
+					closeAvatarModal();
+				}
+			});
+		}
 	}
 }

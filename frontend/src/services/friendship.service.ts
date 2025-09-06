@@ -66,3 +66,17 @@ export const blockUser = (friendUsername: string) =>
     headers: getHeaders(),
     body: JSON.stringify({ blockedBy: username }),
   });
+
+  export const unblockUser = (friendUsername: string) =>
+    request(`${FRIEND_BASE_URL}/unblock/${friendUsername}`, {
+      method: "PATCH",
+      headers: getHeaders(),
+      body: JSON.stringify({ unblockedBy: username }),
+    });
+
+export const getFriendshipStatus = (friendUsername: string) =>
+  request(`${FRIEND_BASE_URL}/status/${username}/${friendUsername}`, {
+    method: "GET",
+    headers: getHeaders()
+
+  });
