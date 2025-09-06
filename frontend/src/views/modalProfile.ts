@@ -1,4 +1,5 @@
 // src/views/modalProfile.ts
+import { closeModal } from "../components/modalManager.js";
 import { navigateTo } from "../router/router.js";
 import { getProfileByUsername, getUserAvatar } from "../services/profileService.js";
 
@@ -31,6 +32,7 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
 
   try {
     profile = await getProfileByUsername(finalUsername);
+    console.log("Fetched profile for modal:", profile);
     avatarUrl = await getUserAvatar(finalUsername);
   } catch (error) {
     console.error("Error loading profile for modal:", error);
@@ -69,12 +71,12 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
         onerror="this.onerror=null;this.src='/assets/avatars/panda.png';"
       />
       <h2 id="display-username" class="text-xl font-bold text-white">${profile?.userUsername || finalUsername}</h2>
-      <p id="user-location" class="text-sm text-(--color-secondary-light)">
-        ${profile?.location || 'Location not set'}
+      <p id="user-nickname" class="text-sm text-(--color-secondary-light)">
+        ${profile?.nickName || 'Nickname not set'}
       </p>
       <button
         id="edit-profile-btn"
-        class="mt-3 rounded-lg bg-(--color-secondary) px-4 py-2 text-sm font-semibold text-(--color-text-primary) hover:bg-(--color-secondary-dark)"
+        class="mt-3 rounded-lg cursor-pointer bg-(--color-secondary) px-4 py-2 text-sm font-semibold text-(--color-text-primary) hover:bg-(--color-secondary-dark)"
       >
         Edit my profile
       </button>
@@ -107,29 +109,33 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
       </ul>
     </div>
 
-    <!-- Activity -->
-    <div>
-      <h3
-        class="mb-2 border-b border-(--color-secondary-dark) pb-1 text-lg font-bold text-white"
+    <!-- Logout Button -->
+    <div class="flex flex-col items-center mt-4">
+      <button
+        id="logout-btn"
+        class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-dark cursor-pointer"
       >
-        Activity
-      </h3>
-      <div class="flex items-center space-x-3">
-        <img
-          src="/assets/games/pieceofcake.jpg"
-          alt="Piece of Cake"
-          class="h-14 w-14 rounded object-cover"
-        />
-        <span class="text-sm text-white">Most played</span>
-      </div>
+        Log out
+      </button>
     </div>
     </aside>
   `;
+
+  // Add event listener for logout button
+  const logoutBtn = container.querySelector("#logout-btn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("authToken");
+      closeModal();
+      navigateTo("/login", document.getElementById("content"));
+    });
+  }
 
   // Add event listener for edit profile button
   const editBtn = container.querySelector("#edit-profile-btn");
   if (editBtn) {
     editBtn.addEventListener("click", () => {
+      closeModal();
       navigateTo(`/profile?username=${finalUsername}&edit=true`, document.getElementById("content"));
     });
   }
