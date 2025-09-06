@@ -9,7 +9,7 @@ import { UserBlockMessageResponse } from "../interfaces/message.interfaces.js";
 import { Friend } from "../views/chat.js";
 import { chatManager } from "../app.js";
 import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, sendFriendRequest, unblockUser } from "../services/friendship.service.js";
-import { getCurrentUser } from "../utils/userUtils.js";
+import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
 
 
 let currentProfile: any = null;
@@ -120,7 +120,7 @@ async function populateProfileView(profile: any) {
 			blockButton.classList.remove("hidden");
 		}
 		// If the logged-in user is blocked by the profile user (cannot block back)
-		else if (friendshipStatus.status === 'BLOCKED' && friendshipStatus.blockedBy !== loggedInUsername) {
+		else if (friendshipStatus.status === 'BLOCKED' && friendshipStatus.blockedBy !== loggedInUsername || profile.userUsername === loggedInUsername) {
 			blockButton.style.display = "none";
 		}
 		else {
@@ -173,6 +173,13 @@ function setupEventListeners(username: string) {
 			} catch (error) {
 				console.error("Error sending friend request:", error);
 			}
+		});
+	}
+
+	const editProfileBtn = document.getElementById("edit-profile-button");
+	if (editProfileBtn) {
+		editProfileBtn.addEventListener("click", () => {
+			window.location.href = `/profile?username=${getCurrentUsername()}&edit=true`;
 		});
 	}
 
