@@ -11,6 +11,7 @@ import chatProxy from "./routes/chat.proxy";
 import metrics from "fastify-metrics";
 import fastifyCookie from "@fastify/cookie";
 import blockchainProxy from "./routes/blockchain.proxy";
+import gameProxy from "./routes/game.proxy";
 // import chatRoutes from './routes/chat';
 // import gameRoutes from './routes/game';
 
@@ -47,7 +48,8 @@ const routes = [
   { plugin: authRoutes },
   { plugin: userProxy },
   { plugin: chatProxy },
-  { plugin: blockchainProxy }
+  { plugin: blockchainProxy },
+  { plugin: gameProxy },
 ];
 
 routes.forEach((route) => {
