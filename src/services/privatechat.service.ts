@@ -71,3 +71,24 @@ export async function handleBlockUser(users: Map<string, any>, userId: string, m
     }
   }
 }
+
+/**
+ * Marks all messages in a conversation as read for a specific user.
+ */
+export async function markMessagesAsRead(userId: string, conversationId: string): Promise<void> {
+  try {
+    await prisma.message.updateMany({
+      where: {
+        conversationId,
+        senderId: { not: userId }, // Only mark messages not sent by this user as read
+        read: false, // Only update unread messages
+      },
+      data: {
+        read: true,
+      },
+    });
+  } catch (error) {
+    console.error(`Failed to mark messages as read for user ${userId} in conversation ${conversationId}:`, error);
+    throw new Error("Failed to mark messages as read.");
+  }
+}
