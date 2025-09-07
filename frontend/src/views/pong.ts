@@ -5,6 +5,7 @@ import {
   getUserDisplayName,
   getCurrentUserAvatar,
 } from "../utils/userUtils.js";
+import { getHeaders, request } from "../utils/api.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -31,14 +32,16 @@ async function enterGame(gameMode: string) {
 
     if (gameMode === "remote") {
       const response = await fetch(`${baseUrl}/api/getgame/remote`, {
-        credentials: "include"
+        credentials: "include",
+        headers : getHeaders(),
       });
       const data = await response.json();
       const remoteGame = new RemoteGame(data);
     }
     else {
       const response = await fetch(`${baseUrl}/api/getgame/singleplayer`, {
-        credentials: "include"
+        credentials: "include",
+        headers : getHeaders(),
       });
       const data = await response.json();
       const singlePlayerGame = new SinglePlayerGame(gameMode, data);
