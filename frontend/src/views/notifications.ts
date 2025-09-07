@@ -37,13 +37,13 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
         : "text-(--color-text-primary)"
       }`;
     btn.textContent = label; // Set label text
-
     // Add badge for count if > 0
     if (tabCounts[index] > 0) {
       const badge = document.createElement("span");
       badge.textContent = tabCounts[index].toString();
       badge.className =
       "inline-flex items-center justify-center ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white";
+      badge.id = `tab-badge-${index}`;
       btn.appendChild(badge);
     }
     tabs.appendChild(btn);
@@ -89,19 +89,22 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
       const rejectBtn = li.querySelector(".reject-btn") as HTMLButtonElement;
       acceptBtn.style.cursor = "pointer";
       rejectBtn.style.cursor = "pointer";
-
       acceptBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.ACCEPTED);
         li.remove();
-        // location.reload();
+
+        requests = requests.filter((r) => r.id !== req.id);
+        updateTabBadge(0, requests.length);
       });
 
       rejectBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.DECLINED);
         li.remove();
-        // location.reload();
+
+        requests = requests.filter((r) => r.id !== req.id);
+        updateTabBadge(0, requests.length);
       });
 
       // Redirect to user profile on li click (excluding button clicks)
@@ -124,4 +127,19 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
   tabContents[1].innerHTML = "<p>Lika eh a melhor!</p>";
 
   return container;
+}
+
+function updateTabBadge(tabIndex: number, count: number) {
+  const badge = document.getElementById(`tab-badge-${tabIndex}`);
+  if (badge) {
+    if (count > 0) {
+      badge.textContent = count.toString();
+      badge.style.display = "inline-flex"; // Ensure the badge is visible
+      badge.classList.remove("hidden");
+    } else {
+      badge.textContent = ""; // Clear the badge text
+      badge.style.display = "none"; // Hide the badge
+      badge.classList.add("hidden");
+    }
+  }
 }

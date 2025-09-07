@@ -33,7 +33,6 @@ export async function renderNavbar(container: HTMLElement | null) {
     try {
       const pendingRequests = await getPendingRequests();
       const friendCount = (pendingRequests as any[]).length;
-      console.log("Pending friend requests:", friendCount);
       if (friendCount > 0) {
         notificationsBadge.classList.remove("hidden");
       } else {
@@ -41,7 +40,6 @@ export async function renderNavbar(container: HTMLElement | null) {
       }
 
       const chatNotifications = await chatManager.chatService.fetchUnreadMessagesCount();
-      console.log("Unread chat messages:", chatNotifications);
       if (chatNotifications > 0) {
         friendsBadge.classList.remove("hidden");
       } else {
