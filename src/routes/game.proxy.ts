@@ -20,11 +20,11 @@ const gameProxy: FastifyPluginAsync = async (app: any) => {
 		preHandler: app.authenticate,
 	});
 
-	// const wsReconnect = {
-	// 	logs: true,
-	// 	pingInterval: 100,
-	// 	reconnectOnClose: true,
-	// }
+	const wsReconnect = {
+		logs: true,
+		pingInterval: 100,
+		reconnectOnClose: true,
+	}
 
 	// SOCKET CONNECTIONS
 	app.register(proxy, {
@@ -33,7 +33,8 @@ const gameProxy: FastifyPluginAsync = async (app: any) => {
 		prefix: "/ws/game",
 		rewritePrefix: "/game",
 		websocket: true,
-		preHandler: app.authenticate,
+		// preHandler: app.authenticate,
+		wsReconnect
 	});
 };
 
