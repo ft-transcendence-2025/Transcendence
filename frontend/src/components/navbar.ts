@@ -13,14 +13,49 @@ export async function renderNavbar(container: HTMLElement | null) {
   // Fetch the component's HTML template
   container.innerHTML = await loadHtml("/html/navbar.html");
   await renderSearchBar();
+
   const friendsIcon = document.getElementById("friends-list");
   const notificationIcon = document.getElementById("notifications");
-  const profileIcon = document.getElementById("profile");
-  const loginLink = document.getElementById("login-link");
-  const dashboardLink = document.getElementById("dashboard-link");
-  const registerLink = document.getElementById("register-link");
-  const logoutLink = document.getElementById("logout-link");
-  const userMenu = document.getElementById("user-menu");
+  const profileIcon = document.getElementById("profile") as HTMLImageElement;
+  
+  // Add notification badges
+  // Add notification badges
+  const friendsBadge = document.createElement("span");
+  friendsBadge.id = "friends-badge";
+  friendsBadge.className = "absolute top-0 right-0 bg-red-500 w-3 h-3 rounded-full px-1 hidden";
+  friendsIcon?.appendChild(friendsBadge);
+
+  const notificationsBadge = document.createElement("span");
+  notificationsBadge.id = "notifications-badge";
+  notificationsBadge.className = "absolute top-0 right-0 bg-red-500 w-3 h-3 rounded-full px-1 hidden";
+  notificationIcon?.appendChild(notificationsBadge);
+
+  // Fetch and update notification counts
+  async function updateNotificationCounts() {
+    try {
+      const pendingRequests = await getPendingRequests();
+      const friendCount = (pendingRequests as any[]).length;
+      console.log("Pending friend requests:", friendCount);
+      if (friendCount > 0) {
+        notificationsBadge.classList.remove("hidden");
+      } else {
+        notificationsBadge.classList.add("hidden");
+      }
+
+      // Example: Add logic for other notifications (e.g., chat notifications)
+      const chatNotifications = 0; // Replace with actual logic
+      if (chatNotifications > 0) {
+        friendsBadge.classList.remove("hidden");
+      } else {
+        friendsBadge.classList.add("hidden");
+      }
+    } catch (error) {
+      console.error("Failed to update notification counts:", error);
+    }
+  }
+
+  updateNotificationCounts();
+
 
   friendsIcon?.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -33,10 +68,32 @@ export async function renderNavbar(container: HTMLElement | null) {
     openModal(await getNotificationsContent(), notificationIcon);
   });
 
-  profileIcon?.addEventListener("click", async (e) => {
-    e.preventDefault();
-    openModal(await getProfileModalContent(), profileIcon);
-  });
+  if (profileIcon) {
+    try {
+      const avatarUrl = await getCurrentUserAvatar();
+      profileIcon.src = avatarUrl;
+
+      // Default to a placeholder avatar on error
+      profileIcon.onerror = () => {
+        profileIcon.src = "/assets/avatars/default-avatar.png";
+      };
+    } catch (error) {
+      console.warn("Could not load profile avatar:", error);
+      profileIcon.src = "/assets/avatars/panda.png";
+    }
+
+    profileIcon.addEventListener("click", async (e) => {
+      e.preventDefault();
+      const requestsRaw = (await getPendingRequests()) as any[];
+      openModal(await getProfileModalContent(), profileIcon);
+    });
+  }
+  const loginLink = document.getElementById("login-link");
+  const dashboardLink = document.getElementById("dashboard-link");
+  const registerLink = document.getElementById("register-link");
+  const logoutLink = document.getElementById("logout-link");
+  const userMenu = document.getElementById("user-menu");
+
 
   const token = localStorage.getItem("authToken");
 
