@@ -9,7 +9,7 @@
     "skipLibCheck": true,
     "outDir": "./dist", // Output the compiled code to the dist folder
     "rootDir": "./src", // Root directory for TypeScript files
-    "ignoreDeprecations": "6.0"
+    "ignoreDeprecations": "5.0"
   },
   "include": ["src/**/*.ts"]
 }
