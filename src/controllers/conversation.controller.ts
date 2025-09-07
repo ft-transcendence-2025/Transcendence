@@ -30,5 +30,9 @@ export const getConversation = async (req: FastifyRequest, res: FastifyReply) =>
 	res.code(200).send(conversation);
 }
 
-//   fastify.get("/:id", conversationController.getConversation);
-//   fastify.get("/", conversationController.listConversations);
+export const listConversations = async (req: FastifyRequest, res: FastifyReply) => {
+	const conversations = await prisma.conversation.findMany({
+		include: { messages: true }
+	});
+	res.code(200).send(conversations);
+}
