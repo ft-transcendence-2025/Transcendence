@@ -27,13 +27,25 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
   container.appendChild(tabs);
 
   const tabContents: HTMLElement[] = [];
-  ["Friend Requests", "Game Invites"].forEach((label, index) => {
+  const tabLabels = ["Friend Requests", "Game Invites"];
+  const tabCounts = [requests.length, 0]; // Example counts for badges
+
+  tabLabels.forEach((label, index) => {
     const btn = document.createElement("button");
     btn.className = `tab-button flex-1 py-2 font-bold cursor-pointer ${index === 0
         ? "border-b-2 border-(--color-primary) text-(--color-secondary-light)"
         : "text-(--color-text-primary)"
       }`;
-    btn.textContent = label;
+    btn.textContent = label; // Set label text
+
+    // Add badge for count if > 0
+    if (tabCounts[index] > 0) {
+      const badge = document.createElement("span");
+      badge.textContent = tabCounts[index].toString();
+      badge.className =
+      "inline-flex items-center justify-center ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white";
+      btn.appendChild(badge);
+    }
     tabs.appendChild(btn);
 
     const content = document.createElement("div");
