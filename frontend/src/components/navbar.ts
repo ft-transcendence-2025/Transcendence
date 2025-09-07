@@ -7,6 +7,7 @@ import { getProfileModalContent } from "../views/modalProfile.js";
 import { openModal } from "./modalManager.js";
 import renderSearchBar from "./searchBar.js";
 import { getCurrentUserAvatar } from "../utils/userUtils.js";
+import { chatManager } from "../app.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
   if (!container) return;
@@ -42,8 +43,7 @@ export async function renderNavbar(container: HTMLElement | null) {
         notificationsBadge.classList.add("hidden");
       }
 
-      // Example: Add logic for other notifications (e.g., chat notifications)
-      const chatNotifications = 0; // Replace with actual logic
+      const chatNotifications = await chatManager.chatService.fetchUnreadMessagesCount();
       if (chatNotifications > 0) {
         friendsBadge.classList.remove("hidden");
       } else {
@@ -64,7 +64,6 @@ export async function renderNavbar(container: HTMLElement | null) {
 
   notificationIcon?.addEventListener("click", async (e) => {
     e.preventDefault();
-    const requestsRaw = await getPendingRequests() as any[];
     openModal(await getNotificationsContent(), notificationIcon);
   });
 

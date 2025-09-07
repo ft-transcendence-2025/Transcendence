@@ -4,6 +4,8 @@ import { getUserAvatar } from "../services/profileService.js";
 import {  Friend } from "./chat.js";
 import { chatManager } from "../app.js";
 import { closeModal } from "../components/modalManager.js";
+import { getCurrentUsername } from "../utils/userUtils.js";
+import chatService from "../services/chat.service.js";
 
 // Renders the friends list inside a provided container
 export async function renderFriends(container: HTMLElement | null) {
@@ -42,9 +44,10 @@ export async function renderFriends(container: HTMLElement | null) {
           : "text-gray-400"
       }">${friend.username}</span>
       `;
-      li.addEventListener("click", () => {
-      chatManager.openChat(friend)
-      closeModal();
+      li.addEventListener("click", async () => {
+        chatManager.openChat(friend);
+        await chatManager.chatService.markConversationAsRead(friend.username); // Mark messages as read
+        closeModal();
       });
       container.appendChild(li);
     }

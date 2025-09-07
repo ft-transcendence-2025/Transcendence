@@ -3,14 +3,14 @@ import { IncomingMessage, OutgoingMessage } from "../interfaces/message.interfac
 import { request, getHeaders } from "../utils/api.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 
-const CHAT_SERVICE_URL = `wss://localhost:5000/ws/chat`;
+const CHAT_SERVICE_URL = `wss://localhost:5001/ws/chat`;
 const MESSAGE_SERVICE = `${BASE_URL}/chat/conversations`
 
 export default class chatService {
 	public conn: WebSocket | null = null;
-	public username : any
-	public url : any;
-	public lobbyConnections : any ;
+	public username: any
+	public url: any;
+	public lobbyConnections: any;
 
 	constructor() {
 		try {
@@ -24,7 +24,7 @@ export default class chatService {
 	}
 
 	connect() {
-		this.conn  = new WebSocket(this.url);
+		this.conn = new WebSocket(this.url);
 	}
 	sendPrivateMessage(message: OutgoingMessage) {
 		if (this.conn && this.conn.readyState === WebSocket.OPEN) {
@@ -41,6 +41,32 @@ export default class chatService {
 			headers: getHeaders(),
 		});
 		return conversation?.messages;
+	}
+
+	async markConversationAsRead(senderId: string): Promise<void> {
+		try {
+			await fetch(`${BASE_URL}/markAsRead`, {
+				method: "POST",
+				headers: getHeaders(),
+				body: JSON.stringify({ senderId, recipientId: this.username }),
+			});
+		} catch (error) {
+			console.error("Failed to mark conversation as read:", error);
+		}
+	}
+
+	async fetchUnreadMessagesCount(): Promise<number> {
+	  try {
+		const response = await fetch(`${BASE_URL}/unreadMessagesCount/${this.username}`, {
+		  method: "GET",
+		  headers: getHeaders(),
+		});
+		const data = await response.json();
+		return data.count || 0;
+	  } catch (error) {
+		console.error("Failed to fetch unread messages count:", error);
+		return 0;
+	  }
 	}
 }
 
