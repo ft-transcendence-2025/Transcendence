@@ -46,7 +46,7 @@ export async function renderFriends(container: HTMLElement | null) {
       `;
       li.addEventListener("click", async () => {
         chatManager.openChat(friend);
-        await chatManager.chatService.markConversationAsRead(friend.username); // Mark messages as read
+        await chatManager.chatService.markConversationAsRead(friend.username);
         closeModal();
       });
       container.appendChild(li);

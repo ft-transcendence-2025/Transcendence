@@ -45,7 +45,7 @@ export default class chatService {
 
 	async markConversationAsRead(senderId: string): Promise<void> {
 		try {
-			await fetch(`${BASE_URL}/markAsRead`, {
+			await fetch(`${MESSAGE_SERVICE}/markAsRead`, {
 				method: "POST",
 				headers: getHeaders(),
 				body: JSON.stringify({ senderId, recipientId: this.username }),
@@ -57,7 +57,7 @@ export default class chatService {
 
 	async fetchUnreadMessagesCount(): Promise<number> {
 	  try {
-		const response = await fetch(`${BASE_URL}/unreadMessagesCount/${this.username}`, {
+		const response = await fetch(`${MESSAGE_SERVICE}/unreadMessagesCount/${this.username}`, {
 		  method: "GET",
 		  headers: getHeaders(),
 		});

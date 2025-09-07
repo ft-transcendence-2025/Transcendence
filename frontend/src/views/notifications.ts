@@ -94,14 +94,14 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.ACCEPTED);
         li.remove();
-        location.reload();
+        // location.reload();
       });
 
       rejectBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.DECLINED);
         li.remove();
-        location.reload();
+        // location.reload();
       });
 
       // Redirect to user profile on li click (excluding button clicks)

@@ -19,8 +19,6 @@ export async function renderNavbar(container: HTMLElement | null) {
   const notificationIcon = document.getElementById("notifications");
   const profileIcon = document.getElementById("profile") as HTMLImageElement;
   
-  // Add notification badges
-  // Add notification badges
   const friendsBadge = document.createElement("span");
   friendsBadge.id = "friends-badge";
   friendsBadge.className = "absolute top-0 right-0 bg-red-500 w-3 h-3 rounded-full px-1 hidden";
@@ -31,7 +29,6 @@ export async function renderNavbar(container: HTMLElement | null) {
   notificationsBadge.className = "absolute top-0 right-0 bg-red-500 w-3 h-3 rounded-full px-1 hidden";
   notificationIcon?.appendChild(notificationsBadge);
 
-  // Fetch and update notification counts
   async function updateNotificationCounts() {
     try {
       const pendingRequests = await getPendingRequests();
@@ -44,6 +41,7 @@ export async function renderNavbar(container: HTMLElement | null) {
       }
 
       const chatNotifications = await chatManager.chatService.fetchUnreadMessagesCount();
+      console.log("Unread chat messages:", chatNotifications);
       if (chatNotifications > 0) {
         friendsBadge.classList.remove("hidden");
       } else {
