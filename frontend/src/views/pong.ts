@@ -1,10 +1,10 @@
 import { loadHtml } from "../utils/htmlLoader.js";
+import { SinglePlayerGame } from "./game/SinglePlayerGame.js";
+import { RemoteGame } from "./game/RemoteGame.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
 } from "../utils/userUtils.js";
-import { Game } from "./game/Game.js";
-import { GameMode, PaddleSide } from "./game/utils.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -19,30 +19,35 @@ export async function renderPong(container: HTMLElement | null) {
   const urlParams = new URLSearchParams(window.location.search);
   const gameMode = urlParams.get("mode") || "2player"; // default to "2player"
 
-  // Update the player names based on game mode
   await updatePlayerInfo(gameMode);
 
-  // const url = (location.protocol === "https:" ? "wss:" : "ws:") + "//" + location.host + "/ws/game";
-  // const ws = new WebSocket(url);
-  //
-  // ws.addEventListener('open', () => console.log('connected'));
-  // ws.addEventListener('message', e => console.log('msg', e.data));
-  // ws.addEventListener('close', e => console.log('closed', e.code, e.reason));
-  // ws.addEventListener('error', e => console.error('error', e));
+  enterGame(gameMode);
+}
 
-  // Initialize the game based on the selected mode
-  if (gameMode === "ai") {
-    const game = new Game(GameMode.PvE, PaddleSide.Left);
-    game.gameLoop();
-  } else if (gameMode === "2player" || gameMode === "tournament") {
-    const game = new Game();
-    game.gameLoop();
-  } else if (gameMode === "remote") {
-    // TODO: Implement remote game mode
-    const game = new Game();
-    game.gameLoop();
+
+async function enterGame(gameMode: string) {
+  try {
+    const baseUrl = window.location.origin; 
+
+    if (gameMode === "remote") {
+      const response = await fetch(`${baseUrl}/api/getgame/remote`, {
+        credentials: "include"
+      });
+      const data = await response.json();
+      const remoteGame = new RemoteGame(data);
+    }
+    else {
+      const response = await fetch(`${baseUrl}/api/getgame/singleplayer`, {
+        credentials: "include"
+      });
+      const data = await response.json();
+      const singlePlayerGame = new SinglePlayerGame(gameMode, data);
+    }
+  } catch (error) {
+    console.error("Failed to fetch game:", error);
   }
 }
+
 
 /**
  ** Update the player usernames based on game mode
