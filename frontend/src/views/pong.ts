@@ -6,6 +6,8 @@ import {
   getCurrentUserAvatar,
 } from "../utils/userUtils.js";
 import { TournomentState, MatchData } from "./tournamentTree.js";
+import {  FetchData } from "./game/utils.js";
+import { request } from "../utils/api.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -56,18 +58,16 @@ async function enterGame(gameMode: string) {
     const baseUrl = window.location.origin; 
 
     if (gameMode === "remote") {
-      const response = await fetch(`${baseUrl}/api/getgame/remote`, {
+      const response = await request(`${baseUrl}/api/getgame/remote`, {
         credentials: "include"
-      });
-      const data = await response.json();
-      const remoteGame = new RemoteGame(data);
+      }) as FetchData;
+      const remoteGame = new RemoteGame(response);
     }
     else {
-      const response = await fetch(`${baseUrl}/api/getgame/singleplayer`, {
+      const response = await request(`${baseUrl}/api/getgame/singleplayer`, {
         credentials: "include"
-      });
-      const data = await response.json();
-      const singlePlayerGame = new SinglePlayerGame(gameMode, data);
+      }) as FetchData;
+      const singlePlayerGame = new SinglePlayerGame(gameMode, response);
     }
   } catch (error) {
     console.error("Failed to fetch game:", error);

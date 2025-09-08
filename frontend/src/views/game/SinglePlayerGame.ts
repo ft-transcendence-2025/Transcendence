@@ -2,6 +2,7 @@ import { GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide, GameM
 import { Player } from "./Player.js";
 import { AI } from "./AI.js";
 import { navigateTo } from "../../router/router.js";
+import { request, getHeaders } from "../../utils/api.js";
 
 export class SinglePlayerGame {
   private canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
@@ -27,10 +28,11 @@ export class SinglePlayerGame {
     this.canvas.height = 500;
     this.gameMode = gameMode;
 
-    this.joinGame(`wss://${window.location.host}/ws/game/singleplayer/${data.id}`, gameMode);
+    this.joinGame(`wss://${window.location.host}/ws/game/singleplayer/${data.id}`, this.gameMode);
 
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
+
 
   public joinGame(url: string, gameMode: string): void {
     if (!this.ws) {
@@ -281,6 +283,7 @@ export class SinglePlayerGame {
     }
   }
 
+
   private hiddeGameOver(): void {
     const gameOverText = document.getElementById("game-over") as HTMLDivElement;
     if (gameOverText)
@@ -302,6 +305,51 @@ export class SinglePlayerGame {
         const container = document.getElementById("content");
         navigateTo("/tournament-tree", container);
       }
+      else if ((this.gameMode === "2player" || this.gameMode === "ai") &&
+        this.gameState && this.gameState.score.winner) {
+        this.registeringWinner();
+      }
+    }
+  }
+
+  private async registeringWinner() {
+    let winnerName: string = "placeholder";
+    if (this.gameState && this.gameState.score.winner === 1) {
+      const player1Name = document.getElementById("player1-name") as HTMLDivElement;
+      if (player1Name) {
+        winnerName = player1Name.innerHTML;
+      }
+    }
+    else {
+      const player2Name = document.getElementById("player2-name") as HTMLDivElement;
+      if (player2Name) {
+        winnerName = player2Name.innerHTML;
+      }
+    }
+
+    try {
+      const baseUrl = window.location.origin;
+      const player1Name = document.getElementById("player1-name") as HTMLDivElement;
+      const player2Name = document.getElementById("player2-name") as HTMLDivElement;
+      if (this.gameState && player1Name && player2Name) {
+        const data = await request(`${baseUrl}/api/blockchain/matches`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({
+            tournamentId: 0,
+            player1: player1Name.innerHTML,
+            player2: player2Name.innerHTML,
+            score1: this.gameState.score.player1,
+            score2: this.gameState.score.player2,
+            winner: winnerName,
+            startTime: 2021210205,
+            endTime: 2021210210,
+            finalMatch: true
+          })
+        });
+      }
+    } catch(err: any){
+      console.log("DEU RUIM MEU CHAPA:", err);
     }
   }
 

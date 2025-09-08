@@ -21,8 +21,8 @@ export class RemoteGame {
     this.canvas.width = 1000;
     this.canvas.height = 500;
 
-    this.side = data.side;
     this.joinGame(`wss://${window.location.host}/ws/game/remote/${data.id}`);
+    this.side = data.side;
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
   }
 
@@ -164,6 +164,7 @@ export class RemoteGame {
         if (player1Name) {
           winnerName = player1Name.innerHTML;
           winnerText.innerHTML = `${winnerName} WINS!`;
+          this.registeringWinner(winnerName);
         }
       }
       else if (player === 2) {
@@ -171,8 +172,40 @@ export class RemoteGame {
         if (player2Name) {
           winnerName = player2Name.innerHTML;
           winnerText.innerHTML = `${winnerName} WINS!`;
+          this.registeringWinner(winnerName);
         }
       }
+    }
+  }
+
+  private async registeringWinner(winner: string) {
+    try {
+      const player1Name = document.getElementById("player1-name") as HTMLDivElement;
+      const player2Name = document.getElementById("player2-name") as HTMLDivElement;
+      if (this.gameState && player1Name && player2Name) {
+        const data = await fetch("http://blockchain:3000/matches", {
+          method: "POST",
+          headers: {
+            'Content-Type': "application/Json"
+          },
+          body: JSON.stringify({
+            tournamentId: 0,
+            player1: player1Name,
+            player2: player2Name,
+            score1: this.gameState.score.player1,
+            score2: this.gameState.score.player2,
+            winner: winner,
+            startTime: 2021210205,
+            endTime: 2021210210,
+            finalMatch: true
+          })
+        });
+        if (!data.ok) {
+          console.log("FALHOU A REQUISICAO", data);
+        }
+      }
+    } catch(err: any){
+      console.log("DEU RUIM MEU CHAPA");
     }
   }
 
