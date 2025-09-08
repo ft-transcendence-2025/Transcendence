@@ -4,7 +4,7 @@ import { getPlayerMatches,
   Match} from "../services/blockchainService.js";
 import { getAccessToken } from "../utils/api.js";
 
-
+/*
 //Extracting the username from the JWT token.
 function getPlayerIdFromToken(token: string | null): string | null {
   if (!token) {
@@ -18,6 +18,21 @@ function getPlayerIdFromToken(token: string | null): string | null {
     console.error("Invalid token format:", err.message);
     return null;
   }
+}*/
+
+function getPlayerIdQueryString(): string | null {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('username');
+    if (!username) {
+      console.log("No username found in query string.");
+      return null;
+    }
+    return username;
+  } catch (err: any) {
+    console.error("Error parsing query string:", err.message);
+    return null;
+  }
 }
 
 export async function renderStats(container: HTMLElement | null) {
@@ -29,7 +44,7 @@ export async function renderStats(container: HTMLElement | null) {
   // Fetching player games history
   let playerMatchesResponse: MatchResponse | null = null;
   const token = getAccessToken();
-  const playerId = getPlayerIdFromToken(token);
+  const playerId = getPlayerIdQueryString();
    if (!playerId) {
     console.log("Cannot fetch matches: No valid playerId from token.");
     return; // Stop if no valid playerId
