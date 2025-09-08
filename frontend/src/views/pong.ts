@@ -5,6 +5,7 @@ import {
   getUserDisplayName,
   getCurrentUserAvatar,
 } from "../utils/userUtils.js";
+import { TournomentState, MatchData } from "./tournamentTree.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -21,9 +22,34 @@ export async function renderPong(container: HTMLElement | null) {
 
   await updatePlayerInfo(gameMode);
 
+  if (gameMode === "localtournament" || gameMode === "remotetournament") {
+    setUpTournoment();
+  }
+
   enterGame(gameMode);
 }
 
+function setUpTournoment(): void {
+  const player1 = document.getElementById("player1-name") as HTMLCanvasElement;
+  const player2 = document.getElementById("player2-name") as HTMLCanvasElement;
+
+  const localStorageTournamentState = localStorage.getItem("localTournamentState");
+  if (localStorageTournamentState) {
+    const tournamentState: TournomentState = JSON.parse(localStorageTournamentState);
+    if (tournamentState.match1.winner === null && tournamentState.match1.player1 && tournamentState.match1.player2) {
+      player1.innerHTML = tournamentState.match1.player1;
+      player2.innerHTML = tournamentState.match1.player2;
+    }
+    else if (tournamentState.match2.winner === null && tournamentState.match2.player1 && tournamentState.match2.player2) { 
+      player1.innerHTML = tournamentState.match2.player1;
+      player2.innerHTML = tournamentState.match2.player2;
+    }
+    else if (tournamentState.match3.winner === null && tournamentState.match3.player1 && tournamentState.match3.player2) { 
+      player1.innerHTML = tournamentState.match3.player1;
+      player2.innerHTML = tournamentState.match3.player2;
+    }
+  }
+}
 
 async function enterGame(gameMode: string) {
   try {

@@ -149,6 +149,8 @@ export class RemoteGame {
   }
 
   private gameOver(player: 1 | 2): void {
+    let winnerName: string;
+
     const gameOverText = document.getElementById("game-over") as HTMLDivElement;
     if (gameOverText) {
       const gameOverIsHidden = gameOverText.classList.contains("hidden");
@@ -156,8 +158,22 @@ export class RemoteGame {
         gameOverText.classList.remove('hidden');
     }
     const winnerText = document.getElementById("winner-text") as HTMLDivElement;
-    if (winnerText)
-      winnerText.innerHTML = `Player ${player} WINS!`;
+    if (winnerText) {
+      if (player === 1) {
+        const player1Name = document.getElementById("player1-name") as HTMLDivElement;
+        if (player1Name) {
+          winnerName = player1Name.innerHTML;
+          winnerText.innerHTML = `${winnerName} WINS!`;
+        }
+      }
+      else if (player === 2) {
+        const player2Name = document.getElementById("player2-name") as HTMLDivElement;
+        if (player2Name) {
+          winnerName = player2Name.innerHTML;
+          winnerText.innerHTML = `${winnerName} WINS!`;
+        }
+      }
+    }
   }
 
   private hiddeGameOver(): void {

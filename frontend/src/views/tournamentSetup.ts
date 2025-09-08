@@ -4,6 +4,7 @@ import {
   getUserDisplayName,
   getCurrentUserAvatar,
 } from "../utils/userUtils.js";
+import { localStoreTournamentData } from "./tournamentTree.js";
 
 // Tournament data structure
 interface TournamentData {
@@ -12,6 +13,18 @@ interface TournamentData {
     username: string;
     avatar: string;
   }>;
+}
+
+interface Player {
+  username: string,
+  avatar: string,
+}
+
+export interface LocalTournamentAvatarMap {
+  player1: Player,
+  player2: Player,
+  player3: Player,
+  player4: Player,
 }
 
 // Global storage for tournament data
@@ -242,7 +255,6 @@ function setupLocalEventListeners() {
   if (startButton) {
     startButton.addEventListener("click", async (e) => {
       e.preventDefault();
-      console.log("Start tournament button clicked!");
       // Only proceed if data collection succeeds (no duplicates)
       if (await collectLocalTournamentData()) {
         const container = document.getElementById("content");
@@ -270,7 +282,6 @@ function setupRemoteEventListeners() {
 }
 
 async function collectLocalTournamentData() {
-  console.log("collectLocalTournamentData function called");
   const players = [];
   const playerNames = new Set(); // To track duplicate names
 
@@ -314,8 +325,32 @@ async function collectLocalTournamentData() {
     players: players,
   };
 
-  console.log("Tournament data collected:", tournamentData);
+  localStorage.setItem("LocalTournamentAvatarMap", JSON.stringify(players));
+  getTournoment(tournamentData.players);
   return true;
+}
+
+async function getTournoment(players: Player[]) {
+  try {
+    const baseUrl = window.location.origin; 
+
+    const response = await fetch(`${baseUrl}/api/tournoment/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json" 
+      },
+      body: JSON.stringify({
+        player1: players[0].username,
+        player2: players[1].username,
+        player3: players[2].username,
+        player4: players[3].username
+      }) 
+    });
+    const data = await response.json();
+    localStoreTournamentData(data);
+  } catch (e) {
+    console.error("Failed to fetch tournoment:", e);
+  }
 }
 
 async function collectRemoteTournamentData() {
