@@ -8,6 +8,13 @@ import { reloadChatManager } from "../app.js";
 // This function will find the modal on the page and open it.
 export async function openLoginModal(container: HTMLElement | null = null) {
   // If container is provided, render home page as backdrop first (without animations)
+  if (localStorage.getItem("authToken")) {
+    // If already logged in, redirect to dashboard
+    const dashboardContainer = document.getElementById("content");
+    navigateTo("/dashboard", dashboardContainer);
+    return;
+  }
+
   if (container) {
     await renderHome(container, true);
   }

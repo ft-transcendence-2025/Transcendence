@@ -169,6 +169,7 @@ async function updateButtonStates(username: string) {
 			friendshipStatus.blockedBy !== loggedInUsername
 		) {
 			blockButton.classList.add("hidden");
+			blockButton.style.display = "none";
 		} else {
 			blockButton.textContent = "account_circle_off";
 			blockButton.title = "Block User";
@@ -201,9 +202,11 @@ function setupEventListeners(username: string) {
 				const isUnblock = blockUserBtn.textContent === "lock_open";
 				if (isUnblock) {
 					await unblockUser(username); // Unblock the user
+					sendBlockMessage(username);
 					console.log("User unblocked");
 				} else {
 					await blockUser(username); // Block the user
+					sendBlockMessage(username);
 					console.log("User blocked");
 				}
 	
@@ -229,7 +232,7 @@ function setupEventListeners(username: string) {
 			}
 		});
 	}
-
+	
 	const editProfileBtn = document.getElementById("edit-profile-button");
 	if (editProfileBtn) {
 		editProfileBtn.addEventListener("click", () => {
@@ -237,6 +240,17 @@ function setupEventListeners(username: string) {
 		});
 	}
 
+	function sendBlockMessage(blockedUsername: string) {
+		const currentUser = getCurrentUser();
+		if (!currentUser) return;
+		
+		const blockMessage: UserBlockMessageResponse = {
+			kind: "user/block",
+			recipientId: blockedUsername
+		};
+		chatManager.sendMessage(blockedUsername, blockMessage);
+	}
+	
 	setupAvatarModalEventListeners(username);
 
 	function openAvatarModal() {

@@ -8,6 +8,7 @@ import { getUserFriends } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
+
 export type Friend = {
   id: string;
   username: string;

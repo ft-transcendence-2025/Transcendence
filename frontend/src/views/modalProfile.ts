@@ -1,4 +1,5 @@
 // src/views/modalProfile.ts
+import { chatManager } from "../app.js";
 import { closeModal } from "../components/modalManager.js";
 import { navigateTo } from "../router/router.js";
 import { getProfileByUsername, getUserAvatar } from "../services/profileService.js";
@@ -126,6 +127,7 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("authToken");
+      chatManager.chatService.conn?.close();
       closeModal();
       navigateTo("/login", document.getElementById("content"));
     });
