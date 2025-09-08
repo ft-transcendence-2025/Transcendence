@@ -5,7 +5,9 @@ import {
   getUserDisplayName,
   getCurrentUserAvatar,
 } from "../utils/userUtils.js";
-import { getHeaders, request } from "../utils/api.js";
+import { TournomentState, MatchData } from "./tournamentTree.js";
+import {  FetchData } from "./game/utils.js";
+import { request } from "../utils/api.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -22,29 +24,50 @@ export async function renderPong(container: HTMLElement | null) {
 
   await updatePlayerInfo(gameMode);
 
+  if (gameMode === "localtournament" || gameMode === "remotetournament") {
+    setUpTournoment();
+  }
+
   enterGame(gameMode);
 }
 
+function setUpTournoment(): void {
+  const player1 = document.getElementById("player1-name") as HTMLCanvasElement;
+  const player2 = document.getElementById("player2-name") as HTMLCanvasElement;
+
+  const localStorageTournamentState = localStorage.getItem("localTournamentState");
+  if (localStorageTournamentState) {
+    const tournamentState: TournomentState = JSON.parse(localStorageTournamentState);
+    if (tournamentState.match1.winner === null && tournamentState.match1.player1 && tournamentState.match1.player2) {
+      player1.innerHTML = tournamentState.match1.player1;
+      player2.innerHTML = tournamentState.match1.player2;
+    }
+    else if (tournamentState.match2.winner === null && tournamentState.match2.player1 && tournamentState.match2.player2) { 
+      player1.innerHTML = tournamentState.match2.player1;
+      player2.innerHTML = tournamentState.match2.player2;
+    }
+    else if (tournamentState.match3.winner === null && tournamentState.match3.player1 && tournamentState.match3.player2) { 
+      player1.innerHTML = tournamentState.match3.player1;
+      player2.innerHTML = tournamentState.match3.player2;
+    }
+  }
+}
 
 async function enterGame(gameMode: string) {
   try {
     const baseUrl = window.location.origin; 
 
     if (gameMode === "remote") {
-      const response = await fetch(`${baseUrl}/api/getgame/remote`, {
-        credentials: "include",
-        headers : getHeaders(),
-      });
-      const data = await response.json();
-      const remoteGame = new RemoteGame(data);
+      const response = await request(`${baseUrl}/api/getgame/remote`, {
+        credentials: "include"
+      }) as FetchData;
+      const remoteGame = new RemoteGame(response);
     }
     else {
-      const response = await fetch(`${baseUrl}/api/getgame/singleplayer`, {
-        credentials: "include",
-        headers : getHeaders(),
-      });
-      const data = await response.json();
-      const singlePlayerGame = new SinglePlayerGame(gameMode, data);
+      const response = await request(`${baseUrl}/api/getgame/singleplayer`, {
+        credentials: "include"
+      }) as FetchData;
+      const singlePlayerGame = new SinglePlayerGame(gameMode, response);
     }
   } catch (error) {
     console.error("Failed to fetch game:", error);
