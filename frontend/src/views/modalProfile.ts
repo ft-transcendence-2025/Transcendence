@@ -127,7 +127,7 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("authToken");
-      chatManager.chatService.conn?.close();
+      chatManager.reset();
       closeModal();
       navigateTo("/login", document.getElementById("content"));
     });

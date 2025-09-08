@@ -35,6 +35,25 @@ class ChatComponent {
     this.messages = new Map();
   }
 
+    reset() {
+    // Close all open chats
+    this.openChats.forEach((chat, friendId) => {
+      chat.remove();
+    });
+    this.openChats.clear();
+
+    // Clear messages
+    this.messages.clear();
+
+    // Disconnect the chat service
+    if (this.chatService.conn) {
+      this.chatService.conn.close();
+      this.chatService.conn = null;
+    }
+
+    console.log("Chat service reset: All chats closed and connection terminated.");
+  }
+
   async updateChatMessages(friendId: string) {
     const chatWindow = this.openChats.get(friendId);
     if (!chatWindow) return;
