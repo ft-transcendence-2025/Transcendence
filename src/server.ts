@@ -6,7 +6,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from "fs";
 
-import { setupRoomCleanup, setuptournamentCleanup } from "./utils.js";
+import { setupRoomCleanup, setuptournamentCleanup } from "./cleanup.js";
 import { tournament, getgame } from "./routes.js";
 import { WebSocketConnection } from "./WebSocketConnection.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
@@ -16,6 +16,7 @@ import { Tournament } from "./tournament.js";
 export const tournaments = new Map<number, Tournament>();
 export const singlePlayerGameRooms = new Map<number, SinglePlayerGameRoom>();
 export const remoteGameRooms = new Map<number, RemoteGameRoom>();
+export const customGameRoom = new Map<number, RemoteGameRoom>();
 export const singlePlayerLastActivity = new Map<number, number>();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

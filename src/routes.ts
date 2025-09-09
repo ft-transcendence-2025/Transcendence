@@ -1,13 +1,13 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { Game, GameState} from "./game/Game.js";
-import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
-import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
 import { tournaments, remoteGameRooms, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
 import { Tournament, Players, Winner, TournamentId } from "./tournament.js";
+import { createCustomGame, createSinglePlayerGame, createRemoteGame, searchGameRoom, enterGameRoom} from "./gameUtils.js";
 
 let singlePlayerGameId: number = 0;
 let remoteGameId: number = 0;
 let tournamentId: number = 0;
+let customId: number = 0;
 
 export async function tournament(fastify: FastifyInstance) {
   fastify.post("/create", {
@@ -131,79 +131,9 @@ export async function getgame(fastify: FastifyInstance) {
       }
     }
   });
-}
 
-function enterGameRoom(reply: FastifyReply, gameId: number): void {
-  const gameRoom = remoteGameRooms.get(gameId);
-  let side: string = "full";
-
-  if (gameRoom) {
-    if (!gameRoom.player1) {
-      side = "left";
-    }
-    else if (!gameRoom.player2) {
-      side = "right";
-    }
-  }
-
-  reply.send({
-    state: "Joined",
-    side: side,
-    gameMode: "remotegame",
-    id: gameId,
+  fastify.get("/custom", (req, reply) => {
+    createCustomGame(reply, customId++);
   });
 }
 
-function searchGameRoom(): number {
-  for (const [id, gameRoom] of remoteGameRooms) {
-    if (!gameRoom.player1 && !gameRoom.player2) {
-      if (gameRoom.game.gameState.score.player1 === 0 && gameRoom.game.gameState.score.player2 === 0) {
-        return id;
-      }
-      else {
-        continue;
-      }
-    }
-    if (!gameRoom.player1 || !gameRoom.player2) {
-      return id;
-    }
-  }
-  return -1;
-}
-
-function createRemoteGame(reply: FastifyReply, gameId: number) {
-  const gameRoom = new RemoteGameRoom(gameId);
-  remoteGameRooms.set(gameId, gameRoom);
-
-  reply.setCookie("remoteGameId", gameId.toString(), {
-    path: "/",
-    sameSite: "none",
-    secure: true,
-    httpOnly: true,
-  });
-
-  reply.send({
-    state: "Created",
-    side: "left",
-    gameMode: "remoteGame",
-    id: gameId,
-  });
-}
-
-function createSinglePlayerGame(reply: FastifyReply, gameId: number) {
-  singlePlayerGameRooms.set(gameId, new SinglePlayerGameRoom(gameId));
-  singlePlayerLastActivity.set(gameId, Date.now());
-
-  reply.setCookie("singlePlayerGameId", gameId.toString(), {
-    path: "/",
-    sameSite: "none",
-    secure: true,
-    httpOnly: true,
-  });
-
-  reply.send({
-    state: "Created",
-    gameMode: "singleplayer",
-    id: gameId,
-  });
-}

@@ -2,7 +2,7 @@ import WebSocket, { WebSocketServer } from 'ws'
 import { PayLoad } from "./game/Game.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
-import { fastify, singlePlayerGameRooms, remoteGameRooms } from "./server.js";
+import { fastify, singlePlayerGameRooms, remoteGameRooms, customGameRoom } from "./server.js";
 
 export class WebSocketConnection {
   private server: any;
@@ -27,10 +27,53 @@ export class WebSocketConnection {
       else if (mode === "remote") {
         this.remoteConnection(ws, gameId);
       }
+      else if (mode === "custom") {
+        this.customConnection(ws, gameId);
+      }
     });
 
     this.wss.on("error", (e) => {
       console.log(e);
+    });
+  }
+
+  private customConnection(ws: WebSocket, gameId: number) {
+    let gameRoom: RemoteGameRoom | undefined = customGameRoom.get(gameId);
+    if (gameRoom === undefined) {
+      ws.close();
+      return;
+    }
+    else {
+      gameRoom.addPlayer(ws);
+      gameRoom.startGameLoop();
+    }
+
+    ws.on("message", (data) => {
+      const msg: PayLoad = JSON.parse(data.toString());
+      if (gameRoom !== undefined) {
+        gameRoom.handleEvents(msg);
+      }
+    });
+
+    ws.on("close", () => {
+      if (gameRoom !== undefined) {
+        if (gameRoom.player1 === ws){
+          gameRoom.player1.close();
+          gameRoom.player1 = null;
+        }
+        if (gameRoom.player2 === ws){
+          gameRoom.player2.close();
+          gameRoom.player2 = null;
+        }
+      }
+    });
+
+    ws.on("error", (e) => {
+      console.log(e);
+      if (gameRoom !== undefined) {
+        remoteGameRooms.delete(gameRoom.id);
+        gameRoom.cleanup(); 
+      }
     });
   }
 
@@ -119,6 +162,15 @@ export class WebSocketConnection {
       else if (pathname.startsWith("/game/remote/")) {
         gameId = parseInt(pathname.split('/')[3]);
         mode = "remote";
+
+        if (isNaN(gameId)) {
+          socket.destroy();
+          return;
+        }
+      }
+      else if (pathname.startsWith("/game/custom/")) {
+        gameId = parseInt(pathname.split('/')[3]);
+        mode = "custom";
 
         if (isNaN(gameId)) {
           socket.destroy();

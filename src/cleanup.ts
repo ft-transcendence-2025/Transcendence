@@ -1,4 +1,4 @@
-import { tournaments, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
+import { tournaments, customGameRoom, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
 
 export function setupRoomCleanup(): void {
   const timeOut: number = 1000 * 30; // 30 seconds
