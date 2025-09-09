@@ -16,14 +16,11 @@ export async function chatHandler(socket: WS, request: any) {
   const conn = { socket, userId, games: new Set<string>(), lastPong: Date.now(), blockedUsersList };
   users.set(userId, conn);
 
-  const unreadNotifications = await getUnreadNotifications(userId);
 
   handleUserStatus(userId, USER_STATUS.ONLINE);
 
   socket.send(JSON.stringify({ event: 'system/ready', userId, ts: Date.now() }));
-    unreadNotifications.forEach(notification => {
-    socket.send(JSON.stringify({ event: 'notification/new', ...notification }));
-  });
+
   sendPendingMessages(userId, socket);
 
   socket.on('message', async (raw: Buffer) => {
@@ -55,7 +52,19 @@ export async function chatHandler(socket: WS, request: any) {
       case 'user/block':
         handleBlockUser(users, userId, msg);
         break;
+        
+      // case 'game/invite':
+      //   // handleGameInvite(users, userId, msg);
+      //   break;
 
+      // case 'tournament/turn':
+      //   // handleTournamentTurn(users, userId, msg);
+      //   break;
+
+      // case 'friend/request':
+      //   // handleFriendRequest(users, userId, msg);
+      //   break;
+          
       default:
         socket.send(JSON.stringify({ event: 'system/error', message: 'unknown kind' }));
     }

@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { getUnreadNotifications } from './notifications.service';
 
 export async function sendPendingMessages(userId: string, socket: any) {
   const pending = await prisma.message.findMany({
@@ -41,7 +42,6 @@ export async function handlePrivateMessage(users: Map<string, any>, senderId: st
 
 
 
-  // Create a NEW_MESSAGE notification with senderId and recipientId
   const notification = await prisma.notification.create({
     data: {
       senderId,

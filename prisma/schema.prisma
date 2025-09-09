@@ -55,6 +55,7 @@ enum NotificationType {
   NEW_MESSAGE
   GAME_INVITE
   NEW_FRIENDSHIP
+  TOURNAMENT_ALERT
 }
 
 model Notification {
