@@ -29,28 +29,28 @@ export async function renderNavbar(container: HTMLElement | null) {
   notificationsBadge.className = "absolute top-0 right-0 bg-red-500 w-3 h-3 rounded-full px-1 hidden";
   notificationIcon?.appendChild(notificationsBadge);
 
-  async function updateNotificationCounts() {
-    try {
-      const pendingRequests = await getPendingRequests();
-      const friendCount = (pendingRequests as any[]).length;
-      if (friendCount > 0) {
-        notificationsBadge.classList.remove("hidden");
-      } else {
-        notificationsBadge.classList.add("hidden");
-      }
+  // async function updateNotificationCounts() {
+  //   try {
+  //     const pendingRequests = await getPendingRequests();
+  //     const friendCount = (pendingRequests as any[]).length;
+  //     if (friendCount > 0) {
+  //       notificationsBadge.classList.remove("hidden");
+  //     } else {
+  //       notificationsBadge.classList.add("hidden");
+  //     }
 
-      const chatNotifications = await chatManager.chatService.fetchUnreadMessagesCount();
-      if (chatNotifications > 0) {
-        friendsBadge.classList.remove("hidden");
-      } else {
-        friendsBadge.classList.add("hidden");
-      }
-    } catch (error) {
-      console.error("Failed to update notification counts:", error);
-    }
-  }
+  //     const chatNotifications = await chatManager.chatService.fetchUnreadMessagesCount();
+  //     if (chatNotifications > 0) {
+  //       friendsBadge.classList.remove("hidden");
+  //     } else {
+  //       friendsBadge.classList.add("hidden");
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to update notification counts:", error);
+  //   }
+  // }
 
-  updateNotificationCounts();
+  // updateNotificationCounts();
 
 
   friendsIcon?.addEventListener("click", async (e) => {

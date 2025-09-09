@@ -1,4 +1,5 @@
 import {
+  NotificationMessage,
   PrivateSendMessage,
   UserBlockMessageResponse,
 } from "../interfaces/message.interfaces.js";
@@ -25,6 +26,7 @@ class ChatComponent {
   friends: Friend[];
   openChats: Map<string, HTMLElement>;
   messages: Map<string, any[]>;
+  notifications: Map<string, any[]>;
   currentUserId: string = getCurrentUsername() as string;
   public chatService: chatService = new chatService();
 
@@ -33,9 +35,65 @@ class ChatComponent {
     this.friends = friends;
     this.openChats = new Map();
     this.messages = new Map();
+    this.notifications = new Map([
+      ["messages", []],
+      ["friendRequests", []],
+      ["gameInvites", []],
+      ["tournamentTurns", []],
+    ]);
   }
 
-    reset() {
+    storeNotifications(notifications: any[]) {
+    notifications.forEach((notification) => {
+      switch (notification.type) {
+        case "NEW_MESSAGE":
+          this.notifications.get("messages")!.push(notification);
+          break;
+
+        case "FRIEND_REQUEST":
+          this.notifications.get("friendRequests")!.push(notification);
+          break;
+
+        case "GAME_INVITE":
+          this.notifications.get("gameInvites")!.push(notification);
+          break;
+
+        case "TOURNAMENT_TURN":
+          this.notifications.get("tournamentTurns")!.push(notification);
+          break;
+
+        default:
+          console.warn("Unknown notification type:", notification.type);
+      }
+    });
+
+    // this.updateNotificationBadges();
+  }
+
+    async markNotificationsAsRead(type: string, senderId?: string) {
+    try {
+      // Call the backend to mark notifications as read
+      await this.chatService.markNotificationsAsRead(type, senderId);
+  
+      // Remove notifications from the array
+      if (senderId) {
+        // Remove notifications of the given type and senderId
+        const filteredNotifications = this.notifications.get(type)!.filter(
+          (notification) => notification.senderId !== senderId
+        );
+        this.notifications.set(type, filteredNotifications);
+      } else {
+        // Remove all notifications of the given type
+        this.notifications.set(type, []);
+      }
+  
+      // Update the UI (e.g., hide badges)
+    } catch (error) {
+      console.error("Failed to mark notifications as read:", error);
+    }
+  }
+
+  reset() {
     // Close all open chats
     this.openChats.forEach((chat, friendId) => {
       chat.remove();
@@ -121,7 +179,9 @@ class ChatComponent {
     }
   }
 
-  async sendMessage(friendId: string, message: PrivateSendMessage | UserBlockMessageResponse) {
+  async sendMessage(friendId: string, message: PrivateSendMessage | UserBlockMessageResponse | NotificationMessage) {
+    
+
     if ("content" in message && (!message.content || !message.content.trim())) return;
     this.chatService.sendPrivateMessage(message);
     if (message.kind === "private/send") {

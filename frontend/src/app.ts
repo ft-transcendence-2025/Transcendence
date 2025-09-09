@@ -1,6 +1,7 @@
 import { renderNavbar } from "./components/navbar.js";
-import { PrivateMessageResponse } from "./interfaces/message.interfaces.js";
+import { IncomingMessage, PrivateMessageResponse } from "./interfaces/message.interfaces.js";
 import { router, navigateTo } from "./router/router.js";
+import chatService from "./services/chat.service.js";
 import { refreshAccessToken } from "./utils/api.js";
 import { ChatComponent } from "./views/chat.js";
 
@@ -43,14 +44,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  const notifications = await chatManager.chatService.fetchUnreadNotifications() as any[];
+  chatManager.storeNotifications(notifications);
+
   if (chatManager.chatService.conn) {
     chatManager.chatService.conn.onmessage = (e: MessageEvent) => {
-      const message: PrivateMessageResponse = JSON.parse(e.data);
-      if (message.senderId !== chatManager.currentUserId) {
+      const message: IncomingMessage = JSON.parse(e.data);
+      console.log("Received message:", message);
+      if (message.event === "private/message") {
         let temp = chatManager.messages.get(message.senderId) || [];
         temp.push(message);
         chatManager.messages.set(message.senderId, temp);
         chatManager.updateChatMessages(message.senderId);
+      } else if (message.event === "notification/new") {
+        chatManager.storeNotifications([message]);
       }
     };
   }
