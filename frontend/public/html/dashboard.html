@@ -6,7 +6,7 @@
       <a
         href="/pong?mode=ai"
         data-link="true"
-        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/single_tree.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+        class="group relative block h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/single_tree.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
@@ -29,7 +29,7 @@
       <!-- Local Pong 2 Players -->
       <button
         id="local-2player-btn"
-        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg cursor-pointer border-none"
+        class="group relative flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg cursor-pointer border-none"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
@@ -53,7 +53,7 @@
       <a
         href="/tournament?type=local"
         data-link="true"
-        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+        class="group relative block h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
@@ -82,7 +82,7 @@
       <a
         href="/pong?mode=remote"
         data-link="true"
-        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+        class="group relative flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/two_trees_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
@@ -104,7 +104,7 @@
         <!-- Remote Custom Game Room Button -->
         <button
           id="remote-gameroom-btn"
-          class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/remote_custom.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg cursor-pointer border-none"
+          class="group relative flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/remote_custom.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg cursor-pointer border-none"
           onclick="document.getElementById('gameroom-modal').classList.remove('hidden')"
         >
           <div
@@ -126,7 +126,7 @@
         </button>
 
         <!-- Game Room Modal -->
-        <div id="gameroom-modal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+        <div id="gameroom-modal" class="modal hidden fixed inset-0 z-50 items-center justify-center backdrop-blur-sm">
           <div class="modal-content bg-(--color-background) rounded-lg p-6 max-w-md w-full mx-4">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-xl font-bold text-(--color-text-primary)">Enter Game Room</h2>
@@ -155,7 +155,7 @@
       <a
         href="/tournament?type=remote"
         data-link="true"
-        class="group relative block flex h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
+        class="group relative block h-48 w-full max-w-md items-end overflow-hidden rounded-2xl bg-[url('./assets/dashboard_cards/monsteras_red.jpg')] bg-cover bg-center shadow-md transition-all hover:scale-105 hover:shadow-lg"
       >
         <div
           class="absolute inset-0 bg-gradient-to-t from-(--color-primary-darker) from-15% to-transparent"
@@ -180,7 +180,7 @@
 </div>
 
 <!-- 2-Player Setup Modal -->
-<div id="2p-setup-modal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
+<div id="2p-setup-modal" class="modal hidden fixed inset-0 z-50 items-center justify-center backdrop-blur-sm">
   <div class="modal-content bg-(--color-background) rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
     <!-- Modal Header -->
     <div class="flex items-center justify-between mb-6">
