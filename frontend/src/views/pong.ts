@@ -28,7 +28,7 @@ export async function renderPong(container: HTMLElement | null) {
     setUpTournoment();
   }
 
-  enterGame(gameMode);
+  enterGame(gameMode, null);
 }
 
 function setUpTournoment(): void {
@@ -53,15 +53,20 @@ function setUpTournoment(): void {
   }
 }
 
-async function enterGame(gameMode: string) {
+async function enterGame(gameMode: string, gameData: FetchData | null) {
   try {
     const baseUrl = window.location.origin; 
 
     if (gameMode === "remote") {
-      const response = await request(`${baseUrl}/api/getgame/remote`, {
-        credentials: "include"
-      }) as FetchData;
-      const remoteGame = new RemoteGame(response);
+      if (!gameData) {
+        const response = await request(`${baseUrl}/api/getgame/remote`, {
+          credentials: "include"
+        }) as FetchData;
+        const remoteGame = new RemoteGame(response);
+      }
+      else {
+        const remoteGame = new RemoteGame(gameData);
+      }
     }
     else {
       const response = await request(`${baseUrl}/api/getgame/singleplayer`, {
