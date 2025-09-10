@@ -1,13 +1,19 @@
-<div class="font-poppins flex bg-[var(--color-background)] text-[var(--color-text-primary)]"
-  style="min-height: calc(100vh - 70px);" - This sets the min-height to the full viewport height minus the navbar
-  (assuming navbar height is 72px; adjust if your navbar is a different height). - Also, replaced the Tailwind-like
-  custom property syntax with valid CSS variable usage for background and text color.>
+<div
+  class="font-poppins flex bg-[var(--color-background)] text-[var(--color-text-primary)]"
+  style="min-height: calc(100vh - 76px);"
+
   <!-- Sidebar -->
-  <aside class="ml-5 flex w-72 flex-col gap-8 bg-(--color-primary-darker) p-6 text-white">
+  <aside
+    class="ml-5 flex w-72 flex-col gap-8 bg-(--color-primary-darker) p-6 text-white"
+  >
     <!-- Avatar and User Info -->
     <div class="flex flex-col items-center text-center">
-      <img id="user-avatar" src="/assets/avatars/bear.png" alt="Avatar"
-        class="mb-4 h-44 w-44 rounded-full border-4 border-(--color-secondary) object-cover" />
+      <img
+        id="user-avatar"
+        src="/assets/avatars/bear.png"
+        alt="Avatar"
+        class="mb-4 h-44 w-44 rounded-full border-4 border-(--color-secondary) object-cover"
+      />
       <h2 id="display-username" class="text-xl font-bold">UglyNinja.ezWk</h2>
       <p id="user-location" class="text-sm text-(--color-secondary-light)">
         Portugal
@@ -18,17 +24,23 @@
         Edit my profile
       </button> -->
       <div class="mt-3 flex gap-2">
-        <button id="edit-profile-button"
-          class="rounded-lg bg-(--color-secondary) px-4 py-2 text-sm font-semibold text-(--color-text-primary) hover:bg-(--color-secondary-dark) cursor-pointer">
+        <button
+          id="edit-profile-button"
+          class="cursor-pointer rounded-lg bg-(--color-secondary) px-4 py-2 text-sm font-semibold text-(--color-text-primary) hover:bg-(--color-secondary-dark)"
+        >
           Edit my profile
         </button>
-        <button id="add-friend-button"
-          class="hidden rounded-lg bg-(--color-primary) px-4 py-2 text-sm font-semibold text-white hover:bg-(--color-primary-dark) cursor-pointer">
+        <button
+          id="add-friend-button"
+          class="hidden cursor-pointer rounded-lg bg-(--color-primary) px-4 py-2 text-sm font-semibold text-white hover:bg-(--color-primary-dark)"
+        >
           Add Friend
         </button>
-        <button id="block-button"
-          class="material-symbols-outlined bg-accent text-3xl rounded-lg px-4 py-2 hover:text-white hover:bg-accent-dark focus:outline-none cursor-pointer"
-          title="Block user">
+        <button
+          id="block-button"
+          class="material-symbols-outlined bg-accent hover:bg-accent-dark cursor-pointer rounded-lg px-4 py-2 text-3xl hover:text-white focus:outline-none"
+          title="Block user"
+        >
           block
         </button>
       </div>
@@ -36,7 +48,9 @@
 
     <!-- Stats -->
     <div class="space-y-4">
-      <h3 class="border-b border-(--color-secondary-dark) pb-1 text-lg font-bold">
+      <h3
+        class="border-b border-(--color-secondary-dark) pb-1 text-lg font-bold"
+      >
         Statistics
       </h3>
       <ul class="space-y-2 text-sm">
@@ -61,11 +75,12 @@
 
     <!-- Activity -->
     <div>
-      <h3 class="mb-2 border-b border-(--color-secondary-dark) pb-1 text-lg font-bold">
+      <h3
+        class="mb-2 border-b border-(--color-secondary-dark) pb-1 text-lg font-bold"
+      >
         Activity
       </h3>
       <div class="flex items-center space-x-3">
-
         <span class="text-sm">Most played</span>
       </div>
     </div>
@@ -73,13 +88,238 @@
 
   <!-- Main Content -->
   <main class="flex-1 p-8">
-    <section class="flex h-full flex-col items-center justify-center rounded-lg bg-white p-8 text-center shadow">
-      <h2 class="mb-4 text-2xl font-bold">Liked games</h2>
-      <p class="mb-6 text-gray-600">Your liked games will appear here</p>
-      <button
-        class="rounded-lg bg-(--color-primary) px-6 py-3 font-semibold text-white hover:bg-(--color-primary-dark)">
-        Let's play some games
-      </button>
-    </section>
+    <div id="user-stats" class="mx-auto max-w-4xl p-4">
+      <h2 class="mb-6 text-center text-3xl font-bold">Player Statistics</h2>
+
+      <!-- Stats Overview Cards -->
+      <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <!-- Total Games Card -->
+        <div
+          class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold">Total Games</h3>
+              <p
+                id="user-total-games-count"
+                class="mt-1 text-3xl font-bold text-(--color-secondary)"
+              >
+                0
+                <!-- Default value -->
+              </p>
+            </div>
+            <div class="text-4xl text-(--color-secondary) opacity-70">
+              <i class="fas fa-table-tennis-paddle-ball"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Games Won Card -->
+        <div
+          class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold">Games Won</h3>
+              <p
+                id="user-games-won-count"
+                class="mt-1 text-3xl font-bold text-(--color-primary)"
+              >
+                0
+                <!-- Default value -->
+              </p>
+            </div>
+            <div class="text-4xl text-(--color-primary) opacity-70">
+              <i class="fas fa-star"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Games Lost Card -->
+        <div
+          class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold">Games Lost</h3>
+              <p
+                id="user-games-lost-count"
+                class="mt-1 text-3xl font-bold text-(--color-accent)"
+              >
+                0
+                <!-- Default value -->
+              </p>
+            </div>
+            <div class="text-4xl text-(--color-accent) opacity-70">
+              <i class="fas fa-skull"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overall Win Rate Progress Bar -->
+      <div
+        class="mb-8 rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md"
+      >
+        <div class="mb-4 flex items-center justify-between">
+          <h3 class="text-xl font-bold">Overall Win Rate</h3>
+          <span
+            id="overall-win-percentage"
+            class="text-2xl font-bold text-(--color-primary)"
+          ></span>
+        </div>
+        <div class="relative">
+          <div class="h-4 w-full rounded-full bg-gray-200">
+            <div
+              id="win-rate-progress-bar"
+              class="h-4 rounded-full bg-(--color-primary)"
+              style="width: 0%"
+            ></div>
+          </div>
+          <div class="mt-2 flex justify-between text-sm text-gray-600">
+            <span>0%</span>
+            <span>50%</span>
+            <span>100%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
+        <!-- Game Mode Stats - Takes 2/5 of the space -->
+        <div
+          class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md lg:col-span-2"
+        >
+          <h3 class="mb-4 text-xl font-bold">Game Mode Stats</h3>
+
+          <!-- 1v1 Games -->
+          <div class="mb-4">
+            <div class="mb-2 flex items-center justify-between">
+              <span class="font-medium">1v1 Games</span>
+              <span id="1v1-games-played" class="text-sm text-gray-600">
+                0 played<!-- Default value -->
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span id="1v1-wins" class="font-semibold text-(--color-primary)">
+                0 wins<!-- Default value -->
+              </span>
+              <span id="1v1-losses" class="font-semibold text-(--color-accent)">
+                0 losses<!-- Default value -->
+              </span>
+              <span id="1v1-win-rate" class="font-bold text-(--color-primary)">
+                -
+                <!-- Default value -->
+              </span>
+            </div>
+          </div>
+
+          <!-- Tournament Games -->
+          <div>
+            <div class="mb-2 flex items-center justify-between">
+              <span class="font-medium">Tournaments</span>
+              <span id="tournament-games-played" class="text-sm text-gray-600">
+                0 played<!-- Default value -->
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <span
+                id="tournament-wins"
+                class="font-semibold text-(--color-primary)"
+              >
+                0 wins<!-- Default value -->
+              </span>
+              <span
+                id="tournament-win-rate"
+                class="font-bold text-(--color-primary)"
+              >
+                -
+                <!-- Default value -->
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Match History - Takes 3/5 of the space -->
+        <div
+          class="rounded-lg border-2 border-(--color-primary-light) bg-white p-6 shadow-md lg:col-span-3"
+        >
+          <h3 class="mb-4 text-xl font-bold">Recent Matches</h3>
+
+          <div id="recent-matches-container" class="space-y-3">
+            <!-- Column Header -->
+            <div
+              class="grid grid-cols-4 gap-4 border-b border-gray-300 pb-2 text-sm font-semibold text-gray-600"
+            >
+              <span>Date</span>
+              <span>Opponent</span>
+              <span class="text-center">Score</span>
+              <span class="text-center">Result</span>
+            </div>
+
+            <!-- Match Rows -->
+            <div
+              id="recent-match-0"
+              class="match-row grid grid-cols-4 gap-4 border-b border-gray-200 pb-2 text-sm"
+            >
+              <span class="match-date text-gray-500">No match</span>
+              <span class="match-opponent font-medium"></span>
+              <span class="match-score text-center text-gray-600"></span>
+              <span
+                class="match-result text-center font-semibold text-(--color-primary)"
+              ></span>
+            </div>
+
+            <div
+              id="recent-match-1"
+              class="match-row grid grid-cols-4 gap-4 border-b border-gray-200 pb-2 text-sm"
+            >
+              <span class="match-date text-gray-500">No match</span>
+              <span class="match-opponent font-medium"></span>
+              <span class="match-score text-center text-gray-600"></span>
+              <span
+                class="match-result text-center font-semibold text-(--color-accent)"
+              ></span>
+            </div>
+
+            <div
+              id="recent-match-2"
+              class="match-row grid grid-cols-4 gap-4 border-b border-gray-200 pb-2 text-sm"
+            >
+              <span class="match-date text-gray-500">No match</span>
+              <span class="match-opponent font-medium"></span>
+              <span class="match-score text-center text-gray-600"></span>
+              <span
+                class="match-result text-center font-semibold text-(--color-primary)"
+              ></span>
+            </div>
+
+            <div
+              id="recent-match-3"
+              class="match-row grid grid-cols-4 gap-4 border-b border-gray-200 pb-2 text-sm"
+            >
+              <span class="match-date text-gray-500">No match</span>
+              <span class="match-opponent font-medium"></span>
+              <span class="match-score text-center text-gray-600"></span>
+              <span
+                class="match-result text-center font-semibold text-(--color-primary)"
+              ></span>
+            </div>
+
+            <div
+              id="recent-match-4"
+              class="match-row grid grid-cols-4 gap-4 text-sm"
+            >
+              <span class="match-date text-gray-500">No match</span>
+              <span class="match-opponent font-medium"></span>
+              <span class="match-score text-center text-gray-600"></span>
+              <span
+                class="match-result text-center font-semibold text-(--color-accent)"
+                >-</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
 </div>

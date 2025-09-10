@@ -10,6 +10,7 @@ import { Friend } from "../views/chat.js";
 import { chatManager } from "../app.js";
 import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, sendFriendRequest, unblockUser } from "../services/friendship.service.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
+import { renderStats } from "./stats.js";
 
 
 let currentProfile: any = null;
@@ -39,6 +40,7 @@ export async function renderProfile(container: HTMLElement | null) {
 	}
 
 	setupEventListeners(username);
+	renderStats(document.getElementById("content") as HTMLElement);
 }
 
 async function populateProfileView(profile: any) {
@@ -82,9 +84,9 @@ async function populateProfileView(profile: any) {
 		}
 	}
 
-    const addFriendButton = document.getElementById("add-friend-button");
-    if (addFriendButton) {
-        const friendshipStatus = await getFriendshipStatus(profile.userUsername) as any;
+	const addFriendButton = document.getElementById("add-friend-button");
+	if (addFriendButton) {
+		const friendshipStatus = await getFriendshipStatus(profile.userUsername) as any;
 		console.log("Add Friend Button:", addFriendButton);
 		console.log("Friendship Status:", friendshipStatus);
 		console.log("Logged-in Username:", loggedInUsername);
@@ -107,7 +109,7 @@ async function populateProfileView(profile: any) {
 		} else {
 			addFriendButton.classList.add("hidden");
 		}
-    }
+	}
 
 	const blockButton = document.getElementById("block-button");
 	if (blockButton) {
