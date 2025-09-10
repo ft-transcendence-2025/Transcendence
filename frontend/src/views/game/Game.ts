@@ -95,7 +95,6 @@ export class Game {
         if (player1Name) {
           winnerName = player1Name.innerHTML;
           winnerText.innerHTML = `${winnerName} WINS!`;
-          this.registeringWinner();
         }
       }
       else if (player === 2) {
@@ -103,13 +102,13 @@ export class Game {
         if (player2Name) {
           winnerName = player2Name.innerHTML;
           winnerText.innerHTML = `${winnerName} WINS!`;
-          this.registeringWinner();
         }
       }
     }
   }
 
   protected async registeringWinner() {
+    console.log("Here")
     let winnerName: string = "placeholder";
     if (this.gameState && this.gameState.score.winner === 1) {
       const player1Name = document.getElementById("player1-name") as HTMLDivElement;
