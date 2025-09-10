@@ -9,6 +9,8 @@ import { renderTournament } from "../views/tournamentSetup.js";
 import { renderUserProfile } from "../views/userProfile.js";
 import { renderTournamentTree } from "../views/tournamentTree.js";
 import { renderStats } from "../views/stats.js";
+import { renderChat } from "../views/chat.js";
+import { renderProfile } from "../views/profile.js";
 
 interface Route {
   path: string;
@@ -19,6 +21,7 @@ export const routes: Route[] = [
   { path: "/", action: renderHome },
   { path: "/404", action: render404 },
   { path: "/profile", action: renderUserProfile },
+  { path: "/friend-profile", action: renderProfile },
   { path: "/register", action: openRegisterModal },
   { path: "/login", action: openLoginModal },
   { path: "/dashboard", action: renderDashboard },

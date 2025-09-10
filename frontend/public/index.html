@@ -1,24 +1,33 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="output.css" rel="stylesheet" />
-        <link rel="icon" type="image/x-icon" href="assets/icons/favicon_m.ico" />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        />
-        <title>Jungle</title>
-        <!-- Load environment variables -->
-        <script src="./env.js"></script>
-    </head>
-    <body class="bg-(--color-background) text-(--color-text-primary) font-montserrat
-    ">
-        <div id="app">
-            <header id="navbar"></header>
-            <main id="content"></main>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="output.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon_m.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <title>Jungle</title>
+    <!-- Load environment variables -->
+    <script src="./env.js"></script>
+  </head>
+  <body
+    class="font-montserrat bg-(--color-background) text-(--color-text-primary)"
+  >
+    <div id="app">
+      <header id="navbar"></header>
+      <main id="content"></main>
+      <div id="chat-div-container">
+        <div id="chat-root" class="flex h-full w-full">
+          <div
+            id="chat-windows"
+            class="fixed right-0 bottom-0 flex gap-2 p-2"
+          ></div>
         </div>
-        <script type="module" src="./app.js"></script>
-    </body>
+      </div>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
 </html>

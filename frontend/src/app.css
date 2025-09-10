@@ -11,13 +11,15 @@
   --color-primary-dark: #2e7058;
   --color-primary-darker: #21503f;
 
-  --color-secondary: #FFC116;
-  --color-secondary-light: #ffe08a;
-  --color-secondary-dark: #cc9a11;
-  --color-secondary-darker: #7f600b;
-  --color-background: #F0F7F4;
-  --color-text-primary: #183A37;
+  --color-secondary: #f4b942;
+  --color-secondary-light: #fae3b3;
+  --color-secondary-dark: #aa812e;
+  --color-secondary-darker: #7a5c21;
+  --color-background: #fff8e5;
+  --color-background-darker: #e6ddb8;
+  --color-text-primary: #2e3a29;
   --color-accent: #fe4e00;
+  --color-accent-dark: #b33600;
 
   --font-press-start: "Press Start 2P", "system-ui";
   --font-greek: "Caesar Dressing", "system-ui";
@@ -79,4 +81,47 @@
 .text-stroke {
   /* -webkit-text-stroke: 2px rgba(57, 103, 51, 0.8); */
   -webkit-text-stroke: 2px #2e3a29;
+}
+
+/* Default margin */
+.modal-content {
+  margin-right: 5px;
+}
+
+/* Adjust margin for smaller screens */
+@media (max-width: 768px) {
+  .modal-content {
+    margin-right: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    margin-right: 4px;
+  }
+}
+
+#search-results {
+  width: 100%; /* Match the width of the search bar */
+  max-height: 200px; /* Limit the height of the dropdown */
+  overflow-y: auto; /* Add scroll if results exceed max height */
+}
+
+#search-results li {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#search-results li:hover {
+  background-color: #f3f4f6; /* Light gray hover effect */
+}
+
+#search-results img {
+  width: 2rem; /* Match the height of the search bar */
+  height: 2rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
 }

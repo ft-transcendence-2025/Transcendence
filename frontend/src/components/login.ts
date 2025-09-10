@@ -3,6 +3,7 @@ import { login } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
 import { renderNavbar } from "./navbar.js";
 import { renderHome } from "../views/home.js";
+import { reloadChatManager } from "../app.js";
 
 // This function will find the modal on the page and open it.
 export async function openLoginModal(container: HTMLElement | null = null) {
@@ -52,16 +53,15 @@ export async function openLoginModal(container: HTMLElement | null = null) {
     try {
       const response = await login(data);
       localStorage.setItem("authToken", response.accessToken);
-      // alert("Login Successful!"); //debug
       closeModal();
 
-      // render navbar to update links
       const navbarContainer = document.getElementById("navbar");
       if (navbarContainer) {
-        renderNavbar(navbarContainer);
+        await renderNavbar(navbarContainer);
       }
 
       const container = document.getElementById("content");
+      reloadChatManager();
       navigateTo("/dashboard", container);
     } catch (error) {
       console.error("Login failed:", error);

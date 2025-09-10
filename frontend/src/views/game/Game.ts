@@ -73,6 +73,7 @@ export class Game {
 
       if (this.gameState.score.winner) {
         this.gameOver(this.gameState.score.winner)
+
       }
       else
         this.hiddeGameOver();
@@ -95,7 +96,7 @@ export class Game {
         if (player1Name) {
           winnerName = player1Name.innerHTML;
           winnerText.innerHTML = `${winnerName} WINS!`;
-          this.registeringWinner();
+          // this.registeringWinner();
         }
       }
       else if (player === 2) {
@@ -103,7 +104,7 @@ export class Game {
         if (player2Name) {
           winnerName = player2Name.innerHTML;
           winnerText.innerHTML = `${winnerName} WINS!`;
-          this.registeringWinner();
+          // this.registeringWinner();
         }
       }
     }

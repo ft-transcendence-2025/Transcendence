@@ -1,18 +1,42 @@
 import { navigateTo } from "../router/router.js";
+import { getPendingRequests } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUser, getCurrentUserAvatar } from "../utils/userUtils.js";
+import { getFriendsContent } from "../views/friends.js";
+import { getNotificationsContent } from "../views/notifications.js";
+import { getProfileModalContent } from "../views/modalProfile.js";
+import { openModal } from "./modalManager.js";
+import renderSearchBar from "./searchBar.js";
+import { getCurrentUserAvatar } from "../utils/userUtils.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
   if (!container) return;
-
   // Fetch the component's HTML template
   container.innerHTML = await loadHtml("/html/navbar.html");
-
+  await renderSearchBar();
+  const friendsIcon = document.getElementById("friends-list");
+  const notificationIcon = document.getElementById("notifications");
+  const profileIcon = document.getElementById("profile");
   const loginLink = document.getElementById("login-link");
   const dashboardLink = document.getElementById("dashboard-link");
   const registerLink = document.getElementById("register-link");
   const logoutLink = document.getElementById("logout-link");
   const userMenu = document.getElementById("user-menu");
+
+  friendsIcon?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    openModal(await getFriendsContent(), friendsIcon);
+  });
+
+  notificationIcon?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const requestsRaw = await getPendingRequests() as any[];
+    openModal(await getNotificationsContent(), notificationIcon);
+  });
+
+  profileIcon?.addEventListener("click", async (e) => {
+    e.preventDefault();
+    openModal(await getProfileModalContent(), profileIcon);
+  });
 
   const token = localStorage.getItem("authToken");
 
@@ -104,4 +128,6 @@ async function toggleUserMenuSidebar() {
   } else {
     console.error("Navbar element not found");
   }
+
+
 }

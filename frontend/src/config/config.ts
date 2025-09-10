@@ -7,4 +7,4 @@ declare global {
   }
 }
 
-export const BASE_URL = window.ENV.BASE_URL;
+export const BASE_URL = `${window.location.origin}/api`;
