@@ -6,6 +6,7 @@ import { renderFriends } from "../views/friends.js";
 import { renderDashboard } from "../views/dashboard.js";
 import { renderPong } from "../views/pong.js";
 import { renderTournament } from "../views/tournamentSetup.js";
+import { renderRemoteTournamentLobby } from "../views/remoteTournamentLobby.js";
 import { renderUserProfile } from "../views/userProfile.js";
 import { renderTournamentTree } from "../views/tournamentTree.js";
 import { renderStats } from "../views/stats.js";
@@ -27,6 +28,7 @@ export const routes: Route[] = [
   { path: "/dashboard", action: renderDashboard },
   { path: "/pong", action: renderPong },
   { path: "/tournament", action: renderTournament },
+  { path: "/remote-tournament-lobby", action: renderRemoteTournamentLobby },
   { path: "/tournament-tree", action: renderTournamentTree },
   { path: "/stats", action: renderStats },
   { path: "/friends", action: renderFriends },
