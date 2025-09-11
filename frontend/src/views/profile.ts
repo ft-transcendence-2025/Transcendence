@@ -87,9 +87,6 @@ async function populateProfileView(profile: any) {
 	const addFriendButton = document.getElementById("add-friend-button");
 	if (addFriendButton) {
 		const friendshipStatus = await getFriendshipStatus(profile.userUsername) as any;
-		console.log("Add Friend Button:", addFriendButton);
-		console.log("Friendship Status:", friendshipStatus);
-		console.log("Logged-in Username:", loggedInUsername);
 		if (
 			profile.userUsername !== loggedInUsername && // Not the logged-in user's profile
 			friendshipStatus.status !== 'BLOCKED' && // No blocked relationship
@@ -153,13 +150,15 @@ function setupEventListeners(username: string) {
 		blockUserBtn.addEventListener("click", async () => {
 			const isUnblock = blockUserBtn.textContent === "lock_open";
 			if (isUnblock) {
-				unblockUser(username); // Unblock the user
-				console.log("User unblocked");
+				await unblockUser(username); // Unblock the user
+				blockUserBtn.textContent = "account_circle_off";
+				blockUserBtn.title = "Block User";
 			} else {
-				blockUser(username);
-				console.log("User blocked");
+				await blockUser(username);
+				blockUserBtn.textContent = "lock_open";
+				blockUserBtn.title = "Unblock User";
 			}
-			location.reload();
+			// Optionally update friendship status or UI here
 		});
 	}
 	const addFriendButton = document.getElementById("add-friend-button");
@@ -167,12 +166,12 @@ function setupEventListeners(username: string) {
 		addFriendButton.addEventListener("click", async () => {
 			try {
 				await sendFriendRequest(username);
-				console.log("Friend request sent");
 				addFriendButton.textContent = "Request Sent";
 				(addFriendButton as HTMLButtonElement).disabled = true;
-				location.reload();
+				addFriendButton.classList.remove("cursor-pointer", "hover:bg-(--color-primary-dark)");
+				addFriendButton.classList.add("bg-gray-400", "text-gray-700");
 			} catch (error) {
-				console.error("Error sending friend request:", error);
+				// Optionally show error message in UI
 			}
 		});
 	}

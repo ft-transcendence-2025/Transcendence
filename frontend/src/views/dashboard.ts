@@ -32,7 +32,7 @@ export async function renderDashboard(container: HTMLElement | null) {
   // Setup 2-player modal functionality
   await setup2PlayerModal();
 
-    setupGameRoomButton();
+  // ...no game room setup needed...
 }
 
 async function setup2PlayerModal() {
@@ -176,41 +176,3 @@ function startTwoPlayerGame() {
   const container = document.getElementById("content");
   navigateTo("/pong?mode=2player", container);
 }
-
-
-function setupGameRoomButton() {
-  const gameRoomBtn = document.getElementById("remote-gameroom-btn");
-  const gameRoomForm = document.getElementById("gameroom-form");
-
-  if (gameRoomBtn && gameRoomForm) {
-    gameRoomForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      enterGameRoom();
-    });
-  } else {
-    console.error("Game Room button or form not found");
-  }
-}
-
-function enterGameRoom() {
-  const roomInput = document.getElementById("gameroom-number") as HTMLInputElement;
-  const room = roomInput.value.trim();
-  const container = document.getElementById("content");
-
-  if (!container) {
-    console.error("Content container not found");
-    return;
-  }
-  console.log("Room entered:", room);
-  if (room) {
-    const remoteGame = new RemoteGame({
-      state: "Joined",
-      side: "right",
-      gameMode: "remotegame",
-      id: Number(room),
-    } as FetchData);
-    console.log("remoteGame", remoteGame);
-    navigateTo(`/pong?mode=remote`, container);
-  }
-}
-

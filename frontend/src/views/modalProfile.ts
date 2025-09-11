@@ -32,7 +32,6 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
 
   try {
     profile = await getProfileByUsername(finalUsername);
-    console.log("Fetched profile for modal:", profile);
     avatarUrl = await getUserAvatar(finalUsername);
   } catch (error) {
     console.error("Error loading profile for modal:", error);

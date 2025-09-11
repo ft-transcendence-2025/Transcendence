@@ -1,6 +1,7 @@
 // src/views/notifications.ts
 import { FriendshipStatus, getPendingRequests, respondRequest } from "../services/friendship.service.js";
 import { getUserAvatar } from "../services/profileService.js";
+import { navigateTo } from "../router/router.js";
 
 export async function getNotificationsContent(): Promise<HTMLElement> {
   const container = document.createElement("div");
@@ -82,14 +83,12 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.ACCEPTED);
         li.remove();
-        location.reload();
       });
 
       rejectBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.DECLINED);
         li.remove();
-        location.reload();
       });
 
       // Redirect to user profile on li click (excluding button clicks)
@@ -100,16 +99,64 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
         ) {
           return;
         }
-        window.location.href = `/friend-profile?username=${encodeURIComponent(req.requesterUsername)}`;
+        navigateTo(`/friend-profile?username=${encodeURIComponent(req.requesterUsername)}`, document.getElementById("content"));
       });
     });
   } else {
-    ul.innerHTML = "<p>No friend requests.</p>";
+    ul.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-8">
+        <img src="/assets/icons/noFriendRequest.gif" alt="No requests" class="w-20 h-20 mb-4 opacity-90" />
+        <span style="
+          font-family: var(--font-poppins), monospace;
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: var(--color-primary);
+          text-shadow: 0 2px 2px var(--color-primary-light), 0 1px 0 var(--color-secondary-light);
+          margin-bottom: 0.5rem;
+          letter-spacing: 1px;
+          -webkit-text-stroke: 1px var(--color-primary-dark);
+        ">
+          No friend requests
+        </span>
+        <span style="
+          font-family: var(--font-poppins), sans-serif;
+          font-size: 1rem;
+          color: var(--color-secondary);
+          margin-top: 0.25rem;
+        ">
+          You're all caught up! <span style="color: var(--color-accent);">✨</span>
+        </span>
+      </div>
+    `;
   }
   tabContents[0].appendChild(ul);
 
   // Fill second tab
-  tabContents[1].innerHTML = "<p>Lika eh a melhor!</p>";
+  tabContents[1].innerHTML = `
+      <div class="flex flex-col items-center justify-center py-8">
+        <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 opacity-90" />
+        <span style="
+          font-family: var(--font-poppins), monospace;
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: var(--color-primary);
+          text-shadow: 0 2px 2px var(--color-primary-light), 0 1px 0 var(--color-secondary-light);
+          margin-bottom: 0.5rem;
+          letter-spacing: 1px;
+          -webkit-text-stroke: 1px var(--color-primary-dark);
+        ">
+          No Game Invites
+        </span>
+        <span style="
+          font-family: var(--font-poppins), sans-serif;
+          font-size: 1rem;
+          color: var(--color-secondary);
+          margin-top: 0.25rem;
+        ">
+          You're all caught up! <span style="color: var(--color-accent);">✨</span>
+        </span>
+      </div>
+    `;
 
   return container;
 }
