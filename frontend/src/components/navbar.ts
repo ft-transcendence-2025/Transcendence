@@ -17,7 +17,7 @@ export async function renderNavbar(container: HTMLElement | null) {
 
   const friendsIcon = document.getElementById("friends-list");
   const notificationIcon = document.getElementById("notifications");
-  const profileIcon = document.getElementById("profile") as HTMLImageElement;
+  const profileIcon = document.getElementById("profile-icon") as HTMLImageElement;
   
   const friendsBadge = document.createElement("span");
   friendsBadge.id = "friends-badge";
@@ -66,11 +66,12 @@ export async function renderNavbar(container: HTMLElement | null) {
   if (profileIcon) {
     try {
       const avatarUrl = await getCurrentUserAvatar();
+      console.log("Setting profile avatar URL:", avatarUrl);
       profileIcon.src = avatarUrl;
 
       // Default to a placeholder avatar on error
       profileIcon.onerror = () => {
-        profileIcon.src = "/assets/avatars/default-avatar.png";
+        profileIcon.src = "/assets/avatars/panda.png";
       };
     } catch (error) {
       console.warn("Could not load profile avatar:", error);
