@@ -334,7 +334,7 @@ async function getTournoment(players: Player[]) {
   try {
     const baseUrl = window.location.origin; 
 
-    const response = await fetch(`${baseUrl}/api/tournoment/create`, {
+    const response = await fetch(`${baseUrl}/api/tournament/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json" 
@@ -349,7 +349,7 @@ async function getTournoment(players: Player[]) {
     const data = await response.json();
     localStoreTournamentData(data);
   } catch (e) {
-    console.error("Failed to fetch tournoment:", e);
+    console.error("Failed to fetch tournament:", e);
   }
 }
 

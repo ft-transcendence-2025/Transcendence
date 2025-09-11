@@ -10,6 +10,7 @@ import { Friend } from "../views/chat.js";
 import { chatManager } from "../app.js";
 import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, sendFriendRequest, unblockUser } from "../services/friendship.service.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
+import { renderStats } from "./stats.js";
 
 
 let currentProfile: any = null;
@@ -39,6 +40,7 @@ export async function renderProfile(container: HTMLElement | null) {
 	}
 
 	setupEventListeners(username);
+	renderStats(document.getElementById("content") as HTMLElement);
 }
 
 async function populateProfileView(profile: any) {
@@ -155,6 +157,7 @@ async function updateButtonStates(username: string) {
 		} else {
 			addFriendButton.classList.add("hidden");
 		}
+	}
 	}
 
     // Update Block Button

@@ -1,7 +1,9 @@
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getPlayerMatches,
+import {
+  getPlayerMatches,
   MatchResponse,
-  Match} from "../services/blockchainService.js";
+  Match
+} from "../services/blockchainService.js";
 import { getAccessToken } from "../utils/api.js";
 
 /*
@@ -39,13 +41,13 @@ export async function renderStats(container: HTMLElement | null) {
   if (!container) return;
 
   // Fetch the component's HTML template
-  container.innerHTML = await loadHtml("/html/stats.html");
+  // container.innerHTML = await loadHtml("/html/stats.html");
 
   // Fetching player games history
   let playerMatchesResponse: MatchResponse | null = null;
   const token = getAccessToken();
   const playerId = getPlayerIdQueryString();
-   if (!playerId) {
+  if (!playerId) {
     console.log("Cannot fetch matches: No valid playerId from token.");
     return; // Stop if no valid playerId
   }
@@ -58,7 +60,7 @@ export async function renderStats(container: HTMLElement | null) {
   // Updating the visual element placeholders
   // User Total Games
   let gamesCount: number = 0;
-  const totalGames = document.getElementById("user-total-games-count");
+  const totalGames = document.getElementById("user-total-games-count"); 
   if (totalGames) {
     gamesCount = playerMatchesResponse?.count ?? 0; //Default value equals 0.
     totalGames.textContent = gamesCount.toString();
@@ -85,7 +87,7 @@ export async function renderStats(container: HTMLElement | null) {
   // User Total Games Lost
   let lostCount: number = 0;
   const totalGamesLost = document.getElementById("user-games-lost-count");
-  if (totalGamesLost){
+  if (totalGamesLost) {
     lostCount = gamesCount - winCount;
     totalGamesLost.textContent = lostCount.toString();
   } else {
@@ -109,14 +111,14 @@ export async function renderStats(container: HTMLElement | null) {
   } else {
     console.error("Element 'win-rate-progress-bar' not found");
   }
-  
+
   // 1v1 Total Games
   let totalV1Games: number = 0;
   const v1GamesCount = document.getElementById("1v1-games-played");
   if (v1GamesCount) {
     if (playerMatchesResponse?.matches) {
       totalV1Games = playerMatchesResponse?.matches?.reduce((count, match) => {
-        return match.tournamentId === "0" ? count + 1: count;
+        return match.tournamentId === "0" ? count + 1 : count;
       }, 0);
       v1GamesCount.textContent = `${totalV1Games.toString()} played`;
     } else {
@@ -133,7 +135,7 @@ export async function renderStats(container: HTMLElement | null) {
   if (v1GamesWonCount) {
     if (playerMatchesResponse?.matches) {
       totalV1GamesWon = playerMatchesResponse?.matches?.reduce((count, match) => {
-        return match.winner === playerId && match.tournamentId === "0" ? count + 1: count;
+        return match.winner === playerId && match.tournamentId === "0" ? count + 1 : count;
       }, 0);
       v1GamesWonCount.textContent = `${totalV1GamesWon.toString()} wins`;
     } else {
@@ -158,7 +160,7 @@ export async function renderStats(container: HTMLElement | null) {
   }
 
 
-   // 1v1 Overall Win Percentage
+  // 1v1 Overall Win Percentage
   let v1WinRate: number = 0;
   const v1OverallWinRate = document.getElementById("1v1-win-rate");
   if (v1OverallWinRate && totalV1Games > 0) {
@@ -174,9 +176,9 @@ export async function renderStats(container: HTMLElement | null) {
   const tournamentGamesCount = document.getElementById("tournament-games-played");
   if (tournamentGamesCount) {
     if (playerMatchesResponse?.matches) {
-      
+
       // Build a set of tournament Ids (to remove duplicates)
-      const uniqueTournamentIds = new Set (
+      const uniqueTournamentIds = new Set(
         playerMatchesResponse.matches
           .filter(match => match.tournamentId !== "0")
           .map(match => match.tournamentId)
@@ -189,14 +191,14 @@ export async function renderStats(container: HTMLElement | null) {
   } else {
     console.error("Element 'tournament-games-played' not found");
   }
-  
+
   // Tournament Total Games Won
   let totalTournamentGamesWon: number = 0;
   const tournamentGamesWonCount = document.getElementById("tournament-wins");
   if (tournamentGamesWonCount) {
     if (playerMatchesResponse?.matches) {
       totalTournamentGamesWon = playerMatchesResponse?.matches?.reduce((count, match) => {
-        return match.winner === playerId && match.tournamentId !== "0" && match.finalMatch === true ? count + 1: count;
+        return match.winner === playerId && match.tournamentId !== "0" && match.finalMatch === true ? count + 1 : count;
       }, 0);
       tournamentGamesWonCount.textContent = `${totalTournamentGamesWon.toString()} wins`;
     } else {
@@ -206,8 +208,8 @@ export async function renderStats(container: HTMLElement | null) {
     console.error("Element 'tournament-wins' not found");
   }
 
-// Tournament Total Games Lost
-// THERE IS NO ELEMENT TO TOURNAMENT LOSSES ON THE STATS.HTML
+  // Tournament Total Games Lost
+  // THERE IS NO ELEMENT TO TOURNAMENT LOSSES ON THE STATS.HTML
   let totalTournamentGamesLost: number = 0;
   const tournamentGamesLostCount = document.getElementById("tournament-loss");
   if (tournamentGamesLostCount) {
@@ -222,7 +224,7 @@ export async function renderStats(container: HTMLElement | null) {
   }
 
 
-// Tournament Overall Win Percentage
+  // Tournament Overall Win Percentage
   let tournamentWinRate: number = 0;
   const tournamentOverallWinRate = document.getElementById("tournament-win-rate");
   if (tournamentOverallWinRate && totalTournamentGames > 0) {
@@ -247,55 +249,55 @@ export async function renderStats(container: HTMLElement | null) {
 
   //Updating each table row with recent match data.
   const updateMatchRow = (elementId: string, match: Match | null, playerid: string) => {
-    
+
     //Selecting the Spans "spaces" from the HTML
     const row = document.getElementById(elementId);
     if (row && match) {
-    const dateSpan = row.querySelector(".match-date");
-    const opponentSpan = row.querySelector(".match-opponent");
-    const scoreSpan = row.querySelector(".match-score");
-    const resultSpan = row.querySelector(".match-result");
-    
-    if (dateSpan) {
-      const startDate = new Date(Number(match.startTime) * 1000);
-      dateSpan.textContent = startDate.toLocaleString("en-US", {
-        timeZone: "Europe/Lisbon",
-        month: "short",
-        day: "numeric",
-      });
-    }
+      const dateSpan = row.querySelector(".match-date");
+      const opponentSpan = row.querySelector(".match-opponent");
+      const scoreSpan = row.querySelector(".match-score");
+      const resultSpan = row.querySelector(".match-result");
 
-    if (opponentSpan) {
-      const opponent = match.player1 === playerId ? match.player2 : match.player1;
-      opponentSpan.textContent = `vs ${opponent}`;
-    }
+      if (dateSpan) {
+        const startDate = new Date(Number(match.startTime) * 1000);
+        dateSpan.textContent = startDate.toLocaleString("en-US", {
+          timeZone: "Europe/Lisbon",
+          month: "short",
+          day: "numeric",
+        });
+      }
 
-    if (scoreSpan) {
-      const opponentScore = match.player1 === playerId ? match.score2 : match.score1;
-      const myScore = match.player1 === playerId ? match.score1 : match.score2;
-      scoreSpan.textContent = `${myScore}-${opponentScore}`;
-    }
+      if (opponentSpan) {
+        const opponent = match.player1 === playerId ? match.player2 : match.player1;
+        opponentSpan.textContent = `vs ${opponent}`;
+      }
 
-    if (resultSpan) {
-      resultSpan.textContent = match.winner === playerId ? "W" : "L";
-    }
+      if (scoreSpan) {
+        const opponentScore = match.player1 === playerId ? match.score2 : match.score1;
+        const myScore = match.player1 === playerId ? match.score1 : match.score2;
+        scoreSpan.textContent = `${myScore}-${opponentScore}`;
+      }
 
-  } else if (row) {
-    const dateSpan = row.querySelector(".match-date");
-    const opponentSpan = row.querySelector(".match-opponent");
-    const scoreSpan = row.querySelector(".match-score");
-    const resultSpan = row.querySelector(".match-result");
-    if (dateSpan) dateSpan.textContent = "No match";
-    if (opponentSpan) opponentSpan.textContent = "";
-    if (scoreSpan) scoreSpan.textContent = "";
-    if (resultSpan) resultSpan.textContent = "";
+      if (resultSpan) {
+        resultSpan.textContent = match.winner === playerId ? "W" : "L";
+      }
+
+    } else if (row) {
+      const dateSpan = row.querySelector(".match-date");
+      const opponentSpan = row.querySelector(".match-opponent");
+      const scoreSpan = row.querySelector(".match-score");
+      const resultSpan = row.querySelector(".match-result");
+      if (dateSpan) dateSpan.textContent = "No match";
+      if (opponentSpan) opponentSpan.textContent = "";
+      if (scoreSpan) scoreSpan.textContent = "";
+      if (resultSpan) resultSpan.textContent = "";
     }
   };
 
   for (let i = 0; i < 5; i++) {
     updateMatchRow(`recent-match-${i}`, recentMatches[i], playerId);
   }
-  
+
 }
 
 const container = document.getElementById("user-stats");
