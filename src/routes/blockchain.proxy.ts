@@ -10,7 +10,7 @@ const blockchainProxy: FastifyPluginAsync = async (app: FastifyInstance) => {
     upstream: "http://blockchain:3000",
     prefix: "/api/blockchain",
     rewritePrefix: "/",
-    preHandler: blockchainPreHandler(app),
+    // preHandler: blockchainPreHandler(app),
   });
 
 };
