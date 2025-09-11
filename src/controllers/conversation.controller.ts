@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import prisma from "../lib/prisma";
 import { markMessagesAsRead } from "../services/privatechat.service";
+import { getUnreadNotifications, markNotificationsAsRead } from "../services/notifications.service";
 
 export const createConversation = async (req: FastifyRequest, res: FastifyReply) => {
 	const { user1Id, user2Id } = req.body as {
@@ -98,3 +99,36 @@ export async function markConversationAsRead(req: FastifyRequest, res: FastifyRe
 		res.code(500).send({ error: "Internal server error." });
 	}
 }
+
+
+export const fetchUnreadNotifications = async (req: FastifyRequest, res: FastifyReply) => {
+  const { userId } = req.params as { userId: string };
+
+  if (!userId) {
+    return res.code(400).send({ error: "Missing userId." });
+  }
+
+  try {
+    const notifications = await getUnreadNotifications(userId);
+    res.code(200).send(notifications);
+  } catch (error) {
+    console.error("Failed to fetch unread notifications:", error);
+    res.code(500).send({ error: "Internal server error." });
+  }
+};
+
+export const markNotifications = async (req: FastifyRequest, res: FastifyReply) => {
+  const { recipientId, type, senderId } = req.body as { recipientId: string; type: string; senderId?: string };
+
+  if (!recipientId || !type) {
+    return res.code(400).send({ error: "Missing recipientId or type." });
+  }
+
+  try {
+    const count = await markNotificationsAsRead(recipientId, type, senderId);
+    res.code(200).send({ message: "Notifications marked as read.", count });
+  } catch (error) {
+    console.error("Failed to mark notifications as read:", error);
+    res.code(500).send({ error: "Internal server error." });
+  }
+};

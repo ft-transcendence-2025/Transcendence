@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { getUnreadNotifications } from './notifications.service';
 
 export async function sendPendingMessages(userId: string, socket: any) {
   const pending = await prisma.message.findMany({
@@ -39,13 +40,23 @@ export async function handlePrivateMessage(users: Map<string, any>, senderId: st
     data: { senderId, conversationId: conversation.id, content, type, delivered: false },
   });
 
-  // const senderConn = users.get(senderId);
-  // if (senderConn) senderConn.socket.send(JSON.stringify({ event: 'private/message', echo: true, ...saved }));
 
+
+  const notification = await prisma.notification.create({
+    data: {
+      senderId,
+      recipientId,
+      type: 'NEW_MESSAGE',
+      content: `New message from ${senderId}`,
+    },
+  });
+
+  // Send the message and notification in real-time if the recipient is online
   const recipientConn = users.get(recipientId);
   if (recipientConn) {
     await prisma.message.update({ where: { id: saved.id }, data: { delivered: true } });
     recipientConn.socket.send(JSON.stringify({ event: 'private/message', ...saved }));
+    recipientConn.socket.send(JSON.stringify({ event: 'notification/new', ...notification }));
   }
 }
 

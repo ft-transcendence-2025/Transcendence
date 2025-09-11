@@ -2,6 +2,8 @@
 import { handleBlockUser, handlePrivateMessage, sendPendingMessages } from '../services/privatechat.service';
 import { handleLobbyMessage, joinLobby, leaveLobby } from '../services/lobby.service';
 import { handleUserStatus, USER_STATUS } from '../lib/userPresenceHandler';
+import prisma from '../lib/prisma';
+import { getUnreadNotifications } from '../services/notifications.service';
 
 type WS = any;
 
@@ -13,9 +15,12 @@ export async function chatHandler(socket: WS, request: any) {
     .then(res => res.json());
   const conn = { socket, userId, games: new Set<string>(), lastPong: Date.now(), blockedUsersList };
   users.set(userId, conn);
+
+
   handleUserStatus(userId, USER_STATUS.ONLINE);
-  // Send ready + pending messages
+
   socket.send(JSON.stringify({ event: 'system/ready', userId, ts: Date.now() }));
+
   sendPendingMessages(userId, socket);
 
   socket.on('message', async (raw: Buffer) => {
@@ -47,7 +52,19 @@ export async function chatHandler(socket: WS, request: any) {
       case 'user/block':
         handleBlockUser(users, userId, msg);
         break;
+        
+      // case 'game/invite':
+      //   // handleGameInvite(users, userId, msg);
+      //   break;
 
+      // case 'tournament/turn':
+      //   // handleTournamentTurn(users, userId, msg);
+      //   break;
+
+      // case 'friend/request':
+      //   // handleFriendRequest(users, userId, msg);
+      //   break;
+          
       default:
         socket.send(JSON.stringify({ event: 'system/error', message: 'unknown kind' }));
     }
