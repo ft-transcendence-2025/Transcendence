@@ -158,8 +158,6 @@ async function updateButtonStates(username: string) {
 			addFriendButton.classList.add("hidden");
 		}
 	}
-	}
-
     // Update Block Button
 	const blockButton = document.getElementById("block-button");
 	if (blockButton) {
@@ -179,6 +177,7 @@ async function updateButtonStates(username: string) {
 			blockButton.classList.remove("hidden");
 		}
 	}
+
 }
 
 function showProfileView() {
