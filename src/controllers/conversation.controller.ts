@@ -47,7 +47,7 @@ export const getUnreadMessagesCount = async (req: FastifyRequest, res: FastifyRe
 	}
 	try {
 		const count = await prisma.message.count({
-			where: {
+			where: { 
 				read: false,
 				NOT: {
 					senderId: userId,
@@ -101,7 +101,7 @@ export async function markConversationAsRead(req: FastifyRequest, res: FastifyRe
 }
 
 
-export const fetchUnreadNotifications = async (req: FastifyRequest, res: FastifyReply) => {
+export async function fetchUnreadNotifications(req: FastifyRequest, res: FastifyReply) {
   const { userId } = req.params as { userId: string };
 
   if (!userId) {
