@@ -230,7 +230,7 @@ function setupEventListeners(username: string) {
 				// Update the button states after the operation
 				await updateButtonStates(username);
 			} catch (error) {
-				console.error("Error sending friend request:", error);
+				// Optionally show error message in UI
 			}
 		});
 	}

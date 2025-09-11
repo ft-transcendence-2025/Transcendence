@@ -2,6 +2,7 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import { register } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
 import { renderHome } from "../views/home.js";
+import { JUNGLE_AVATARS, getJungleAvatarFile, saveUserAvatar } from "../services/profileService.js";
 
 export async function openRegisterModal(container: HTMLElement | null = null) {
   // If container is provided, render home page as backdrop first (without animations)
@@ -83,12 +84,14 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
     hideError(); // Clear any previous errors
 
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries()) as {
+    type RegistrationFormData = {
       username: string;
       email: string;
       password: string;
       confirmPassword: string;
+      avatar?: string;
     };
+    const data = Object.fromEntries(formData.entries()) as RegistrationFormData;
 
     // Only validate that passwords match on frontend
     if (data.password !== data.confirmPassword) {
@@ -107,19 +110,32 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
     // Remove confirmPassword from data before sending to server
     const { confirmPassword, ...registrationData } = data;
 
+    // Assign a random avatar from the avatars folder
+    const avatarList = [
+      "bear.png", "cat.png", "chicken.png", "dog.png", "gorilla.png", "koala.png", "meerkat.png", "panda.png", "rabbit.png", "robot.png", "sloth.png"
+    ];
+    const randomAvatar = avatarList[Math.floor(Math.random() * avatarList.length)];
+    registrationData.avatar = randomAvatar;
+
     try {
       await register(registrationData);
-      // alert("Registration Successful!"); // debug
+
+      // After successful registration, assign a random avatar
+      const randomAvatar = JUNGLE_AVATARS[Math.floor(Math.random() * JUNGLE_AVATARS.length)];
+      try {
+        const avatarFile = await getJungleAvatarFile(randomAvatar);
+        await saveUserAvatar(registrationData.username, avatarFile);
+      } catch (avatarError) {
+        // Optionally handle avatar assignment error silently
+      }
 
       // Close register modal
       modal.style.display = "none";
       form.reset();
-      //hideError(); // Hide error message if it exists ???
 
       // Show the login modal
       navigateTo("/login", container);
     } catch (error) {
-      console.error("Registration failed:", error);
       showError(
         error instanceof Error
           ? error.message

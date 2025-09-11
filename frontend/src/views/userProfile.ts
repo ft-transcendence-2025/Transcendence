@@ -242,6 +242,7 @@ async function handleUpdateProfile(username: string) {
     showSuccessMessage("Profile updated successfully!");
 
     // Fetch the updated profile
+    console.log("benezinho teve por aqui!");
     const updatedProfile = await getProfileByUsername(username);
 
     await populateProfileView(updatedProfile);

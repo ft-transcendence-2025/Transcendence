@@ -33,7 +33,6 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
 
   try {
     profile = await getProfileByUsername(finalUsername);
-    console.log("Fetched profile for modal:", profile);
     avatarUrl = await getUserAvatar(finalUsername);
   } catch (error) {
     console.error("Error loading profile for modal:", error);
@@ -61,64 +60,61 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   }
 
   container.innerHTML = `
-    <aside class="flex w-full flex-col gap-8 p-6">
-    <!-- Avatar and User Info -->
-    <div class="flex flex-col items-center text-center">
-      <img
-        id="user-avatar"
-        src="${avatarUrl}"
-        alt="Avatar"
-        class="mb-4 h-44 w-44 rounded-full border-4 border-(--color-secondary) object-cover"
-        onerror="this.onerror=null;this.src='/assets/avatars/panda.png';"
-      />
-      <h2 id="display-username" class="text-xl font-bold text-white">${profile?.userUsername || finalUsername}</h2>
-      <p id="user-nickname" class="text-sm text-(--color-secondary-light)">
-        ${profile?.nickName || 'Nickname not set'}
-      </p>
-      <button
-        id="edit-profile-btn"
-        class="mt-3 rounded-lg cursor-pointer bg-(--color-secondary) px-4 py-2 text-sm font-semibold text-(--color-text-primary) hover:bg-(--color-secondary-dark)"
-      >
-        Edit my profile
-      </button>
-    </div>
+    <aside class="flex w-full flex-col gap-8 p-6 h-full justify-between">
+      <!-- Avatar and User Info -->
+      <div>
+        <div class="flex flex-col items-center text-center">
+          <img
+            id="user-avatar"
+            src="${avatarUrl}"
+            alt="Avatar"
+            class="mb-4 h-44 w-44 rounded-full border-4 border-(--color-secondary) object-cover"
+            onerror="this.onerror=null;this.src='/assets/avatars/panda.png';"
+          />
+          <h2 id="display-username" class="text-xl font-bold text-white">${profile?.userUsername || finalUsername}</h2>
+          <p id="user-nickname" class="text-sm text-(--color-secondary-light)">
+            ${profile?.nickName || 'Nickname not set'}
+          </p>
+        </div>
 
-    <!-- Stats -->
-    <div class="space-y-4">
-      <h3
-        class="border-b border-(--color-secondary-dark) pb-1 text-lg font-bold text-white"
-      >
-        Statistics
-      </h3>
-      <ul class="space-y-2 text-sm text-white">
-        <li class="flex items-center justify-between">
-          <span>Games played</span>
-          <span class="font-semibold">${profile?.gamesPlayed || 0}</span>
-        </li>
-        <li class="flex items-center justify-between">
-          <span>Member for</span>
-          <span id="display-createdAt" class="font-semibold">${memberDuration}</span>
-        </li>
-        <li class="flex items-center justify-between">
-          <span>Liked games</span>
-          <span class="font-semibold">${profile?.likedGames || 0}</span>
-        </li>
-        <li class="flex items-center justify-between">
-          <span>Playstreak</span>
-          <span class="font-semibold">${profile?.playstreak || 0} day${(profile?.playstreak || 0) !== 1 ? 's' : ''}</span>
-        </li>
-      </ul>
-    </div>
+        <!-- Stats -->
+        <div class="space-y-4 mt-8">
+          <h3
+            class="border-b border-(--color-secondary-dark) pb-1 text-lg font-bold text-white"
+          >
+            Statistics
+          </h3>
+          <ul class="space-y-2 text-sm text-white">
+            <li class="flex items-center justify-between">
+              <span>Games played</span>
+              <span class="font-semibold">${profile?.gamesPlayed || 0}</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>Member for</span>
+              <span id="display-createdAt" class="font-semibold">${memberDuration}</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>Liked games</span>
+              <span class="font-semibold">${profile?.likedGames || 0}</span>
+            </li>
+            <li class="flex items-center justify-between">
+              <span>Playstreak</span>
+              <span class="font-semibold">${profile?.playstreak || 0} day${(profile?.playstreak || 0) !== 1 ? 's' : ''}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
 
-    <!-- Logout Button -->
-    <div class="flex flex-col items-center mt-4">
-      <button
-        id="logout-btn"
-        class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-dark cursor-pointer"
-      >
-        Log out
-      </button>
-    </div>
+      <!-- Logout Button at the absolute bottom -->
+      <div class="flex flex-col items-center mt-4">
+        <button
+          id="logout-btn"
+          class="flex items-center gap-2 rounded-lg bg-accent px-10 py-2 cursor-pointer text-base font-semibold text-white hover:bg-accent-dark transition-colors duration-150 shadow hover:scale-105"
+        >
+          <span class="fa fa-sign-out-alt"></span>
+          <span>Log out</span>
+        </button>
+      </div>
     </aside>
   `;
 
@@ -139,6 +135,16 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
     editBtn.addEventListener("click", () => {
       closeModal();
       navigateTo(`/profile?username=${finalUsername}&edit=true`, document.getElementById("content"));
+    });
+  }
+
+  // Add event listener for avatar click to navigate to profile
+  const avatarImg = container.querySelector("#user-avatar");
+  if (avatarImg) {
+    (avatarImg as HTMLImageElement).style.cursor = "pointer";
+    avatarImg.addEventListener("click", () => {
+      closeModal();
+      navigateTo(`/friend-profile?username=${finalUsername}`, document.getElementById("content"));
     });
   }
 
