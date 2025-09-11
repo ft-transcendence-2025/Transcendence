@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const notifications = await chatManager.chatService.fetchUnreadNotifications() as any[];
+  console.log("Fetched initial notifications:", notifications);
   chatManager.storeNotifications(notifications);
 
   if (chatManager.chatService.conn) {
@@ -58,6 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         chatManager.updateChatMessages(message.senderId);
       } else if (message.event === "notification/new") {
         chatManager.storeNotifications([message]);
+        chatManager.updateNotificationBadges();
       }
     };
   }

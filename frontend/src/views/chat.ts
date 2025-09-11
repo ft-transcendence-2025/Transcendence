@@ -36,10 +36,10 @@ class ChatComponent {
     this.openChats = new Map();
     this.messages = new Map();
     this.notifications = new Map([
-      ["messages", []],
-      ["friendRequests", []],
-      ["gameInvites", []],
-      ["tournamentTurns", []],
+      ["NEW_MESSAGE", []],
+      ["FRIEND_REQUEST", []],
+      ["GAME_INVITE", []],
+      ["TOURNAMENT_TURN", []],
     ]);
   }
 
@@ -47,23 +47,20 @@ class ChatComponent {
     notifications.forEach((notification) => {
       switch (notification.type) {
         case "NEW_MESSAGE":
-          this.notifications.get("messages")!.push(notification);
+          this.notifications.get("NEW_MESSAGE")!.push(notification);
           break;
 
         case "FRIEND_REQUEST":
-          this.notifications.get("friendRequests")!.push(notification);
+          this.notifications.get("FRIEND_REQUEST")!.push(notification);
           break;
 
         case "GAME_INVITE":
-          this.notifications.get("gameInvites")!.push(notification);
+          this.notifications.get("GAME_INVITE")!.push(notification);
           break;
 
         case "TOURNAMENT_TURN":
-          this.notifications.get("tournamentTurns")!.push(notification);
+          this.notifications.get("TOURNAMENT_TURN")!.push(notification);
           break;
-
-        default:
-          console.warn("Unknown notification type:", notification.type);
       }
     });
 
@@ -87,7 +84,6 @@ class ChatComponent {
         this.notifications.set(type, []);
       }
   
-      // Update the UI (e.g., hide badges)
     } catch (error) {
       console.error("Failed to mark notifications as read:", error);
     }
@@ -294,6 +290,21 @@ class ChatComponent {
       chat.remove();
       this.openChats.delete(friendId);
     }
+  }
+
+  updateNotificationBadges() {
+    this.notifications.forEach((notifications, type) => {
+      const badge = document.getElementById(`badge-${type}`);
+      console.log("Updating badge for type:", type, "with count:", notifications.length, badge);
+      if (badge) {
+        if (notifications.length > 0) {
+          badge.textContent = notifications.length.toString();
+          badge.classList.remove("hidden");
+        } else {
+          badge.classList.add("hidden");
+        }
+      }
+    });
   }
 }
 export { ChatComponent };

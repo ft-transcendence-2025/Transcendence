@@ -38,12 +38,13 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
       }`;
     btn.textContent = label; // Set label text
     // Add badge for count if > 0
+    let badgeId = index === 0 ? "badge-FRIEND_REQUEST" : "badge-GAME_INVITE";
     if (tabCounts[index] > 0) {
       const badge = document.createElement("span");
       badge.textContent = tabCounts[index].toString();
       badge.className =
       "inline-flex items-center justify-center ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white";
-      badge.id = `tab-badge-${index}`;
+      badge.id = badgeId;
       btn.appendChild(badge);
     }
     tabs.appendChild(btn);
