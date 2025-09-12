@@ -73,6 +73,7 @@ export class Game {
 
       if (this.gameState.score.winner) {
         this.gameOver(this.gameState.score.winner)
+
       }
       else
         this.hiddeGameOver();

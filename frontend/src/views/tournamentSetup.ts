@@ -16,15 +16,15 @@ interface TournamentData {
 }
 
 interface Player {
-  username: string,
-  avatar: string,
+  username: string;
+  avatar: string;
 }
 
 export interface LocalTournamentAvatarMap {
-  player1: Player,
-  player2: Player,
-  player3: Player,
-  player4: Player,
+  player1: Player;
+  player2: Player;
+  player3: Player;
+  player4: Player;
 }
 
 // Global storage for tournament data
@@ -57,11 +57,14 @@ export async function renderTournament(container: HTMLElement | null) {
   const tournamentType =
     (urlParams.get("type") as "local" | "remote") || "local";
 
-  // Initialize tournament based on type
+  // Handle local tournaments, redirect remote to waiting room
   if (tournamentType === "local") {
     setupLocalTournament();
-  } else if (tournamentType === "remote") {
-    setupRemoteTournament();
+  } else {
+    // Redirect remote tournaments to the waiting view
+    const waitingContainer = document.getElementById("content");
+    navigateTo("/remote-tournament-lobby", waitingContainer);
+    return;
   }
 }
 
@@ -79,24 +82,9 @@ function setupLocalTournament() {
   enablePlayerCustomization(true);
 }
 
-function setupRemoteTournament() {
-  // Populate Player 1 with current user data
-  populatePlayer1Data();
-
-  // Do not allow customization for any players
-  enablePlayerCustomization(false);
-
-  // Populate with current user and fetch other players
-  populateRemotePlayers();
-
-  // Setup event listeners for remote tournament
-  setupRemoteEventListeners();
-}
-
 function enablePlayerCustomization(enable: boolean) {
   // For local tournaments, skip Player 1 (read-only current user)
-  // For remote tournaments, disable all players
-  const startPlayer = enable ? 2 : 1;
+  const startPlayer = 2;
 
   for (let i = startPlayer; i <= 4; i++) {
     const inputField = document.getElementById(
@@ -144,54 +132,6 @@ async function populatePlayer1Data() {
       player1Avatar.src = "/assets/avatars/panda.png";
     };
   }
-}
-
-async function populateRemotePlayers() {
-  // Get current user
-  const currentDisplayName = await getUserDisplayName();
-  const currentAvatarUrl = await getCurrentUserAvatar();
-
-  // Mock data - this has to come from API !!!!!!!
-  const remotePlayers = [
-    {
-      username: currentDisplayName || "You",
-      avatar: currentAvatarUrl,
-      isUrl: true,
-    },
-    { username: "Player 2", avatar: "gorilla.png", isUrl: false },
-    { username: "Player 3", avatar: "meerkat.png", isUrl: false },
-    { username: "Player 4", avatar: "rabbit.png", isUrl: false },
-  ];
-
-  // Update player names and avatars in the UI
-  remotePlayers.forEach((player, index) => {
-    const playerNameElement = document.getElementById(
-      `t-player-${index + 1}-name`,
-    ) as HTMLInputElement;
-    const avatarImg = document.getElementById(
-      `t-avatar-player-${index + 1}`,
-    ) as HTMLImageElement;
-
-    if (playerNameElement) {
-      playerNameElement.value = player.username;
-      playerNameElement.placeholder = player.username;
-    }
-
-    // Set avatar based on whether it's a URL or filename
-    if (avatarImg) {
-      if (player.isUrl) {
-        // For real user avatars, use the full API URL
-        avatarImg.src = player.avatar;
-        // If avatar fails default to panda
-        avatarImg.onerror = () => {
-          avatarImg.src = "/assets/avatars/panda.png";
-        };
-      } else {
-        // For mock data, use default asset images
-        avatarImg.src = `/assets/avatars/${player.avatar}`;
-      }
-    }
-  });
 }
 
 // Avatar management functions (for local tournaments)
@@ -261,23 +201,6 @@ function setupLocalEventListeners() {
         navigateTo("/tournament-tree", container);
       }
     });
-  };
-}
-
-function setupRemoteEventListeners() {
-  const startButton = document.getElementById("start-tournament-button");
-
-  if (startButton) {
-    startButton.addEventListener("click", (e) => {
-      e.preventDefault();
-      // Only proceed if data collection succeeds (no duplicates)
-      collectRemoteTournamentData().then((success) => {
-        if (success) {
-          const container = document.getElementById("content");
-          navigateTo("/tournament-tree", container);
-        }
-      });
-    });
   }
 }
 
@@ -332,48 +255,25 @@ async function collectLocalTournamentData() {
 
 async function getTournament(players: Player[]) {
   try {
-    const baseUrl = window.location.origin; 
+    const baseUrl = window.location.origin;
 
     const response = await fetch(`${baseUrl}/api/tournament/create`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json" 
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         player1: players[0].username,
         player2: players[1].username,
         player3: players[2].username,
-        player4: players[3].username
-      }) 
+        player4: players[3].username,
+      }),
     });
     const data = await response.json();
     localStoreTournamentData(data);
   } catch (e) {
-    console.error("Failed to fetch tournoment:", e);
+    console.error("Failed to fetch tournament:", e);
   }
-}
-
-async function collectRemoteTournamentData() {
-  // Get current user
-  const currentDisplayName = await getUserDisplayName();
-
-  // Mock data - this has to come from API !!!!!!!
-  const players = [
-    { username: currentDisplayName || "You", avatar: "panda.png" },
-    { username: "Player 2", avatar: "gorilla.png" },
-    { username: "Player 3", avatar: "meerkat.png" },
-    { username: "Player 4", avatar: "rabbit.png" },
-  ];
-
-  tournamentData = {
-    type: "remote",
-    players: players,
-  };
-
-  return true; // Success
-  // To do...
-  // ...
-  // ...
 }
 
 // Export functions for tournament tree to use

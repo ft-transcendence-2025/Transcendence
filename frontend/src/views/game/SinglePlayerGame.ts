@@ -195,7 +195,7 @@ export class SinglePlayerGame extends Game {
       this.sendPayLoad(event);
       if (this.gameMode === "localtournament" &&
         this.gameState && this.gameState.score.winner) {
-        this.tournomentMatchWinner();
+        this.tournamentMatchWinner();
         const container = document.getElementById("content");
         navigateTo("/tournament-tree", container);
       }
@@ -206,7 +206,7 @@ export class SinglePlayerGame extends Game {
     }
   }
 
-  private async tournomentMatchWinner() {
+  private async tournamentMatchWinner() {
     const baseUrl = window.location.origin;
     let winnerName: string = "placeholder";
 

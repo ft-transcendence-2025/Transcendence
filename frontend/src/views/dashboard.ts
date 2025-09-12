@@ -4,6 +4,8 @@ import {
   getUserDisplayName,
   getCurrentUserAvatar,
 } from "../utils/userUtils.js";
+import { RemoteGame } from "./game/RemoteGame.js";
+import { FetchData } from "./game/utils.js";
 
 // Available avatars for player 2
 const avatars = [
@@ -29,6 +31,8 @@ export async function renderDashboard(container: HTMLElement | null) {
 
   // Setup 2-player modal functionality
   await setup2PlayerModal();
+
+  // ...no game room setup needed...
 }
 
 async function setup2PlayerModal() {

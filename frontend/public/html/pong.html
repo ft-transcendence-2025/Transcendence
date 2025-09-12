@@ -45,12 +45,20 @@
          </span>
       </div>
     </div>
-    <!-- Pong Instructions / Manual -->
+    <!-- Pong Instructions / Leave Game -->
     <button
       id="instructions-btn"
-      class="absolute top-4 right-4 flex cursor-pointer items-center justify-center rounded-full bg-(--color-primary-light) p-3 shadow-sm transition-colors hover:bg-(--color-primary)"
+      title="Instructions"
+      class="absolute top-4 right-22 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-(--color-primary-light) shadow-sm transition-colors hover:bg-(--color-primary)"
     >
       <i class="fa-solid fa-book"></i>
+    </button>
+    <button
+      id="leave-game-btn"
+      title="Leave Game"
+      class="absolute top-4 right-4 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-(--color-primary-light) shadow-sm transition-colors hover:bg-(--color-primary)"
+    >
+      <i class="fa-solid fa-door-open"></i>
     </button>
     <!-- Pong Canvas -->
     <div class="relative flex items-center justify-center">
