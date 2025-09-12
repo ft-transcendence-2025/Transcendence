@@ -1,5 +1,6 @@
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
+import { getUserByUsername } from "../services/userService.js";
 import {
   getProfileByUsername,
   createProfile,
@@ -112,6 +113,15 @@ async function populateProfileView(profile: any) {
     };
   }
 
+  // Get user data for 2FA status
+  let twoFAStatus = "Disabled";
+  try {
+    const userData = await getUserByUsername(profile.userUsername);
+    twoFAStatus = userData.twoFactorEnabled ? "Enabled" : "Disabled";
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+
   // Populate profile display fields
   const fields = [
     { id: "display-username", value: profile.userUsername },
@@ -120,13 +130,19 @@ async function populateProfileView(profile: any) {
     { id: "display-lastname", value: profile.lastName || "Not set" },
     { id: "display-bio", value: profile.bio || "No bio available" },
     { id: "display-gender", value: profile.gender || "Not set" },
-    { id: "display-status", value: profile.status },
+    { id: "display-status", value: profile.status || "Disabled" },
   ];
 
   fields.forEach((field) => {
     const element = document.getElementById(field.id);
     if (element) element.textContent = field.value;
   });
+
+  // Set 2FA status as simple text
+  const twoFactorElement = document.getElementById("display-2fa-status");
+  if (twoFactorElement) {
+    twoFactorElement.textContent = twoFAStatus;
+  }
 }
 
 function populateFormFields(profile: any) {
@@ -242,7 +258,6 @@ async function handleUpdateProfile(username: string) {
     showSuccessMessage("Profile updated successfully!");
 
     // Fetch the updated profile
-    console.log("benezinho teve por aqui!");
     const updatedProfile = await getProfileByUsername(username);
 
     await populateProfileView(updatedProfile);

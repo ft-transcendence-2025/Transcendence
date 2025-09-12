@@ -42,6 +42,21 @@ export async function openLoginModal(container: HTMLElement | null = null) {
     }
   };
 
+  // Handle simple login without 2FA
+  const handleSimpleLogin = async (response: any) => {
+    localStorage.setItem("authToken", response.accessToken);
+    closeModal();
+
+    const navbarContainer = document.getElementById("navbar");
+    if (navbarContainer) {
+      await renderNavbar(navbarContainer);
+    }
+
+    const container = document.getElementById("content");
+    reloadChatManager();
+    navigateTo("/dashboard", container);
+  };
+
   // Add event listener for the form submission
   form.onsubmit = async (e) => {
     e.preventDefault();
@@ -52,24 +67,20 @@ export async function openLoginModal(container: HTMLElement | null = null) {
 
     try {
       const response = await login(data);
-      localStorage.setItem("authToken", response.accessToken);
-      closeModal();
-
-      const navbarContainer = document.getElementById("navbar");
-      if (navbarContainer) {
-        await renderNavbar(navbarContainer);
+      // Handle successful login with no 2FA
+      handleSimpleLogin(response);
+    } catch (error: any) {
+      if (error.message === "2FA token required.") {
+        // Handle login with 2FA
+        const token = prompt("TODO: 2FA logic.");
+      } else {
+        console.error("Login failed:", error);
+        showError(
+          error instanceof Error
+            ? error.message
+            : "Login failed. Please check your credentials.",
+        );
       }
-
-      const container = document.getElementById("content");
-      reloadChatManager();
-      navigateTo("/dashboard", container);
-    } catch (error) {
-      console.error("Login failed:", error);
-      showError(
-        error instanceof Error
-          ? error.message
-          : "Login failed. Please check your credentials.",
-      );
     }
   };
 

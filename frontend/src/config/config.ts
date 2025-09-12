@@ -1,4 +1,4 @@
-// Simple BASE_URL accessor
+// BASE_URL accessor
 declare global {
   interface Window {
     ENV: {

@@ -1,5 +1,6 @@
 import { BASE_URL } from "../config/config.js";
 import { request, getHeaders } from "../utils/api.js";
+import { getCurrentUsername } from "../utils/userUtils.js";
 
 const AUTH_BASE_URL = `${BASE_URL}/auth`;
 
@@ -35,3 +36,38 @@ export const register = (body: any) =>
     headers: getHeaders(),
     body: JSON.stringify(body),
   });
+
+// 2FA functions
+export const loginWith2FA = (body: any, token: string) =>
+  request<LoginResponse>(`${AUTH_BASE_URL}/login`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ ...body, token }),
+  });
+
+export const generate2FASecret = () => {
+  const username = getCurrentUsername();
+  if (!username) throw new Error("User not authenticated");
+  request<{ qr: String; otpauthUrl: string }>(`${AUTH_BASE_URL}/${username}/2fa/generate`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+}
+
+export const enable2FA = (token: string) => {
+  const username = getCurrentUsername();
+  if (!username) throw new Error("User not authenticated");
+  request(`${AUTH_BASE_URL}/${username}/2fa/enable`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({ token }),
+  });
+}
+export const disable2FA = () => {
+  const username = getCurrentUsername();
+  if (!username) throw new Error("User not authenticated");
+  request(`${AUTH_BASE_URL}/${username}/2fa/disable`, {
+    method: "POST",
+    headers: getHeaders(),
+  });
+}
