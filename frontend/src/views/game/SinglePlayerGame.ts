@@ -244,7 +244,7 @@ export class SinglePlayerGame extends Game {
 
       localStorage.setItem("localTournamentState", JSON.stringify(tournamentState))
 
-      const response = await fetch(`${baseUrl}/api/tournoment/matchwinner`, {
+      const response = await fetch(`${baseUrl}/api/tournament/matchwinner`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json" 

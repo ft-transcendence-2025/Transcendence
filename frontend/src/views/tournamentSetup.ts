@@ -326,15 +326,15 @@ async function collectLocalTournamentData() {
   };
 
   localStorage.setItem("LocalTournamentAvatarMap", JSON.stringify(players));
-  getTournoment(tournamentData.players);
+  getTournament(tournamentData.players);
   return true;
 }
 
-async function getTournoment(players: Player[]) {
+async function getTournament(players: Player[]) {
   try {
     const baseUrl = window.location.origin; 
 
-    const response = await fetch(`${baseUrl}/api/tournoment/create`, {
+    const response = await fetch(`${baseUrl}/api/tournament/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json" 
