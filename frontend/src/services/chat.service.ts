@@ -56,38 +56,19 @@ export default class chatService {
 		}
 	}
 
-	async fetchUnreadMessagesCount(): Promise<number> {
-	  try {
-		const response = await fetch(`${MESSAGE_SERVICE}/unreadMessagesCount/${this.username}`, {
-		  method: "GET",
-		  headers: getHeaders(),
-		});
-		const data = await response.json();
-		return data.count || 0;
-	  } catch (error) {
-		console.error("Failed to fetch unread messages count:", error);
-		return 0;
-	  }
-	}
-	async fetchUnreadNotifications() {
-		const url = `${MESSAGE_SERVICE}/notifications/unread/${this.username}`;
-		const notifications = await request(url, {
-			method: "GET",
-			headers: getHeaders(),
-		});
-		return notifications;
-	}
-
-	async markNotificationsAsRead(type: string, senderId?: string): Promise<void> {
+	
+	async fetchUnreadMessagesCount(): Promise<Record<string, number>> {
 		try {
-			const url = `${MESSAGE_SERVICE}/notifications/mark-as-read`;
-			await request(url, {
-				method: "POST",
+			const url = `${MESSAGE_SERVICE}/unreadMessages/${this.username}`;
+			const data: Record<string, number> = await request(url, {
+				method: "GET",
 				headers: getHeaders(),
-				body: JSON.stringify({ recipientId: this.username, type, senderId }),
 			});
+			console.log("Unread messages count response:", data);
+			return data;
 		} catch (error) {
-			console.error("Failed to mark notifications as read:", error);
+			console.error("Failed to fetch unread messages count:", error);
+			return {};
 		}
 	}
 }

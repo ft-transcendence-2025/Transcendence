@@ -2,6 +2,7 @@
 import { FriendshipStatus, getPendingRequests, respondRequest } from "../services/friendship.service.js";
 import { getUserAvatar } from "../services/profileService.js";
 import { navigateTo } from "../router/router.js";
+import { chatManager } from "../app.js";
 
 export async function getNotificationsContent(): Promise<HTMLElement> {
   const container = document.createElement("div");
@@ -9,18 +10,7 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
 
   // Fetch all requests first
   let requests: { requesterUsername: string; avatar: string , id: string }[] = [];
-  try {
-    const raw = (await getPendingRequests()) as any[];
-    requests = await Promise.all(
-      raw.map(async (req) => ({
-        requesterUsername: req.requesterUsername,
-        avatar: await getUserAvatar(req.requesterUsername),
-        id: req.id
-      }))
-    );
-  } catch (err) {
-    console.error("Failed to fetch notifications:", err);
-  }
+  requests = chatManager.friendRequests;
 
   // Tabs
   const tabs = document.createElement("div");

@@ -161,10 +161,14 @@ async function updateButtonStates(username: string) {
     // Update Block Button
 	const blockButton = document.getElementById("block-button");
 	if (blockButton) {
-		if (friendshipStatus.status === "BLOCKED" && friendshipStatus.blockedBy === loggedInUsername) {
+		if (username === loggedInUsername) {
+			blockButton.classList.add("hidden");
+			blockButton.style.display = "none";
+		} else if (friendshipStatus.status === "BLOCKED" && friendshipStatus.blockedBy === loggedInUsername) {
 			blockButton.textContent = "lock_open";
 			blockButton.title = "Unblock User";
 			blockButton.classList.remove("hidden");
+			blockButton.style.display = "";
 		} else if (
 			friendshipStatus.status === "BLOCKED" &&
 			friendshipStatus.blockedBy !== loggedInUsername
@@ -175,6 +179,7 @@ async function updateButtonStates(username: string) {
 			blockButton.textContent = "account_circle_off";
 			blockButton.title = "Block User";
 			blockButton.classList.remove("hidden");
+			blockButton.style.display = "";
 		}
 	}
 

@@ -5,7 +5,7 @@ import {
 } from "../interfaces/message.interfaces.js";
 import { navigateTo } from "../router/router.js";
 import chatService from "../services/chat.service.js";
-import { getUserFriends } from "../services/friendship.service.js";
+import { getPendingRequests, getUserFriends } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
@@ -26,67 +26,24 @@ class ChatComponent {
   friends: Friend[];
   openChats: Map<string, HTMLElement>;
   messages: Map<string, any[]>;
-  notifications: Map<string, any[]>;
+  messageNotifications: Map<string, number> = new Map();
+  gameInvites: Map<string, number> = new Map();
+  tournamentTurns: Map<string, number> = new Map();
+  friendRequests: any[] = [];
   currentUserId: string = getCurrentUsername() as string;
   public chatService: chatService = new chatService();
 
   constructor(containerId: string, friends: any) {
     this.container = document.getElementById(containerId)!;
     this.friends = friends;
+    this.messageNotifications = new Map();
+    this.gameInvites = new Map();
+    this.tournamentTurns = new Map();
+    this.friendRequests = [];
     this.openChats = new Map();
     this.messages = new Map();
-    this.notifications = new Map([
-      ["NEW_MESSAGE", []],
-      ["FRIEND_REQUEST", []],
-      ["GAME_INVITE", []],
-      ["TOURNAMENT_TURN", []],
-    ]);
-  }
 
-    storeNotifications(notifications: any[]) {
-    notifications.forEach((notification) => {
-      switch (notification.type) {
-        case "NEW_MESSAGE":
-          this.notifications.get("NEW_MESSAGE")!.push(notification);
-          break;
-
-        case "FRIEND_REQUEST":
-          this.notifications.get("FRIEND_REQUEST")!.push(notification);
-          break;
-
-        case "GAME_INVITE":
-          this.notifications.get("GAME_INVITE")!.push(notification);
-          break;
-
-        case "TOURNAMENT_TURN":
-          this.notifications.get("TOURNAMENT_TURN")!.push(notification);
-          break;
-      }
-    });
-
-    // this.updateNotificationBadges();
-  }
-
-    async markNotificationsAsRead(type: string, senderId?: string) {
-    try {
-      // Call the backend to mark notifications as read
-      await this.chatService.markNotificationsAsRead(type, senderId);
-  
-      // Remove notifications from the array
-      if (senderId) {
-        // Remove notifications of the given type and senderId
-        const filteredNotifications = this.notifications.get(type)!.filter(
-          (notification) => notification.senderId !== senderId
-        );
-        this.notifications.set(type, filteredNotifications);
-      } else {
-        // Remove all notifications of the given type
-        this.notifications.set(type, []);
-      }
-  
-    } catch (error) {
-      console.error("Failed to mark notifications as read:", error);
-    }
+    this.fetchAllNotifications();
   }
 
   reset() {
@@ -106,6 +63,33 @@ class ChatComponent {
     }
 
     console.log("Chat service reset: All chats closed and connection terminated.");
+  }
+
+  async fetchAllNotifications() {
+    try {
+      console.log("Fetching pending friend requests...");
+      const raw = (await getPendingRequests()) as any[];
+      this.friendRequests = await Promise.all(
+        raw.map(async (req) => ({
+          requesterUsername: req.requesterUsername,
+          avatar: await getUserAvatar(req.requesterUsername),
+          id: req.id,
+        }))
+      );
+      console.log("Friend requests loaded:", this.friendRequests);
+  
+      console.log("Fetching unread message counts...");
+      const unreadCounts = (await this.chatService.fetchUnreadMessagesCount()) || {}; // Ensure it's an object
+      Object.entries(unreadCounts).forEach(([userId, count]) => {
+        this.messageNotifications.set(userId, count);
+        console.log(`Unread messages for ${userId}: ${count}`);
+      });
+      const unreadCount = Object.values(unreadCounts).reduce((sum, c) => sum + c, 0);
+      this.messageNotifications.set("__total__", unreadCount);
+      console.log("Total unread messages:", unreadCount);
+    } catch (error) {
+      console.error("Failed to fetch unread message counts:", error);
+    }
   }
 
   async updateChatMessages(friendId: string) {
@@ -173,6 +157,7 @@ class ChatComponent {
 
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+    await this.chatService.markConversationAsRead(friendId);
   }
 
   async sendMessage(friendId: string, message: PrivateSendMessage | UserBlockMessageResponse | NotificationMessage) {
@@ -290,21 +275,6 @@ class ChatComponent {
       chat.remove();
       this.openChats.delete(friendId);
     }
-  }
-
-  updateNotificationBadges() {
-    this.notifications.forEach((notifications, type) => {
-      const badge = document.getElementById(`badge-${type}`);
-      console.log("Updating badge for type:", type, "with count:", notifications.length, badge);
-      if (badge) {
-        if (notifications.length > 0) {
-          badge.textContent = notifications.length.toString();
-          badge.classList.remove("hidden");
-        } else {
-          badge.classList.add("hidden");
-        }
-      }
-    });
   }
 }
 export { ChatComponent };
