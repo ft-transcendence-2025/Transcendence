@@ -3,6 +3,7 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
+  getCurrentUsername,
 } from "../utils/userUtils.js";
 import { localStoreTournamentData } from "./tournamentTree.js";
 
@@ -10,14 +11,15 @@ import { localStoreTournamentData } from "./tournamentTree.js";
 interface TournamentData {
   type: "local" | "remote";
   players: Array<{
-    username: string;
+    username: string | null;
+    userDisplayName: string;
     avatar: string;
   }>;
 }
 
 interface Player {
- 
-  
+  username: string | null;
+  userDisplayName: string;
   avatar: string;
 }
 
@@ -217,15 +219,18 @@ async function collectLocalTournamentData() {
       `t-avatar-player-${i}`,
     ) as HTMLImageElement;
 
-    const username =
+    const userDisplayName =
       nameInput?.value || nameInput?.placeholder || `Player ${i}`;
 
     // Check for duplicate names and cancel tournament if found
-    if (playerNames.has(username)) {
-      alert(`Player name "${username}" is already used.`);
+    if (playerNames.has(userDisplayName)) {
+      alert(`Player name "${userDisplayName}" is already used.`);
       return false;
     }
-    playerNames.add(username);
+    playerNames.add(userDisplayName);
+
+    // For Player 1, get the actual username; for others, set to null
+    const username = i === 1 ? getCurrentUsername() : null;
 
     let avatarData;
     if (i === 1) {
@@ -240,6 +245,7 @@ async function collectLocalTournamentData() {
 
     players.push({
       username: username,
+      userDisplayName: userDisplayName,
       avatar: avatarData,
     });
   }
@@ -250,7 +256,9 @@ async function collectLocalTournamentData() {
   };
 
   localStorage.setItem("LocalTournamentAvatarMap", JSON.stringify(players));
-  getTournoment(tournamentData.players);
+  if (tournamentData) {
+    getTournoment(tournamentData.players);
+  }
   return true;
 }
 
@@ -264,10 +272,10 @@ async function getTournoment(players: Player[]) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        player1: players[0].username,
-        player2: players[1].username,
-        player3: players[2].username,
-        player4: players[3].username,
+        player1: players[0].userDisplayName,
+        player2: players[1].userDisplayName,
+        player3: players[2].userDisplayName,
+        player4: players[3].userDisplayName,
       }),
     });
     const data = await response.json();
