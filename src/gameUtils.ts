@@ -19,7 +19,7 @@ export function enterGameRoom(reply: FastifyReply, gameId: number): void {
   reply.send({
     state: "Joined",
     side: side,
-    gameMode: "remotegame",
+    gameMode: "remote",
     id: gameId,
   });
 }
@@ -55,7 +55,7 @@ export function createRemoteGame(reply: FastifyReply, gameId: number) {
   reply.send({
     state: "Created",
     side: "left",
-    gameMode: "remoteGame",
+    gameMode: "remote",
     id: gameId,
   });
 }
