@@ -5,8 +5,6 @@ export default async function conversationRoutes(fastify: FastifyInstance) {
   fastify.post("/", conversationController.createConversation);
   fastify.get("/:user1Id/:user2Id", conversationController.getConversation);
   fastify.get("/", conversationController.listConversations);
-  fastify.get("/unreadMessagesCount/:userId", conversationController.getUnreadMessagesCount);
+  fastify.get("/unreadMessages/:userId", conversationController.getUnreadMessagesCount);
   fastify.post('/markAsRead', conversationController.markConversationAsRead);
-  fastify.get("/notifications/unread/:userId", conversationController.fetchUnreadNotifications);
-  fastify.post("/notifications/mark-as-read", conversationController.markNotifications);
 }

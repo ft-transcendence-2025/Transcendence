@@ -3,7 +3,6 @@ import { handleBlockUser, handlePrivateMessage, sendPendingMessages } from '../s
 import { handleLobbyMessage, joinLobby, leaveLobby } from '../services/lobby.service';
 import { handleUserStatus, USER_STATUS } from '../lib/userPresenceHandler';
 import prisma from '../lib/prisma';
-import { getUnreadNotifications } from '../services/notifications.service';
 
 type WS = any;
 
@@ -52,19 +51,11 @@ export async function chatHandler(socket: WS, request: any) {
       case 'user/block':
         handleBlockUser(users, userId, msg);
         break;
-        
-      // case 'game/invite':
-      //   // handleGameInvite(users, userId, msg);
-      //   break;
 
-      // case 'tournament/turn':
-      //   // handleTournamentTurn(users, userId, msg);
-      //   break;
+      case 'notification/friend_request':
+        // handleNotification(users, userId, msg);
+        break;
 
-      // case 'friend/request':
-      //   // handleFriendRequest(users, userId, msg);
-      //   break;
-          
       default:
         socket.send(JSON.stringify({ event: 'system/error', message: 'unknown kind' }));
     }

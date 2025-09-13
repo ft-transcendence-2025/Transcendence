@@ -7,7 +7,6 @@ export enum USER_STATUS {
 }
 
 export async function handleUserStatus(username: string, status: USER_STATUS) {
-	console.log(`Updating ${username} to -> ${status}!!!`);
 	const response = await fetch(`${USER_MANAGEMENT_URL}/profiles/${username}`, {
 		method: "PUT",
 		headers: {

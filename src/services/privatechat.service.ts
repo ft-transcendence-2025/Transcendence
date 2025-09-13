@@ -1,5 +1,4 @@
 import prisma from '../lib/prisma';
-import { getUnreadNotifications } from './notifications.service';
 
 export async function sendPendingMessages(userId: string, socket: any) {
   const pending = await prisma.message.findMany({
@@ -42,21 +41,11 @@ export async function handlePrivateMessage(users: Map<string, any>, senderId: st
 
 
 
-  const notification = await prisma.notification.create({
-    data: {
-      senderId,
-      recipientId,
-      type: 'NEW_MESSAGE',
-      content: `New message from ${senderId}`,
-    },
-  });
-
   // Send the message and notification in real-time if the recipient is online
   const recipientConn = users.get(recipientId);
   if (recipientConn) {
     await prisma.message.update({ where: { id: saved.id }, data: { delivered: true } });
     recipientConn.socket.send(JSON.stringify({ event: 'private/message', ...saved }));
-    recipientConn.socket.send(JSON.stringify({ event: 'notification/new', ...notification }));
   }
 }
 
@@ -99,4 +88,11 @@ export async function markMessagesAsRead(userId: string, conversationId: string)
     console.error(`Failed to mark messages as read for user ${userId} in conversation ${conversationId}:`, error);
     throw new Error("Failed to mark messages as read.");
   }
+}
+
+export async function handleNotification(users: Map<string, any>, userId: string, msg: any) {
+  const { recipientId, type, content } = msg;
+  if (!recipientId || !type || !content) return;
+
+
 }
