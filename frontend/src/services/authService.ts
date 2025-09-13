@@ -45,29 +45,35 @@ export const loginWith2FA = (body: any, token: string) =>
     body: JSON.stringify({ ...body, token }),
   });
 
-export const generate2FASecret = () => {
+export const generate2FA = () => {
   const username = getCurrentUsername();
   if (!username) throw new Error("User not authenticated");
-  request<{ qr: String; otpauthUrl: string }>(`${AUTH_BASE_URL}/${username}/2fa/generate`, {
-    method: "POST",
-    headers: getHeaders(),
-  });
-}
+  return request<{ qr: string; otpauthUrl: string }>(
+    `${AUTH_BASE_URL}/${username}/2fa/generate`,
+    {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({}),
+    },
+  );
+};
 
 export const enable2FA = (token: string) => {
   const username = getCurrentUsername();
   if (!username) throw new Error("User not authenticated");
-  request(`${AUTH_BASE_URL}/${username}/2fa/enable`, {
+  return request(`${AUTH_BASE_URL}/${username}/2fa/enable`, {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify({ token }),
   });
-}
+};
+
 export const disable2FA = () => {
   const username = getCurrentUsername();
   if (!username) throw new Error("User not authenticated");
-  request(`${AUTH_BASE_URL}/${username}/2fa/disable`, {
+  return request(`${AUTH_BASE_URL}/${username}/2fa/disable`, {
     method: "POST",
     headers: getHeaders(),
+    body: JSON.stringify({}),
   });
-}
+};

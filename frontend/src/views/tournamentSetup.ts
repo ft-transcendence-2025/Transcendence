@@ -16,7 +16,8 @@ interface TournamentData {
 }
 
 interface Player {
-  username: string;
+ 
+  
   avatar: string;
 }
 

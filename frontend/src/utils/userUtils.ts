@@ -118,7 +118,7 @@ export async function getUserDisplayName(username?: string): Promise<string> {
 
 /**
  ** Get user's avatar URL with fallback to panda avatar
- ** Convenience wrapper that defaults to current user if no username provided
+ ** Wrapper that defaults to current user if no username provided
  **/
 export async function getCurrentUserAvatar(username?: string): Promise<string> {
   try {

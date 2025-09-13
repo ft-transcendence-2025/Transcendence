@@ -12,7 +12,10 @@
   ></div>
 
   <!-- Profile View (shown when profile already has been created) -->
-  <div id="profile-view" class="hidden rounded-lg bg-(--color-primary-light)/20 p-6 shadow-md">
+  <div
+    id="profile-view"
+    class="hidden rounded-lg bg-(--color-primary-light)/20 p-6 shadow-md"
+  >
     <div class="flex flex-col items-center space-y-6">
       <!-- Avatar Section -->
       <div class="flex flex-col items-center">
@@ -103,7 +106,7 @@
             type="text"
             name="nickName"
             id="nickName"
-            class="mt-1 w-full bg-white rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your nickname"
           />
         </div>
@@ -118,7 +121,7 @@
             type="text"
             name="firstName"
             id="firstName"
-            class="mt-1 w-full bg-white rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your first name"
           />
         </div>
@@ -130,7 +133,7 @@
             type="text"
             name="lastName"
             id="lastName"
-            class="mt-1 w-full bg-white rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your last name"
           />
         </div>
@@ -141,7 +144,7 @@
           <select
             name="gender"
             id="gender"
-            class="mt-1 w-full bg-white rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
           >
             <option value="">Select gender</option>
             <option value="MALE">Male</option>
@@ -158,17 +161,43 @@
           name="bio"
           id="bio"
           rows="3"
-          class="mt-1 w-full bg-white rounded-md border border-gray-300 px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+          class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
           placeholder="Tell us about yourself..."
         ></textarea>
+      </div>
+      <!-- 2FA Toggle -->
+      <div
+        class="flex items-center justify-between rounded-lg border border-gray-300 bg-white p-4"
+      >
+        <div>
+          <label
+            for="twoFactorEnabled"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Two-Factor Authentication
+          </label>
+          <p class="text-sm text-gray-500">
+            Add an extra layer of security to your account
+          </p>
+        </div>
+        <div class="relative">
+          <input
+            type="checkbox"
+            id="twoFactorEnabled"
+            name="twoFactorEnabled"
+            class="peer sr-only"
+          />
+          <div
+            class="peer relative h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-(--color-primary) peer-focus:ring-4 peer-focus:ring-(--color-primary)/25 peer-focus:outline-none after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"
+          ></div>
+        </div>
       </div>
       <div class="flex justify-center">
         <button
           type="submit"
           id="save-profile-btn"
           class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
-        >
-        </button>
+        ></button>
       </div>
     </form>
   </div>
@@ -316,6 +345,81 @@
         >
           Save Avatar
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Modal for 2FA Setup -->
+  <div
+    id="qr-code-modal"
+    class="bg-opacity-50 fixed inset-0 z-50 hidden items-center justify-center bg-black"
+  >
+    <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+      <div class="text-center">
+        <h3 class="mb-4 text-lg font-semibold text-gray-800">
+          Set up Two-Factor Authentication
+        </h3>
+
+        <div class="mb-4">
+          <p class="mb-3 text-sm text-gray-600">
+            Scan this QR code with your authenticator app (Google Authenticator,
+            Authy, etc.)
+          </p>
+
+          <!-- QR Code Display -->
+          <div class="mb-4 flex justify-center">
+            <img
+              id="qr-code-image"
+              alt="QR Code for 2FA setup"
+              class="max-w-full rounded border-2 border-gray-300"
+            />
+          </div>
+
+          <!-- Manual entry option -->
+          <div class="mb-4">
+            <p class="mb-2 text-xs text-gray-500">
+              Or enter this code manually:
+            </p>
+            <div class="rounded bg-gray-100 p-2">
+              <code id="manual-entry-code" class="text-xs break-all"></code>
+            </div>
+          </div>
+        </div>
+
+        <!-- Token Input -->
+        <div class="mb-4">
+          <label
+            for="verification-token"
+            class="mb-2 block text-sm font-medium text-gray-700"
+          >
+            Enter 6-digit verification code:
+          </label>
+          <input
+            type="text"
+            id="verification-token"
+            maxlength="6"
+            pattern="[0-9]{6}"
+            placeholder="123456"
+            class="w-full rounded border border-gray-300 px-3 py-2 text-center text-lg tracking-widest focus:border-(--color-primary) focus:outline-none"
+          />
+        </div>
+
+        <!-- Modal Actions -->
+        <div class="flex justify-end space-x-3">
+          <button
+            id="cancel-qr-btn"
+            class="rounded bg-gray-300 px-4 py-2 text-sm hover:bg-gray-400"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirm-2fa-btn"
+            class="rounded bg-(--color-primary) px-4 py-2 text-sm text-white hover:bg-(--color-primary-dark)"
+            disabled
+          >
+            Enable 2FA
+          </button>
+        </div>
       </div>
     </div>
   </div>

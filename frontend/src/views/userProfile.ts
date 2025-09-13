@@ -1,6 +1,7 @@
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 import { getUserByUsername } from "../services/userService.js";
+import { generate2FA, enable2FA, disable2FA } from "../services/authService.js";
 import {
   getProfileByUsername,
   createProfile,
@@ -64,6 +65,9 @@ function showCreateForm() {
   // Clear current profile to ensure there are no leftovers from previous session
   currentProfile = null;
 
+  // Hide 2FA toggle for new profiles
+  hide2FAToggle();
+
   if (createForm) createForm.classList.remove("hidden");
   if (profileView) profileView.classList.add("hidden");
 }
@@ -87,8 +91,29 @@ function showUpdateForm() {
     populateFormFields(currentProfile);
   }
 
+  // Show 2FA toggle for existing profiles
+  show2FAToggle();
+
   if (updateForm) updateForm.classList.remove("hidden");
   if (profileView) profileView.classList.add("hidden");
+}
+
+function show2FAToggle() {
+  const twoFactorSection = document
+    .querySelector('[for="twoFactorEnabled"]')
+    ?.closest("div");
+  if (twoFactorSection) {
+    twoFactorSection.classList.remove("hidden");
+  }
+}
+
+function hide2FAToggle() {
+  const twoFactorSection = document
+    .querySelector('[for="twoFactorEnabled"]')
+    ?.closest("div");
+  if (twoFactorSection) {
+    twoFactorSection.classList.add("hidden");
+  }
 }
 
 function showProfileView() {
@@ -99,8 +124,24 @@ function showProfileView() {
   if (profileView) profileView.classList.remove("hidden");
 }
 
+function setup2FAToggle() {
+  const checkbox = document.getElementById(
+    "twoFactorEnabled",
+  ) as HTMLInputElement;
+  const toggleContainer = checkbox?.nextElementSibling as HTMLElement;
+
+  if (toggleContainer && checkbox) {
+    // Handle toggle clicks on the visual toggle
+    toggleContainer.addEventListener("click", () => {
+      checkbox.checked = !checkbox.checked;
+      // Trigger change event for any listeners
+      checkbox.dispatchEvent(new Event("change"));
+    });
+  }
+}
+
 async function populateProfileView(profile: any) {
-  currentProfile = profile; // Store for later use
+  currentProfile = profile;
 
   // Set avatar
   const avatarImg = document.getElementById(
@@ -122,7 +163,7 @@ async function populateProfileView(profile: any) {
     console.error("Error fetching user data:", error);
   }
 
-  // Populate profile display fields
+  // Populate profile display fields (including 2FA status)
   const fields = [
     { id: "display-username", value: profile.userUsername },
     { id: "display-nickname", value: profile.nickName || "Not set" },
@@ -130,19 +171,13 @@ async function populateProfileView(profile: any) {
     { id: "display-lastname", value: profile.lastName || "Not set" },
     { id: "display-bio", value: profile.bio || "No bio available" },
     { id: "display-gender", value: profile.gender || "Not set" },
-    { id: "display-status", value: profile.status || "Disabled" },
+    { id: "display-2fa-status", value: twoFAStatus || "Disabled" },
   ];
 
   fields.forEach((field) => {
     const element = document.getElementById(field.id);
     if (element) element.textContent = field.value;
   });
-
-  // Set 2FA status as simple text
-  const twoFactorElement = document.getElementById("display-2fa-status");
-  if (twoFactorElement) {
-    twoFactorElement.textContent = twoFAStatus;
-  }
 }
 
 function populateFormFields(profile: any) {
@@ -164,6 +199,26 @@ function populateFormFields(profile: any) {
       element.value = field.value;
     }
   });
+
+  // Set 2FA toggle based on current user status
+  populateUser2FAStatus();
+}
+
+async function populateUser2FAStatus() {
+  try {
+    const username = getCurrentUsername();
+    if (username) {
+      const userData = await getUserByUsername(username);
+      const twoFactorCheckbox = document.getElementById(
+        "twoFactorEnabled",
+      ) as HTMLInputElement;
+      if (twoFactorCheckbox) {
+        twoFactorCheckbox.checked = userData.twoFactorEnabled || false;
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching current user data:", error);
+  }
 }
 
 function setupEventListeners(username: string) {
@@ -200,8 +255,14 @@ function setupEventListeners(username: string) {
     });
   }
 
+  // Setup 2FA toggle functionality
+  setup2FAToggle();
+
   // Avatar modal event listeners
   setupAvatarModalEventListeners(username);
+
+  // QR Code modal event listeners
+  setupQRCodeModalEventListeners();
 }
 
 async function handleCreateProfile(username: string) {
@@ -235,6 +296,25 @@ async function handleCreateProfile(username: string) {
   }
 }
 
+async function handle2FASetup() {
+  try {
+    const { qr, otpauthUrl } = await generate2FA();
+
+    // Show QR code modal
+    showQRCodeModal(qr, otpauthUrl);
+
+    // Return a promise that resolves when 2FA is set up or rejects if cancelled
+    return new Promise((resolve, reject) => {
+      // Store the resolve/reject functions so the modal handlers can use them
+      (window as any)._2faSetupPromise = { resolve, reject };
+    });
+  } catch (error: any) {
+    console.error("Error setting up 2FA:", error);
+    showErrorMessage(`Error setting up 2FA: ${error.message}`);
+    throw error; // Re-throw to handle in calling function
+  }
+}
+
 async function handleUpdateProfile(username: string) {
   const form = document.getElementById("fill-profile-form") as HTMLFormElement;
   const formData = new FormData(form);
@@ -254,6 +334,44 @@ async function handleUpdateProfile(username: string) {
   });
 
   try {
+    // Handle 2FA changes first
+    const twoFactorCheckbox = document.getElementById(
+      "twoFactorEnabled",
+    ) as HTMLInputElement;
+    const currentUserData = await getUserByUsername(username);
+    const new2FAStatus = twoFactorCheckbox?.checked || false;
+
+    if (new2FAStatus !== currentUserData.twoFactorEnabled) {
+      if (new2FAStatus) {
+        // User wants to enable 2FA - need to show setup
+        const twoFAConfirm = window.confirm(
+          "To enable 2FA, you'll need to set up an authenticator app. Do you want to continue?",
+        );
+        if (twoFAConfirm) {
+          await handle2FASetup();
+        } else {
+          // User cancelled, uncheck the box
+          if (twoFactorCheckbox) twoFactorCheckbox.checked = false;
+          return;
+        }
+      } else {
+        // User wants to disable 2FA
+        const disableConfirm = window.confirm(
+          "Are you sure you want to disable Two-Factor Authentication?",
+        );
+        if (disableConfirm) {
+          await disable2FA();
+          showSuccessMessage(
+            "Two-Factor Authentication disabled successfully!",
+          );
+        } else {
+          // User cancelled, check the box
+          if (twoFactorCheckbox) twoFactorCheckbox.checked = true;
+          return;
+        }
+      }
+    }
+
     const profile = await updateProfile(username, profileData);
     showSuccessMessage("Profile updated successfully!");
 
@@ -475,6 +593,146 @@ function setupAvatarModalEventListeners(username: string) {
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
         closeAvatarModal();
+      }
+    });
+  }
+}
+
+// QR Code Modal Functions
+
+function showQRCodeModal(qrCode: string, otpauthUrl: string) {
+  const modal = document.getElementById("qr-code-modal");
+  const qrImage = document.getElementById("qr-code-image") as HTMLImageElement;
+  const manualCode = document.getElementById("manual-entry-code");
+  const tokenInput = document.getElementById(
+    "verification-token",
+  ) as HTMLInputElement;
+  const confirmBtn = document.getElementById(
+    "confirm-2fa-btn",
+  ) as HTMLButtonElement;
+
+  if (modal && qrImage && manualCode && tokenInput && confirmBtn) {
+    // Set QR code image
+    qrImage.src = qrCode;
+
+    // Extract secret from otpauth URL for manual entry
+    const secretMatch = otpauthUrl.match(/secret=([A-Z0-9]+)/);
+    const secret = secretMatch ? secretMatch[1] : "Unable to extract secret";
+    manualCode.textContent = secret;
+
+    // Clear previous input
+    tokenInput.value = "";
+    confirmBtn.disabled = true;
+
+    // Show modal
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+
+    // Focus on token input
+    setTimeout(() => tokenInput.focus(), 100);
+  }
+}
+
+function closeQRCodeModal() {
+  const modal = document.getElementById("qr-code-modal");
+  const tokenInput = document.getElementById(
+    "verification-token",
+  ) as HTMLInputElement;
+
+  if (modal && tokenInput) {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    tokenInput.value = "";
+
+    // Clean up promise if it exists
+    if ((window as any)._2faSetupPromise) {
+      (window as any)._2faSetupPromise.reject(new Error("Setup cancelled"));
+      delete (window as any)._2faSetupPromise;
+    }
+  }
+}
+
+async function confirm2FASetup() {
+  const tokenInput = document.getElementById(
+    "verification-token",
+  ) as HTMLInputElement;
+  const confirmBtn = document.getElementById(
+    "confirm-2fa-btn",
+  ) as HTMLButtonElement;
+
+  if (!tokenInput || !confirmBtn) return;
+
+  const token = tokenInput.value.trim();
+
+  if (token.length !== 6 || !/^\d{6}$/.test(token)) {
+    showErrorMessage("Please enter a valid 6-digit code");
+    return;
+  }
+
+  try {
+    // Show loading state
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = "Enabling...";
+
+    await enable2FA(token);
+    showSuccessMessage("Two-Factor Authentication enabled successfully!");
+
+    closeQRCodeModal();
+
+    // Resolve the promise if it exists
+    if ((window as any)._2faSetupPromise) {
+      (window as any)._2faSetupPromise.resolve();
+      delete (window as any)._2faSetupPromise;
+    }
+  } catch (error: any) {
+    showErrorMessage(`Error enabling 2FA: ${error.message}`);
+
+    // Reset button state
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = "Enable 2FA";
+  }
+}
+
+function setupQRCodeModalEventListeners() {
+  // Token input validation
+  const tokenInput = document.getElementById(
+    "verification-token",
+  ) as HTMLInputElement;
+  const confirmBtn = document.getElementById(
+    "confirm-2fa-btn",
+  ) as HTMLButtonElement;
+
+  if (tokenInput && confirmBtn) {
+    tokenInput.addEventListener("input", () => {
+      const value = tokenInput.value.trim();
+      confirmBtn.disabled = !(value.length === 6 && /^\d{6}$/.test(value));
+    });
+
+    // Allow Enter key to confirm
+    tokenInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !confirmBtn.disabled) {
+        confirm2FASetup();
+      }
+    });
+  }
+
+  // Cancel button
+  const cancelBtn = document.getElementById("cancel-qr-btn");
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", closeQRCodeModal);
+  }
+
+  // Confirm button
+  if (confirmBtn) {
+    confirmBtn.addEventListener("click", confirm2FASetup);
+  }
+
+  // Close modal when clicking outside
+  const modal = document.getElementById("qr-code-modal");
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeQRCodeModal();
       }
     });
   }
