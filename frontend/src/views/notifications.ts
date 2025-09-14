@@ -90,12 +90,12 @@ function updateFriendRequestsUI(ul: HTMLElement) {
       li.className =
         "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary)/30 rounded-xl";
       li.innerHTML = `
-        <img src="${req.avatar}" class="w-8 h-8 object-cover" 
+        <img src="${req.avatar}" class="w-8 h-8 object-cover rounded-full"
           onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
         <span class="ml-5 text-(--color-secondary-light)">${req.requesterUsername}</span>
         <div class="flex gap-4 ml-auto justify-end">
-          <button title="Accept" class="accept-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-primary)">check_circle</button>
-          <button title="Reject" class="reject-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-accent)">cancel</button>
+          <button title="Accept" class="accept-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-primary) cursor-pointer">check_circle</button>
+          <button title="Reject" class="reject-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-accent) cursor-pointer">cancel</button>
         </div>
       `;
       ul.appendChild(li);
