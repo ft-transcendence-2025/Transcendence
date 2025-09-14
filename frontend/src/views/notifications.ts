@@ -9,7 +9,22 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
   const container = document.createElement("div");
   container.className = "notifications-modal w-full h-full flex flex-col";
 
-  // Tabs and initial rendering
+  // Fetch all requests first
+  let requests: { requesterUsername: string; avatar: string, id: string }[] = [];
+  try {
+    const raw = (await getPendingRequests()) as any[];
+    requests = await Promise.all(
+      raw.map(async (req) => ({
+        requesterUsername: req.requesterUsername,
+        avatar: await getUserAvatar(req.requesterUsername),
+        id: req.id
+      }))
+    );
+  } catch (err) {
+    console.error("Failed to fetch notifications:", err);
+  }
+
+  // Tabs
   const tabs = document.createElement("div");
   tabs.className = "tabs flex rounded-t-lg overflow-hidden";
   container.appendChild(tabs);
@@ -117,24 +132,63 @@ function updateFriendRequestsUI(ul: HTMLElement) {
           requests.filter((r) => r.id !== req.id)
         );
       });
-    li.addEventListener("click", (e) => {
-      if (
-        (e.target as HTMLElement).closest(".accept-btn") ||
-        (e.target as HTMLElement).closest(".reject-btn")
-      ) {
-        return;
-      }
-      navigateTo(`/friend-profile?username=${encodeURIComponent(req.requesterUsername)}`, document.getElementById("content"));
+
+      // Redirect to user profile on li click (excluding button clicks)
+      li.addEventListener("click", (e) => {
+        if (
+          (e.target as HTMLElement).closest(".accept-btn") ||
+          (e.target as HTMLElement).closest(".reject-btn")
+        ) {
+          return;
+        }
+        navigateTo(`/friend-profile?username=${encodeURIComponent(req.requesterUsername)}`, document.getElementById("content"));
+      });
     });
-  });
-} else {
-  ul.innerHTML = `
-      <div class="flex flex-col items-center justify-center py-8">
-        <img src="/assets/icons/noFriendRequest.gif" alt="No requests" class="w-20 h-20 mb-4 opacity-90" />
-        <span>No friend requests</span>
+  } else {
+    ul.innerHTML = `
+      <div class="flex flex-col my-30 items-center justify-center py-8">
+        <img src="/assets/icons/noFriendRequest.gif" alt="No requests" class="w-20 h-20 mb-4 " />
+        <span style="
+          font-family: var(--font-poppins), monospace;
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--color-primary-dark);
+          margin-bottom: 0.5rem;
+          letter-spacing: 1px;
+          background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        ">
+          No friend requests
+        </span>
       </div>
     `;
-}
+  }
+  tabContents[0].appendChild(ul);
+
+  // Fill second tab
+  tabContents[1].innerHTML = `
+    <div class="flex flex-col items-center my-30 justify-center py-8">
+      <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 " />
+      <span style="
+        font-family: var(--font-poppins), monospace;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--color-primary-dark);
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+        background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      ">
+        No Game Invites
+      </span>
+    </div>
+  `;
+
+  return container;
 }
 
 function updateTabBadge(tabIndex: number, count: number) {
