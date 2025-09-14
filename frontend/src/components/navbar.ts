@@ -184,6 +184,8 @@ function updateNavbarBadgesFromState() {
   const totalMessageNotifications =
     Array.from(state.messageNotifications.values()).reduce((sum, count) => sum + count, 0);
 
+  console.log("Total message notifications:", totalMessageNotifications); // --- IGNORE ---
+
   if (totalMessageNotifications > 0) {
     friendsBadge?.classList.remove("hidden");
   } else {

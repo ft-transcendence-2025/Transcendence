@@ -48,7 +48,7 @@ export default class chatService {
 
 	async markConversationAsRead(senderId: string): Promise<void> {
 		try {
-			await fetch(`${MESSAGE_SERVICE}/markAsRead`, {
+			await request(`${MESSAGE_SERVICE}/markAsRead`, {
 				method: "POST",
 				headers: getHeaders(),
 				body: JSON.stringify({ senderId, recipientId: getCurrentUsername() }),

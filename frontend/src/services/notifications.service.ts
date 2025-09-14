@@ -97,8 +97,6 @@ class NotificationService {
 				this.state.messageNotifications.set(userId, count);
 			});
 			const unreadCount = Object.values(unreadCounts).reduce((sum, c) => sum + c, 0);
-			this.state.messageNotifications.set("__total__", unreadCount);
-			console.log("Notification state after fetching all notifications:", this.state); // --- IGNORE ---
 			this.notifyListeners();
 		} catch (error) {
 			console.error("Failed to fetch unread message counts:", error);
