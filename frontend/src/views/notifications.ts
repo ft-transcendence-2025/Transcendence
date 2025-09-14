@@ -1,13 +1,15 @@
 // src/views/notifications.ts
-import { FriendshipStatus, respondRequest } from "../services/friendship.service.js";
+import { FriendshipStatus, getPendingRequests, respondRequest } from "../services/friendship.service.js";
+import { getUserAvatar } from "../services/profileService.js";
 import { navigateTo } from "../router/router.js";
+import { chatManager } from "../app.js";
 import { notificationService } from "../services/notifications.service.js";
 
 export async function getNotificationsContent(): Promise<HTMLElement> {
   const container = document.createElement("div");
   container.className = "notifications-modal w-full h-full flex flex-col";
 
-  // Tabs
+  // Tabs and initial rendering
   const tabs = document.createElement("div");
   tabs.className = "tabs flex rounded-t-lg overflow-hidden";
   container.appendChild(tabs);
@@ -69,24 +71,25 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
 
   // Fill the second tab (game invites)
   tabContents[1].innerHTML = `
-    <div class="flex flex-col items-center my-30 justify-center py-8">
-      <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 " />
-      <span style="
-        font-family: var(--font-poppins), monospace;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--color-primary-dark);
-        margin-bottom: 0.5rem;
-        letter-spacing: 1px;
-        background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      ">
-        No Game Invites
-      </span>
-    </div>
+	<div class="flex flex-col items-center my-30 justify-center py-8">
+	  <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 " />
+	  <span style="
+		font-family: var(--font-poppins), monospace;
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: var(--color-primary-dark);
+		margin-bottom: 0.5rem;
+		letter-spacing: 1px;
+		background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+	  ">
+		No Game Invites
+	  </span>
+	</div>
   `;
+
   return container;
 }
 
@@ -127,8 +130,6 @@ function updateFriendRequestsUI(ul: HTMLElement) {
           requests.filter((r) => r.id !== req.id)
         );
       });
-
-      // Redirect to user profile on li click (excluding button clicks)
       li.addEventListener("click", (e) => {
         if (
           (e.target as HTMLElement).closest(".accept-btn") ||
@@ -141,24 +142,24 @@ function updateFriendRequestsUI(ul: HTMLElement) {
     });
   } else {
     ul.innerHTML = `
-      <div class="flex flex-col my-30 items-center justify-center py-8">
-        <img src="/assets/icons/noFriendRequest.gif" alt="No requests" class="w-20 h-20 mb-4 " />
-        <span style="
-          font-family: var(--font-poppins), monospace;
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: var(--color-primary-dark);
-          margin-bottom: 0.5rem;
-          letter-spacing: 1px;
-          background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          text-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        ">
-          No friend requests
-        </span>
-      </div>
-    `;
+	  <div class="flex flex-col my-30 items-center justify-center py-8">
+		<img src="/assets/icons/noFriendRequest.gif" alt="No requests" class="w-20 h-20 mb-4 " />
+		<span style="
+		  font-family: var(--font-poppins), monospace;
+		  font-size: 1.25rem;
+		  font-weight: 600;
+		  color: var(--color-primary-dark);
+		  margin-bottom: 0.5rem;
+		  letter-spacing: 1px;
+		  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
+		  -webkit-background-clip: text;
+		  -webkit-text-fill-color: transparent;
+		  text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		">
+		  No friend requests
+		</span>
+	  </div>
+	`;
   }
 }
 
