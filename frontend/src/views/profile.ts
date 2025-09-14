@@ -47,8 +47,14 @@ export async function renderProfile(container: HTMLElement | null) {
 		console.log("Notification service triggered profile view update.");
 		updateButtonStates(username);
 	});
-	
+
 	renderStats(document.getElementById("content") as HTMLElement);
+}
+
+export function updateFriendshipStatusCache(username: string, status: FriendshipStatus, blockedBy?: string) {
+	friendshipStatusCache.set(username, { status, blockedBy });
+	updateButtonStates(username);
+	console.log(`Updated friendship status cache for ${username}:`, friendshipStatusCache.get(username));
 }
 
 async function populateProfileView(profile: any) {
@@ -208,13 +214,10 @@ function setupEventListeners(username: string) {
 			try {
 				// Wait for the friend request operation to complete
 				await sendFriendRequest(username);
-				friendshipStatusCache.set(username, { status: FriendshipStatus.PENDING });
-				console.log("Friend request sent");
-
 				// Update the button states after the operation
 				await updateButtonStates(username);
 			} catch (error) {
-				// Optionally show error message in UI
+				console.error("Error sending friend request:", error);
 			}
 		});
 	}

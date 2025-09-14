@@ -1,5 +1,5 @@
 import { chatManager } from "../app.js";
-import { getPendingRequests } from "./friendship.service.js";
+import { FriendshipStatus, getFriendshipStatus, getPendingRequests } from "./friendship.service.js";
 import { getUserAvatar } from "./profileService.js";
 
 type NotificationState = {
@@ -46,9 +46,27 @@ class NotificationService {
 	}
 
 	addFriendRequest(request: { requesterUsername: string; avatar: string; id: string }) {
-		this.state.friendRequests.push(request);
+		if (!this.state.friendRequests.some(r => r.id === request.id)) {
+			this.state.friendRequests.push(request);
+		}
 		console.log("New friend request added:", request);
 		this.notifyListeners();
+	}
+
+	removeFriendRequest(requesterUsername: string) {
+		this.state.friendRequests = this.state.friendRequests.filter(r => r.requesterUsername !== requesterUsername);
+		console.log("Friend request removed for:", requesterUsername);
+		this.notifyListeners();
+	}
+
+	addFriendRequestAccepted(username: string) {
+		console.log(`Friend request accepted by: ${username}`);
+		this.notifyListeners(); // Notify all subscribers to update their UI
+	}
+
+	addFriendRequestDeclined(username: string) {
+		console.log(`Friend request declined by: ${username}`);
+		this.notifyListeners(); // Notify all subscribers to update their UI
 	}
 
 	// Update message notifications

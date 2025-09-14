@@ -2,10 +2,12 @@ import { renderNavbar } from "./components/navbar.js";
 import { IncomingMessage, PrivateMessageResponse } from "./interfaces/message.interfaces.js";
 import { router, navigateTo } from "./router/router.js";
 import chatService from "./services/chat.service.js";
+import { FriendshipStatus } from "./services/friendship.service.js";
 import { notificationService } from "./services/notifications.service.js";
 import { getUserAvatar } from "./services/profileService.js";
 import { refreshAccessToken } from "./utils/api.js";
 import { ChatComponent } from "./views/chat.js";
+import { updateFriendshipStatusCache } from "./views/profile.js";
 
 export let chatManager = new ChatComponent("chat-root", []);
 
@@ -58,7 +60,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       } else if (message.event === "notification/new") {
         if (message.type === "FRIEND_REQUEST") {
           const avatar = await getUserAvatar(message.senderId);
+          updateFriendshipStatusCache(message.senderId, FriendshipStatus.PENDING, undefined);
           notificationService.addFriendRequest({ requesterUsername: message.senderId, avatar, id: message.friendshipId });
+        } else if (message.type === "FRIEND_REQUEST_ACCEPTED") {
+          updateFriendshipStatusCache(message.senderId, FriendshipStatus.ACCEPTED, undefined);
+          notificationService.triggerUpdate();
+        } else if (message.type === "FRIEND_REQUEST_DECLINED") {
+          updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);
+          notificationService.triggerUpdate();
+        } else if (message.type === "FRIEND_BLOCKED") {
+          updateFriendshipStatusCache(message.senderId, FriendshipStatus.BLOCKED, message.senderId);
+          notificationService.removeFriendRequest(message.senderId);
+          notificationService.triggerUpdate();
+        } else if (message.type === "FRIEND_UNBLOCKED") {
+          updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);
+          notificationService.triggerUpdate();
         }
       }
     };

@@ -104,7 +104,7 @@ function updateFriendRequestsUI(ul: HTMLElement) {
       const rejectBtn = li.querySelector(".reject-btn") as HTMLButtonElement;
       acceptBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        await respondRequest(req.id, FriendshipStatus.ACCEPTED);
+        await respondRequest(req.id, FriendshipStatus.ACCEPTED, req.requesterUsername);
         notificationService.updateFriendRequests(
           requests.filter((r) => r.id !== req.id)
         );
@@ -112,7 +112,7 @@ function updateFriendRequestsUI(ul: HTMLElement) {
 
       rejectBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        await respondRequest(req.id, FriendshipStatus.DECLINED);
+        await respondRequest(req.id, FriendshipStatus.DECLINED, req.requesterUsername);
         notificationService.updateFriendRequests(
           requests.filter((r) => r.id !== req.id)
         );

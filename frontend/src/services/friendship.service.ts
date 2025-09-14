@@ -3,6 +3,8 @@ import { BASE_URL } from "../config/config.js";
 import { request, getHeaders } from "../utils/api.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
 import { Friend } from "../views/chat.js";
+import { updateFriendshipStatusCache } from "../views/profile.js";
+import { notificationService } from "./notifications.service.js";
 
 const FRIEND_BASE_URL = `${BASE_URL}/friendships`;
 const USER_BASE_URL = `${BASE_URL}/users`;
@@ -50,6 +52,7 @@ export const sendFriendRequest = async (friendUsername: string) => {
     ts: Date.now(),
   };
   chatManager.sendMessage(friendUsername, message);
+  updateFriendshipStatusCache(friendUsername, FriendshipStatus.PENDING, undefined);
   console.log("Friend request sent response:", message);
 
   return response;
@@ -61,12 +64,34 @@ export const getPendingRequests = () =>
     headers: getHeaders(),
   });
 
-export const respondRequest = (friendshipId: string, accept: FriendshipStatus) =>
-  request(`${FRIEND_BASE_URL}/respond/${friendshipId}`, {
-    method: "PATCH",
-    headers: getHeaders(),
-    body: JSON.stringify({ status: accept }),
-  });
+export const respondRequest = (friendshipId: string, accept: FriendshipStatus, requesterUsername: string) => {
+    request(`${FRIEND_BASE_URL}/respond/${friendshipId}`, {
+      method: "PATCH",
+      headers: getHeaders(),
+      body: JSON.stringify({ status: accept }),
+    });
+    const senderId = getCurrentUsername();
+    const message = {
+      kind: 'notification/new',
+      type: accept === FriendshipStatus.ACCEPTED ? 'FRIEND_REQUEST_ACCEPTED' : 'FRIEND_REQUEST_DECLINED',
+      friendshipId,
+      senderId: senderId,
+      recipientId: requesterUsername,
+      content: accept === FriendshipStatus.ACCEPTED
+        ? `${senderId} has accepted your friend request.`
+        : `${senderId} has declined your friend request.`,
+      ts: Date.now(),
+    };
+    chatManager.sendMessage(requesterUsername, message);
+    if (accept === FriendshipStatus.ACCEPTED) {
+      updateFriendshipStatusCache(requesterUsername, FriendshipStatus.ACCEPTED, undefined);
+    } else {
+      updateFriendshipStatusCache(requesterUsername, FriendshipStatus.DECLINED, undefined);
+    }
+    notificationService.removeFriendRequest(requesterUsername);
+    notificationService.triggerUpdate();
+    console.log("Friend request response sent:", message);
+}
 
 export const removeFriend = (friendUsername: string) =>
   request(`${FRIEND_BASE_URL}/`, {
@@ -75,19 +100,45 @@ export const removeFriend = (friendUsername: string) =>
     body: JSON.stringify({ fromUserId: getCurrentUsername(), toUserId: friendUsername }),
   });
 
-export const blockUser = (friendUsername: string) =>
-  request(`${FRIEND_BASE_URL}/block/${friendUsername}`, {
+export const blockUser = async (friendUsername: string) => {
+  const response = await request(`${FRIEND_BASE_URL}/block/${friendUsername}`, {
     method: "PATCH",
     headers: getHeaders(),
     body: JSON.stringify({ blockedBy: getCurrentUsername() }),
   });
-
-  export const unblockUser = (friendUsername: string) =>
-    request(`${FRIEND_BASE_URL}/unblock/${friendUsername}`, {
-      method: "PATCH",
-      headers: getHeaders(),
-      body: JSON.stringify({ unblockedBy: getCurrentUsername() }),
-    });
+  const senderId = getCurrentUsername();
+  const message = {
+    kind: 'notification/new',
+    type: 'FRIEND_BLOCKED',
+    senderId: senderId,
+    recipientId: friendUsername,
+    content: `${senderId} has blocked you.`,
+    ts: Date.now(),
+  };
+  chatManager.sendMessage(friendUsername, message);
+  notificationService.removeFriendRequest(friendUsername);
+  console.log("Friend block notification sent:", message);
+  return response;
+};
+export const unblockUser = async (friendUsername: string) => {
+  const response = await request(`${FRIEND_BASE_URL}/unblock/${friendUsername}`, {
+    method: "PATCH",
+    headers: getHeaders(),
+    body: JSON.stringify({ unblockedBy: getCurrentUsername() }),
+  });
+  const senderId = getCurrentUsername();
+  const message = {
+    kind: 'notification/new',
+    type: 'FRIEND_UNBLOCKED',
+    senderId: senderId,
+    recipientId: friendUsername,
+    content: `${senderId} has unblocked you.`,
+    ts: Date.now(),
+  };
+  chatManager.sendMessage(friendUsername, message);
+  console.log("Friend unblock notification sent:", message);
+  return response;
+};
 
 export const getFriendshipStatus = (friendUsername: string) =>
   request(`${FRIEND_BASE_URL}/status/${getCurrentUsername()}/${friendUsername}`, {
