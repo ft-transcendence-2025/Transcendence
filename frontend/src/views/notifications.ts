@@ -3,6 +3,7 @@ import { FriendshipStatus, getPendingRequests, respondRequest } from "../service
 import { getUserAvatar } from "../services/profileService.js";
 import { navigateTo } from "../router/router.js";
 import { chatManager } from "../app.js";
+import { notificationService } from "../services/notifications.service.js";
 
 export async function getNotificationsContent(): Promise<HTMLElement> {
   const container = document.createElement("div");
@@ -10,7 +11,7 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
 
   // Fetch all requests first
   let requests: { requesterUsername: string; avatar: string , id: string }[] = [];
-  requests = chatManager.friendRequests;
+  requests = notificationService.getState().friendRequests;
 
   // Tabs
   const tabs = document.createElement("div");
@@ -170,7 +171,8 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
 }
 
 function updateTabBadge(tabIndex: number, count: number) {
-  const badge = document.getElementById(`tab-badge-${tabIndex}`);
+  const badgeId = tabIndex === 0 ? "badge-FRIEND_REQUEST" : "badge-GAME_INVITE";
+  const badge = document.getElementById(badgeId);
   if (badge) {
     if (count > 0) {
       badge.textContent = count.toString();

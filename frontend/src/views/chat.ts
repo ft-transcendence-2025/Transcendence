@@ -9,6 +9,7 @@ import { getPendingRequests, getUserFriends } from "../services/friendship.servi
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
+import { notificationService } from "../services/notifications.service.js";
 
 export type Friend = {
   id: string;
@@ -26,24 +27,14 @@ class ChatComponent {
   friends: Friend[];
   openChats: Map<string, HTMLElement>;
   messages: Map<string, any[]>;
-  messageNotifications: Map<string, number> = new Map();
-  gameInvites: Map<string, number> = new Map();
-  tournamentTurns: Map<string, number> = new Map();
-  friendRequests: any[] = [];
   currentUserId: string = getCurrentUsername() as string;
   public chatService: chatService = new chatService();
 
   constructor(containerId: string, friends: any) {
     this.container = document.getElementById(containerId)!;
     this.friends = friends;
-    this.messageNotifications = new Map();
-    this.gameInvites = new Map();
-    this.tournamentTurns = new Map();
-    this.friendRequests = [];
     this.openChats = new Map();
     this.messages = new Map();
-
-    this.fetchAllNotifications();
   }
 
   reset() {
@@ -63,33 +54,6 @@ class ChatComponent {
     }
 
     console.log("Chat service reset: All chats closed and connection terminated.");
-  }
-
-  async fetchAllNotifications() {
-    try {
-      console.log("Fetching pending friend requests...");
-      const raw = (await getPendingRequests()) as any[];
-      this.friendRequests = await Promise.all(
-        raw.map(async (req) => ({
-          requesterUsername: req.requesterUsername,
-          avatar: await getUserAvatar(req.requesterUsername),
-          id: req.id,
-        }))
-      );
-      console.log("Friend requests loaded:", this.friendRequests);
-  
-      console.log("Fetching unread message counts...");
-      const unreadCounts = (await this.chatService.fetchUnreadMessagesCount()) || {}; // Ensure it's an object
-      Object.entries(unreadCounts).forEach(([userId, count]) => {
-        this.messageNotifications.set(userId, count);
-        console.log(`Unread messages for ${userId}: ${count}`);
-      });
-      const unreadCount = Object.values(unreadCounts).reduce((sum, c) => sum + c, 0);
-      this.messageNotifications.set("__total__", unreadCount);
-      console.log("Total unread messages:", unreadCount);
-    } catch (error) {
-      console.error("Failed to fetch unread message counts:", error);
-    }
   }
 
   async updateChatMessages(friendId: string) {

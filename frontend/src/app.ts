@@ -2,6 +2,7 @@ import { renderNavbar } from "./components/navbar.js";
 import { IncomingMessage, PrivateMessageResponse } from "./interfaces/message.interfaces.js";
 import { router, navigateTo } from "./router/router.js";
 import chatService from "./services/chat.service.js";
+import { notificationService } from "./services/notifications.service.js";
 import { refreshAccessToken } from "./utils/api.js";
 import { ChatComponent } from "./views/chat.js";
 
@@ -44,9 +45,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // fetch all notifications for the user
-  
-
   if (chatManager.chatService.conn) {
     chatManager.chatService.conn.onmessage = (e: MessageEvent) => {
       const message: IncomingMessage = JSON.parse(e.data);
@@ -57,10 +55,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         chatManager.messages.set(message.senderId, temp);
         chatManager.updateChatMessages(message.senderId);
       } else if (message.event === "notification/new") {
-        // Handle notification
+        if (message.type === "FRIEND_REQUEST") {
+          notificationService.addFriendRequest(message);
+        }
       }
     };
   }
+  notificationService.fetchAllNotifications();
+
   await renderNavbar(navbarElement); // render the navbar component
   // global click listener for navigation links (data-links)
   document.body.addEventListener("click", (event) => {
