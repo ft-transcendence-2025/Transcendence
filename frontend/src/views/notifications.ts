@@ -8,7 +8,7 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
   container.className = "notifications-modal w-full h-full flex flex-col";
 
   // Fetch all requests first
-  let requests: { requesterUsername: string; avatar: string , id: string }[] = [];
+  let requests: { requesterUsername: string; avatar: string, id: string }[] = [];
   try {
     const raw = (await getPendingRequests()) as any[];
     requests = await Promise.all(
@@ -31,8 +31,8 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
   ["Friend Requests", "Game Invites"].forEach((label, index) => {
     const btn = document.createElement("button");
     btn.className = `tab-button flex-1 py-2 font-bold cursor-pointer ${index === 0
-        ? "border-b-2 border-(--color-primary) text-(--color-secondary-light)"
-        : "text-(--color-text-primary)"
+      ? "border-b-2 border-(--color-primary) text-(--color-secondary-light)"
+      : "text-(--color-text-primary)"
       }`;
     btn.textContent = label;
     tabs.appendChild(btn);
@@ -66,10 +66,10 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
       li.innerHTML = `
       <img src="${req.avatar}" class="w-8 h-8 object-cover" 
         onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
-      <span class="ml-5">${req.requesterUsername}</span>
+      <span class="ml-5 text-(--color-secondary-light) ">${req.requesterUsername}</span>
       <div class="flex gap-4 ml-auto justify-end">
-        <button title="Accept" class="accept-btn material-symbols-outlined text-3xl hover:text-(--color-primary)">check_circle</button>
-        <button title="Reject" class="reject-btn material-symbols-outlined text-3xl hover:text-(--color-accent)">cancel</button>
+        <button title="Accept" class="accept-btn text-(--color-secondary-light) material-symbols-outlined text-3xl hover:text-(--color-primary)">check_circle</button>
+        <button title="Reject" class="reject-btn text-(--color-secondary-light) material-symbols-outlined text-3xl hover:text-(--color-accent)">cancel</button>
       </div>
       `;
       ul.appendChild(li);
@@ -104,27 +104,21 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
     });
   } else {
     ul.innerHTML = `
-      <div class="flex flex-col items-center justify-center py-8">
-        <img src="/assets/icons/noFriendRequest.gif" alt="No requests" class="w-20 h-20 mb-4 opacity-90" />
+      <div class="flex flex-col my-30 items-center justify-center py-8">
+        <img src="/assets/icons/noFriendRequest.gif" alt="No requests" class="w-20 h-20 mb-4 " />
         <span style="
           font-family: var(--font-poppins), monospace;
           font-size: 1.25rem;
-          font-weight: bold;
-          color: var(--color-primary);
-          text-shadow: 0 2px 2px var(--color-primary-light), 0 1px 0 var(--color-secondary-light);
+          font-weight: 600;
+          color: var(--color-primary-dark);
           margin-bottom: 0.5rem;
           letter-spacing: 1px;
-          -webkit-text-stroke: 1px var(--color-primary-dark);
+          background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.08);
         ">
           No friend requests
-        </span>
-        <span style="
-          font-family: var(--font-poppins), sans-serif;
-          font-size: 1rem;
-          color: var(--color-secondary);
-          margin-top: 0.25rem;
-        ">
-          You're all caught up! <span style="color: var(--color-accent);">✨</span>
         </span>
       </div>
     `;
@@ -133,30 +127,24 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
 
   // Fill second tab
   tabContents[1].innerHTML = `
-      <div class="flex flex-col items-center justify-center py-8">
-        <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 opacity-90" />
-        <span style="
-          font-family: var(--font-poppins), monospace;
-          font-size: 1.25rem;
-          font-weight: bold;
-          color: var(--color-primary);
-          text-shadow: 0 2px 2px var(--color-primary-light), 0 1px 0 var(--color-secondary-light);
-          margin-bottom: 0.5rem;
-          letter-spacing: 1px;
-          -webkit-text-stroke: 1px var(--color-primary-dark);
-        ">
-          No Game Invites
-        </span>
-        <span style="
-          font-family: var(--font-poppins), sans-serif;
-          font-size: 1rem;
-          color: var(--color-secondary);
-          margin-top: 0.25rem;
-        ">
-          You're all caught up! <span style="color: var(--color-accent);">✨</span>
-        </span>
-      </div>
-    `;
+    <div class="flex flex-col items-center my-30 justify-center py-8">
+      <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 " />
+      <span style="
+        font-family: var(--font-poppins), monospace;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--color-primary-dark);
+        margin-bottom: 0.5rem;
+        letter-spacing: 1px;
+        background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      ">
+        No Game Invites
+      </span>
+    </div>
+  `;
 
   return container;
 }
