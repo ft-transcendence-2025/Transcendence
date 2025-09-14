@@ -1,5 +1,5 @@
 
-import { handleBlockUser, handlePrivateMessage, sendPendingMessages } from '../services/privatechat.service';
+import { handleBlockUser, handleNotification, handlePrivateMessage, sendPendingMessages } from '../services/privatechat.service';
 import { handleLobbyMessage, joinLobby, leaveLobby } from '../services/lobby.service';
 import { handleUserStatus, USER_STATUS } from '../lib/userPresenceHandler';
 import prisma from '../lib/prisma';
@@ -52,8 +52,8 @@ export async function chatHandler(socket: WS, request: any) {
         handleBlockUser(users, userId, msg);
         break;
 
-      case 'notification/friend_request':
-        // handleNotification(users, userId, msg);
+      case 'notification/new':
+        handleNotification(users, userId, msg);
         break;
 
       default:

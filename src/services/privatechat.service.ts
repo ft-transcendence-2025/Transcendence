@@ -92,7 +92,16 @@ export async function markMessagesAsRead(userId: string, conversationId: string)
 
 export async function handleNotification(users: Map<string, any>, userId: string, msg: any) {
   const { recipientId, type, content } = msg;
-  if (!recipientId || !type || !content) return;
+  if (!recipientId || !content || !type) return;
+  
+  const sender = users.get(userId);
+  if (sender.blockedUsersList.includes(recipientId) && type !== "FRIEND_UNBLOCKED") {
+    sender.socket.send("Notification not delivered.");
+    return;
+  }
 
-
+  if (users.has(recipientId)) {
+    const recipientConn = users.get(recipientId);
+    recipientConn.socket.send(JSON.stringify({ event: 'notification/new', ...msg }));
+  }
 }
