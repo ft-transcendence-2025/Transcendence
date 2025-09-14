@@ -81,7 +81,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     };
   }
-  notificationService.fetchAllNotifications();
 
   await renderNavbar(navbarElement); // render the navbar component
   // global click listener for navigation links (data-links)

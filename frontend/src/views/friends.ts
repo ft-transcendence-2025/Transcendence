@@ -41,13 +41,14 @@ export async function renderFriends(container: HTMLElement | null) {
         }">${friend.username}</span>
       <span id="badge-${friend.username}" class="ml-auto bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full hidden"></span>
       `;
+      container.appendChild(li);
+      setTimeout(() => updateUnreadBadge(friend.username), 0);
+      updateUnreadBadge(friend.username);
       li.addEventListener("click", async () => {
         chatManager.openChat(friend);
         await chatManager.chatService.markConversationAsRead(friend.username);
         closeModal();
       });
-      container.appendChild(li);
-      setTimeout(() => updateUnreadBadge(friend.username), 0);
     }
     notificationService.subscribe(() => {
       friends.forEach((friend) => updateUnreadBadge(friend.username));

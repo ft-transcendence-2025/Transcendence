@@ -26,6 +26,7 @@ export default class chatService {
 
 	connect() {
 		this.conn = new WebSocket(this.url);
+		notificationService.fetchAllNotifications();
 	}
 	
 	sendPrivateMessage(message: OutgoingMessage) {
@@ -37,7 +38,7 @@ export default class chatService {
 	}
 
 	async getConversation(friendUsername: string) {
-		const url = MESSAGE_SERVICE + `/${this.username}/${friendUsername}`;
+		const url = MESSAGE_SERVICE + `/${getCurrentUsername()}/${friendUsername}`;
 		const conversation: any = await request(url, {
 			method: "GET",
 			headers: getHeaders(),
@@ -50,7 +51,7 @@ export default class chatService {
 			await fetch(`${MESSAGE_SERVICE}/markAsRead`, {
 				method: "POST",
 				headers: getHeaders(),
-				body: JSON.stringify({ senderId, recipientId: this.username }),
+				body: JSON.stringify({ senderId, recipientId: getCurrentUsername() }),
 			});
 			notificationService.updateMessageNotifications(senderId, 0);
 		} catch (error) {
@@ -61,7 +62,7 @@ export default class chatService {
 	
 	async fetchUnreadMessagesCount(): Promise<Record<string, number>> {
 		try {
-			const url = `${MESSAGE_SERVICE}/unreadMessages/${this.username}`;
+			const url = `${MESSAGE_SERVICE}/unreadMessages/${getCurrentUsername()}`;
 			const data: Record<string, number> = await request(url, {
 				method: "GET",
 				headers: getHeaders(),
