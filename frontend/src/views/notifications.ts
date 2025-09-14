@@ -9,33 +9,29 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
   const container = document.createElement("div");
   container.className = "notifications-modal w-full h-full flex flex-col";
 
-  // Fetch all requests first
-  let requests: { requesterUsername: string; avatar: string , id: string }[] = [];
-  requests = notificationService.getState().friendRequests;
-
-  // Tabs
+  // Tabs and initial rendering
   const tabs = document.createElement("div");
   tabs.className = "tabs flex rounded-t-lg overflow-hidden";
   container.appendChild(tabs);
 
   const tabContents: HTMLElement[] = [];
   const tabLabels = ["Friend Requests", "Game Invites"];
-  const tabCounts = [requests.length, 0]; // Example counts for badges
+  const tabCounts = [notificationService.getState().friendRequests.length, 0];
 
   tabLabels.forEach((label, index) => {
     const btn = document.createElement("button");
     btn.className = `tab-button flex-1 py-2 font-bold cursor-pointer ${index === 0
-        ? "border-b-2 border-(--color-primary) text-(--color-secondary-light)"
-        : "text-(--color-text-primary)"
+      ? "border-b-2 border-(--color-primary) text-(--color-secondary-light)"
+      : "text-(--color-text-primary)"
       }`;
-    btn.textContent = label; // Set label text
-    // Add badge for count if > 0
-    let badgeId = index === 0 ? "badge-FRIEND_REQUEST" : "badge-GAME_INVITE";
+    btn.textContent = label;
+
+    const badgeId = index === 0 ? "badge-FRIEND_REQUEST" : "badge-GAME_INVITE";
     if (tabCounts[index] > 0) {
       const badge = document.createElement("span");
       badge.textContent = tabCounts[index].toString();
       badge.className =
-      "inline-flex items-center justify-center ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white";
+        "inline-flex items-center justify-center ml-2 px-2 py-0.5 rounded-full text-xs font-bold bg-red-500 text-white";
       badge.id = badgeId;
       btn.appendChild(badge);
     }
@@ -60,128 +56,92 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
     });
   });
 
-  // Fill first tab (friend requests)
+  // Fill the first tab (friend requests)
   const ul = document.createElement("ul");
+  tabContents[0].appendChild(ul);
+
+  // Subscribe to notification updates
+  notificationService.subscribe(() => {
+    updateFriendRequestsUI(ul);
+    updateTabBadge(0, notificationService.getState().friendRequests.length);
+  });
+
+  // Initial rendering of friend requests
+  updateFriendRequestsUI(ul);
+
+  // Fill the second tab (game invites)
+  tabContents[1].innerHTML = `
+    <div class="flex flex-col items-center justify-center py-8">
+      <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 opacity-90" />
+      <span>No Game Invites</span>
+    </div>
+  `;
+
+  return container;
+}
+
+function updateFriendRequestsUI(ul: HTMLElement) {
+  const requests = notificationService.getState().friendRequests;
+
+  ul.innerHTML = ""; // Clear existing content
   if (requests.length > 0) {
     requests.forEach((req) => {
       const li = document.createElement("li");
       li.className =
         "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary)/30 rounded-xl";
       li.innerHTML = `
-      <img src="${req.avatar}" class="w-8 h-8 object-cover" 
-        onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
-      <span class="ml-5 text-(--color-secondary-light)">${req.requesterUsername}</span>
-      <div class="flex gap-4 ml-auto justify-end">
-        <button title="Accept" class="accept-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-primary)">check_circle</button>
-        <button title="Reject" class="reject-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-accent)">cancel</button>
-      </div>
+        <img src="${req.avatar}" class="w-8 h-8 object-cover" 
+          onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
+        <span class="ml-5 text-(--color-secondary-light)">${req.requesterUsername}</span>
+        <div class="flex gap-4 ml-auto justify-end">
+          <button title="Accept" class="accept-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-primary)">check_circle</button>
+          <button title="Reject" class="reject-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-accent)">cancel</button>
+        </div>
       `;
       ul.appendChild(li);
 
       const acceptBtn = li.querySelector(".accept-btn") as HTMLButtonElement;
       const rejectBtn = li.querySelector(".reject-btn") as HTMLButtonElement;
-      acceptBtn.style.cursor = "pointer";
-      rejectBtn.style.cursor = "pointer";
       acceptBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.ACCEPTED);
-        li.remove();
-
-        requests = requests.filter((r) => r.id !== req.id);
-        updateTabBadge(0, requests.length);
+        notificationService.updateFriendRequests(
+          requests.filter((r) => r.id !== req.id)
+        );
       });
 
       rejectBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         await respondRequest(req.id, FriendshipStatus.DECLINED);
-        li.remove();
-
-        requests = requests.filter((r) => r.id !== req.id);
-        updateTabBadge(0, requests.length);
+        notificationService.updateFriendRequests(
+          requests.filter((r) => r.id !== req.id)
+        );
       });
-
-      // Redirect to user profile on li click (excluding button clicks)
-      li.addEventListener("click", (e) => {
-        if (
-          (e.target as HTMLElement).closest(".accept-btn") ||
-          (e.target as HTMLElement).closest(".reject-btn")
-        ) {
-          return;
-        }
-        navigateTo(`/friend-profile?username=${encodeURIComponent(req.requesterUsername)}`, document.getElementById("content"));
-      });
+    li.addEventListener("click", (e) => {
+      if (
+        (e.target as HTMLElement).closest(".accept-btn") ||
+        (e.target as HTMLElement).closest(".reject-btn")
+      ) {
+        return;
+      }
+      navigateTo(`/friend-profile?username=${encodeURIComponent(req.requesterUsername)}`, document.getElementById("content"));
     });
-  } else {
-    ul.innerHTML = `
+  });
+} else {
+  ul.innerHTML = `
       <div class="flex flex-col items-center justify-center py-8">
         <img src="/assets/icons/noFriendRequest.gif" alt="No requests" class="w-20 h-20 mb-4 opacity-90" />
-        <span style="
-          font-family: var(--font-poppins), monospace;
-          font-size: 1.25rem;
-          font-weight: bold;
-          color: var(--color-primary);
-          text-shadow: 0 2px 2px var(--color-primary-light), 0 1px 0 var(--color-secondary-light);
-          margin-bottom: 0.5rem;
-          letter-spacing: 1px;
-          -webkit-text-stroke: 1px var(--color-primary-dark);
-        ">
-          No friend requests
-        </span>
-        <span style="
-          font-family: var(--font-poppins), sans-serif;
-          font-size: 1rem;
-          color: var(--color-secondary);
-          margin-top: 0.25rem;
-        ">
-          You're all caught up! <span style="color: var(--color-accent);">✨</span>
-        </span>
+        <span>No friend requests</span>
       </div>
     `;
-  }
-  tabContents[0].appendChild(ul);
-
-  // Fill second tab
-  tabContents[1].innerHTML = `
-      <div class="flex flex-col items-center justify-center py-8">
-        <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 opacity-90" />
-        <span style="
-          font-family: var(--font-poppins), monospace;
-          font-size: 1.25rem;
-          font-weight: bold;
-          color: var(--color-primary);
-          text-shadow: 0 2px 2px var(--color-primary-light), 0 1px 0 var(--color-secondary-light);
-          margin-bottom: 0.5rem;
-          letter-spacing: 1px;
-          -webkit-text-stroke: 1px var(--color-primary-dark);
-        ">
-          No Game Invites
-        </span>
-        <span style="
-          font-family: var(--font-poppins), sans-serif;
-          font-size: 1rem;
-          color: var(--color-secondary);
-          margin-top: 0.25rem;
-        ">
-          You're all caught up! <span style="color: var(--color-accent);">✨</span>
-        </span>
-      </div>
-    `;
-
-  return container;
+}
 }
 
 function updateTabBadge(tabIndex: number, count: number) {
   const badgeId = tabIndex === 0 ? "badge-FRIEND_REQUEST" : "badge-GAME_INVITE";
   const badge = document.getElementById(badgeId);
   if (badge) {
-    if (count > 0) {
-      badge.textContent = count.toString();
-      badge.style.display = "inline-flex"; // Ensure the badge is visible
-      badge.classList.remove("hidden");
-    } else {
-      badge.textContent = ""; // Clear the badge text
-      badge.style.display = "none"; // Hide the badge
-      badge.classList.add("hidden");
-    }
+    badge.textContent = count > 0 ? count.toString() : "";
+    badge.style.display = count > 0 ? "inline-flex" : "none";
   }
 }

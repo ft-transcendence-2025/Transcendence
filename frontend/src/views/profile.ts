@@ -11,6 +11,7 @@ import { chatManager } from "../app.js";
 import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, sendFriendRequest, unblockUser } from "../services/friendship.service.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
 import { renderStats } from "./stats.js";
+import { notificationService } from "../services/notifications.service.js";
 
 
 let currentProfile: any = null;
@@ -41,6 +42,12 @@ export async function renderProfile(container: HTMLElement | null) {
 	}
 
 	setupEventListeners(username);
+
+	notificationService.subscribe(() => {
+		console.log("Notification service triggered profile view update.");
+		updateButtonStates(username);
+	});
+	
 	renderStats(document.getElementById("content") as HTMLElement);
 }
 

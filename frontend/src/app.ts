@@ -3,6 +3,7 @@ import { IncomingMessage, PrivateMessageResponse } from "./interfaces/message.in
 import { router, navigateTo } from "./router/router.js";
 import chatService from "./services/chat.service.js";
 import { notificationService } from "./services/notifications.service.js";
+import { getUserAvatar } from "./services/profileService.js";
 import { refreshAccessToken } from "./utils/api.js";
 import { ChatComponent } from "./views/chat.js";
 
@@ -46,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (chatManager.chatService.conn) {
-    chatManager.chatService.conn.onmessage = (e: MessageEvent) => {
+    chatManager.chatService.conn.onmessage = async (e: MessageEvent) => {
       const message: IncomingMessage = JSON.parse(e.data);
       console.log("Received message:", message);
       if (message.event === "private/message") {
@@ -56,7 +57,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         chatManager.updateChatMessages(message.senderId);
       } else if (message.event === "notification/new") {
         if (message.type === "FRIEND_REQUEST") {
-          notificationService.addFriendRequest(message);
+          const avatar = await getUserAvatar(message.senderId);
+          notificationService.addFriendRequest({ requesterUsername: message.senderId, avatar, id: message.friendshipId });
         }
       }
     };

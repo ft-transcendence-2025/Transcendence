@@ -44,6 +44,15 @@ export interface NotificationMessage extends BaseMessage {
   ts: number;
 }
 
+export interface FriendRequestMessage extends NotificationMessage {
+  kind: 'notification/new';
+  type: string; // e.g., "FRIEND_REQUEST"
+  friendshipId: string;
+  senderId: string;
+  recipientId: string;
+  content: string;
+}
+
 // Union type for all Outgoing messages
 export type OutgoingMessage = 
   | PrivateSendMessage
@@ -51,7 +60,9 @@ export type OutgoingMessage =
   | LobbyLeaveMessage
   | LobbySendMessage
   | UserBlockMessageResponse
-  | NotificationMessage;
+  | NotificationMessage
+  | FriendRequestMessage
+  | any; // Fallback for unknown message types
 
 // System response messages
 export interface SystemReadyMessage {
@@ -83,12 +94,12 @@ export interface LobbyMessageResponse {
   ts: number;
 }
 
-export interface NotificationMessage {
+export interface FriendRequestResponse {
   event: 'notification/new';
-  notificationId: string;
+  type: string; // e.g., "FRIEND_REQUEST"
+  friendshipId: string;
   senderId: string;
   recipientId: string;
-  type: string;
   content: string;
   ts: number;
 }

@@ -1,3 +1,4 @@
+import { chatManager } from "../app.js";
 import { BASE_URL } from "../config/config.js";
 import { request, getHeaders } from "../utils/api.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
@@ -33,12 +34,26 @@ export const getAllUsers = () =>
     headers: getHeaders(),
   });
 
-export const sendFriendRequest = (friendUsername: string) =>
-  request(`${FRIEND_BASE_URL}`, {
+export const sendFriendRequest = async (friendUsername: string) => {
+  const response = await request(`${FRIEND_BASE_URL}`, {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify({ fromUserId: getCurrentUsername(), toUserId: friendUsername }),
-  });
+  }) as { message: string; friendshipId: string };
+  const message = {
+    kind: 'notification/new',
+    type: 'FRIEND_REQUEST',
+    friendshipId: response.friendshipId,
+    senderId: getCurrentUsername(),
+    recipientId: friendUsername,
+    content: `${getCurrentUsername()} has sent you a friend request.`,
+    ts: Date.now(),
+  };
+  chatManager.sendMessage(friendUsername, message);
+  console.log("Friend request sent response:", message);
+
+  return response;
+};
 
 export const getPendingRequests = () =>
   request(`${FRIEND_BASE_URL}/requests/${getCurrentUsername()}`, {

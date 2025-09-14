@@ -124,9 +124,7 @@ class ChatComponent {
     await this.chatService.markConversationAsRead(friendId);
   }
 
-  async sendMessage(friendId: string, message: PrivateSendMessage | UserBlockMessageResponse | NotificationMessage) {
-    
-
+  async sendMessage(friendId: string, message: PrivateSendMessage | UserBlockMessageResponse | NotificationMessage | any) {
     if ("content" in message && (!message.content || !message.content.trim())) return;
     this.chatService.sendPrivateMessage(message);
     if (message.kind === "private/send") {
