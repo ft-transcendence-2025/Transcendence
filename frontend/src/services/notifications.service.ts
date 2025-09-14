@@ -49,29 +49,30 @@ class NotificationService {
 		if (!this.state.friendRequests.some(r => r.id === request.id)) {
 			this.state.friendRequests.push(request);
 		}
-		console.log("New friend request added:", request);
 		this.notifyListeners();
 	}
 
 	removeFriendRequest(requesterUsername: string) {
 		this.state.friendRequests = this.state.friendRequests.filter(r => r.requesterUsername !== requesterUsername);
-		console.log("Friend request removed for:", requesterUsername);
 		this.notifyListeners();
 	}
 
 	addFriendRequestAccepted(username: string) {
-		console.log(`Friend request accepted by: ${username}`);
 		this.notifyListeners(); // Notify all subscribers to update their UI
 	}
 
 	addFriendRequestDeclined(username: string) {
-		console.log(`Friend request declined by: ${username}`);
 		this.notifyListeners(); // Notify all subscribers to update their UI
 	}
 
 	// Update message notifications
-	updateMessageNotifications(userId: string, count: number) {
-		this.state.messageNotifications.set(userId, count);
+	updateMessageNotifications(userId: string, count: number, mode: "add" | "set" = "set") {
+		if (mode === "add") {
+			const prev = this.state.messageNotifications.get(userId) || 0;
+			this.state.messageNotifications.set(userId, prev + count);
+		} else {
+			this.state.messageNotifications.set(userId, count);
+		}
 		this.notifyListeners();
 	}
 
@@ -82,7 +83,6 @@ class NotificationService {
 
 	async fetchAllNotifications() {
 		try {
-			console.log("Fetching pending friend requests...");
 			const raw = (await getPendingRequests()) as any[];
 			this.state.friendRequests = await Promise.all(
 				raw.map(async (req) => ({
@@ -91,17 +91,13 @@ class NotificationService {
 					id: req.id,
 				}))
 			);
-			console.log("Friend requests loaded:", this.state.friendRequests);
 
-			console.log("Fetching unread message counts...");
 			const unreadCounts = (await chatManager.chatService.fetchUnreadMessagesCount()) || {}; // Ensure it's an object
 			Object.entries(unreadCounts).forEach(([userId, count]) => {
 				this.state.messageNotifications.set(userId, count);
-				console.log(`Unread messages for ${userId}: ${count}`);
 			});
 			const unreadCount = Object.values(unreadCounts).reduce((sum, c) => sum + c, 0);
 			this.state.messageNotifications.set("__total__", unreadCount);
-			console.log("Total unread messages:", unreadCount);
 		} catch (error) {
 			console.error("Failed to fetch unread message counts:", error);
 		}

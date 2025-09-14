@@ -170,7 +170,6 @@ function updateNavbarBadgesFromState() {
   const friendsBadge = document.getElementById("friends-badge");
   const notificationsBadge = document.getElementById("notifications-badge");
 
-  console.log("Updating navbar badges from state...", friendsBadge, notificationsBadge);
   const state = notificationService.getState();
 
   // Update the notifications badge (sum of friend requests and game invites)

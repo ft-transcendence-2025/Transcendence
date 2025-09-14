@@ -53,12 +53,15 @@ class ChatComponent {
       this.chatService.conn = null;
     }
 
-    console.log("Chat service reset: All chats closed and connection terminated.");
   }
 
   async updateChatMessages(friendId: string) {
     const chatWindow = this.openChats.get(friendId);
-    if (!chatWindow) return;
+    if (!chatWindow) {
+      // If the chat is not open, increment message notifications
+      notificationService.updateMessageNotifications(friendId, 1, "add");
+      return;
+    }
     const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
 
     const messages = this.messages.get(friendId);
@@ -87,6 +90,7 @@ class ChatComponent {
 
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+    notificationService.updateMessageNotifications(friendId, 0);
   }
 
   async updateChatHistory(friendId: string) {

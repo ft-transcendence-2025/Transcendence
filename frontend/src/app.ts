@@ -51,7 +51,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (chatManager.chatService.conn) {
     chatManager.chatService.conn.onmessage = async (e: MessageEvent) => {
       const message: IncomingMessage = JSON.parse(e.data);
-      console.log("Received message:", message);
       if (message.event === "private/message") {
         let temp = chatManager.messages.get(message.senderId) || [];
         temp.push(message);
@@ -70,7 +69,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           notificationService.triggerUpdate();
         } else if (message.type === "FRIEND_BLOCKED") {
           updateFriendshipStatusCache(message.senderId, FriendshipStatus.BLOCKED, message.senderId);
+          chatManager.closeChat(message.senderId);
+          chatManager.chatService.markConversationAsRead(message.senderId);
           notificationService.removeFriendRequest(message.senderId);
+          notificationService.updateMessageNotifications(message.senderId, 0, "set");
           notificationService.triggerUpdate();
         } else if (message.type === "FRIEND_UNBLOCKED") {
           updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);

@@ -2,6 +2,7 @@ import { BASE_URL } from "../config/config.js";
 import { IncomingMessage, OutgoingMessage } from "../interfaces/message.interfaces.js";
 import { request, getHeaders } from "../utils/api.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
+import { notificationService } from "./notifications.service.js";
 
 const CHAT_SERVICE_URL = `wss://localhost:5001/ws/chat`;
 const MESSAGE_SERVICE = `${BASE_URL}/chat/conversations`
@@ -51,6 +52,7 @@ export default class chatService {
 				headers: getHeaders(),
 				body: JSON.stringify({ senderId, recipientId: this.username }),
 			});
+			notificationService.updateMessageNotifications(senderId, 0);
 		} catch (error) {
 			console.error("Failed to mark conversation as read:", error);
 		}
@@ -64,7 +66,6 @@ export default class chatService {
 				method: "GET",
 				headers: getHeaders(),
 			});
-			console.log("Unread messages count response:", data);
 			return data;
 		} catch (error) {
 			console.error("Failed to fetch unread messages count:", error);
