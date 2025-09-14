@@ -8,6 +8,7 @@ import { openModal } from "./modalManager.js";
 import renderSearchBar from "./searchBar.js";
 import { getCurrentUserAvatar } from "../utils/userUtils.js";
 import { chatManager } from "../app.js";
+import { notificationService } from "../services/notifications.service.js";
 
 export async function renderNavbar(container: HTMLElement | null) {
   if (!container) return;
@@ -28,30 +29,6 @@ export async function renderNavbar(container: HTMLElement | null) {
   notificationsBadge.id = "notifications-badge";
   notificationsBadge.className = "absolute top-0 right-0 bg-red-500 w-3 h-3 rounded-full px-1 hidden";
   notificationIcon?.appendChild(notificationsBadge);
-
-  // async function updateNotificationCounts() {
-  //   try {
-  //     const pendingRequests = await getPendingRequests();
-  //     const friendCount = (pendingRequests as any[]).length;
-  //     if (friendCount > 0) {
-  //       notificationsBadge.classList.remove("hidden");
-  //     } else {
-  //       notificationsBadge.classList.add("hidden");
-  //     }
-
-  //     const chatNotifications = await chatManager.chatService.fetchUnreadMessagesCount();
-  //     if (chatNotifications > 0) {
-  //       friendsBadge.classList.remove("hidden");
-  //     } else {
-  //       friendsBadge.classList.add("hidden");
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to update notification counts:", error);
-  //   }
-  // }
-
-  // updateNotificationCounts();
-
 
   friendsIcon?.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -80,7 +57,6 @@ export async function renderNavbar(container: HTMLElement | null) {
 
     profileIcon.addEventListener("click", async (e) => {
       e.preventDefault();
-      const requestsRaw = (await getPendingRequests()) as any[];
       openModal(await getProfileModalContent(), profileIcon);
     });
   }
@@ -146,6 +122,12 @@ export async function renderNavbar(container: HTMLElement | null) {
     event.preventDefault();
     await toggleUserMenuSidebar();
   });
+
+    // Subscribe to notification state changes
+  notificationService.subscribe(updateNavbarBadgesFromState);
+
+  // Initial badge update
+  updateNavbarBadgesFromState();
 }
 
 // Function to toggle user menu sidebar
@@ -182,5 +164,30 @@ async function toggleUserMenuSidebar() {
     console.error("Navbar element not found");
   }
 
+}
 
+function updateNavbarBadgesFromState() {
+  const friendsBadge = document.getElementById("friends-badge");
+  const notificationsBadge = document.getElementById("notifications-badge");
+
+  console.log("Updating navbar badges from state...", friendsBadge, notificationsBadge);
+  const state = notificationService.getState();
+
+  // Update the notifications badge (sum of friend requests and game invites)
+  const totalNotifications = state.friendRequests.length + state.gameInvites.size;
+  if (totalNotifications > 0) {
+    notificationsBadge?.classList.remove("hidden");
+  } else {
+    notificationsBadge?.classList.add("hidden");
+  }
+
+  // Update the notifications badge (e.g., for messages or game invites)
+  const totalMessageNotifications =
+    Array.from(state.messageNotifications.values()).reduce((sum, count) => sum + count, 0);
+
+  if (totalMessageNotifications > 0) {
+    friendsBadge?.classList.remove("hidden");
+  } else {
+    friendsBadge?.classList.add("hidden");
+  }
 }
