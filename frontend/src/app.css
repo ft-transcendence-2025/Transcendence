@@ -7,7 +7,7 @@
 
 @theme {
   --color-primary-light: #a1d0be;
-  --color-primary: #43A17E;
+  --color-primary: #43a17e;
   --color-primary-dark: #2e7058;
   --color-primary-darker: #21503f;
 
@@ -15,9 +15,9 @@
   --color-secondary-light: #ffe08a;
   --color-secondary-dark: #cc9a11;
   --color-secondary-darker: #7f600b;
-  --color-background: #F0F7F4;
+  --color-background: #f0f7f4;
   --color-background-darker: #d8dedb;
-  --color-text-primary: #183A37;
+  --color-text-primary: #183a37;
   --color-accent: #fe4e00;
   --color-accent-dark: #b13600;
 
@@ -67,7 +67,7 @@
   40% {
     transform: translateY(-50%) translateY(30px);
   }
-  
+
   50% {
     transform: translateY(-50%) translateY(80px);
   }
