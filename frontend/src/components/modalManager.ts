@@ -1,4 +1,4 @@
-let currentTrigger: HTMLElement | null = null;
+export let currentTrigger: HTMLElement | null = null;
 
 export function openModal(content: HTMLElement, trigger: HTMLElement) {
   const modal = document.getElementById("app-modal");

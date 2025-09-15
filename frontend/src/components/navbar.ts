@@ -4,7 +4,7 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import { getFriendsContent } from "../views/friends.js";
 import { getNotificationsContent } from "../views/notifications.js";
 import { getProfileModalContent } from "../views/modalProfile.js";
-import { openModal } from "./modalManager.js";
+import { closeModal, currentTrigger, openModal } from "./modalManager.js";
 import renderSearchBar from "./searchBar.js";
 import { getCurrentUserAvatar } from "../utils/userUtils.js";
 import { chatManager } from "../app.js";
@@ -19,7 +19,7 @@ export async function renderNavbar(container: HTMLElement | null) {
   const friendsIcon = document.getElementById("friends-list");
   const notificationIcon = document.getElementById("notifications");
   const profileIcon = document.getElementById("profile-icon") as HTMLImageElement;
-  
+
   const friendsBadge = document.createElement("span");
   friendsBadge.id = "friends-badge";
   friendsBadge.className = "absolute top-0 right-0 bg-red-500 w-3 h-3 rounded-full px-1 hidden";
@@ -32,11 +32,34 @@ export async function renderNavbar(container: HTMLElement | null) {
 
   friendsIcon?.addEventListener("click", async (e) => {
     e.preventDefault();
-    openModal(await getFriendsContent(), friendsIcon);
+
+    const modal = document.getElementById("app-modal");
+
+    // If the modal is already open and triggered by the same button, close it
+    if (modal && currentTrigger === friendsIcon) {
+      closeModal();
+      console.log("Modal is being closed");
+      return;
+    }
+
+    // If the modal is being opened, fetch and render the content
+    console.log("Modal is being opened");
+    const friendsContent = await getFriendsContent();
+    openModal(friendsContent, friendsIcon);
   });
 
   notificationIcon?.addEventListener("click", async (e) => {
     e.preventDefault();
+    const modal = document.getElementById("app-modal");
+    // If the modal is already open and triggered by the same button, close it
+    if (modal && currentTrigger === notificationIcon) {
+      closeModal();
+      console.log("Modal is being closed");
+      return;
+    }
+
+    // If the modal is being opened, fetch and render the content
+    console.log("Modal is being opened");
     openModal(await getNotificationsContent(), notificationIcon);
   });
 
@@ -123,7 +146,7 @@ export async function renderNavbar(container: HTMLElement | null) {
     await toggleUserMenuSidebar();
   });
 
-    // Subscribe to notification state changes
+  // Subscribe to notification state changes
   notificationService.subscribe(updateNavbarBadgesFromState);
 
   // Initial badge update
