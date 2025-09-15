@@ -14,6 +14,7 @@ export async function chatHandler(socket: WS, request: any) {
     .then(res => res.json());
   const conn = { socket, userId, games: new Set<string>(), lastPong: Date.now(), blockedUsersList };
   users.set(userId, conn);
+  console.log("logged in users: ", Array.from(users.keys()));
 
 
   handleUserStatus(userId, USER_STATUS.ONLINE);
@@ -30,6 +31,7 @@ export async function chatHandler(socket: WS, request: any) {
       socket.send(JSON.stringify({ event: 'system/error', message: 'invalid JSON' }));
       return;
     }
+    console.warn(`fui chamado por ${userId} `, msg);
 
     switch (msg.kind) {
       case 'private/send':
