@@ -99,18 +99,14 @@ function showUpdateForm() {
 }
 
 function show2FAToggle() {
-  const twoFactorSection = document
-    .querySelector('[for="twoFactorEnabled"]')
-    ?.closest("div");
+  const twoFactorSection = document.getElementById("2fa-toggle-section");
   if (twoFactorSection) {
     twoFactorSection.classList.remove("hidden");
   }
 }
 
 function hide2FAToggle() {
-  const twoFactorSection = document
-    .querySelector('[for="twoFactorEnabled"]')
-    ?.closest("div");
+  const twoFactorSection = document.getElementById("2fa-toggle-section");
   if (twoFactorSection) {
     twoFactorSection.classList.add("hidden");
   }
@@ -298,10 +294,10 @@ async function handleCreateProfile(username: string) {
 
 async function handle2FASetup() {
   try {
-    const { qr, otpauthUrl } = await generate2FA();
+    const { qr } = await generate2FA();
 
     // Show QR code modal
-    showQRCodeModal(qr, otpauthUrl);
+    showQRCodeModal(qr);
 
     // Return a promise that resolves when 2FA is set up or rejects if cancelled
     return new Promise((resolve, reject) => {
@@ -343,17 +339,10 @@ async function handleUpdateProfile(username: string) {
 
     if (new2FAStatus !== currentUserData.twoFactorEnabled) {
       if (new2FAStatus) {
-        // User wants to enable 2FA - need to show setup
-        const twoFAConfirm = window.confirm(
-          "To enable 2FA, you'll need to set up an authenticator app. Do you want to continue?",
-        );
-        if (twoFAConfirm) {
-          await handle2FASetup();
-        } else {
-          // User cancelled, uncheck the box
-          if (twoFactorCheckbox) twoFactorCheckbox.checked = false;
-          return;
-        }
+        console.log("User wants to enable 2FA");
+        // User wants to enable 2FA - show setup directly
+        console.log("Calling handle2FASetup()");
+        await handle2FASetup();
       } else {
         // User wants to disable 2FA
         const disableConfirm = window.confirm(
@@ -600,36 +589,27 @@ function setupAvatarModalEventListeners(username: string) {
 
 // QR Code Modal Functions
 
-function showQRCodeModal(qrCode: string, otpauthUrl: string) {
+function showQRCodeModal(qrCode: string) {
   const modal = document.getElementById("qr-code-modal");
   const qrImage = document.getElementById("qr-code-image") as HTMLImageElement;
-  const manualCode = document.getElementById("manual-entry-code");
   const tokenInput = document.getElementById(
     "verification-token",
   ) as HTMLInputElement;
-  const confirmBtn = document.getElementById(
-    "confirm-2fa-btn",
+  const enableBtn = document.getElementById(
+    "enable-2fa-btn",
   ) as HTMLButtonElement;
 
-  if (modal && qrImage && manualCode && tokenInput && confirmBtn) {
+  if (modal && qrImage && tokenInput && enableBtn) {
     // Set QR code image
     qrImage.src = qrCode;
 
-    // Extract secret from otpauth URL for manual entry
-    const secretMatch = otpauthUrl.match(/secret=([A-Z0-9]+)/);
-    const secret = secretMatch ? secretMatch[1] : "Unable to extract secret";
-    manualCode.textContent = secret;
-
     // Clear previous input
     tokenInput.value = "";
-    confirmBtn.disabled = true;
+    enableBtn.disabled = true;
 
     // Show modal
     modal.classList.remove("hidden");
     modal.classList.add("flex");
-
-    // Focus on token input
-    setTimeout(() => tokenInput.focus(), 100);
   }
 }
 

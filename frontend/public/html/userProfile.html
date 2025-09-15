@@ -167,6 +167,7 @@
       </div>
       <!-- 2FA Toggle -->
       <div
+        id="2fa-toggle-section"
         class="flex items-center justify-between rounded-lg border border-gray-300 bg-white p-4"
       >
         <div>
@@ -352,7 +353,7 @@
   <!-- QR Code Modal for 2FA Setup -->
   <div
     id="qr-code-modal"
-    class="bg-opacity-50 fixed inset-0 z-50 hidden items-center justify-center bg-black"
+    class="fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-sm"
   >
     <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
       <div class="text-center">
@@ -374,17 +375,6 @@
               class="max-w-full rounded border-2 border-gray-300"
             />
           </div>
-
-          <!-- Manual entry option -->
-          <div class="mb-4">
-            <p class="mb-2 text-xs text-gray-500">
-              Or enter this code manually:
-            </p>
-            <div class="rounded bg-gray-100 p-2">
-              <code id="manual-entry-code" class="text-xs break-all"></code>
-            </div>
-          </div>
-        </div>
 
         <!-- Token Input -->
         <div class="mb-4">
@@ -413,7 +403,7 @@
             Cancel
           </button>
           <button
-            id="confirm-2fa-btn"
+            id="enable-2fa-btn"
             class="rounded bg-(--color-primary) px-4 py-2 text-sm text-white hover:bg-(--color-primary-dark)"
             disabled
           >

@@ -73,6 +73,8 @@ export async function openLoginModal(container: HTMLElement | null = null) {
       if (error.message === "2FA token required.") {
         // Handle login with 2FA
         const token = prompt("TODO: 2FA logic.");
+        const response = await login(data);
+        handleSimpleLogin(response);
       } else {
         console.error("Login failed:", error);
         showError(
