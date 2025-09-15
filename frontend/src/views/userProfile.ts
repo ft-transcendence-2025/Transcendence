@@ -253,12 +253,6 @@ function setupEventListeners(username: string) {
 
   // Setup 2FA toggle functionality
   setup2FAToggle();
-
-  // Avatar modal event listeners
-  setupAvatarModalEventListeners(username);
-
-  // QR Code modal event listeners
-  setupQRCodeModalEventListeners();
 }
 
 async function handleCreateProfile(username: string) {
@@ -305,8 +299,7 @@ async function handle2FASetup() {
       (window as any)._2faSetupPromise = { resolve, reject };
     });
   } catch (error: any) {
-    console.error("Error setting up 2FA:", error);
-    showErrorMessage(`Error setting up 2FA: ${error.message}`);
+    alert(`Error setting up 2FA: ${error.message}`);
     throw error; // Re-throw to handle in calling function
   }
 }
@@ -339,9 +332,6 @@ async function handleUpdateProfile(username: string) {
 
     if (new2FAStatus !== currentUserData.twoFactorEnabled) {
       if (new2FAStatus) {
-        console.log("User wants to enable 2FA");
-        // User wants to enable 2FA - show setup directly
-        console.log("Calling handle2FASetup()");
         await handle2FASetup();
       } else {
         // User wants to disable 2FA
@@ -407,6 +397,12 @@ function openAvatarModal() {
     selectedAvatar = null;
     customAvatarFile = null;
     updateSaveButton();
+  }
+
+  // Setup event listeners when modal is opened
+  const username = getCurrentUsername();
+  if (username) {
+    setupAvatarModalEventListeners(username);
   }
 }
 
@@ -486,8 +482,7 @@ async function changeAvatar(username: string) {
     showSuccessMessage("Avatar updated successfully!");
     closeAvatarModal();
   } catch (error: any) {
-    console.error("Error changing avatar:", error);
-    showErrorMessage(`Error updating avatar: ${error.message}`);
+    alert(`Error updating avatar: ${error.message}`);
   } finally {
     // Reset save button
     const saveBtn = document.getElementById(
@@ -534,14 +529,14 @@ function setupAvatarModalEventListeners(username: string) {
       if (file) {
         // Validate file type
         if (!file.type.startsWith("image/")) {
-          showErrorMessage("Please select a valid image file");
+          alert("Please select a valid image file");
           target.value = "";
           return;
         }
 
         // Validate file size (limit to 2MB)
         if (file.size > 2 * 1024 * 1024) {
-          showErrorMessage("Image file must be smaller than 2MB");
+          alert("Image file must be smaller than 2MB");
           target.value = "";
           return;
         }
@@ -595,22 +590,20 @@ function showQRCodeModal(qrCode: string) {
   const tokenInput = document.getElementById(
     "verification-token",
   ) as HTMLInputElement;
-  const enableBtn = document.getElementById(
-    "enable-2fa-btn",
-  ) as HTMLButtonElement;
 
-  if (modal && qrImage && tokenInput && enableBtn) {
+  if (modal && qrImage && tokenInput) {
     // Set QR code image
     qrImage.src = qrCode;
 
     // Clear previous input
     tokenInput.value = "";
-    enableBtn.disabled = true;
 
     // Show modal
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   }
+  // QR Code modal event listeners
+  setupQRCodeModalEventListeners();
 }
 
 function closeQRCodeModal() {
@@ -636,24 +629,17 @@ async function confirm2FASetup() {
   const tokenInput = document.getElementById(
     "verification-token",
   ) as HTMLInputElement;
-  const confirmBtn = document.getElementById(
-    "confirm-2fa-btn",
-  ) as HTMLButtonElement;
 
-  if (!tokenInput || !confirmBtn) return;
+  if (!tokenInput) return;
 
   const token = tokenInput.value.trim();
 
   if (token.length !== 6 || !/^\d{6}$/.test(token)) {
-    showErrorMessage("Please enter a valid 6-digit code");
+    alert("Please enter a valid 6-digit code");
     return;
   }
 
   try {
-    // Show loading state
-    confirmBtn.disabled = true;
-    confirmBtn.textContent = "Enabling...";
-
     await enable2FA(token);
     showSuccessMessage("Two-Factor Authentication enabled successfully!");
 
@@ -665,46 +651,21 @@ async function confirm2FASetup() {
       delete (window as any)._2faSetupPromise;
     }
   } catch (error: any) {
-    showErrorMessage(`Error enabling 2FA: ${error.message}`);
-
-    // Reset button state
-    confirmBtn.disabled = false;
-    confirmBtn.textContent = "Enable 2FA";
+    alert(`${error.message}`);
   }
 }
 
 function setupQRCodeModalEventListeners() {
-  // Token input validation
-  const tokenInput = document.getElementById(
-    "verification-token",
-  ) as HTMLInputElement;
-  const confirmBtn = document.getElementById(
-    "confirm-2fa-btn",
-  ) as HTMLButtonElement;
-
-  if (tokenInput && confirmBtn) {
-    tokenInput.addEventListener("input", () => {
-      const value = tokenInput.value.trim();
-      confirmBtn.disabled = !(value.length === 6 && /^\d{6}$/.test(value));
-    });
-
-    // Allow Enter key to confirm
-    tokenInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !confirmBtn.disabled) {
-        confirm2FASetup();
-      }
-    });
-  }
-
   // Cancel button
   const cancelBtn = document.getElementById("cancel-qr-btn");
   if (cancelBtn) {
     cancelBtn.addEventListener("click", closeQRCodeModal);
   }
 
-  // Confirm button
-  if (confirmBtn) {
-    confirmBtn.addEventListener("click", confirm2FASetup);
+  // Enable 2FA button
+  const enableBtn = document.getElementById("enable-2fa-btn");
+  if (enableBtn) {
+    enableBtn.addEventListener("click", confirm2FASetup);
   }
 
   // Close modal when clicking outside

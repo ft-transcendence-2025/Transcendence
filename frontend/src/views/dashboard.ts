@@ -138,6 +138,12 @@ function startTwoPlayerGame() {
     (document.getElementById("2p-name-player-2") as HTMLInputElement)?.value ||
     "Player 2";
 
+  // Check if Player 2 display name is the same as current user (Player 1)
+  if (player2Name.trim() === player1Name.trim()) {
+    alert("Please choose a different name.");
+    return;
+  }
+
   // Get avatar sources with fallbacks
   const player1AvatarElement = document.getElementById(
     "2p-avatar-player-1",
