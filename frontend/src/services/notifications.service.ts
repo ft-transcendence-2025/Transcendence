@@ -94,9 +94,8 @@ class NotificationService {
 
 			const unreadCounts = (await chatManager.chatService.fetchUnreadMessagesCount()) || {}; // Ensure it's an object
 			Object.entries(unreadCounts).forEach(([userId, count]) => {
-				this.state.messageNotifications.set(userId, count);
+				this.state.messageNotifications.set(userId, Number(count));
 			});
-			const unreadCount = Object.values(unreadCounts).reduce((sum, c) => sum + c, 0);
 			this.notifyListeners();
 		} catch (error) {
 			console.error("Failed to fetch unread message counts:", error);

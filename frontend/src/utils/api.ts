@@ -57,7 +57,7 @@ export async function request<T>(
     credentials: "include", // important for cookies
   });
 
-  if (response.status === 401) {
+  if (response.status === 401 && getAccessToken()) {
     const refreshed = await refreshAccessToken();
     if (refreshed) {
       response = await fetch(url, {

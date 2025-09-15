@@ -64,11 +64,11 @@ export async function openLoginModal(container: HTMLElement | null = null) {
 
       const navbarContainer = document.getElementById("navbar");
       if (navbarContainer) {
+        await reloadChatManager();
         await renderNavbar(navbarContainer);
       }
 
       const container = document.getElementById("content");
-      reloadChatManager();
       navigateTo("/dashboard", container);
     } catch (error) {
       console.error("Login failed:", error);
