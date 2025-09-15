@@ -74,20 +74,21 @@
   <!-- 2FA Modal -->
   <div
     id="login-2fa-modal"
-    class="fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-sm"
+    class="modal fixed hidden inset-0 z-60 flex items-center justify-center backdrop-blur-sm"
   >
-    <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+    <div class="mx-4 w-full max-w-md rounded-lg bg-white py-20 px-8 shadow-lg">
       <div class="text-center">
-        <h3 class="mb-4 text-lg font-semibold text-gray-800">
-          Verify Two-Factor Authentication (2FA)
+        <h3 class="mb-10 text-lg font-semibold text-gray-800">
+          Verify It's You (2FA)
         </h3>
 
         <!-- Token Input -->
         <div class="mb-4">
           <label
-            class="mb-2 block text-sm font-medium text-gray-700"
+            for="login-2fa-token"
+            class="mb-6 block text-sm font-medium text-gray-700"
           >
-            Enter 6-digit verification code:
+            Enter 6-digit verification code displayed on your authenticator app:
           </label>
           <input
             type="text"

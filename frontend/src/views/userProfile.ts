@@ -289,18 +289,11 @@ async function handleCreateProfile(username: string) {
 async function handle2FASetup() {
   try {
     const { qr } = await generate2FA();
-
-    // Show QR code modal
+    // Show QR code modal - the modal will handle the rest
     showQRCodeModal(qr);
-
-    // Return a promise that resolves when 2FA is set up or rejects if cancelled
-    return new Promise((resolve, reject) => {
-      // Store the resolve/reject functions so the modal handlers can use them
-      (window as any)._2faSetupPromise = { resolve, reject };
-    });
   } catch (error: any) {
     alert(`Error setting up 2FA: ${error.message}`);
-    throw error; // Re-throw to handle in calling function
+    throw error;
   }
 }
 
@@ -333,6 +326,7 @@ async function handleUpdateProfile(username: string) {
     if (new2FAStatus !== currentUserData.twoFactorEnabled) {
       if (new2FAStatus) {
         await handle2FASetup();
+        // The success message will be shown by the modal when 2FA is confirmed
       } else {
         // User wants to disable 2FA
         const disableConfirm = window.confirm(
@@ -352,7 +346,9 @@ async function handleUpdateProfile(username: string) {
     }
 
     const profile = await updateProfile(username, profileData);
-    showSuccessMessage("Profile updated successfully!");
+    if (!new2FAStatus || new2FAStatus === currentUserData.twoFactorEnabled) {
+      showSuccessMessage("Profile updated successfully!");
+    }
 
     // Fetch the updated profile
     const updatedProfile = await getProfileByUsername(username);
@@ -618,12 +614,6 @@ function closeQRCodeModal() {
     modal.classList.add("hidden");
     modal.classList.remove("flex");
     tokenInput.value = "";
-
-    // Clean up promise if it exists
-    if ((window as any)._2faSetupPromise) {
-      (window as any)._2faSetupPromise.reject(new Error("Setup cancelled"));
-      delete (window as any)._2faSetupPromise;
-    }
   }
 }
 
@@ -646,11 +636,12 @@ async function confirm2FASetup() {
     showSuccessMessage("Two-Factor Authentication enabled successfully!");
 
     closeQRCodeModal();
-
-    // Resolve the promise if it exists
-    if ((window as any)._2faSetupPromise) {
-      (window as any)._2faSetupPromise.resolve();
-      delete (window as any)._2faSetupPromise;
+    // Refresh profile view to show updated 2FA status
+    const username = getCurrentUsername();
+    if (username) {
+      const updatedProfile = await getProfileByUsername(username);
+      await populateProfileView(updatedProfile);
+      showProfileView();
     }
   } catch (error: any) {
     alert(`${error.message}`);
@@ -668,6 +659,19 @@ function setupQRCodeModalEventListeners() {
   const enableBtn = document.getElementById("profile-2fa-enable-btn");
   if (enableBtn) {
     enableBtn.addEventListener("click", confirm2FASetup);
+  }
+
+  // Submit 2FA on Enter key
+  const tokenInput = document.getElementById(
+    "profile-2fa-token",
+  ) as HTMLInputElement;
+  if (tokenInput) {
+    tokenInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        confirm2FASetup();
+      }
+    });
   }
 
   // Close modal when clicking outside
