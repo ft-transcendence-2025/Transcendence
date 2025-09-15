@@ -585,10 +585,12 @@ function setupAvatarModalEventListeners(username: string) {
 // QR Code Modal Functions
 
 function showQRCodeModal(qrCode: string) {
-  const modal = document.getElementById("qr-code-modal");
-  const qrImage = document.getElementById("qr-code-image") as HTMLImageElement;
+  const modal = document.getElementById("profile-2fa-modal");
+  const qrImage = document.getElementById(
+    "profile-2fa-qr-code",
+  ) as HTMLImageElement;
   const tokenInput = document.getElementById(
-    "verification-token",
+    "profile-2fa-token",
   ) as HTMLInputElement;
 
   if (modal && qrImage && tokenInput) {
@@ -607,9 +609,9 @@ function showQRCodeModal(qrCode: string) {
 }
 
 function closeQRCodeModal() {
-  const modal = document.getElementById("qr-code-modal");
+  const modal = document.getElementById("profile-2fa-modal");
   const tokenInput = document.getElementById(
-    "verification-token",
+    "profile-2fa-token",
   ) as HTMLInputElement;
 
   if (modal && tokenInput) {
@@ -627,7 +629,7 @@ function closeQRCodeModal() {
 
 async function confirm2FASetup() {
   const tokenInput = document.getElementById(
-    "verification-token",
+    "profile-2fa-token",
   ) as HTMLInputElement;
 
   if (!tokenInput) return;
@@ -657,19 +659,19 @@ async function confirm2FASetup() {
 
 function setupQRCodeModalEventListeners() {
   // Cancel button
-  const cancelBtn = document.getElementById("cancel-qr-btn");
+  const cancelBtn = document.getElementById("profile-2fa-cancel-btn");
   if (cancelBtn) {
     cancelBtn.addEventListener("click", closeQRCodeModal);
   }
 
   // Enable 2FA button
-  const enableBtn = document.getElementById("enable-2fa-btn");
+  const enableBtn = document.getElementById("profile-2fa-enable-btn");
   if (enableBtn) {
     enableBtn.addEventListener("click", confirm2FASetup);
   }
 
   // Close modal when clicking outside
-  const modal = document.getElementById("qr-code-modal");
+  const modal = document.getElementById("profile-2fa-modal");
   if (modal) {
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
