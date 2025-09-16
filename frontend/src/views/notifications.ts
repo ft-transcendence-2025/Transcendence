@@ -1,8 +1,6 @@
 // src/views/notifications.ts
 import { FriendshipStatus, getPendingRequests, respondRequest } from "../services/friendship.service.js";
-import { getUserAvatar } from "../services/profileService.js";
 import { navigateTo } from "../router/router.js";
-import { chatManager } from "../app.js";
 import { notificationService } from "../services/notifications.service.js";
 
 export async function getNotificationsContent(): Promise<HTMLElement> {

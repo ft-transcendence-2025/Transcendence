@@ -1,4 +1,4 @@
-import { chatManager } from "../app.js";
+import {  getChatManager } from "../app.js";
 import { FriendshipStatus, getFriendshipStatus, getPendingRequests } from "./friendship.service.js";
 import { getUserAvatar } from "./profileService.js";
 
@@ -91,7 +91,7 @@ class NotificationService {
 					id: req.id,
 				}))
 			);
-
+			const chatManager = getChatManager();
 			const unreadCounts = (await chatManager.chatService.fetchUnreadMessagesCount()) || {}; // Ensure it's an object
 			Object.entries(unreadCounts).forEach(([userId, count]) => {
 				this.state.messageNotifications.set(userId, Number(count));

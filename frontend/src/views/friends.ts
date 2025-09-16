@@ -2,7 +2,7 @@
 import { getUserFriends } from "../services/friendship.service.js";
 import { getUserAvatar } from "../services/profileService.js";
 import { Friend } from "./chat.js";
-import { chatManager } from "../app.js";
+import { getChatManager } from "../app.js";
 import { closeModal } from "../components/modalManager.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 import chatService from "../services/chat.service.js";
@@ -35,6 +35,7 @@ export async function renderFriends(container: HTMLElement | null) {
       setTimeout(() => updateUnreadBadge(friend.username), 0);
       console.log(`Set up eventlistener for ${friend.username}`);
       li.addEventListener("click", async () => {
+        const chatManager = getChatManager();
         chatManager.openChat(friend);
         await chatManager.chatService.markConversationAsRead(friend.username);
         closeModal();

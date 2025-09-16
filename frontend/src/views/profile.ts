@@ -7,7 +7,7 @@ import {
 } from "../services/profileService.js";
 import { UserBlockMessageResponse } from "../interfaces/message.interfaces.js";
 import { Friend } from "../views/chat.js";
-import { chatManager } from "../app.js";
+import { getChatManager } from "../app.js";
 import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, sendFriendRequest, unblockUser } from "../services/friendship.service.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
 import { renderStats } from "./stats.js";
@@ -191,6 +191,7 @@ function setupEventListeners(username: string) {
 				} else {
 					await blockUser(username); // Block the user
 					sendBlockMessage(username);
+					const chatManager = getChatManager();
 					chatManager.chatService.markConversationAsRead(username);
 					chatManager.closeChat(username);
 					notificationService.removeFriendRequest(username);
@@ -235,6 +236,7 @@ function setupEventListeners(username: string) {
 			kind: "user/block",
 			recipientId: blockedUsername
 		};
+		const chatManager = getChatManager();
 		chatManager.sendMessage(blockedUsername, blockMessage);
 
 	}

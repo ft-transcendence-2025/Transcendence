@@ -1,4 +1,4 @@
-import { chatManager } from "../app.js";
+import { getChatManager } from "../app.js";
 import { BASE_URL } from "../config/config.js";
 import { request, getHeaders } from "../utils/api.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
@@ -51,6 +51,7 @@ export const sendFriendRequest = async (friendUsername: string) => {
     content: `${getCurrentUsername()} has sent you a friend request.`,
     ts: Date.now(),
   };
+  const chatManager = getChatManager();
   chatManager.sendMessage(friendUsername, message);
   updateFriendshipStatusCache(friendUsername, FriendshipStatus.PENDING, undefined);
   console.log("Friend request sent response:", message);
@@ -82,6 +83,7 @@ export const respondRequest = (friendshipId: string, accept: FriendshipStatus, r
         : `${senderId} has declined your friend request.`,
       ts: Date.now(),
     };
+    const chatManager = getChatManager();
     chatManager.sendMessage(requesterUsername, message);
     if (accept === FriendshipStatus.ACCEPTED) {
       updateFriendshipStatusCache(requesterUsername, FriendshipStatus.ACCEPTED, undefined);
@@ -115,6 +117,7 @@ export const blockUser = async (friendUsername: string) => {
     content: `${senderId} has blocked you.`,
     ts: Date.now(),
   };
+  const chatManager = getChatManager();
   chatManager.sendMessage(friendUsername, message);
   notificationService.removeFriendRequest(friendUsername);
   console.log("Friend block notification sent:", message);
@@ -135,6 +138,7 @@ export const unblockUser = async (friendUsername: string) => {
     content: `${senderId} has unblocked you.`,
     ts: Date.now(),
   };
+  const chatManager = getChatManager();
   chatManager.sendMessage(friendUsername, message);
   console.log("Friend unblock notification sent:", message);
   return response;
