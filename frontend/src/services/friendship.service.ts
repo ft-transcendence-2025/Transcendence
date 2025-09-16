@@ -119,10 +119,12 @@ export const blockUser = async (friendUsername: string) => {
   };
   const chatManager = getChatManager();
   chatManager.sendMessage(friendUsername, message);
+  chatManager.chatService.markConversationAsRead(friendUsername);
   notificationService.removeFriendRequest(friendUsername);
   console.log("Friend block notification sent:", message);
   return response;
 };
+
 export const unblockUser = async (friendUsername: string) => {
   const response = await request(`${FRIEND_BASE_URL}/unblock/${friendUsername}`, {
     method: "PATCH",

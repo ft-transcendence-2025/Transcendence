@@ -53,7 +53,7 @@ export default class chatService {
 				headers: getHeaders(),
 				body: JSON.stringify({ senderId, recipientId: getCurrentUsername() }),
 			});
-			notificationService.updateMessageNotifications(senderId, 0);
+			notificationService.updateMessageNotifications(senderId, 0, "set");
 		} catch (error) {
 			console.error("Failed to mark conversation as read:", error);
 		}

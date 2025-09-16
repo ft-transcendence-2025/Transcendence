@@ -3,6 +3,7 @@ import { getChatManager } from "../app.js";
 import { closeModal } from "../components/modalManager.js";
 import { navigateTo } from "../router/router.js";
 import { getProfileByUsername, getUserAvatar } from "../services/profileService.js";
+import { ChatComponent } from "./chat.js";
 
 export async function getProfileModalContent(username?: string): Promise<HTMLElement> {
   const container = document.createElement("div");
@@ -123,10 +124,16 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("authToken");
-      const chatManager = getChatManager();
-      chatManager.reset();
+      let chatManager: ChatComponent | null = getChatManager();
+      if (chatManager) {
+        chatManager.reset();
+      }
+      chatManager = null;
+      console.log("User logged out, chatManager reset.");
+      console.log("ChatManager after logout:", chatManager);
       closeModal();
       navigateTo("/login", document.getElementById("content"));
+      window.location.reload();
     });
   }
 

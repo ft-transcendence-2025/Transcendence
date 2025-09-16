@@ -61,13 +61,13 @@ export async function openLoginModal(container: HTMLElement | null = null) {
       const response = await login(data);
       localStorage.setItem("authToken", response.accessToken);
       closeModal();
-      await initializeChatManager();
       const navbarContainer = document.getElementById("navbar");
       if (navbarContainer) {
         await renderNavbar(navbarContainer);
       }
-
+      
       const container = document.getElementById("content");
+      initializeChatManager();
       navigateTo("/dashboard", container);
     } catch (error) {
       console.error("Login failed:", error);

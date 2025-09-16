@@ -38,6 +38,8 @@ class ChatComponent {
   }
 
   reset() {
+    console.log("Resetting ChatComponent...");
+
     // Close all open chats
     this.openChats.forEach((chat, friendId) => {
       chat.remove();
@@ -47,12 +49,17 @@ class ChatComponent {
     // Clear messages
     this.messages.clear();
 
-    // Disconnect the chat service
+    // Disconnect the WebSocket connection
     if (this.chatService.conn) {
-      this.chatService.conn.close();
+      console.log("Disconnecting WebSocket...");
+      this.chatService.conn.close(1000, "Client logged out");
       this.chatService.conn = null;
     }
 
+    // Clear other state
+    this.friends = [];
+    this.currentUserId = "";
+    console.log("ChatComponent reset complete.");
   }
 
   async updateChatMessages(friendId: string) {

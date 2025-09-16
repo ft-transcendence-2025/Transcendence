@@ -10,7 +10,7 @@ import { getCurrentUsername } from "./utils/userUtils.js";
 import { ChatComponent } from "./views/chat.js";
 import { updateFriendshipStatusCache } from "./views/profile.js";
 
-export let chatManager: any;
+export let chatManager: any | undefined = undefined;
 
 export function getChatManager(): ChatComponent {
   if (!chatManager) {
@@ -27,7 +27,8 @@ export async function initializeChatManager() {
     console.warn("No current user. ChatManager will not be initialized.");
     return;
   }
-  if (!chatManager) {
+  console.log("Initializing ChatManager...", chatManager);
+  if (!chatManager || chatManager === null) {
     console.warn("ChatManager is not initialized. Initializing now...");
     chatManager = new ChatComponent("chat-root", []);
     chatManager.chatService.conn.onmessage = async (e: MessageEvent) => {
@@ -54,7 +55,6 @@ export async function initializeChatManager() {
           chatManager.closeChat(message.senderId);
           chatManager.chatService.markConversationAsRead(message.senderId);
           notificationService.removeFriendRequest(message.senderId);
-          notificationService.updateMessageNotifications(message.senderId, 0, "set");
           notificationService.triggerUpdate();
         } else if (message?.type === "FRIEND_UNBLOCKED") {
           updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);
