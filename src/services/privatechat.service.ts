@@ -9,7 +9,7 @@ export async function sendPendingMessages(userId: string, socket: any) {
   });
 
   for (const msg of pending) {
-    socket.send(JSON.stringify({ event: 'private/message', ...msg }));
+    // socket.send(JSON.stringify({ event: 'private/message', ...msg }));
     await prisma.message.update({ where: { id: msg.id }, data: { delivered: true } });
   }
 }
