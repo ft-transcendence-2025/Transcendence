@@ -31,8 +31,8 @@ function setupTournamentTree() {
     return;
   }
 
-  // Extract player usernames
-  const playerNames = tournamentData.players.map((p) => p.username);
+  // Extract player display names
+  const playerNames = tournamentData.players.map((p) => p.userDisplayName);
 
   // Populate player names in the tournament tree
   populatePlayerNames(playerNames);
@@ -96,7 +96,7 @@ function finalMatch(winner: string) {
   if (storeData) {
     const players = JSON.parse(storeData);
     for (let i = 0; i < players.length; ++i) {
-      if (players[i].username === winner) {
+      if (players[i].userDisplayName === winner) {
         const avatar = document.getElementById("t-avatar-winner");
         if (avatar) {
           avatar.setAttribute("src", `../assets/avatars/${players[i].avatar}`); 

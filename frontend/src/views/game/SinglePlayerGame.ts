@@ -47,7 +47,7 @@ export class SinglePlayerGame extends Game {
       if (player1) {
         const player1Name = player1.innerHTML.trim();
         for (let i = 0; i < players.length; ++i) {
-          if (players[i].username === player1Name) {
+          if (players[i].userDisplayName === player1Name) {
             const avatar = document.getElementById("player1-avatar");
             if (avatar) {
               avatar.setAttribute("src", `../assets/avatars/${players[i].avatar}`); 
@@ -59,7 +59,7 @@ export class SinglePlayerGame extends Game {
       if (player2) {
         const player2Name = player2.innerHTML.trim();
         for (let i = 0; i < players.length; ++i) {
-          if (players[i].username === player2Name) {
+          if (players[i].userDisplayName === player2Name) {
             const avatar = document.getElementById("player2-avatar");
             if (avatar) {
               avatar.setAttribute("src", `../assets/avatars/${players[i].avatar}`); 

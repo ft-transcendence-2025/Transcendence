@@ -3,6 +3,7 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
+  getCurrentUsername,
 } from "../utils/userUtils.js";
 import { localStoreTournamentData } from "./tournamentTree.js";
 
@@ -10,13 +11,15 @@ import { localStoreTournamentData } from "./tournamentTree.js";
 interface TournamentData {
   type: "local" | "remote";
   players: Array<{
-    username: string;
+    username: string | null;
+    userDisplayName: string;
     avatar: string;
   }>;
 }
 
 interface Player {
-  username: string;
+  username: string | null;
+  userDisplayName: string;
   avatar: string;
 }
 
@@ -69,24 +72,22 @@ export async function renderTournament(container: HTMLElement | null) {
 }
 
 function setupLocalTournament() {
-  // Populate Player 1 with current user data
-  populatePlayer1Data();
-
-  // Initialize avatars for local tournament (Players 2-4 only)
+  // Initialize avatars for all players (1-4)
   initializeAvatars();
+
+  // Populate Player 1 with current user data if logged in
+  populatePlayer1Data();
 
   // Setup event listeners for local tournament
   setupLocalEventListeners();
 
-  // Show input fields and avatar selectors for players 2-4 only
+  // Enable customization for all players
   enablePlayerCustomization(true);
 }
 
 function enablePlayerCustomization(enable: boolean) {
-  // For local tournaments, skip Player 1 (read-only current user)
-  const startPlayer = 2;
-
-  for (let i = startPlayer; i <= 4; i++) {
+  // Enable customization for all players (1-4)
+  for (let i = 1; i <= 4; i++) {
     const inputField = document.getElementById(
       `t-player-${i}-name`,
     ) as HTMLInputElement;
@@ -120,21 +121,35 @@ async function populatePlayer1Data() {
   ) as HTMLImageElement;
 
   if (player1Name && player1Avatar) {
-    // Get current user display name and avatar
-    const displayName = await getUserDisplayName();
-    const avatarUrl = await getCurrentUserAvatar();
+    // Check if user is logged in
+    const currentUsername = getCurrentUsername();
+    
+    // If user is logged-in, populate their data
+    if (currentUsername) {
+      const displayName = await getUserDisplayName();
+      const avatarUrl = await getCurrentUserAvatar();
 
-    player1Name.value = displayName || "Player 1";
-    player1Avatar.src = avatarUrl;
+      player1Name.value = displayName || "Player 1";
+      player1Avatar.src = avatarUrl;
 
-    // Add error handling for avatar
-    player1Avatar.onerror = () => {
-      player1Avatar.src = "/assets/avatars/panda.png";
-    };
+      // Add error handling for avatar - fallback to local avatar
+      player1Avatar.onerror = () => {
+        player1Avatar.src = "/assets/avatars/panda.png";
+        // Set the avatar index to match the fallback (panda is index 7)
+        currentAvatarIndex[1] = 7;
+      };
+    } else {
+      // User not logged in - set default values
+      player1Name.value = "";
+      player1Name.placeholder = "LazyLoader";
+      // default avatar will be set by initializeAvatars()
+    }
   }
 }
 
-// Avatar management functions (for local tournaments)
+/*
+** Avatar management functions (for local tournaments)
+*/
 function updateAvatar(slot: number, index: number): void {
   const img = document.getElementById(
     `t-avatar-player-${slot}`,
@@ -158,12 +173,24 @@ function nextAvatar(slot: number): void {
 }
 
 function initializeAvatars() {
-  const slots = [2, 3, 4]; // Skip Player 1 as it's current user
-  // Each slot gets fixed sequential avatar (Players 2-4 get avatars 1-3)
-  slots.forEach((slot) => updateAvatar(slot, slot - 2));
+  const slots = [1, 2, 3, 4]; // Include all players
+  
+  // Check if Player 1 is logged in user with custom avatar
+  const currentUsername = getCurrentUsername();
+  const player1Avatar = document.getElementById("t-avatar-player-1") as HTMLImageElement;
+  
+  if (currentUsername && player1Avatar && !player1Avatar.src.includes('/assets/avatars/')) {
+    // don't override Player 1 avatar, but let them change if they want
+    currentAvatarIndex[1] = 0; // Default to first avatar if player makes avatar switch
+  } else {
+    updateAvatar(1, 0); // Set to first avatar
+  }
+  
+  // Set default avatars for other players
+  slots.slice(1).forEach((slot) => updateAvatar(slot, slot - 1));
 
-  // Add event listeners for navigation buttons (Players 2-4 only)
-  for (let slot = 2; slot <= 4; slot++) {
+  // Add event listeners for navigation buttons for all players (1-4)
+  for (let slot = 1; slot <= 4; slot++) {
     const avatarContainer = document.getElementById(
       `t-avatar-player-${slot}`,
     )?.parentElement;
@@ -216,29 +243,51 @@ async function collectLocalTournamentData() {
       `t-avatar-player-${i}`,
     ) as HTMLImageElement;
 
-    const username =
+    const userDisplayName =
       nameInput?.value || nameInput?.placeholder || `Player ${i}`;
 
     // Check for duplicate names and cancel tournament if found
-    if (playerNames.has(username)) {
-      alert(`Player name "${username}" is already used.`);
+    if (playerNames.has(userDisplayName)) {
+      alert(`Player name "${userDisplayName}" is already used.`);
       return false;
     }
-    playerNames.add(username);
+    playerNames.add(userDisplayName);
 
+    // Determine username and avatar handling
+    let username = null;
     let avatarData;
+
     if (i === 1) {
-      // dummy avatar for Player 1 for data consistency
-      // The actual user avatar URL will be handled in tournamentTree
-      avatarData = "panda.png";
+      const currentUsername = getCurrentUsername();
+      if (currentUsername) {
+        // User is logged in - always record their username regardless of display name/avatar changes
+        username = currentUsername;
+        
+        // Determine avatar data based on current selection
+        const avatarSrc = avatarImg?.src || "";
+        if (avatarSrc.includes('/assets/avatars/')) {
+          // User switched to a local avatar
+          avatarData = avatarSrc.split("/").pop() || "panda.png";
+        } else {
+          // User is still using their profile avatar
+          avatarData = "user-avatar";
+        }
+      } else {
+        // No user logged in - Player 1 is a guest
+        username = null;
+        const avatarSrc = avatarImg?.src || "";
+        avatarData = avatarSrc.split("/").pop() || "panda.png";
+      }
     } else {
-      // For Players 2-4, extract filename from local avatar path
+      // For Players 2-4 (always guests), no username, get avatar from selection
+      username = null;
       const avatarSrc = avatarImg?.src || "";
-      avatarData = avatarSrc.split("/").pop() || avatars[i - 2];
+      avatarData = avatarSrc.split("/").pop() || avatars[i - 1];
     }
 
     players.push({
       username: username,
+      userDisplayName: userDisplayName,
       avatar: avatarData,
     });
   }
@@ -249,7 +298,9 @@ async function collectLocalTournamentData() {
   };
 
   localStorage.setItem("LocalTournamentAvatarMap", JSON.stringify(players));
-  getTournament(tournamentData.players);
+  if (tournamentData) {
+    getTournament(tournamentData.players);
+  }
   return true;
 }
 
@@ -263,10 +314,10 @@ async function getTournament(players: Player[]) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        player1: players[0].username,
-        player2: players[1].username,
-        player3: players[2].username,
-        player4: players[3].username,
+        player1: players[0].userDisplayName,
+        player2: players[1].userDisplayName,
+        player3: players[2].userDisplayName,
+        player4: players[3].userDisplayName,
       }),
     });
     const data = await response.json();
