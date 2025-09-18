@@ -26,14 +26,14 @@ interface LoginResponse {
 export const login = (body: any) =>
   request<LoginResponse>(`${AUTH_BASE_URL}/login`, {
     method: "POST",
-    headers: getHeaders(),
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
 export const register = (body: any) =>
   request<User>(`${AUTH_BASE_URL}/register`, {
     method: "POST",
-    headers: getHeaders(),
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
 
@@ -41,7 +41,7 @@ export const register = (body: any) =>
 export const loginWith2FA = (body: any, token: string) =>
   request<LoginResponse>(`${AUTH_BASE_URL}/login`, {
     method: "POST",
-    headers: getHeaders(),
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ...body, token }),
   });
 
