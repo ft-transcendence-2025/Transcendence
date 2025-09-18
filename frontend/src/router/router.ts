@@ -17,20 +17,21 @@ export async function router(container: HTMLElement | null) {
         };
     }
 
-    // Show navbar by default for all routes
+    // Show navbar only for authenticated users, except on home page
     const navbar = document.getElementById("navbar");
     if (navbar) {
-        navbar.classList.remove("hidden");
+        const token = localStorage.getItem("authToken");
+        const isHomePage = location.pathname === "/";
+        
+        if (token && !isHomePage) {
+            // User is logged in and not on home page - show navbar
+            navbar.classList.remove("hidden");
+        } else {
+            // User not logged in or on home page - hide navbar
+            navbar.classList.add("hidden");
+        }
     }
-
-    // Clear the container before rendering new content
-    /* container.innerHTML = '';
-    if (!match.route.view) {
-        console.error(`No view found for route: ${match.route.path}`);
-        return;
-    }
-    container.innerHTML = match.route.view();
-     */
+    
     await match.route.action(container);
 }
 
