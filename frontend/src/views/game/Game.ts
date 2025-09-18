@@ -1,5 +1,6 @@
 import { GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, SECOND, degreesToRadians, getRandomAngle } from "./utils.js";
 import { request, getHeaders } from "../../utils/api.js";
+import { navigateTo } from "../../router/router.js";
 
 export class Game {
   protected canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;
@@ -7,7 +8,7 @@ export class Game {
 
   protected ws: WebSocket | null = null;
 
-  protected gameState: GameState | null = null;
+  protected gameState: GameState |  null = null;
   protected ballMoving: boolean = false;
 
   constructor() {
@@ -19,19 +20,21 @@ export class Game {
   }
 
   protected checkIsGamePaused(): void {
-    if (this.gameState) {
-      if (this.gameState.isPaused) {
-        const gamePausedOverlay = document.getElementById("game-paused") as HTMLCanvasElement;
+    if (!this.gameState || !this.gameState.score)
+      return ;
+    if (this.gameState.score.winner)
+      return ;
+    if (this.gameState.status === "waiting for players" || !this.gameState.isPaused) {
+      const gamePausedOverlay = document.getElementById("game-paused") as HTMLCanvasElement;
 
-        if (gamePausedOverlay)
-          gamePausedOverlay.classList.remove("hidden");
-      }
-      else {
-        const gamePausedOverlay = document.getElementById("game-paused") as HTMLCanvasElement;
+      if (gamePausedOverlay)
+        gamePausedOverlay.classList.add("hidden");
+    }
+    else if (this.gameState.isPaused) {
+      const gamePausedOverlay = document.getElementById("game-paused") as HTMLCanvasElement;
 
-        if (gamePausedOverlay)
-          gamePausedOverlay.classList.add("hidden");
-      }
+      if (gamePausedOverlay)
+        gamePausedOverlay.classList.remove("hidden");
     }
   }
 
@@ -59,24 +62,26 @@ export class Game {
   }
 
   protected checkPoints(): void {
-    if (this.gameState) {
-      const player1ScoreElement = document.getElementById(`player1-score`) as HTMLSpanElement;
-      if (player1ScoreElement) {
-        player1ScoreElement.innerHTML = this.gameState.score.player1.toString();
-      }
+    if (!this.gameState || !this.gameState.score) {
+      return ;
+    }
 
-      // Player 2
-      const player2ScoreElement = document.getElementById(`player2-score`) as HTMLSpanElement;
-      if (player2ScoreElement) {
-        player2ScoreElement.innerHTML = this.gameState.score.player2.toString();
-      }
+    const player1ScoreElement = document.getElementById(`player1-score`) as HTMLSpanElement;
+    if (player1ScoreElement) {
+      player1ScoreElement.innerHTML = this.gameState.score.player1.toString();
+    }
 
-      if (this.gameState.score.winner) {
-        this.gameOver(this.gameState.score.winner)
+    // Player 2
+    const player2ScoreElement = document.getElementById(`player2-score`) as HTMLSpanElement;
+    if (player2ScoreElement) {
+      player2ScoreElement.innerHTML = this.gameState.score.player2.toString();
+    }
 
-      }
-      else
-        this.hiddeGameOver();
+    if (this.gameState.score.winner) {
+      this.gameOver(this.gameState.score.winner)
+    }
+    else {
+      this.hiddeGameOver();
     }
   }
 
@@ -108,10 +113,11 @@ export class Game {
     }
   }
 
+  // Used in SinglePlayer, Maybe delete later
   protected async registeringWinner() {
     console.log("Here")
     let winnerName: string = "placeholder";
-    if (this.gameState && this.gameState.score.winner === 1) {
+    if (this.gameState && this.gameState.score && this.gameState.score.winner === 1) {
       const player1Name = document.getElementById("player1-name") as HTMLDivElement;
       if (player1Name) {
         winnerName = player1Name.innerHTML;
@@ -122,31 +128,6 @@ export class Game {
       if (player2Name) {
         winnerName = player2Name.innerHTML;
       }
-    }
-
-    try {
-      const baseUrl = window.location.origin;
-      const player1Name = document.getElementById("player1-name") as HTMLDivElement;
-      const player2Name = document.getElementById("player2-name") as HTMLDivElement;
-      if (this.gameState && player1Name && player2Name) {
-        const data = await request(`${baseUrl}/api/blockchain/matches`, {
-          method: "POST",
-          headers: getHeaders(),
-          body: JSON.stringify({
-            tournamentId: 0,
-            player1: player1Name.innerHTML,
-            player2: player2Name.innerHTML,
-            score1: this.gameState.score.player1,
-            score2: this.gameState.score.player2,
-            winner: winnerName,
-            startTime: 2021210205,
-            endTime: 2021210210,
-            finalMatch: true
-          })
-        });
-      }
-    } catch(err: any){
-      console.log("DEU RUIM MEU CHAPA:", err);
     }
   }
 
@@ -171,6 +152,10 @@ export class Game {
         };
         this.ws.send(JSON.stringify(payLoad));
         this.ballMoving = true;
+      }
+      if (event.key === " " && this.gameState && this.gameState.score && this.gameState.score.winner) {
+        const container = document.getElementById("content");
+        navigateTo("/dashboard", container);
       }
     }
   }

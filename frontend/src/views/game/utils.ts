@@ -1,16 +1,19 @@
 export interface GameState {
+  player1Name: string | null,
+  player2Name: string | null,
   status: string,
-  role: string,
-  canvas: Canvas,
-  paddleLeft: PaddleState,
-  paddleRight: PaddleState,
-  ball: BallState,
+  role: string | null,
+  canvas: Canvas | null,
+  paddleLeft: PaddleState | null,
+  paddleRight: PaddleState | null,
+  ball: BallState | null,
   score: {
     player1: number,
     player2: number,
     winner: 1 | 2 | null,
-  },
-  isPaused: false,
+  } | null,
+  isPaused: boolean,
+  timeToWait: number,
 };
 
 export interface Canvas {
@@ -75,5 +78,6 @@ export interface FetchData {
   state: string,
   side: string,
   gameMode: string,
+  name: string,
   id: number,
 }

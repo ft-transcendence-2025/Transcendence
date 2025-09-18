@@ -4,10 +4,11 @@ import { RemoteGame } from "./game/RemoteGame.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
+  getCurrentUsername,
 } from "../utils/userUtils.js";
 import { TournomentState, MatchData } from "./tournamentTree.js";
 import {  FetchData } from "./game/utils.js";
-import { request } from "../utils/api.js";
+import { request, getHeaders } from "../utils/api.js";
 
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
@@ -56,11 +57,16 @@ function setUpTournoment(): void {
 async function enterGame(gameMode: string, gameData: FetchData | null) {
   try {
     const baseUrl = window.location.origin; 
+    const user = getCurrentUsername();
 
     if (gameMode === "remote") {
       if (!gameData) {
         const response = await request(`${baseUrl}/api/getgame/remote`, {
-          credentials: "include"
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({
+            name: getCurrentUsername(),
+          })
         }) as FetchData;
         const remoteGame = new RemoteGame(response);
       }
