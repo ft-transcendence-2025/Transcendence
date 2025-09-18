@@ -1,4 +1,25 @@
-import { tournaments, customGameRoom, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
+import { remoteGameRooms, tournaments, customGameRoom, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
+
+// Clear Game Over games
+export function remoteGamesCleanup(): void {
+  const timeOut: number = 500;
+
+  setInterval(() => {
+
+    for (const [id, gameRoom] of remoteGameRooms.entries()) {
+      if (gameRoom.game.gameState.score.winner) {
+        if (gameRoom.player1) {
+          gameRoom.player1.close()
+        }
+        if (gameRoom.player2) {
+          gameRoom.player2.close()
+        }
+        remoteGameRooms.delete(id)
+      }
+    }
+
+  }, timeOut);
+}
 
 export function setupRoomCleanup(): void {
   const timeOut: number = 1000 * 30; // 30 seconds

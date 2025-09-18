@@ -1,67 +1,87 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
+import WebSocket, { WebSocketServer } from "ws"
+import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
 import { tournaments, customGameRoom, remoteGameRooms, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
 
-export function enterGameRoom(reply: FastifyReply, gameId: number): void {
-  const gameRoom = remoteGameRooms.get(gameId);
-  let side: string = "full";
-
-  if (gameRoom) {
-    if (!gameRoom.player1) {
-      side = "left";
-    }
-    else if (!gameRoom.player2) {
-      side = "right";
-    }
+export function playerLeftGame(ws: WebSocket, gameRoom: RemoteGameRoom): void {
+  gameRoom.game.gameState.status = "Player left the game"
+  if (ws === gameRoom.player1) {
+    console.log(`Player ${gameRoom.player1Name} Left the Game`)
+    gameRoom.game.gameState.score.winner = 2;
   }
-
-  reply.send({
-    state: "Joined",
-    side: side,
-    gameMode: "remote",
-    id: gameId,
-  });
+  else if (ws === gameRoom.player2) {
+    console.log(`Player ${gameRoom.player2Name} Left the Game`)
+    gameRoom.game.gameState.score.winner = 1;
+  }
 }
 
-export function searchGameRoom(): number {
+export function reenterGameRoom(reply: FastifyReply, playerName: string): number {
+  console.log(playerName, "- Checking if is in some game")
   for (const [id, gameRoom] of remoteGameRooms) {
-    if (!gameRoom.player1 && !gameRoom.player2) {
-      if (gameRoom.game.gameState.score.player1 === 0 && gameRoom.game.gameState.score.player2 === 0) {
-        return id;
-      }
-      else {
-        continue;
-      }
+    console.log(`Looking int game: ${id}, With:, ${gameRoom.player1Name} and ${gameRoom.player2Name}`)
+    if (gameRoom.player1Name === playerName) {
+      console.log(`Entering Game: ${id}`)
+      reply.send({
+        state: "enter",
+        side: "left",
+        gameMode: "remote",
+        name: playerName,
+        id: id,
+      });
+      return id;
     }
-    if (!gameRoom.player1 || !gameRoom.player2) {
+    else if (gameRoom.player2Name === playerName) {
+      console.log(`Entering Game: ${id}`)
+      reply.send({
+        state: "enter",
+        side: "right",
+        gameMode: "remote",
+        name: playerName,
+        id: id,
+      });
       return id;
     }
   }
   return -1;
 }
 
-export function createRemoteGame(reply: FastifyReply, gameId: number) {
-  const gameRoom = new RemoteGameRoom(gameId);
-  remoteGameRooms.set(gameId, gameRoom);
+export function joinGameRoom(reply: FastifyReply, playerName: string): number {
+  console.log(`${playerName} - Joining game for the first time`)
+  for (const [id, gameRoom] of remoteGameRooms) {
+    if (gameRoom.player2Name === null) {
+      console.log(`${playerName} entering game Room with ${gameRoom.player1Name}`)
+      gameRoom.player2Name = playerName;
+      reply.send({
+        state: "joined",
+        side: "right",
+        gameMode: "remote",
+        name: playerName,
+        id: id,
+      });
+      return id;
+    }
+  }
+  return -1;
+}
 
-  reply.setCookie("remoteGameId", gameId.toString(), {
-    path: "/",
-    sameSite: "none",
-    secure: true,
-    httpOnly: true,
-  });
+export function createRemoteGame(reply: FastifyReply, gameId: number, playerName: string) {
+  console.log("Creating Game", gameId, " for:", playerName)
+  const gameRoom = new RemoteGameRoom(gameId, playerName);
+  gameRoom.player1Name = playerName;
+  remoteGameRooms.set(gameId, gameRoom);
 
   reply.send({
     state: "Created",
     side: "left",
     gameMode: "remote",
+    name: playerName,
     id: gameId,
   });
 }
 
-export function createCustomGame(reply: FastifyReply, gameId: number) {
-  const gameRoom = new RemoteGameRoom(gameId);
+export function createCustomGame(reply: FastifyReply, gameId: number, player: string) {
+  const gameRoom = new RemoteGameRoom(gameId, player);
   customGameRoom.set(gameId, gameRoom);
 
   reply.send({

@@ -1,7 +1,9 @@
-import WebSocket from 'ws'
+import WebSocket from "ws"
 import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
 import { Paddle, PaddleSide, PaddleState } from "./Paddle.js";
 import { Ball, BallState } from "./Ball.js";
+
+export const TimeToWait = 45
 
 export interface PayLoad {
   type: string,
@@ -9,6 +11,8 @@ export interface PayLoad {
 }
 
 export interface GameState {
+  player1Name: string | null,
+  player2Name: string | null,
   status: string,
   canvas: Canvas,
   paddleLeft: PaddleState,
@@ -20,6 +24,7 @@ export interface GameState {
     winner: 1 | 2 | null,
   },
   isPaused: boolean,
+  timeToWait: number,
 };
 
 export class Game {
@@ -34,6 +39,8 @@ export class Game {
 
   constructor() {
     this.gameState = {
+      player1Name: null,
+      player2Name: null,
       status: "waiting for players",
       canvas: this.canvas,
       paddleLeft: this.paddleLeft.state,
@@ -45,6 +52,7 @@ export class Game {
         winner: null,
       },
       isPaused: false,
+      timeToWait: TimeToWait,
     };
   };
 }

@@ -2,7 +2,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { Game, GameState} from "./game/Game.js";
 import { tournaments, remoteGameRooms, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
 import { Tournament, Players, Winner, TournamentId } from "./tournament.js";
-import { createCustomGame, createSinglePlayerGame, createRemoteGame, searchGameRoom, enterGameRoom} from "./gameUtils.js";
+import { createCustomGame, createSinglePlayerGame, createRemoteGame, reenterGameRoom, joinGameRoom} from "./gameUtils.js";
 
 let singlePlayerGameId: number = 0;
 let remoteGameId: number = 0;
@@ -23,7 +23,7 @@ export async function tournament(fastify: FastifyInstance) {
         }
       }
     }
-  },(req: FastifyRequest, reply: FastifyReply) => {
+  }, (req: FastifyRequest, reply: FastifyReply) => {
       const data = req.body as Players;
       const tournament = new Tournament(data.player1, data.player2, data.player3, data.player4, tournamentId);
       tournaments.set(tournamentId++, tournament);
@@ -107,33 +107,47 @@ export async function getgame(fastify: FastifyInstance) {
     }
   });
 
-  fastify.get("/remote", (req, reply) => {
-    const cookies = req.cookies;
-    if (cookies.remoteGameId === undefined) {
-      const id = searchGameRoom();
-      if (id === -1) {
-        createRemoteGame(reply, remoteGameId++);
-      }
-      else {
-        enterGameRoom(reply, id);
-      }
-    }
-    else {
-      const cookieGameId: number = parseInt(cookies.remoteGameId);
-      if (remoteGameRooms.has(cookieGameId)) {
-        enterGameRoom(reply, cookieGameId);
-      }
-      else {
-        reply.clearCookie("remoteGameId", {
-          path: "/"
-        });
-        createRemoteGame(reply, remoteGameId++);
+  fastify.post("/remote", { 
+    schema: {
+      body: {
+        type: "object",
+        required: ["name"],
+        properties: {
+          name: { type: "string" },
+        }
       }
     }
-  });
+  }, (req: FastifyRequest, reply: FastifyReply) => {
+      const body = req.body as {name: string}
+      const playerName = body.name
 
-  fastify.get("/custom", (req, reply) => {
-    createCustomGame(reply, customId++);
-  });
+      console.log("Player looking for game:", playerName)
+      if (remoteGameId === 0) { // Create first game
+        createRemoteGame(reply, remoteGameId++, playerName);
+      }
+      else {
+        if (reenterGameRoom(reply, playerName) === -1) { // Trys to reenter game if playerName was previous on a gameRoom
+          if (joinGameRoom(reply, playerName) === -1) {  // In case playerName was never in a room previous, in enter a new game
+            createRemoteGame(reply, remoteGameId++, playerName); // If no gameRoom open waiting for player to foin, will create a new
+          }
+        }
+      }
+    });
+
+  fastify.post("/custom", {
+    schema: {
+      body: {
+        type: "object",
+        required: ["name"],
+        properties: {
+          name: { type: "string" },
+        }
+      }
+    }
+  }, (req: FastifyRequest, reply: FastifyReply) => {
+      const body = req.body as {name: string}
+      const playerName = body.name
+
+      createCustomGame(reply, customId++, playerName);
+    });
 }
-

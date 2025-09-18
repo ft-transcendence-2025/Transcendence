@@ -1,15 +1,22 @@
 import WebSocket from "ws"
-import { Game, PayLoad } from "./Game.js";
+import { TimeToWait, Game, PayLoad } from "./Game.js";
 import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
 import { GameRoom } from "./GameRoom.js";
+import { clearInterval } from "node:timers";
+
+// Time To Wait If Player Disconnect
 
 export class RemoteGameRoom extends GameRoom {
   public player1: WebSocket | null = null;
   public player2: WebSocket | null = null;
   private gameInterval: NodeJS.Timeout | null = null;
+  public player1Name: string | null = null;
+  public player2Name: string | null = null;
+  private timePlayerLeft: number = Date.now();
 
-  constructor(id: number) {
+  constructor(id: number, player1: string) {
     super(id)
+    this.player1Name = player1;
   }
 
   public cleanup() {
@@ -27,11 +34,20 @@ export class RemoteGameRoom extends GameRoom {
     }
   }
 
-  public addPlayer(ws: WebSocket) {
-    if (!this.player1 || this.player1 === ws)
+  public addPlayer(ws: WebSocket, playerName: string): number {
+    if (playerName !== this.player1Name && playerName !== this.player2Name) {
+      return -1;
+    }
+
+    if (playerName === this.player1Name) {
       this.player1 = ws;
-    else if (!this.player2 || this.player2 === ws)
+      this.game.gameState.player1Name = playerName;
+    }
+    else if (playerName === this.player2Name) {
       this.player2 = ws;
+      this.game.gameState.player2Name = playerName;
+    }
+    return 0;
   }
 
   public broadcast() {
@@ -47,12 +63,16 @@ export class RemoteGameRoom extends GameRoom {
     if (this.gameInterval)
       return;
     this.gameInterval = setInterval(() => {
+
       let point;
       if (this.player1 && this.player2) {
         this.game.gameState.status = "playing";
+        this.timePlayerLeft = Date.now();
+        this.game.gameState.timeToWait = TimeToWait;
       }
       else {
         this.game.gameState.status = "waiting for players";
+        this.waitingForPlayer();
       }
 
       if (this.game.gameState.status === "playing") {
@@ -75,7 +95,63 @@ export class RemoteGameRoom extends GameRoom {
         this.game.paddleLeft.update(this.game.canvas);
         this.game.paddleRight.update(this.game.canvas);
       }
+
       this.broadcast();
+      this.gameOver();
     }, this.FPS60);
+  }
+
+  public async waitingForPlayer() {
+    if (!this.game.gameState || !this.player2Name || !this.player1Name)
+      return ;
+
+    const timePassed = Date.now() - this.timePlayerLeft
+
+    if (timePassed >= 1000) {
+      this.game.gameState.timeToWait -= 1;
+      this.timePlayerLeft = Date.now();
+    }
+
+
+    // Set gameWinner when 45 seconds passed
+    if (this.game.gameState.timeToWait <= 0) {
+      if (!this.player1) {
+        this.game.gameState.score.winner = 2;
+      }
+      else if (!this.player2) {
+        this.game.gameState.score.winner = 1;
+      }
+    }
+  }
+
+  public async gameOver() {
+    if(!this.game.gameState.score.winner || !this.player1Name || !this.player2Name || !this.gameInterval)
+      return ;
+    const winner: string = this.game.gameState.score.winner === 1 ? this.player1Name : this.player2Name;
+    const data = await fetch(`http://blockchain:3000/api/blockchain/matches`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        tournamentId: 0,
+        player1: this.player1Name,
+        player2: this.player2Name,
+        score1: this.game.gameState.score.player1,
+        score2: this.game.gameState.score.player2,
+        winner: winner,
+        startTime: 2021210205,
+        endTime: 2021210210,
+        finalMatch: true
+      })
+    });
+
+    if (this.player1) {
+      this.player1.close()
+    }
+    if (this.player2) {
+      this.player2.close()
+    }
+    clearInterval(this.gameInterval);
   }
 }

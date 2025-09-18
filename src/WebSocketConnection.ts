@@ -1,8 +1,9 @@
-import WebSocket, { WebSocketServer } from 'ws'
+import WebSocket, { WebSocketServer } from "ws"
 import { PayLoad } from "./game/Game.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
 import { fastify, singlePlayerGameRooms, remoteGameRooms, customGameRoom } from "./server.js";
+import { playerLeftGame } from "./gameUtils.js"
 
 export class WebSocketConnection {
   private server: any;
@@ -20,15 +21,16 @@ export class WebSocketConnection {
     this.wss.on("connection", (ws: WebSocket, request: any, context: any) => {
       const gameId: number = context.gameId;
       const mode: string = context.mode;
+      const playerName: string = context.playerName;
 
       if (mode === "singleplayer") {
         this.singlePlayerConnection(ws, gameId);
       }
       else if (mode === "remote") {
-        this.remoteConnection(ws, gameId);
+        this.remoteConnection(ws, gameId, playerName);
       }
       else if (mode === "custom") {
-        this.customConnection(ws, gameId);
+        this.customConnection(ws, gameId, playerName);
       }
     });
 
@@ -37,14 +39,16 @@ export class WebSocketConnection {
     });
   }
 
-  private customConnection(ws: WebSocket, gameId: number) {
+  private customConnection(ws: WebSocket, gameId: number, playerName: string) {
     let gameRoom: RemoteGameRoom | undefined = customGameRoom.get(gameId);
     if (gameRoom === undefined) {
       ws.close();
       return;
     }
     else {
-      gameRoom.addPlayer(ws);
+      if (gameRoom.addPlayer(ws, playerName) == -1) {
+        return ;
+      };
       gameRoom.startGameLoop();
     }
 
@@ -56,16 +60,16 @@ export class WebSocketConnection {
     });
 
     ws.on("close", () => {
-      if (gameRoom !== undefined) {
-        if (gameRoom.player1 === ws){
-          gameRoom.player1.close();
-          gameRoom.player1 = null;
-        }
-        if (gameRoom.player2 === ws){
-          gameRoom.player2.close();
-          gameRoom.player2 = null;
-        }
-      }
+      // if (gameRoom !== undefined) {
+      //   if (gameRoom.player1 === ws){
+      //     gameRoom.player1.close();
+      //     // gameRoom.player1 = null;
+      //   }
+      //   if (gameRoom.player2 === ws){
+      //     gameRoom.player2.close();
+      //     // gameRoom.player2 = null;
+      //   }
+      // }
     });
 
     ws.on("error", (e) => {
@@ -77,26 +81,45 @@ export class WebSocketConnection {
     });
   }
 
-  private remoteConnection(ws: WebSocket, gameId: number) {
+  private remoteConnection(ws: WebSocket, gameId: number, playerName: string) {
     let gameRoom: RemoteGameRoom | undefined = remoteGameRooms.get(gameId);
     if (gameRoom === undefined) {
       ws.close();
       return;
     }
     else {
-      gameRoom.addPlayer(ws);
+      if (gameRoom.addPlayer(ws, playerName) == -1) {
+        ws.send(JSON.stringify({ 
+          status: "Player not allowed in this room",
+          canvas: null,
+          paddleLeft: null,
+          paddleRight: null,
+          ball: null,
+          score: null,
+          isPaused: false,
+        }))
+        return ;
+      };
       gameRoom.startGameLoop();
     }
 
     ws.on("message", (data) => {
       const msg: PayLoad = JSON.parse(data.toString());
       if (gameRoom !== undefined) {
-        gameRoom.handleEvents(msg);
+        if (msg.type === "command" && msg.key === "leave") {
+          playerLeftGame(ws, gameRoom);
+        }
+        else {
+          gameRoom.handleEvents(msg);
+        }
       }
     });
 
     ws.on("close", () => {
       if (gameRoom !== undefined) {
+        console.log("Connection closed by:", playerName)
+        console.log("Game id:", gameId)
+        console.log("Game With:", gameRoom.player1Name, " and with:", gameRoom.player2Name)
         if (gameRoom.player1 === ws){
           gameRoom.player1.close();
           gameRoom.player1 = null;
@@ -129,7 +152,7 @@ export class WebSocketConnection {
     }
 
     ws.on('message', (data) => {
-      const msg: PayLoad = JSON.parse(data.toString()); //POST MATCH
+      const msg: PayLoad = JSON.parse(data.toString()); 
       if (gameRoom !== undefined) {
         gameRoom.handleEvents(msg);
       }
@@ -149,6 +172,7 @@ export class WebSocketConnection {
       const pathname = request.url?.split("?")[0] || "";
       let gameId: number;
       let mode: string;
+      let playerName: string | null = null;
 
       if (pathname.startsWith("/game/singleplayer/")) {
         gameId = parseInt(pathname.split('/')[3]);
@@ -161,6 +185,7 @@ export class WebSocketConnection {
       }
       else if (pathname.startsWith("/game/remote/")) {
         gameId = parseInt(pathname.split('/')[3]);
+        playerName = pathname.split('/')[4];
         mode = "remote";
 
         if (isNaN(gameId)) {
@@ -170,6 +195,7 @@ export class WebSocketConnection {
       }
       else if (pathname.startsWith("/game/custom/")) {
         gameId = parseInt(pathname.split('/')[3]);
+        playerName = pathname.split('/')[4];
         mode = "custom";
 
         if (isNaN(gameId)) {
@@ -179,7 +205,12 @@ export class WebSocketConnection {
       }
 
       this.wss.handleUpgrade(request, socket, head, (ws) => {
-        this.wss.emit('connection', ws, request, { gameId, mode });
+        if (playerName) {
+          this.wss.emit('connection', ws, request, { gameId, mode, playerName });
+        }
+        else {
+          this.wss.emit('connection', ws, request, { gameId, mode });
+        }
       });
     });
   }
