@@ -10,6 +10,7 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
 import { notificationService } from "../services/notifications.service.js";
+import { chatManager } from "../app.js";
 
 export type Friend = {
   id: string;
@@ -97,7 +98,7 @@ class ChatComponent {
 
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
-    notificationService.updateMessageNotifications(friendId, 0);
+    chatManager.chatService.markConversationAsRead(friendId);
   }
 
   async updateChatHistory(friendId: string) {

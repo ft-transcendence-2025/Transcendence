@@ -68,7 +68,7 @@ export async function request<T>(
   });
 
   // Exclude auth requests from token refresh
-  if (response.status === 401 && !isAuthRequest) {
+  if (response.status === 401 && !getAccessToken() && !isAuthRequest) {
     const refreshed = await refreshAccessToken();
     if (refreshed) {
       response = await fetch(url, {

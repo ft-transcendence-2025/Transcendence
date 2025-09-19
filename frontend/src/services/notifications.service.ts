@@ -73,6 +73,9 @@ class NotificationService {
 		} else {
 			this.state.messageNotifications.set(userId, count);
 		}
+		if (this.state.messageNotifications.get(userId) === 0) {
+			this.state.messageNotifications.delete(userId);
+		}
 		this.notifyListeners();
 	}
 

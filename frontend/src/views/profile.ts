@@ -195,7 +195,6 @@ function setupEventListeners(username: string) {
 					chatManager.chatService.markConversationAsRead(username);
 					chatManager.closeChat(username);
 					notificationService.removeFriendRequest(username);
-					notificationService.updateMessageNotifications(username, 0, "set");
 					notificationService.triggerUpdate();
 					friendshipStatusCache.set(username, { status: FriendshipStatus.BLOCKED, blockedBy: getCurrentUsername() || undefined });
 				}

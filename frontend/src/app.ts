@@ -13,7 +13,8 @@ import { updateFriendshipStatusCache } from "./views/profile.js";
 export let chatManager: any | undefined = undefined;
 
 export function getChatManager(): ChatComponent {
-  if (!chatManager) {
+  console.log("getChatManager called. Current chatManager:", chatManager);
+  if (!chatManager || !chatManager.chatService.conn) {
     console.log("Creating new ChatComponent instance...");
     initializeChatManager();
   } else {

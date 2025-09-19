@@ -30,6 +30,14 @@ export const login = (body: any) =>
     body: JSON.stringify(body),
   });
 
+export const logout = () =>
+  request(`${AUTH_BASE_URL}/logout`, {
+    method: "POST",
+    credentials: "include", // Ensure cookies are sent with the request
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({}), // Send an empty JSON object
+  });
+
 export const register = (body: any) =>
   request<User>(`${AUTH_BASE_URL}/register`, {
     method: "POST",

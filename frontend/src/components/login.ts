@@ -60,7 +60,7 @@ export async function openLoginModal(container: HTMLElement | null = null) {
     }
 
     const container = document.getElementById("content");
-    reloadChatManager();
+    initializeChatManager();
     navigateTo("/dashboard", container);
   };
 
