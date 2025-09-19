@@ -11,7 +11,17 @@ const users = new Map<string, any>();
 export async function chatHandler(socket: WS, request: any) {
   const userId = request.query.userId;
   const blockedUsersList: string[] = await fetch(`http://user-management:3000/friendships/blockedUsersList/${userId}`)
-    .then(res => res.json());
+    .then(res => {
+      if (!res.ok) {
+        console.error(`Failed to fetch blocked users for userId ${userId}: ${res.statusText}`);
+        return [];
+      }
+      return res.json();
+    })
+    .catch(err => {
+      console.error(`Error fetching blocked users for userId ${userId}:`, err);
+      return [];
+    });
   const conn = { socket, userId, games: new Set<string>(), lastPong: Date.now(), blockedUsersList };
   users.set(userId, conn);
   console.log("logged in users: ", Array.from(users.keys()));
