@@ -4,6 +4,14 @@ import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
 import { tournaments, customGameRoom, remoteGameRooms, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
 
+
+export function clearSinglePlayerGame(gameRoom: SinglePlayerGameRoom) {
+  if (gameRoom.client) {
+    gameRoom.client.close();
+  }
+  singlePlayerGameRooms.delete(gameRoom.id);
+}
+
 export function playerLeftGame(ws: WebSocket, gameRoom: RemoteGameRoom): void {
   gameRoom.game.gameState.status = "Player left the game"
   if (ws === gameRoom.player1) {

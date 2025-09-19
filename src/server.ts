@@ -6,7 +6,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from "fs";
 
-import { remoteGamesCleanup, setupRoomCleanup, setuptournamentCleanup } from "./cleanup.js";
+import { remoteGamesCleanup, singlePlayerRoomCleanup, setuptournamentCleanup } from "./cleanup.js";
 import { tournament, getgame } from "./routes.js";
 import { WebSocketConnection } from "./WebSocketConnection.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
@@ -40,6 +40,6 @@ fastify.listen({ port: 4000, host: "0.0.0.0" }, (err, address) => {
 })
 
 new WebSocketConnection(fastify.server);
-setupRoomCleanup();
 setuptournamentCleanup();
+singlePlayerRoomCleanup();
 remoteGamesCleanup();

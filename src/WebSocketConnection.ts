@@ -3,7 +3,7 @@ import { PayLoad } from "./game/Game.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
 import { fastify, singlePlayerGameRooms, remoteGameRooms, customGameRoom } from "./server.js";
-import { playerLeftGame } from "./gameUtils.js"
+import { clearSinglePlayerGame, playerLeftGame } from "./gameUtils.js"
 
 export class WebSocketConnection {
   private server: any;
@@ -151,10 +151,15 @@ export class WebSocketConnection {
       gameRoom.startGameLoop();
     }
 
-    ws.on('message', (data) => {
+    ws.on("message", (data) => {
       const msg: PayLoad = JSON.parse(data.toString()); 
       if (gameRoom !== undefined) {
-        gameRoom.handleEvents(msg);
+        if (msg.type === "command" && msg.key === "leave") {
+          clearSinglePlayerGame(gameRoom);
+        }
+        else {
+          gameRoom.handleEvents(msg);
+        }
       }
     });
 

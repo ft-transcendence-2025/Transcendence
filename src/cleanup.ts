@@ -1,11 +1,8 @@
 import { remoteGameRooms, tournaments, customGameRoom, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
 
-// Clear Game Over games
 export function remoteGamesCleanup(): void {
-  const timeOut: number = 500;
-
+  // Close game when there is a winner
   setInterval(() => {
-
     for (const [id, gameRoom] of remoteGameRooms.entries()) {
       if (gameRoom.game.gameState.score.winner) {
         if (gameRoom.player1) {
@@ -17,34 +14,21 @@ export function remoteGamesCleanup(): void {
         remoteGameRooms.delete(id)
       }
     }
-
-  }, timeOut);
+  }, 500);
 }
 
-export function setupRoomCleanup(): void {
-  const timeOut: number = 1000 * 30; // 30 seconds
-
+export function singlePlayerRoomCleanup(): void {
+  // Close game when there is a winner
   setInterval(() => {
-    const now = Date.now();
     for (const [id, gameRoom] of singlePlayerGameRooms.entries()) {
-      if (gameRoom.client === null) {
-        const last = singlePlayerLastActivity.get(id);
-        if (!last)
-          continue ;
-        if (now - last > timeOut) {
-          console.log(`Cleaning up empty single player room id:${id}`);
-          gameRoom.cleanup();
-          singlePlayerGameRooms.delete(id);
-          singlePlayerLastActivity.delete(id);
+      if (gameRoom.game.gameState.score.winner) {
+        if (gameRoom.client) {
+          gameRoom.client.close()
         }
-      }
-      else {
-        singlePlayerLastActivity.set(id, now);
-
-        console.log(`Single player game ${id}, running`);
+        singlePlayerGameRooms.delete(id)
       }
     }
-  }, timeOut);
+  }, 500);
 }
 
 export function setuptournamentCleanup(): void {
@@ -54,7 +38,6 @@ export function setuptournamentCleanup(): void {
     const now = Date.now();
     for  (const [id, tournament] of tournaments) {
       if (now - tournament.startTime > timeOut) {
-        console.log("tournament Deleted id:", id);
         tournaments.delete(id);
       }
     }

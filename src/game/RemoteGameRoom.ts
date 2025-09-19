@@ -14,6 +14,7 @@ export class RemoteGameRoom extends GameRoom {
   public player2Name: string | null = null;
   private timePlayerLeft: number = Date.now();
 
+
   constructor(id: number, player1: string) {
     super(id)
     this.player1Name = player1;
@@ -111,7 +112,6 @@ export class RemoteGameRoom extends GameRoom {
       this.game.gameState.timeToWait -= 1;
       this.timePlayerLeft = Date.now();
     }
-
 
     // Set gameWinner when 45 seconds passed
     if (this.game.gameState.timeToWait <= 0) {

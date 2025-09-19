@@ -7,6 +7,8 @@ export class SinglePlayerGameRoom extends GameRoom {
   public FPS60 = 1000/60;
   public client: WebSocket | null = null;
   private gameInterval: NodeJS.Timeout | null = null;
+  public timePlayerLeft: number = -1;
+  public waitingToClose: number = 0;
 
   constructor(id: number) {
     super(id)
