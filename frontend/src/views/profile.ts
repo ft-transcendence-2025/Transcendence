@@ -34,8 +34,12 @@ export async function renderProfile(container: HTMLElement | null) {
 
 	try {
 		const profile = await getProfileByUsername(username);
-		populateProfileView(profile);
-		showProfileView();
+		await populateProfileView(profile);
+		const profileContainer = document.getElementById("profile-container");
+        if (profileContainer) {
+            profileContainer.classList.remove("hidden");
+        }
+		// showProfileView();
 	} catch (error: any) {
 		console.error("Error loading profile:", error);
 		container.innerHTML = `<p>Error loading profile: ${error.message}</p>`;
