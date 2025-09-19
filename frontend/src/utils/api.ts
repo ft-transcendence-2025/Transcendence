@@ -48,16 +48,27 @@ export async function request<T>(
   url: string,
   options: RequestInit = {},
 ): Promise<T> {
+  // Check if the request already has set headers (e.g. login/register)
+  const hasAuthHeader =
+    options.headers &&
+    "Authorization" in (options.headers as Record<string, string>);
+  const isAuthRequest =
+    url.includes("/auth/login") || url.includes("/auth/register");
+
+  // For login/register, don't add auth headers
+  const headers =
+    isAuthRequest || hasAuthHeader
+      ? options.headers
+      : { ...options.headers, ...getHeaders() };
+
   let response = await fetch(url, {
     ...options,
-    headers: {
-      ...options.headers,
-      ...getHeaders(),
-    },
+    headers,
     credentials: "include", // important for cookies
   });
 
-  if (response.status === 401 && getAccessToken()) {
+  // Exclude auth requests from token refresh
+  if (response.status === 401 && !isAuthRequest) {
     const refreshed = await refreshAccessToken();
     if (refreshed) {
       response = await fetch(url, {

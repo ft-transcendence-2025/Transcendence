@@ -169,7 +169,7 @@ export class SinglePlayerGame extends Game {
   }
 
   public gameLoop(): void {
-    if (!this.gameState) {
+    if (!this.gameState || !this.gameState.paddleLeft || !this.gameState.paddleRight) {
       requestAnimationFrame(this.gameLoop.bind(this));
       return ;
     }
@@ -194,13 +194,13 @@ export class SinglePlayerGame extends Game {
       event.preventDefault();
       this.sendPayLoad(event);
       if (this.gameMode === "localtournament" &&
-        this.gameState && this.gameState.score.winner) {
+        this.gameState && this.gameState.score && this.gameState.score.winner) {
         this.tournamentMatchWinner();
         const container = document.getElementById("content");
         navigateTo("/tournament-tree", container);
       }
       else if ((this.gameMode === "2player" || this.gameMode === "ai") &&
-        this.gameState && this.gameState.score.winner) {
+        this.gameState && this.gameState.score && this.gameState.score.winner) {
         this.registeringWinner();
       }
     }
@@ -210,7 +210,7 @@ export class SinglePlayerGame extends Game {
     const baseUrl = window.location.origin;
     let winnerName: string = "placeholder";
 
-    if (this.gameState && this.gameState.score.winner === 1) {
+    if (this.gameState && this.gameState.score && this.gameState.score.winner === 1) {
       const player1Name = document.getElementById("player1-name") as HTMLDivElement;
       if (player1Name) {
         winnerName = player1Name.innerHTML;

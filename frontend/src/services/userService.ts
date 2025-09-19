@@ -8,6 +8,7 @@ export interface User {
   username: string;
   email: string;
   active: boolean;
+  twoFactorEnabled: boolean;
   createdAt: string;
 }
 
@@ -42,4 +43,3 @@ export const deleteUser = (username: string) =>
     method: "DELETE",
     headers: getHeaders(),
   });
-
