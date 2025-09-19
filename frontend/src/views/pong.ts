@@ -10,6 +10,19 @@ import { TournomentState, MatchData } from "./tournamentTree.js";
 import {  FetchData } from "./game/utils.js";
 import { request, getHeaders } from "../utils/api.js";
 
+
+interface GameData {
+  mode: string,
+  player1: {
+    name: string,
+    avatar: string,
+  },
+  player2: {
+    name: string,
+    avatar: string,
+  },
+}
+
 export async function renderPong(container: HTMLElement | null) {
   if (!container) return;
 
@@ -117,7 +130,7 @@ async function updatePlayerInfo(gameMode: string) {
 
     if (gameData) {
       // Use custom player data from setup modal
-      const data = JSON.parse(gameData);
+      const data = JSON.parse(gameData) as GameData;
 
       if (player1Element) {
         player1Element.textContent = data.player1.name;
@@ -128,9 +141,6 @@ async function updatePlayerInfo(gameMode: string) {
         player2Element.textContent = data.player2.name;
         player2Avatar.src = data.player2.avatar;
       }
-
-      // Clear the data after use
-      localStorage.removeItem("2playerGameData");
     } else {
       // Fallback to default behavior
       if (player1Element) {
