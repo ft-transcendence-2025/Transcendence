@@ -38,6 +38,24 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
   );
 
   app.post(
+    "/api/auth/logout",
+    { preHandler: [app.authenticateRefresh] },
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        // Clear the refreshToken cookie
+        reply.clearCookie("refreshToken", {
+          path: "/api/auth",
+          httpOnly: true,
+          secure: true,
+        });
+        reply.code(200).send({ message: "Logged out successfully." });
+      } catch (error) {
+        reply.code(500).send({ message: "Failed to log out.", error });
+      }
+    }
+  );
+  
+  app.post(
     "/api/auth/refresh",
     { preHandler: [app.authenticateRefresh] },
     async (req: FastifyRequest, reply: FastifyReply) => {
@@ -83,6 +101,8 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
       }
     }
   );
+
+
 
   const upstream =
     process.env.NODE_ENV === "production"

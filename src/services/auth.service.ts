@@ -18,6 +18,16 @@ export class authService {
     return await axios.post(`${this.base_url}/login`, body);
   }
 
+  static async logout() {
+    return await axios.post(
+      `${this.base_url}/logout`,
+      {}, // No body needed for logout
+      {
+        withCredentials: true, // Ensure cookies are sent with the request
+      }
+    );
+  }
+
   static async register(body: any) {
     return await axios.post(`${this.base_url}/register`, body);
   }
