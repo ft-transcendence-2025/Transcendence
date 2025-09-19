@@ -62,7 +62,13 @@ async function setup2PlayerModal() {
   // Open modal
   localTwoPlayerBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    modal.classList.remove("hidden");
+    const gameMode = localStorage.getItem("GameMode");
+    if (gameMode === null || gameMode === "PvE") {
+      modal.classList.remove("hidden");
+    }
+    else {
+      startTwoPlayerGame();
+    }
   });
 
   // Close modal

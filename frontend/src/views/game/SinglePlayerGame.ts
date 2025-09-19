@@ -22,6 +22,7 @@ export class SinglePlayerGame extends Game {
     this.joinGame(`wss://${window.location.host}/ws/game/singleplayer/${data.id}`, this.gameMode);
 
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
+    this.leaveGame();
   }
 
 
@@ -69,7 +70,6 @@ export class SinglePlayerGame extends Game {
         }
       }
     }
-
   }
 
   private openSocket(gameMode: string) {
@@ -103,21 +103,16 @@ export class SinglePlayerGame extends Game {
       this.AI = null;
     }
     if (this.ws) {
-      const cookies = document.cookie.split(";");
-      cookies.forEach((cookie) => {
-        const mode = cookie.split("=");
-        if (mode[0].trim() === "GameMode") {
-          if (mode[1].trim() === "SinglePvE") {
-            const payLoad = {
-              type: "command",
-              key: "reset",
-            };
-            if (this.ws)
-              this.ws.send(JSON.stringify(payLoad));
-          }
-        }
-      });
-      document.cookie = "GameMode=SinglePvP";
+      const gameMode = localStorage.getItem("GameMode");
+      if (gameMode === "PvE") {
+        const payLoad = {
+          type: "command",
+          key: "reset",
+        };
+        if (this.ws)
+          this.ws.send(JSON.stringify(payLoad));
+      }
+      localStorage.setItem("GameMode", "PvP");
       this.player1 = new Player(this.ws, this.canvas, PaddleSide.Left);
       this.player2 = new Player(this.ws, this.canvas, PaddleSide.Right);
     }
@@ -131,21 +126,16 @@ export class SinglePlayerGame extends Game {
       this.player2 = null;
     }
     if (this.ws) {
-      const cookies = document.cookie.split(";");
-      cookies.forEach((cookie) => {
-        const mode = cookie.split("=");
-        if (mode[0].trim() === "GameMode") {
-          if (mode[1].trim() === "SinglePvP") {
-            const payLoad = {
-              type: "command",
-              key: "reset",
-            };
-            if (this.ws)
-              this.ws.send(JSON.stringify(payLoad));
-          }
-        }
-      });
-      document.cookie = "GameMode=SinglePvE";
+      const gameMode = localStorage.getItem("GameMode");
+      if (gameMode === "PvP") {
+        const payLoad = {
+          type: "command",
+          key: "reset",
+        };
+        if (this.ws)
+          this.ws.send(JSON.stringify(payLoad));
+      }
+      localStorage.setItem("GameMode", "PvE");
       if (side === PaddleSide.Left) {
         this.player1 = new Player(this.ws, this.canvas, PaddleSide.Left);
         this.AI = new AI(this.ws, this.canvas, PaddleSide.Right, this.gameState);
@@ -199,10 +189,24 @@ export class SinglePlayerGame extends Game {
         const container = document.getElementById("content");
         navigateTo("/tournament-tree", container);
       }
-      else if ((this.gameMode === "2player" || this.gameMode === "ai") &&
-        this.gameState && this.gameState.score && this.gameState.score.winner) {
-        this.registeringWinner();
-      }
+    }
+  }
+
+  private leaveGame(): void {
+    const button = document.querySelector("#leave-game-btn");
+    if (button) {
+      button.addEventListener("click", () => {
+        if (this.ws) {
+          this.ws.send(JSON.stringify({
+            type: "command",
+            key: "leave",
+          }));
+          this.ws.close();
+          localStorage.removeItem("GameMode");
+          const container = document.getElementById("content");
+          navigateTo("/dashboard", container);
+        }
+      });
     }
   }
 
@@ -241,7 +245,6 @@ export class SinglePlayerGame extends Game {
         matchNumber = 3;
         tournamentState.match3.winner = winnerName;
       }
-
       localStorage.setItem("localTournamentState", JSON.stringify(tournamentState))
 
       const response = await fetch(`${baseUrl}/api/tournament/matchwinner`, {

@@ -113,25 +113,6 @@ export class Game {
     }
   }
 
-  // Used in SinglePlayer, Maybe delete later
-  protected async registeringWinner() {
-    console.log("Here")
-    let winnerName: string = "placeholder";
-    if (this.gameState && this.gameState.score && this.gameState.score.winner === 1) {
-      const player1Name = document.getElementById("player1-name") as HTMLDivElement;
-      if (player1Name) {
-        winnerName = player1Name.innerHTML;
-      }
-    }
-    else {
-      const player2Name = document.getElementById("player2-name") as HTMLDivElement;
-      if (player2Name) {
-        winnerName = player2Name.innerHTML;
-      }
-    }
-  }
-
-
   protected hiddeGameOver(): void {
     const gameOverText = document.getElementById("game-over") as HTMLDivElement;
     if (gameOverText)
@@ -154,6 +135,12 @@ export class Game {
         this.ballMoving = true;
       }
       if (event.key === " " && this.gameState && this.gameState.score && this.gameState.score.winner) {
+
+        const mode = window.location.search.split("=")[1];
+        if (mode !== "remote") {
+          localStorage.removeItem("GameMode");
+        }
+
         const container = document.getElementById("content");
         navigateTo("/dashboard", container);
       }
