@@ -109,6 +109,7 @@ export class RemoteGame extends Game {
       return ;
 
     const display = document.getElementById("reconnect-overlay") as HTMLCanvasElement;
+    const mode = window.location.search.split("=")[1];
 
     if (this.gameState.score && this.gameState.score.winner) {
       if (display) {
@@ -117,7 +118,7 @@ export class RemoteGame extends Game {
       return ;
     }
 
-    if (this.gameState.status === "playing") {
+    if (this.gameState.status === "playing" || mode !== "remote") {
       if (display) {
         display.classList.add("hidden");
       }

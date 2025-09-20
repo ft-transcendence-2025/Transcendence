@@ -45,10 +45,10 @@ async function setup2PlayerModal() {
   const nextAvatarBtn = document.getElementById("2p-next-avatar");
 
   if (
-    !localTwoPlayerBtn ||
+    !localTwoPlayerBtn || // Reenter Game
     !modal ||
     !closeModal ||
-    !startGameBtn ||
+    !startGameBtn || // Create Game
     !prevAvatarBtn ||
     !nextAvatarBtn
   ) {
@@ -62,7 +62,15 @@ async function setup2PlayerModal() {
   // Open modal
   localTwoPlayerBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    modal.classList.remove("hidden");
+    const gameMode = localStorage.getItem("GameMode");
+    if (gameMode === null || gameMode === "PvE") {
+      modal.classList.remove("hidden");
+    }
+    else {
+      // Navigate to pong game
+      const container = document.getElementById("content");
+      navigateTo("/pong?mode=2player", container);
+    }
   });
 
   // Close modal
@@ -85,6 +93,7 @@ async function setup2PlayerModal() {
 
   // Start game
   startGameBtn.addEventListener("click", () => {
+    localStorage.removeItem("2playerGameData");
     startTwoPlayerGame();
   });
 
