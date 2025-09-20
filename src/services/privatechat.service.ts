@@ -17,11 +17,19 @@ export async function sendPendingMessages(userId: string, socket: any) {
 export async function handlePrivateMessage(users: Map<string, any>, senderId: string, msg: any, originatingSocket: any) {
   const { recipientId, content, type = 'TEXT' } = msg;
   if (!recipientId || !content) return;
+
   const sender = users.get(senderId);
+  if (!sender) {
+    console.error(`Sender with ID ${senderId} not found.`);
+    return;
+  }
 
   console.log("Blocked users:", sender.blockedUsersList);
   if (sender.blockedUsersList.includes(recipientId)) {
-    sender.socket.send("Message not delivered.");
+    // Notify all sender's connections that the message was not delivered
+    for (const ws of sender.connections) {
+      ws.send(JSON.stringify({ event: "system/error", message: "Message not delivered." }));
+    }
     return;
   }
 
@@ -97,22 +105,27 @@ export async function markMessagesAsRead(userId: string, conversationId: string)
   }
 }
 
-export async function handleNotification(users: Map<string, any>, userId: string, msg: any) {
+export async function handleNotification(users: Map<string, any>, userId: string, msg: any, originatingSocket: any) {
   const { recipientId, type, content } = msg;
   if (!recipientId || !content || !type) return;
 
   const sender = users.get(userId);
   if (sender.blockedUsersList.includes(recipientId) && type !== "FRIEND_UNBLOCKED") {
     for (const ws of sender.connections) {
-      ws.send({ msg: "Notification not delivered." });
+      ws.send(JSON.stringify({ msg: "Notification not delivered." }));
     }
     return;
   }
-
+  console.log(`Sending notification of type ${type} from ${userId} to ${recipientId}:`, content);
   if (users.has(recipientId)) {
     const recipientConn = users.get(recipientId);
     for (const ws of recipientConn.connections) {
       ws.send(JSON.stringify({ event: 'notification/new', ...msg }));
+    }
+  }
+  for (const ws of sender.connections) {
+    if (ws !== originatingSocket) {
+      ws.send(JSON.stringify({ event: 'notification/new', ...msg , recipientId}));
     }
   }
 }

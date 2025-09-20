@@ -74,7 +74,7 @@ export async function chatHandler(socket: WS, request: any) {
         break;
 
       case 'notification/new':
-        handleNotification(users, userId, msg);
+        handleNotification(users, userId, msg, socket);
         break;
 
       default:
