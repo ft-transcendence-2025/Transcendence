@@ -14,7 +14,7 @@ export async function sendPendingMessages(userId: string, socket: any) {
   }
 }
 
-export async function handlePrivateMessage(users: Map<string, any>, senderId: string, msg: any) {
+export async function handlePrivateMessage(users: Map<string, any>, senderId: string, msg: any, originatingSocket: any) {
   const { recipientId, content, type = 'TEXT' } = msg;
   if (!recipientId || !content) return;
   const sender = users.get(senderId);
@@ -45,7 +45,14 @@ export async function handlePrivateMessage(users: Map<string, any>, senderId: st
   const recipientConn = users.get(recipientId);
   if (recipientConn) {
     await prisma.message.update({ where: { id: saved.id }, data: { delivered: true } });
-    recipientConn.socket.send(JSON.stringify({ event: 'private/message', ...saved }));
+    for (const ws of recipientConn.connections) {
+      ws.send(JSON.stringify({ event: 'private/message', ...saved }));
+    }
+  }
+  for (const ws of sender.connections) {
+    if (ws !== originatingSocket) {
+      ws.send(JSON.stringify({ event: 'private/message', ...saved , recipientId}));
+    }
   }
 }
 
@@ -93,15 +100,19 @@ export async function markMessagesAsRead(userId: string, conversationId: string)
 export async function handleNotification(users: Map<string, any>, userId: string, msg: any) {
   const { recipientId, type, content } = msg;
   if (!recipientId || !content || !type) return;
-  
+
   const sender = users.get(userId);
   if (sender.blockedUsersList.includes(recipientId) && type !== "FRIEND_UNBLOCKED") {
-    sender.socket.send("Notification not delivered.");
+    for (const ws of sender.connections) {
+      ws.send({ msg: "Notification not delivered." });
+    }
     return;
   }
 
   if (users.has(recipientId)) {
     const recipientConn = users.get(recipientId);
-    recipientConn.socket.send(JSON.stringify({ event: 'notification/new', ...msg }));
+    for (const ws of recipientConn.connections) {
+      ws.send(JSON.stringify({ event: 'notification/new', ...msg }));
+    }
   }
 }

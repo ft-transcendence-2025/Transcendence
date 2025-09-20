@@ -22,10 +22,19 @@ export async function chatHandler(socket: WS, request: any) {
       console.error(`Error fetching blocked users for userId ${userId}:`, err);
       return [];
     });
-  const conn = { socket, userId, games: new Set<string>(), lastPong: Date.now(), blockedUsersList };
-  users.set(userId, conn);
-  console.log("logged in users: ", Array.from(users.keys()));
 
+  if (!users.has(userId)) {
+    users.set(userId, {
+      connections: new Set<WS>(),
+      games: new Set<string>(),
+      lastPong: Date.now(),
+      blockedUsersList,
+    });
+  }
+
+  const userConn = users.get(userId);
+  userConn.connections.add(socket); // Add the new WebSocket connection
+  console.log("logged in users: ", Array.from(users.keys()));
 
   handleUserStatus(userId, USER_STATUS.ONLINE);
 
@@ -45,16 +54,16 @@ export async function chatHandler(socket: WS, request: any) {
 
     switch (msg.kind) {
       case 'private/send':
-        await handlePrivateMessage(users, userId, msg);
+        await handlePrivateMessage(users, userId, msg, socket);
         break;
 
-      case 'lobby/join':
-        joinLobby(users, conn, msg);
-        break;
+      // case 'lobby/join':
+      //   joinLobby(users, conn, msg);
+      //   break;
 
-      case 'lobby/leave':
-        leaveLobby(users, conn, msg);
-        break;
+      // case 'lobby/leave':
+      //   leaveLobby(users, conn, msg);
+      //   break;
 
       case 'lobby/send':
         handleLobbyMessage(users, userId, msg);
@@ -73,8 +82,24 @@ export async function chatHandler(socket: WS, request: any) {
     }
   });
 
-  socket.on('close', () => {
-    users.delete(userId);
-    handleUserStatus(userId, USER_STATUS.OFFLINE);
+    socket.on('close', () => {
+    // Remove the WebSocket connection from the user's set
+    userConn.connections.delete(socket);
+
+    // If no connections remain, remove the user from the map and mark them offline
+    if (userConn.connections.size === 0) {
+      users.delete(userId);
+      handleUserStatus(userId, USER_STATUS.OFFLINE);
+    }
+  });
+
+  socket.on('error', (err: any) => {
+    console.error(`WebSocket error for user ${userId}:`, err);
+    userConn.connections.delete(socket);
+
+    if (userConn.connections.size === 0) {
+      users.delete(userId);
+      handleUserStatus(userId, USER_STATUS.OFFLINE);
+    }
   });
 }
