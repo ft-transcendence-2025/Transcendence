@@ -257,16 +257,16 @@ export async function renderStats(container: HTMLElement | null) {
       const opponentSpan = row.querySelector(".match-opponent");
       const scoreSpan = row.querySelector(".match-score");
       const resultSpan = row.querySelector(".match-result");
-
+      
+      
       if (dateSpan) {
-        const startDate = new Date(Number(match.startTime) * 1000);
+        const startDate = new Date(Number(match.startTime));
         dateSpan.textContent = startDate.toLocaleString("en-US", {
           timeZone: "Europe/Lisbon",
           month: "short",
           day: "numeric",
         });
       }
-
       if (opponentSpan) {
         const opponent = match.player1 === playerId ? match.player2 : match.player1;
         opponentSpan.textContent = `vs ${opponent}`;

@@ -80,36 +80,6 @@ function setupLocalTournament() {
 
   // Setup event listeners for local tournament
   setupLocalEventListeners();
-
-  // Enable customization for all players
-  enablePlayerCustomization(true);
-}
-
-function enablePlayerCustomization(enable: boolean) {
-  // Enable customization for all players (1-4)
-  for (let i = 1; i <= 4; i++) {
-    const inputField = document.getElementById(
-      `t-player-${i}-name`,
-    ) as HTMLInputElement;
-    const avatarContainer = document.getElementById(
-      `t-avatar-player-${i}`,
-    )?.parentElement;
-
-    if (inputField) {
-      inputField.disabled = !enable;
-      if (!enable) {
-        inputField.style.cursor = "not-allowed";
-      }
-    }
-
-    if (avatarContainer) {
-      const buttons = avatarContainer.querySelectorAll("button");
-      buttons.forEach((btn) => {
-        (btn as HTMLButtonElement).disabled = !enable;
-        btn.style.display = enable ? "block" : "none";
-      });
-    }
-  }
 }
 
 async function populatePlayer1Data() {
@@ -123,7 +93,7 @@ async function populatePlayer1Data() {
   if (player1Name && player1Avatar) {
     // Check if user is logged in
     const currentUsername = getCurrentUsername();
-    
+
     // If user is logged-in, populate their data
     if (currentUsername) {
       const displayName = await getUserDisplayName();
@@ -148,8 +118,8 @@ async function populatePlayer1Data() {
 }
 
 /*
-** Avatar management functions (for local tournaments)
-*/
+ ** Avatar management functions (for local tournaments)
+ */
 function updateAvatar(slot: number, index: number): void {
   const img = document.getElementById(
     `t-avatar-player-${slot}`,
@@ -174,34 +144,42 @@ function nextAvatar(slot: number): void {
 
 function initializeAvatars() {
   const slots = [1, 2, 3, 4]; // Include all players
-  
+
   // Check if Player 1 is logged in user with custom avatar
   const currentUsername = getCurrentUsername();
-  const player1Avatar = document.getElementById("t-avatar-player-1") as HTMLImageElement;
-  
-  if (currentUsername && player1Avatar && !player1Avatar.src.includes('/assets/avatars/')) {
+  const player1Avatar = document.getElementById(
+    "t-avatar-player-1",
+  ) as HTMLImageElement;
+
+  if (
+    currentUsername &&
+    player1Avatar &&
+    !player1Avatar.src.includes("/assets/avatars/")
+  ) {
     // don't override Player 1 avatar, but let them change if they want
     currentAvatarIndex[1] = 0; // Default to first avatar if player makes avatar switch
   } else {
     updateAvatar(1, 0); // Set to first avatar
   }
-  
+
   // Set default avatars for other players
   slots.slice(1).forEach((slot) => updateAvatar(slot, slot - 1));
 
   // Add event listeners for navigation buttons for all players (1-4)
   for (let slot = 1; slot <= 4; slot++) {
-    const avatarContainer = document.getElementById(
-      `t-avatar-player-${slot}`,
-    )?.parentElement;
-    if (avatarContainer) {
-      const buttons = avatarContainer.querySelectorAll("button");
-      const prevBtn = buttons[0];
-      const nextBtn = buttons[1];
+    const avatarImg = document.getElementById(`t-avatar-player-${slot}`);
+    if (avatarImg?.parentElement) {
+      // Get the div that contains the avatar and buttons
+      const avatarContainer = avatarImg.parentElement;
+
+      // Use specific CSS classes for more robust selection
+      const prevBtn = avatarContainer.querySelector("button.avatar-prev");
+      const nextBtn = avatarContainer.querySelector("button.avatar-next");
 
       if (prevBtn) {
         prevBtn.addEventListener("click", (e) => {
           e.preventDefault();
+          e.stopPropagation();
           previousAvatar(slot);
         });
       }
@@ -209,6 +187,7 @@ function initializeAvatars() {
       if (nextBtn) {
         nextBtn.addEventListener("click", (e) => {
           e.preventDefault();
+          e.stopPropagation();
           nextAvatar(slot);
         });
       }
@@ -262,10 +241,10 @@ async function collectLocalTournamentData() {
       if (currentUsername) {
         // User is logged in - always record their username regardless of display name/avatar changes
         username = currentUsername;
-        
+
         // Determine avatar data based on current selection
         const avatarSrc = avatarImg?.src || "";
-        if (avatarSrc.includes('/assets/avatars/')) {
+        if (avatarSrc.includes("/assets/avatars/")) {
           // User switched to a local avatar
           avatarData = avatarSrc.split("/").pop() || "panda.png";
         } else {
@@ -296,6 +275,13 @@ async function collectLocalTournamentData() {
     type: "local",
     players: players,
   };
+
+  // Debug
+  players.forEach((player, index) => {
+    console.log(
+      `  Player ${index + 1}: ${player.userDisplayName} | Avatar: ${player.avatar} | Username: ${player.username}`,
+    );
+  });
 
   localStorage.setItem("LocalTournamentAvatarMap", JSON.stringify(players));
   if (tournamentData) {
