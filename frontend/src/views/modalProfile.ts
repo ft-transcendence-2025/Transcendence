@@ -3,6 +3,7 @@ import { getChatManager } from "../app.js";
 import { closeModal } from "../components/modalManager.js";
 import { navigateTo } from "../router/router.js";
 import { logout } from "../services/authService.js";
+import { notificationService } from "../services/notifications.service.js";
 import { getProfileByUsername, getUserAvatar } from "../services/profileService.js";
 import { ChatComponent } from "./chat.js";
 
@@ -124,22 +125,19 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   const logoutBtn = container.querySelector("#logout-btn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
-      console.log("Logging out user...");
       localStorage.removeItem("authToken");
       sessionStorage.removeItem("authToken");
+      localStorage.clear();
+      sessionStorage.clear();
+      notificationService.clear();
       let chatManager: ChatComponent | null = getChatManager();
       if (chatManager) {
         chatManager.reset();
       }
-      console.log("ChatManager after reset:", chatManager);
       chatManager = null;
-      console.log("User logged out, chatManager reset.");
-      console.log("ChatManager after logout:", chatManager);
       closeModal();
-      console.log("Logging out...");
       await logout();
       navigateTo("/login", document.getElementById("content"));
-      // window.location.href = "/login";
     });
   }
 

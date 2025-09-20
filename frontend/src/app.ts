@@ -6,7 +6,7 @@ import { FriendshipStatus } from "./services/friendship.service.js";
 import { notificationService } from "./services/notifications.service.js";
 import { getUserAvatar } from "./services/profileService.js";
 import { refreshAccessToken } from "./utils/api.js";
-import { getCurrentUsername } from "./utils/userUtils.js";
+import { getCurrentUsername, getUserNickname } from "./utils/userUtils.js";
 import { ChatComponent } from "./views/chat.js";
 import { handleNotificationMessage, handlePrivateMessage } from "./views/notificationsHandler.js";
 import { updateFriendshipStatusCache } from "./views/profile.js";
@@ -14,12 +14,8 @@ import { updateFriendshipStatusCache } from "./views/profile.js";
 export let chatManager: any | undefined;
 
 export function getChatManager(): ChatComponent {
-  console.log("getChatManager called. Current chatManager:", chatManager);
-  if (!chatManager || !chatManager.chatService.conn) {
-    console.log("Creating new ChatComponent instance...");
+  if (!chatManager || !chatManager.chatService.conn ) {
     initializeChatManager();
-  } else {
-    console.log("Reusing existing ChatComponent instance...");
   }
   return chatManager;
 }
@@ -30,13 +26,11 @@ export async function initializeChatManager() {
     console.warn("No current user. ChatManager will not be initialized.");
     return;
   }
-  console.log("Chat manager: ", chatManager);
-  if (!chatManager || chatManager === null || chatManager.chatService === null || chatManager.currentUserId != username) {
-    console.log("Initializing ChatManager...", chatManager);
+  if (!chatManager || chatManager.chatService === null || chatManager.currentUserId != username) {
     chatManager = new ChatComponent("chat-root", []);
     chatManager.chatService.conn.onmessage = async (e: MessageEvent) => {
       const message: IncomingMessage = JSON.parse(e.data);
-      console.log("INCOMING MSG: ", message);
+      // console.log("INCOMING MSG: ", message);
 
       if (message.event === "private/message") {
         await handlePrivateMessage(message);

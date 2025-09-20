@@ -54,7 +54,6 @@ export const sendFriendRequest = async (friendUsername: string) => {
   const chatManager = getChatManager();
   chatManager.sendMessage(friendUsername, message);
   updateFriendshipStatusCache(friendUsername, FriendshipStatus.PENDING, undefined);
-  console.log("Friend request sent response:", message);
 
   return response;
 };
@@ -92,7 +91,6 @@ export const respondRequest = (friendshipId: string, accept: FriendshipStatus, r
     }
     notificationService.removeFriendRequest(requesterUsername);
     notificationService.triggerUpdate();
-    console.log("Friend request response sent:", message);
 }
 
 export const removeFriend = (friendUsername: string) =>
@@ -121,7 +119,6 @@ export const blockUser = async (friendUsername: string) => {
   chatManager.sendMessage(friendUsername, message);
   chatManager.chatService.markConversationAsRead(friendUsername);
   notificationService.removeFriendRequest(friendUsername);
-  console.log("Friend block notification sent:", message);
   return response;
 };
 
@@ -142,7 +139,6 @@ export const unblockUser = async (friendUsername: string) => {
   };
   const chatManager = getChatManager();
   chatManager.sendMessage(friendUsername, message);
-  console.log("Friend unblock notification sent:", message);
   return response;
 };
 

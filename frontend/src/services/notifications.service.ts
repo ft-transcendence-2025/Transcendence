@@ -104,6 +104,14 @@ class NotificationService {
 			console.error("Failed to fetch unread message counts:", error);
 		}
 	}
+
+	clear() {
+		this.state.friendRequests = [];
+		this.state.messageNotifications.clear();
+		this.state.gameInvites.clear();
+		this.state.tournamentTurns.clear();
+		this.notifyListeners();
+	}
 }
 
 export const notificationService = new NotificationService();

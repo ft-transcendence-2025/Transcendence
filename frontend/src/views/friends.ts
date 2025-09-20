@@ -33,8 +33,6 @@ export async function renderFriends(container: HTMLElement | null) {
       return 0;
     });
 
-    console.log("Fetched friends with avatars:", friendsWithAvatars);
-
     if (friendsWithAvatars.length === 0) {
       container.innerHTML = "<p>No friends found. Add some friends to start chatting!</p>";
       return;
@@ -45,7 +43,6 @@ export async function renderFriends(container: HTMLElement | null) {
       container.appendChild(li);
 
       setTimeout(() => updateUnreadBadge(friend.username), 0);
-      console.log(`Set up eventlistener for ${friend.username}`);
       li.addEventListener("click", async () => {
         const chatManager = getChatManager();
         chatManager.openChat(friend);
@@ -87,12 +84,6 @@ function createFriendElement(friend: Friend & { avatar: string }): HTMLElement {
 
 function updateUnreadBadge(username: string) {
   const badge = document.getElementById(`badge-${username}`);
-  // if (!badge) {
-  //   console.warn(`Badge element not found for username: ${username}`);
-  //   return;
-  // } else {
-  //   console.log("Badge Element for Friend:", badge);
-  // }
   const unreadCount = notificationService.getState().messageNotifications.get(username) || 0;
   if (badge) {
     if (unreadCount > 0) {

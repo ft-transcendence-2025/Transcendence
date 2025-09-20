@@ -9,7 +9,7 @@ import { getCurrentUsername } from "../utils/userUtils.js";
 // Function to handle incoming WebSocket messages
 async function handleIncomingMessage(event: MessageEvent) {
 	const message: IncomingMessage = JSON.parse(event.data);
-	console.log("INCOMING MSG: ", message);
+	// console.log("INCOMING MSG: ", message);
 
 	if (message.event === "private/message") {
 		await handlePrivateMessage(message);
@@ -22,10 +22,8 @@ async function handleIncomingMessage(event: MessageEvent) {
 export async function handlePrivateMessage(message: IncomingMessage) {
 	const chatManager = getChatManager()
 	if (message.senderId === chatManager.currentUserId) {
-		console.log("Message from myself");
 		updateChatForRecipient(message.recipientId, message);
 	} else {
-		console.log("Message from another user");
 		updateChatForSender(message.senderId, message);
 	}
 }
@@ -34,7 +32,6 @@ export async function handlePrivateMessage(message: IncomingMessage) {
 function updateChatForRecipient(recipientId: string, message: IncomingMessage) {
 	const chatManager = getChatManager();
 	if (chatManager.openChats.has(recipientId)) {
-		console.log(`Chat from ${recipientId} is open`);
 		const messages = chatManager.messages.get(recipientId) || [];
 		messages.push(message);
 		chatManager.messages.set(recipientId, messages);
@@ -55,7 +52,6 @@ function updateChatForSender(senderId: string, message: IncomingMessage) {
 export async function handleNotificationMessage(message: IncomingMessage) {
 	const username = getCurrentUsername();
 	if (message.senderId === username) {
-		console.log("Handling notification for myself:", message);
 		await handleSelfNotification(message);
 	} else {
 		await handleOtherUserNotification(message);

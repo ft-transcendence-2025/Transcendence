@@ -38,12 +38,10 @@ export async function renderNavbar(container: HTMLElement | null) {
     // If the modal is already open and triggered by the same button, close it
     if (modal && currentTrigger === friendsIcon) {
       closeModal();
-      console.log("Modal is being closed");
       return;
     }
 
     // If the modal is being opened, fetch and render the content
-    console.log("Modal is being opened");
     const friendsContent = await getFriendsContent();
     openModal(friendsContent, friendsIcon);
   });
@@ -54,19 +52,16 @@ export async function renderNavbar(container: HTMLElement | null) {
     // If the modal is already open and triggered by the same button, close it
     if (modal && currentTrigger === notificationIcon) {
       closeModal();
-      console.log("Modal is being closed");
       return;
     }
 
     // If the modal is being opened, fetch and render the content
-    console.log("Modal is being opened");
     openModal(await getNotificationsContent(), notificationIcon);
   });
 
   if (profileIcon) {
     try {
       const avatarUrl = await getCurrentUserAvatar();
-      console.log("Setting profile avatar URL:", avatarUrl);
       profileIcon.src = avatarUrl;
 
       // Default to a placeholder avatar on error
