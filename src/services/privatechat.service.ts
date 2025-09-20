@@ -24,7 +24,6 @@ export async function handlePrivateMessage(users: Map<string, any>, senderId: st
     return;
   }
 
-  console.log("Blocked users:", sender.blockedUsersList);
   if (sender.blockedUsersList.includes(recipientId)) {
     // Notify all sender's connections that the message was not delivered
     for (const ws of sender.connections) {
@@ -71,7 +70,6 @@ export async function handleBlockUser(users: Map<string, any>, userId: string, m
   const user = users.get(userId);
   if (!user) return;
 
-  console.log(`User ${userId} is blocking ${recipientId}`);
   if (!user.blockedUsersList.includes(recipientId)) {
     user.blockedUsersList.push(recipientId);
     const targetUser = users.get(recipientId);
@@ -116,7 +114,6 @@ export async function handleNotification(users: Map<string, any>, userId: string
     }
     return;
   }
-  console.log(`Sending notification of type ${type} from ${userId} to ${recipientId}:`, content);
   if (users.has(recipientId)) {
     const recipientConn = users.get(recipientId);
     for (const ws of recipientConn.connections) {

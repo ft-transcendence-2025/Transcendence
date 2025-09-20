@@ -67,7 +67,6 @@ export const getUnreadMessagesCount = async (req: FastifyRequest, res: FastifyRe
 		unreadMessages.forEach(msg => {
 			unreadCountBySender[msg.senderId] = (unreadCountBySender[msg.senderId] || 0) + 1;
 		});
-		console.log("Unread messages count by sender:", unreadCountBySender);
 
 		res.code(200).send(unreadCountBySender);
 	} catch (error) {
@@ -85,7 +84,6 @@ export async function markConversationAsRead(req: FastifyRequest, res: FastifyRe
 
 	const user1Id = senderId;
 	const user2Id = recipientId;
-	console.log(`Marking messages as read between ${user1Id} and ${user2Id}`);
 	try {
 		const conversation = await prisma.conversation.findFirst({
 			where: {
@@ -95,7 +93,6 @@ export async function markConversationAsRead(req: FastifyRequest, res: FastifyRe
 				],
 			},
 		});
-		console.log("Found conversation:", conversation);
 
 		if (!conversation) {
 			return res.code(404).send({ error: "Conversation not found." });

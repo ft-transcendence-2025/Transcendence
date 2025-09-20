@@ -34,7 +34,6 @@ export async function chatHandler(socket: WS, request: any) {
 
   const userConn = users.get(userId);
   userConn.connections.add(socket); // Add the new WebSocket connection
-  console.log("logged in users: ", Array.from(users.keys()));
 
   handleUserStatus(userId, USER_STATUS.ONLINE);
 
