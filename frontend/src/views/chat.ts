@@ -60,6 +60,8 @@ class ChatComponent {
     // Clear other state
     this.friends = [];
     this.currentUserId = "";
+    this.container = null as any;
+    this.chatService = null as any;
     console.log("ChatComponent reset complete.");
   }
 

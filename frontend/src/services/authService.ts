@@ -30,7 +30,7 @@ export const login = (body: any) =>
     body: JSON.stringify(body),
   });
 
-export const logout = () =>
+export const logout = async () =>
   request(`${AUTH_BASE_URL}/logout`, {
     method: "POST",
     credentials: "include", // Ensure cookies are sent with the request

@@ -10,7 +10,7 @@ import { getCurrentUsername } from "./utils/userUtils.js";
 import { ChatComponent } from "./views/chat.js";
 import { updateFriendshipStatusCache } from "./views/profile.js";
 
-export let chatManager: any | undefined = undefined;
+export let chatManager: any | undefined;
 
 export function getChatManager(): ChatComponent {
   console.log("getChatManager called. Current chatManager:", chatManager);
@@ -24,13 +24,14 @@ export function getChatManager(): ChatComponent {
 }
 
 export async function initializeChatManager() {
-  if (!getCurrentUsername()) {
+  const username = getCurrentUsername();
+  if (!username) {
     console.warn("No current user. ChatManager will not be initialized.");
     return;
   }
-  console.log("Initializing ChatManager...", chatManager);
-  if (!chatManager || chatManager === null) {
-    console.warn("ChatManager is not initialized. Initializing now...");
+  console.log("Chat manager: ", chatManager);
+  if (!chatManager || chatManager === null || chatManager.chatService === null || chatManager.currentUserId != username)  {
+    console.log("Initializing ChatManager...", chatManager);
     chatManager = new ChatComponent("chat-root", []);
     chatManager.chatService.conn.onmessage = async (e: MessageEvent) => {
       const message: IncomingMessage = JSON.parse(e.data);
@@ -102,6 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   await renderNavbar(navbarElement); // render the navbar component
+  initializeChatManager();
   // global click listener for navigation links (data-links)
   document.body.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
@@ -119,6 +121,5 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   });
-  initializeChatManager();
   router(contentElement); // load home view on initial run
 });

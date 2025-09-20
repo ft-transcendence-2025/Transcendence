@@ -123,21 +123,23 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   // Add event listener for logout button
   const logoutBtn = container.querySelector("#logout-btn");
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
+    logoutBtn.addEventListener("click", async () => {
       console.log("Logging out user...");
       localStorage.removeItem("authToken");
-      logout();
       sessionStorage.removeItem("authToken");
       let chatManager: ChatComponent | null = getChatManager();
       if (chatManager) {
         chatManager.reset();
       }
+      console.log("ChatManager after reset:", chatManager);
       chatManager = null;
       console.log("User logged out, chatManager reset.");
       console.log("ChatManager after logout:", chatManager);
       closeModal();
+      console.log("Logging out...");
+      await logout();
       navigateTo("/login", document.getElementById("content"));
-      window.location.reload();
+      // window.location.href = "/login";
     });
   }
 
