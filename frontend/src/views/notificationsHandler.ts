@@ -7,7 +7,7 @@ import { getChatManager } from "../app.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
 
 // Function to handle incoming WebSocket messages
-async function handleIncomingMessage(event: MessageEvent) {
+export async function handleIncomingMessage(event: MessageEvent) {
 	const message: IncomingMessage = JSON.parse(event.data);
 	// console.log("INCOMING MSG: ", message);
 
