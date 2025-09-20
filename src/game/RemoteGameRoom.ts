@@ -13,6 +13,7 @@ export class RemoteGameRoom extends GameRoom {
   public player1Name: string | null = null;
   public player2Name: string | null = null;
   private timePlayerLeft: number = Date.now();
+  private isGameOverInProgress = false;
 
 
   constructor(id: number, player1: string) {
@@ -98,7 +99,9 @@ export class RemoteGameRoom extends GameRoom {
       }
 
       this.broadcast();
-      this.gameOver();
+      if (this.game.gameState.score.winner && !this.isGameOverInProgress){
+        this.gameOver();
+      } 
     }, this.FPS60);
   }
 
@@ -125,26 +128,52 @@ export class RemoteGameRoom extends GameRoom {
   }
 
   public async gameOver() {
+    if (this.isGameOverInProgress) return;
+    this.isGameOverInProgress = true;
     if(!this.game.gameState.score.winner || !this.player1Name || !this.player2Name || !this.gameInterval)
       return ;
+    clearInterval(this.gameInterval);
+    this.gameInterval = null;
     const winner: string = this.game.gameState.score.winner === 1 ? this.player1Name : this.player2Name;
-    const data = await fetch(`http://blockchain:3000/api/blockchain/matches`, {
+
+    const requestBody = {
+      tournamentId: 0,
+      player1: this.player1Name,
+      player2: this.player2Name,
+      score1: this.game.gameState.score.player1,
+      score2: this.game.gameState.score.player2,
+      winner: winner,
+      startTime: Date.now(),
+      endTime: Date.now(),
+      finalMatch: false
+    };
+
+   
+    const response = await fetch(`http://blockchain:3000/matches`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        tournamentId: 0,
-        player1: this.player1Name,
-        player2: this.player2Name,
-        score1: this.game.gameState.score.player1,
-        score2: this.game.gameState.score.player2,
-        winner: winner,
-        startTime: 2021210205,
-        endTime: 2021210210,
-        finalMatch: true
-      })
+      body: JSON.stringify(requestBody)
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`POST failed with status ${response.status}: ${errorText}`);
+      throw new Error(`POST failed with status ${response.status}`);
+    }
+    const result = await response.json();
+    //console.log("Response data:", result);
+    console.log("")
+    console.log("")
+    console.log("")
+    console.log("================================================================================================================================================")
+    console.log(`POST Done with success, check the data on the blockchain: https://testnet.snowscan.xyz/tx/${result.txHash}`);
+    console.log("================================================================================================================================================")
+    console.log("")
+    console.log("")
+    console.log("")
+    
 
     if (this.player1) {
       this.player1.close()
@@ -152,6 +181,6 @@ export class RemoteGameRoom extends GameRoom {
     if (this.player2) {
       this.player2.close()
     }
-    clearInterval(this.gameInterval);
+    
   }
 }
