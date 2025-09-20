@@ -14,11 +14,13 @@ import { request, getHeaders } from "../utils/api.js";
 interface GameData {
   mode: string,
   player1: {
-    name: string,
+    username: string | null,
+    userDisplayName: string,
     avatar: string,
   },
   player2: {
-    name: string,
+    username: string | null,
+    userDisplayName: string,
     avatar: string,
   },
 }
@@ -133,12 +135,12 @@ async function updatePlayerInfo(gameMode: string) {
       const data = JSON.parse(gameData) as GameData;
 
       if (player1Element) {
-        player1Element.textContent = data.player1.name;
+        player1Element.textContent = data.player1.userDisplayName;
         player1Avatar.src = data.player1.avatar;
       }
 
       if (player2Element) {
-        player2Element.textContent = data.player2.name;
+        player2Element.textContent = data.player2.userDisplayName;
         player2Avatar.src = data.player2.avatar;
       }
     } else {

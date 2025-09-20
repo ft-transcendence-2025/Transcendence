@@ -3,11 +3,12 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
+  getCurrentUsername,
 } from "../utils/userUtils.js";
 import { RemoteGame } from "./game/RemoteGame.js";
 import { FetchData } from "./game/utils.js";
 
-// Available avatars for player 2
+// Available avatars for both players
 const avatars = [
   "bear.png",
   "cat.png",
@@ -21,7 +22,8 @@ const avatars = [
   "sloth.png",
 ];
 
-let currentPlayer2AvatarIndex = 1; // Start with gorilla.png (index 1)
+// Track current avatar index for each player
+const currentAvatarIndex: { [key: number]: number } = {};
 
 export async function renderDashboard(container: HTMLElement | null) {
   if (!container) return;
@@ -31,8 +33,6 @@ export async function renderDashboard(container: HTMLElement | null) {
 
   // Setup 2-player modal functionality
   await setup2PlayerModal();
-
-  // ...no game room setup needed...
 }
 
 async function setup2PlayerModal() {
@@ -41,22 +41,21 @@ async function setup2PlayerModal() {
   const modal = document.getElementById("2p-setup-modal");
   const closeModal = document.getElementById("2p-close-modal-btn");
   const startGameBtn = document.getElementById("2p-start-game");
-  const prevAvatarBtn = document.getElementById("2p-prev-avatar");
-  const nextAvatarBtn = document.getElementById("2p-next-avatar");
 
   if (
-    !localTwoPlayerBtn || // Reenter Game
+    !localTwoPlayerBtn ||
     !modal ||
     !closeModal ||
-    !startGameBtn || // Create Game
-    !prevAvatarBtn ||
-    !nextAvatarBtn
+    !startGameBtn
   ) {
     console.error("2-player modal elements not found");
     return;
   }
 
-  // Populate Player 1 with current user data
+  // Initialize avatars for both players
+  initializeAvatars();
+
+  // Populate Player 1 with current user data (if logged in)
   await populatePlayer1Data();
 
   // Open modal
@@ -78,27 +77,11 @@ async function setup2PlayerModal() {
     modal.classList.add("hidden");
   });
 
-  // Avatar navigation for Player 2
-  prevAvatarBtn.addEventListener("click", () => {
-    currentPlayer2AvatarIndex =
-      (currentPlayer2AvatarIndex - 1 + avatars.length) % avatars.length;
-    updatePlayer2Avatar();
-  });
-
-  nextAvatarBtn.addEventListener("click", () => {
-    currentPlayer2AvatarIndex =
-      (currentPlayer2AvatarIndex + 1) % avatars.length;
-    updatePlayer2Avatar();
-  });
-
   // Start game
   startGameBtn.addEventListener("click", () => {
     localStorage.removeItem("2playerGameData");
     startTwoPlayerGame();
   });
-
-  // Initialize Player 2 avatar
-  updatePlayer2Avatar();
 }
 
 async function populatePlayer1Data() {
@@ -110,31 +93,98 @@ async function populatePlayer1Data() {
   ) as HTMLImageElement;
 
   if (player1Name && player1Avatar) {
-    // Get current user display name and avatar
-    const displayName = await getUserDisplayName();
-    const avatarUrl = await getCurrentUserAvatar();
+    // Check if user is logged in
+    const currentUsername = getCurrentUsername();
+    
+    if (currentUsername) {
+      // User is logged in - prefill with their data
+      const displayName = await getUserDisplayName();
+      const avatarUrl = await getCurrentUserAvatar();
 
-    player1Name.value = displayName || "Player 1";
-    player1Avatar.src = avatarUrl;
+      player1Name.value = displayName || "Player 1";
+      player1Avatar.src = avatarUrl;
 
-    // Add error handling for avatar
-    player1Avatar.onerror = () => {
-      player1Avatar.src = "/assets/avatars/panda.png";
-    };
+      // Add error handling for avatar - fallback to local avatar
+      player1Avatar.onerror = () => {
+        player1Avatar.src = "/assets/avatars/panda.png";
+        // Set the avatar index to match the fallback
+        currentAvatarIndex[1] = 7; // panda.png is at index 7
+      };
+    } else {
+      // User not logged in - set default values
+      player1Name.value = "";
+      player1Name.placeholder = "Player 1";
+      // Default avatar will be set by initializeAvatars
+    }
   }
 }
 
-function updatePlayer2Avatar() {
-  const player2Avatar = document.getElementById(
-    "2p-avatar-player-2",
+// Avatar management functions
+function updateAvatar(slot: number, index: number): void {
+  const img = document.getElementById(
+    `2p-avatar-player-${slot}`,
   ) as HTMLImageElement;
-  if (player2Avatar) {
-    player2Avatar.src = `/assets/avatars/${avatars[currentPlayer2AvatarIndex]}`;
+  if (!img) return;
 
-    // Add error handling for Player 2 avatar
-    player2Avatar.onerror = () => {
-      player2Avatar.src = "/assets/avatars/meerkat.png";
-    };
+  currentAvatarIndex[slot] = index;
+  img.src = `/assets/avatars/${avatars[index]}`;
+}
+
+function previousAvatar(slot: number): void {
+  let index = currentAvatarIndex[slot] ?? 0;
+  index = (index - 1 + avatars.length) % avatars.length;
+  updateAvatar(slot, index);
+}
+
+function nextAvatar(slot: number): void {
+  let index = currentAvatarIndex[slot] ?? 0;
+  index = (index + 1) % avatars.length;
+  updateAvatar(slot, index);
+}
+
+function initializeAvatars() {
+  const slots = [1, 2]; // Both players
+  
+  // Check if Player 1 is logged in user with custom avatar
+  const currentUsername = getCurrentUsername();
+  const player1Avatar = document.getElementById("2p-avatar-player-1") as HTMLImageElement;
+  
+  if (currentUsername && player1Avatar && !player1Avatar.src.includes('/assets/avatars/')) {
+    // Don't override Player 1 avatar, but let them change if they want
+    currentAvatarIndex[1] = 0; // Default to first avatar if they switch
+  } else {
+    updateAvatar(1, 0); // Set to first avatar
+  }
+  
+  // Set default avatar for Player 2
+  updateAvatar(2, 1); // Set to second avatar (cat.png)
+
+  // Add event listeners for navigation buttons for both players
+  for (let slot = 1; slot <= 2; slot++) {
+    const avatarImg = document.getElementById(`2p-avatar-player-${slot}`);
+    if (avatarImg?.parentElement) {
+      // Get the div that contains the avatar and buttons
+      const avatarContainer = avatarImg.parentElement;
+      
+      const prevBtn = avatarContainer.querySelector("button.avatar-prev");
+      const nextBtn = avatarContainer.querySelector("button.avatar-next");
+
+      if (prevBtn) {
+        prevBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          previousAvatar(slot);
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          nextAvatar(slot);
+        });
+      }
+    }
   }
 }
 
@@ -166,15 +216,20 @@ function startTwoPlayerGame() {
   const player2Avatar =
     player2AvatarElement?.src || "/assets/avatars/meerkat.png";
 
+  // Get current username for Player 1 (if logged in)
+  const currentUsername = getCurrentUsername();
+
   // Store player data in localStorage for pong view to access
   const gameData = {
     mode: "2player",
     player1: {
-      name: player1Name,
+      username: currentUsername, // Will be null if not logged in
+      userDisplayName: player1Name,
       avatar: player1Avatar,
     },
     player2: {
-      name: player2Name,
+      username: null, // Player 2 is always a guest in local 2-player
+      userDisplayName: player2Name,
       avatar: player2Avatar,
     },
   };
