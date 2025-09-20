@@ -241,7 +241,6 @@ function setupEventListeners(username: string) {
 		};
 		const chatManager = getChatManager();
 		chatManager.sendMessage(blockedUsername, blockMessage);
-
 	}
 
 	setupAvatarModalEventListeners(username);
