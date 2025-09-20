@@ -30,17 +30,33 @@ export async function initializeChatManager() {
     return;
   }
   console.log("Chat manager: ", chatManager);
-  if (!chatManager || chatManager === null || chatManager.chatService === null || chatManager.currentUserId != username)  {
+  if (!chatManager || chatManager === null || chatManager.chatService === null || chatManager.currentUserId != username) {
     console.log("Initializing ChatManager...", chatManager);
     chatManager = new ChatComponent("chat-root", []);
     chatManager.chatService.conn.onmessage = async (e: MessageEvent) => {
       const message: IncomingMessage = JSON.parse(e.data);
       console.log("INCOMING MSG: ", message);
       if (message?.event === "private/message") {
-        let temp = chatManager.messages.get(message.senderId) || [];
-        temp.push(message);
-        chatManager.messages.set(message.senderId, temp);
-        chatManager.updateChatMessages(message.senderId);
+        // Check if the message is from the current user
+        if (message.senderId === chatManager.currentUserId) {
+          console.log("message from myself");
+          // Only update the chat if it is open
+          console.log("open chats: ", chatManager.openChats);
+          console.log("Recipient id: ", message.recipientId);
+          if (chatManager.openChats.has(message.recipientId)) {
+            console.log(`Chat from ${message.recipientId} open`);
+            let temp = chatManager.messages.get(message.recipientId) || [];
+            temp.push(message);
+            chatManager.messages.set(message.recipientId, temp);
+            chatManager.updateChatMessages(message.recipientId);
+          }
+        } else {
+          // For messages from others, update the chat and create notifications
+          let temp = chatManager.messages.get(message.senderId) || [];
+          temp.push(message);
+          chatManager.messages.set(message.senderId, temp);
+          chatManager.updateChatMessages(message.senderId);
+        }
       } else if (message.event === "notification/new") {
         if (message?.type === "FRIEND_REQUEST") {
           const avatar = await getUserAvatar(message.senderId);
