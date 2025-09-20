@@ -8,6 +8,7 @@ import { getUserAvatar } from "./services/profileService.js";
 import { refreshAccessToken } from "./utils/api.js";
 import { getCurrentUsername } from "./utils/userUtils.js";
 import { ChatComponent } from "./views/chat.js";
+import { handleNotificationMessage, handlePrivateMessage } from "./views/notificationsHandler.js";
 import { updateFriendshipStatusCache } from "./views/profile.js";
 
 export let chatManager: any | undefined;
@@ -36,75 +37,11 @@ export async function initializeChatManager() {
     chatManager.chatService.conn.onmessage = async (e: MessageEvent) => {
       const message: IncomingMessage = JSON.parse(e.data);
       console.log("INCOMING MSG: ", message);
-      if (message?.event === "private/message") {
-        // Check if the message is from the current user
-        if (message.senderId === chatManager.currentUserId) {
-          console.log("message from myself");
-          // Only update the chat if it is open
-          console.log("open chats: ", chatManager.openChats);
-          console.log("Recipient id: ", message.recipientId);
-          if (chatManager.openChats.has(message.recipientId)) {
-            console.log(`Chat from ${message.recipientId} open`);
-            let temp = chatManager.messages.get(message.recipientId) || [];
-            temp.push(message);
-            chatManager.messages.set(message.recipientId, temp);
-            chatManager.updateChatMessages(message.recipientId);
-          }
-        } else {
-          // For messages from others, update the chat and create notifications
-          let temp = chatManager.messages.get(message.senderId) || [];
-          temp.push(message);
-          chatManager.messages.set(message.senderId, temp);
-          chatManager.updateChatMessages(message.senderId);
-        }
+
+      if (message.event === "private/message") {
+        await handlePrivateMessage(message);
       } else if (message.event === "notification/new") {
-        if (message.senderId === username) {
-          console.log("Handling notification for myself:", message);
-
-          // Update the friendshipStatusCache for the current user
-          if (message?.type === "FRIEND_REQUEST") {
-            updateFriendshipStatusCache(message.recipientId, FriendshipStatus.PENDING, undefined);
-          } else if (message?.type === "FRIEND_REQUEST_ACCEPTED") {
-            notificationService.removeFriendRequest(message.recipientId);
-            updateFriendshipStatusCache(message.recipientId, FriendshipStatus.ACCEPTED, undefined);
-          } else if (message?.type === "FRIEND_REQUEST_DECLINED") {
-            notificationService.removeFriendRequest(message.recipientId);
-            updateFriendshipStatusCache(message.recipientId, FriendshipStatus.DECLINED, undefined);
-          } else if (message?.type === "FRIEND_BLOCKED") {
-            notificationService.removeFriendRequest(message.senderId);
-            const chatManager = getChatManager();
-            chatManager.closeChat(username);
-            notificationService.removeFriendRequest(username);
-            notificationService.updateMessageNotifications(username, 0, "set");
-            updateFriendshipStatusCache(message.recipientId, FriendshipStatus.BLOCKED, username);
-          } else if (message?.type === "FRIEND_UNBLOCKED") {
-            updateFriendshipStatusCache(message.recipientId, FriendshipStatus.DECLINED, undefined);
-          }
-
-          // Trigger UI updates for the current user
-          notificationService.triggerUpdate();
-          return; // Exit early since this is for the current user
-        }
-        if (message?.type === "FRIEND_REQUEST") {
-          const avatar = await getUserAvatar(message.senderId);
-          updateFriendshipStatusCache(message.senderId, FriendshipStatus.PENDING, undefined);
-          notificationService.addFriendRequest({ requesterUsername: message.senderId, avatar, id: message.friendshipId });
-        } else if (message?.type === "FRIEND_REQUEST_ACCEPTED") {
-          updateFriendshipStatusCache(message.senderId, FriendshipStatus.ACCEPTED, undefined);
-          notificationService.triggerUpdate();
-        } else if (message?.type === "FRIEND_REQUEST_DECLINED") {
-          updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);
-          notificationService.triggerUpdate();
-        } else if (message?.type === "FRIEND_BLOCKED") {
-          updateFriendshipStatusCache(message.senderId, FriendshipStatus.BLOCKED, message.senderId);
-          chatManager.closeChat(message.senderId);
-          chatManager.chatService.markConversationAsRead(message.senderId);
-          notificationService.removeFriendRequest(message.senderId);
-          notificationService.triggerUpdate();
-        } else if (message?.type === "FRIEND_UNBLOCKED") {
-          updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);
-          notificationService.triggerUpdate();
-        }
+        await handleNotificationMessage(message);
       }
     }
   } else {
@@ -132,30 +69,6 @@ window.addEventListener("popstate", () => {
   router(contentElement);
 });
 
-window.addEventListener("storage", async (event) => {
-  if (event.key === 'friendshipUpdate' && event.newValue) {
-    const message = JSON.parse(event.newValue);
-    console.log("Message from friendshipUpdate: ", message);
-    if (message?.type === "FRIEND_REQUEST") {
-      const avatar = await getUserAvatar(message.senderId);
-      updateFriendshipStatusCache(message.senderId, FriendshipStatus.PENDING, undefined);
-      notificationService.addFriendRequest({ requesterUsername: message.senderId, avatar, id: message.friendshipId });
-    } else if (message?.type === "FRIEND_REQUEST_ACCEPTED") {
-      updateFriendshipStatusCache(message.senderId, FriendshipStatus.ACCEPTED, undefined);
-    } else if (message?.type === "FRIEND_REQUEST_DECLINED") {
-      updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);
-    } else if (message?.type === "FRIEND_BLOCKED") {
-      updateFriendshipStatusCache(message.senderId, FriendshipStatus.BLOCKED, message.senderId);
-      chatManager.closeChat(message.senderId);
-      chatManager.chatService.markConversationAsRead(message.senderId);
-      notificationService.removeFriendRequest(message.senderId);
-    } else if (message?.type === "FRIEND_UNBLOCKED") {
-      updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);
-    }
-    notificationService.triggerUpdate();
-  }
-  localStorage.removeItem("friendshipUpdate");
-});
 
 // listen for dom to be fully loaded
 document.addEventListener("DOMContentLoaded", async () => {

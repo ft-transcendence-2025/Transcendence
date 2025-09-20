@@ -1,5 +1,5 @@
 // src/views/notifications.ts
-import { FriendshipStatus, getPendingRequests, respondRequest } from "../services/friendship.service.js";
+import { FriendshipStatus, respondRequest } from "../services/friendship.service.js";
 import { navigateTo } from "../router/router.js";
 import { notificationService } from "../services/notifications.service.js";
 
