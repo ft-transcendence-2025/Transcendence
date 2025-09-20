@@ -4,8 +4,6 @@ import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
 import { GameRoom } from "./GameRoom.js";
 import { clearInterval } from "node:timers";
 
-// Time To Wait If Player Disconnect
-
 export class RemoteGameRoom extends GameRoom {
   public player1: WebSocket | null = null;
   public player2: WebSocket | null = null;
