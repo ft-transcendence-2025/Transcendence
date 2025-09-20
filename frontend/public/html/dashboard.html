@@ -44,7 +44,7 @@
           <p
             class="text-md text-left absolute right-6 bottom-4 left-6 text-white opacity-0 drop-shadow-md transition-opacity duration-300 group-hover:opacity-100"
           >
-            Play Same Keyboard
+            Play on the same keyboard
           </p>
         </div>
       </button>
@@ -149,18 +149,31 @@
           <div class="flex w-full flex-col items-center space-y-4">
             <!-- Avatar Display (Current User) -->
             <div class="flex flex-col items-center">
+              <div class="flex items-center space-x-3">
+                <button
+                  type="button"
+                  class="avatar-nav-btn avatar-prev text-2xl hover:text-(--color-primary) transition-colors"
+                >
+                  &lt;
+                </button>
               <img
                 id="2p-avatar-player-1"
                 alt="Player 1 Avatar"
-                class="h-16 w-16 rounded-full border-2 border-gray-400 object-cover"
+                class="h-16 w-16 rounded-full border-2 border-(--color-primary-dark) object-cover"
               />
+              <button
+                  type="button"
+                  class="avatar-nav-btn avatar-next text-2xl hover:text-(--color-primary)"
+                >
+                  &gt;
+                </button>
+              </div>
             </div>
             <input
               id="2p-name-player-1"
               type="text"
               placeholder="Player 1"
-              class="w-full rounded border border-(--color-primary-light) bg-gray-100 p-2 text-center text-sm text-gray-600 cursor-not-allowed focus:outline-none focus:ring-0"
-              readonly
+              class="w-full rounded border border-(--color-primary-light) bg-white p-2 text-center text-sm"
             />
           </div>
         </div>
@@ -174,8 +187,7 @@
               <div class="flex items-center space-x-3">
                 <button
                   type="button"
-                  id="2p-prev-avatar"
-                  class="text-2xl hover:text-(--color-primary) transition-colors"
+                  class="avatar-nav-btn avatar-prev text-2xl hover:text-(--color-primary) transition-colors"
                 >
                   &lt;
                 </button>
@@ -186,8 +198,7 @@
                 />
                 <button
                   type="button"
-                  id="2p-next-avatar"
-                  class="text-2xl hover:text-(--color-primary)"
+                  class="avatar-nav-btn avatar-next text-2xl hover:text-(--color-primary)"
                 >
                   &gt;
                 </button>
