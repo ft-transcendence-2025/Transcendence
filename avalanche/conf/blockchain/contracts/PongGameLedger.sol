@@ -30,6 +30,8 @@ contract PongGameLedger is Ownable{
     /// @notice Mapping to store match count for each tournament
     mapping(uint256 tournamentId => uint256 matchCount) public matchCountPerTournament;
 
+   
+
     /// @notice Event emitted when a new match is created
     event MatchCreated(
         uint256 indexed tournamentId,
@@ -50,6 +52,9 @@ contract PongGameLedger is Ownable{
         uint256 matchId;
     }
 
+    /// @notice Save all matches inside one single array.
+    MatchList[] public allMatches;
+
     /// @notice Mapping association playerId => array of match
     mapping(string playerId => MatchList[] matchList) public matchesByPlayer;
 
@@ -63,6 +68,7 @@ contract PongGameLedger is Ownable{
     error InvalidTimeStamps();
     error MatchDoesNotExist(uint256 matchId);
     error TournamentDoesNotHaveMatches(uint256 tournamentId);
+    error NoMatchesWereSavedYet();
     error PlayerDoesNotHaveMatches(string playerId);
     error EmptyPlayerNotAllowed(string field);
     error FinalMatchAlreadyExists(uint256 tournamentId);
@@ -126,9 +132,24 @@ contract PongGameLedger is Ownable{
         matchesByPlayer[player1].push(newMatchData);
         matchesByPlayer[player2].push(newMatchData);
         matchCountPerTournament[tournamentId]++;
+        allMatches.push(newMatchData);
 
         emit MatchCreated(tournamentId, matchId, player1, player2, score1, score2, winner, startTime, endTime, finalMatch);
     }
+
+    /// @notice Returns all matches from the contract.
+    function getAllMatches() 
+        public view returns (Match [] memory) {
+            uint256 totalMatches = allMatches.length;
+            if (totalMatches == 0) revert NoMatchesWereSavedYet();
+
+            Match[] memory result = new Match[](totalMatches);
+            for (uint256 i = 0; i < totalMatches; i++){
+                result[i] = matches[allMatches[i].tournamentId][allMatches[i].matchId];
+        }
+        return result;
+    }
+
 
     /// @notice Returns the number of matches for a specific tournament
     function getMatchCountPerTournament(uint256 tournamentId) public view returns (uint256 matchCount) {

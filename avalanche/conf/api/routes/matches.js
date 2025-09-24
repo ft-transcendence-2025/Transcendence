@@ -5,6 +5,7 @@ async function matchRoutes(fastify, options) {
     fastify.post('/matches', newMatchSchema, async (req, res) => {
         const params = req.body;
         try {
+            console.log(req.body);
             const tx = await fastify.contract.getContract().newMatch(
                 BigInt(params.tournamentId),
                 params.player1,
@@ -17,7 +18,9 @@ async function matchRoutes(fastify, options) {
                 params.finalMatch
             );
             await tx.wait();
-            return { txHash: tx.hash, message: 'Match created' };
+            const result = { txHash: tx.hash, message: 'Match created' };
+            console.log(result);
+            return result;
         } catch (err) {
             fastify.log.error(`Error saving the match: ${err.message}`);
             if (err.reason && err.reason.includes('EmptyPlayerNotAllowed')){
@@ -32,6 +35,41 @@ async function matchRoutes(fastify, options) {
                 res.code(400).send({ error: `Invalid Input: The tournament ${tournamentId} already have a final match.` });
             } else {
                 res.code(500).send({ error: err.reason || err.message });
+            }
+        }
+    });
+
+    fastify.get('/matches', async (req, res) => {
+        try {
+            const matches = await fastify.contract.getContract().getAllMatches();
+            fastify.log.info(`Fetched ${matches.length} matches.`);
+
+            const matchesCount = matches.length;
+
+            const formattedMatches = matches.map(match => {
+                return {
+                    tournamentId: match.tournamentId.toString(),
+                    matchId: match.matchId.toString(),
+                    player1: match.player1.toString(),
+                    player2: match.player2.toString(),
+                    score1: match.score1.toString(),
+                    score2: match.score2.toString(),
+                    winner: match.winner.toString(),
+                    startTime: match.startTime.toString(),
+                    endTime: match.endTime.toString(),
+                    finalMatch: match.finalMatch,
+                };
+            });
+            return {
+                count: matchesCount,
+                matches: formattedMatches
+            }
+        }catch (err) {
+            fastify.log.error(`Error fetching matches: ${err.message}`);
+            if (err.reason && err.reason.includes('NoMatchesWereSavedYet')) {
+                res.code(404).send({ error: 'No matches found.' });
+            } else {
+                res.code(500).send({ error: 'Internal server error' });
             }
         }
     });
