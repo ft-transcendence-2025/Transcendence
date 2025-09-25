@@ -19,7 +19,9 @@ export class RemoteGame extends Game {
     this.joinGame(`wss://${window.location.host}/ws/game/${data.gameMode}/${data.id}/${userName}`);
     this.side = data.side;
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
-    this.leaveGame();
+    const button = document.querySelector("#leave-game-btn") as HTMLButtonElement;
+    if (button)
+      button.addEventListener("click", this.leaveGame)
   }
 
   public joinGame(url: string): void {
@@ -165,23 +167,6 @@ export class RemoteGame extends Game {
         const container = document.getElementById("content");
         navigateTo("/dashboard", container);
       }
-    }
-  }
-
-  private leaveGame(): void {
-    const button = document.querySelector("#leave-game-btn");
-    if (button) {
-      button.addEventListener("click", () => {
-        if (this.ws) {
-          this.ws.send(JSON.stringify({
-            type: "command",
-            key: "leave",
-          }));
-          this.ws.close();
-          const container = document.getElementById("content");
-          navigateTo("/dashboard", container);
-        }
-      });
     }
   }
 }

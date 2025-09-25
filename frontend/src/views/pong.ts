@@ -6,12 +6,11 @@ import {
   getCurrentUserAvatar,
   getCurrentUsername,
 } from "../utils/userUtils.js";
-import { TournomentState, MatchData } from "./tournamentTree.js";
-import {  FetchData } from "./game/utils.js";
+import { FetchData } from "./game/utils.js";
 import { request, getHeaders } from "../utils/api.js";
 
 
-interface GameData {
+export interface GameData {
   mode: string,
   player1: {
     username: string | null,
@@ -41,32 +40,53 @@ export async function renderPong(container: HTMLElement | null) {
   await updatePlayerInfo(gameMode);
 
   if (gameMode === "localtournament" || gameMode === "remotetournament") {
-    setUpTournoment();
+    enterTournamentGame(gameMode);
   }
-
-  enterGame(gameMode, null);
+  else {
+    enterGame(gameMode, null);
+  }
 }
 
-function setUpTournoment(): void {
-  const player1 = document.getElementById("player1-name") as HTMLCanvasElement;
-  const player2 = document.getElementById("player2-name") as HTMLCanvasElement;
+function enterTournamentGame(gameMode: string): void {
+  const player1 = document.querySelector("#player1-name");
+  const player2 = document.querySelector("#player2-name");
+  const player1Avatar = document.querySelector("#player1-avatar");
+  const player2Avatar = document.querySelector("#player2-avatar");
+  if (!player1 || !player2 || !player1Avatar || !player2Avatar) return ;
 
-  const localStorageTournamentState = localStorage.getItem("localTournamentState");
-  if (localStorageTournamentState) {
-    const tournamentState: TournomentState = JSON.parse(localStorageTournamentState);
-    if (tournamentState.match1.winner === null && tournamentState.match1.player1 && tournamentState.match1.player2) {
-      player1.innerHTML = tournamentState.match1.player1;
-      player2.innerHTML = tournamentState.match1.player2;
+  const localTournamentStateString = localStorage.getItem("LocalTournamentState");
+  const playerInfoString = localStorage.getItem("LocalTournamentPlayersInfo");
+  if (!localTournamentStateString || !playerInfoString) return ;
+
+  const localTournamentState = JSON.parse(localTournamentStateString);
+  const playerInfo = JSON.parse(playerInfoString);
+  if (!localTournamentState || !playerInfo) return ;
+
+  // Set Names depending on which match
+  if (!localTournamentState.match1.winner) {
+    player1.textContent = localTournamentState.match1.player1;
+    player2.textContent = localTournamentState.match1.player2;
+  }
+  else if (!localTournamentState.match2.winner) {
+    player1.textContent = localTournamentState.match2.player1;
+    player2.textContent = localTournamentState.match2.player2;
+  }
+  else {
+    player1.textContent = localTournamentState.match3.player1;
+    player2.textContent = localTournamentState.match3.player2;
+  }
+
+  // set Avatars
+  for (const i in playerInfo) {
+    if (playerInfo[i].userDisplayName === player1.textContent) {
+      player1Avatar.setAttribute("src", `/assets/avatars/${playerInfo[i].avatar}`)
     }
-    else if (tournamentState.match2.winner === null && tournamentState.match2.player1 && tournamentState.match2.player2) { 
-      player1.innerHTML = tournamentState.match2.player1;
-      player2.innerHTML = tournamentState.match2.player2;
-    }
-    else if (tournamentState.match3.winner === null && tournamentState.match3.player1 && tournamentState.match3.player2) { 
-      player1.innerHTML = tournamentState.match3.player1;
-      player2.innerHTML = tournamentState.match3.player2;
+    else if (playerInfo[i].userDisplayName === player2.textContent) {
+      player2Avatar.setAttribute("src", `/assets/avatars/${playerInfo[i].avatar}`)
     }
   }
+
+  const singlePlayerGame = new SinglePlayerGame(gameMode, localTournamentState.id);
 }
 
 async function enterGame(gameMode: string, gameData: FetchData | null) {
@@ -93,7 +113,7 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
       const response = await request(`${baseUrl}/api/getgame/singleplayer`, {
         credentials: "include"
       }) as FetchData;
-      const singlePlayerGame = new SinglePlayerGame(gameMode, response);
+      const singlePlayerGame = new SinglePlayerGame(gameMode, response.id);
     }
   } catch (error) {
     console.error("Failed to fetch game:", error);
