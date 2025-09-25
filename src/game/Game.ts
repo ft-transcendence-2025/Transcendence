@@ -11,8 +11,8 @@ export interface PayLoad {
 }
 
 export interface GameState {
-  player1Name: string | null,
-  player2Name: string | null,
+  player1Name?: string,
+  player2Name?: string,
   status: string,
   canvas: Canvas,
   paddleLeft: PaddleState,
@@ -39,8 +39,8 @@ export class Game {
 
   constructor() {
     this.gameState = {
-      player1Name: null,
-      player2Name: null,
+      player1Name: undefined,
+      player2Name: undefined,
       status: "waiting for players",
       canvas: this.canvas,
       paddleLeft: this.paddleLeft.state,

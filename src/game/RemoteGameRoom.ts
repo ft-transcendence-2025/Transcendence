@@ -84,10 +84,12 @@ export class RemoteGameRoom extends GameRoom {
         }
         point = this.game.ball.pointScored(this.game.canvas);
         if (point !== 0) {
-          if (point === 1)
+          if (point === 1) {
             this.game.gameState.score.player1++;
-            else 
+          }
+          else  {
             this.game.gameState.score.player2++;
+          }
           this.game.gameState.ball.isRunning = false;
           this.game.ball.reset(this.game.canvas);
           this.checkWinner();
@@ -103,7 +105,7 @@ export class RemoteGameRoom extends GameRoom {
     }, this.FPS60);
   }
 
-  public async waitingForPlayer() {
+  public waitingForPlayer() {
     if (!this.game.gameState || !this.player2Name || !this.player1Name)
       return ;
 
@@ -161,16 +163,9 @@ export class RemoteGameRoom extends GameRoom {
       throw new Error(`POST failed with status ${response.status}`);
     }
     const result = await response.json();
-    //console.log("Response data:", result);
-    console.log("")
-    console.log("")
-    console.log("")
     console.log("================================================================================================================================================")
     console.log(`POST Done with success, check the data on the blockchain: https://testnet.snowscan.xyz/tx/${result.txHash}`);
     console.log("================================================================================================================================================")
-    console.log("")
-    console.log("")
-    console.log("")
     
 
     if (this.player1) {

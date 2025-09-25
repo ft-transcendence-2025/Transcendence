@@ -7,10 +7,9 @@ export class SinglePlayerGameRoom extends GameRoom {
   public FPS60 = 1000/60;
   public client: WebSocket | null = null;
   private gameInterval: NodeJS.Timeout | null = null;
-  public timePlayerLeft: number = -1;
-  public waitingToClose: number = 0;
+  public timePlayerLeft: number = 0;
 
-  constructor(id: number) {
+  constructor(id: number | null) {
     super(id)
   }
 
@@ -56,10 +55,12 @@ export class SinglePlayerGameRoom extends GameRoom {
       }
       point = this.game.ball.pointScored(this.game.canvas);
       if (point !== 0) {
-        if (point === 1)
+        if (point === 1) {
           this.game.gameState.score.player1++;
-          else 
+        }
+        else {
           this.game.gameState.score.player2++;
+        }
         this.game.gameState.ball.isRunning = false;
         this.game.ball.reset(this.game.canvas);
         this.checkWinner();

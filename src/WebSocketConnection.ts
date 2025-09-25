@@ -2,7 +2,8 @@ import WebSocket, { WebSocketServer } from "ws"
 import { PayLoad } from "./game/Game.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
-import { fastify, singlePlayerGameRooms, remoteGameRooms, customGameRoom } from "./server.js";
+import { LocalTournament } from "./LocalTournament.js";
+import { localTournaments, fastify, singlePlayerGameRooms, remoteGameRooms, customGameRoom } from "./server.js";
 import { clearSinglePlayerGame, playerLeftGame } from "./gameUtils.js"
 
 export class WebSocketConnection {
@@ -23,7 +24,10 @@ export class WebSocketConnection {
       const mode: string = context.mode;
       const playerName: string = context.playerName;
 
-      if (mode === "singleplayer") {
+      if (mode === "localtournament") {
+        this.tournamentConnection(ws, gameId);
+      }
+      else if (mode === "singleplayer") {
         this.singlePlayerConnection(ws, gameId);
       }
       else if (mode === "remote") {
@@ -39,43 +43,67 @@ export class WebSocketConnection {
     });
   }
 
-  private customConnection(ws: WebSocket, gameId: number, playerName: string) {
-    let gameRoom: RemoteGameRoom | undefined = customGameRoom.get(gameId);
+  private tournamentConnection(ws: WebSocket, tournamentId: number) {
+    const tournament: LocalTournament | undefined = localTournaments.get(tournamentId);
+    if (tournament === undefined) {
+      ws.close();
+      return ;
+    }
+    else {
+      tournament.gameRoom.addClient(ws);
+      tournament.gameRoom.startGameLoop();
+    }
+
+    ws.on("message", (data) => {
+      const msg: PayLoad = JSON.parse(data.toString()); 
+      if (tournament.gameRoom !== undefined) {
+        if (msg.type === "command" && msg.key === "leave") {
+          clearSinglePlayerGame(tournament.gameRoom);
+        }
+        else {
+          tournament.handleEvents(msg);
+        }
+      }
+    });
+
+    ws.on("error", (e) => {
+      console.log(e);
+      if (tournament.gameRoom !== undefined) {
+        if (tournament.gameRoom.id)
+          singlePlayerGameRooms.delete(tournament.gameRoom.id);
+        tournament.gameRoom.cleanup(); 
+      }
+    });
+  }
+
+  private singlePlayerConnection(ws: WebSocket, gameId: number) {
+    const gameRoom: SinglePlayerGameRoom | undefined = singlePlayerGameRooms.get(gameId);
     if (gameRoom === undefined) {
       ws.close();
       return;
     }
     else {
-      if (gameRoom.addPlayer(ws, playerName) == -1) {
-        return ;
-      };
+      gameRoom.addClient(ws);
       gameRoom.startGameLoop();
     }
 
     ws.on("message", (data) => {
-      const msg: PayLoad = JSON.parse(data.toString());
+      const msg: PayLoad = JSON.parse(data.toString()); 
       if (gameRoom !== undefined) {
-        gameRoom.handleEvents(msg);
+        if (msg.type === "command" && msg.key === "leave") {
+          clearSinglePlayerGame(gameRoom);
+        }
+        else {
+          gameRoom.handleEvents(msg);
+        }
       }
-    });
-
-    ws.on("close", () => {
-      // if (gameRoom !== undefined) {
-      //   if (gameRoom.player1 === ws){
-      //     gameRoom.player1.close();
-      //     // gameRoom.player1 = null;
-      //   }
-      //   if (gameRoom.player2 === ws){
-      //     gameRoom.player2.close();
-      //     // gameRoom.player2 = null;
-      //   }
-      // }
     });
 
     ws.on("error", (e) => {
       console.log(e);
       if (gameRoom !== undefined) {
-        remoteGameRooms.delete(gameRoom.id);
+        if (gameRoom.id)
+          singlePlayerGameRooms.delete(gameRoom.id);
         gameRoom.cleanup(); 
       }
     });
@@ -134,43 +162,56 @@ export class WebSocketConnection {
     ws.on("error", (e) => {
       console.log(e);
       if (gameRoom !== undefined) {
-        remoteGameRooms.delete(gameRoom.id);
+        if (gameRoom.id)
+          remoteGameRooms.delete(gameRoom.id);
         gameRoom.cleanup(); 
       }
     });
   }
 
-  private singlePlayerConnection(ws: WebSocket, gameId: number) {
-    let gameRoom: SinglePlayerGameRoom | undefined = singlePlayerGameRooms.get(gameId);
+  private customConnection(ws: WebSocket, gameId: number, playerName: string) {
+    const gameRoom: RemoteGameRoom | undefined = customGameRoom.get(gameId);
     if (gameRoom === undefined) {
       ws.close();
       return;
     }
     else {
-      gameRoom.addClient(ws);
+      if (gameRoom.addPlayer(ws, playerName) === -1) {
+        return ;
+      };
       gameRoom.startGameLoop();
     }
 
     ws.on("message", (data) => {
-      const msg: PayLoad = JSON.parse(data.toString()); 
+      const msg: PayLoad = JSON.parse(data.toString());
       if (gameRoom !== undefined) {
-        if (msg.type === "command" && msg.key === "leave") {
-          clearSinglePlayerGame(gameRoom);
-        }
-        else {
-          gameRoom.handleEvents(msg);
-        }
+        gameRoom.handleEvents(msg);
       }
+    });
+
+    ws.on("close", () => {
+      // if (gameRoom !== undefined) {
+      //   if (gameRoom.player1 === ws){
+      //     gameRoom.player1.close();
+      //     // gameRoom.player1 = null;
+      //   }
+      //   if (gameRoom.player2 === ws){
+      //     gameRoom.player2.close();
+      //     // gameRoom.player2 = null;
+      //   }
+      // }
     });
 
     ws.on("error", (e) => {
       console.log(e);
       if (gameRoom !== undefined) {
-        singlePlayerGameRooms.delete(gameRoom.id);
+        if (gameRoom.id)
+          remoteGameRooms.delete(gameRoom.id);
         gameRoom.cleanup(); 
       }
     });
   }
+
 
   public upgrade(): void {
     this.server.on("upgrade", (request: any, socket: any, head: any) => {
@@ -179,7 +220,16 @@ export class WebSocketConnection {
       let mode: string;
       let playerName: string | null = null;
 
-      if (pathname.startsWith("/game/singleplayer/")) {
+      if (pathname.startsWith("/game/localtournament/")) {
+        gameId = parseInt(pathname.split('/')[3]);
+        mode = "localtournament";
+
+        if (isNaN(gameId)) {
+          socket.destroy();
+          return;
+        }
+      }
+      else if (pathname.startsWith("/game/singleplayer/")) {
         gameId = parseInt(pathname.split('/')[3]);
         mode = "singleplayer";
 

@@ -6,18 +6,17 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from "fs";
 
-import { remoteGamesCleanup, singlePlayerRoomCleanup, setuptournamentCleanup } from "./cleanup.js";
+import { localTournamentCleanup, remoteGamesCleanup, singlePlayerRoomCleanup } from "./cleanup.js";
 import { tournament, getgame } from "./routes.js";
 import { WebSocketConnection } from "./WebSocketConnection.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
-import { Tournament } from "./tournament.js";
+import { LocalTournament } from "./LocalTournament.js";
 
-export const tournaments = new Map<number, Tournament>();
+export const localTournaments = new Map<number, LocalTournament>();
 export const singlePlayerGameRooms = new Map<number, SinglePlayerGameRoom>();
 export const remoteGameRooms = new Map<number, RemoteGameRoom>();
 export const customGameRoom = new Map<number, RemoteGameRoom>();
-export const singlePlayerLastActivity = new Map<number, number>();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -40,6 +39,6 @@ fastify.listen({ port: 4000, host: "0.0.0.0" }, (err, address) => {
 })
 
 new WebSocketConnection(fastify.server);
-setuptournamentCleanup();
 singlePlayerRoomCleanup();
 remoteGamesCleanup();
+localTournamentCleanup();

@@ -1,16 +1,16 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { Game, GameState} from "./game/Game.js";
-import { tournaments, remoteGameRooms, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
-import { Tournament, Players, Winner, TournamentId } from "./tournament.js";
-import { createCustomGame, createSinglePlayerGame, createRemoteGame, reenterGameRoom, joinGameRoom} from "./gameUtils.js";
+import { localTournaments, remoteGameRooms, singlePlayerGameRooms } from "./server.js";
+import { LocalTournament, Players, TournamentState } from "./LocalTournament.js";
+import { createLocalTournament, createCustomGame, createSinglePlayerGame, createRemoteGame, reenterGameRoom, joinGameRoom} from "./gameUtils.js";
 
 let singlePlayerGameId: number = 0;
 let remoteGameId: number = 0;
-let tournamentId: number = 0;
+let localTournamentId: number = 0;
 let customId: number = 0;
 
 export async function tournament(fastify: FastifyInstance) {
-  fastify.post("/create", {
+  fastify.post("/local", {
     schema: {
       body: {
         type: "object",
@@ -24,59 +24,26 @@ export async function tournament(fastify: FastifyInstance) {
       }
     }
   }, (req: FastifyRequest, reply: FastifyReply) => {
-      const data = req.body as Players;
-      const tournament = new Tournament(data.player1, data.player2, data.player3, data.player4, tournamentId);
-      tournaments.set(tournamentId++, tournament);
-      reply.send(tournament.state);
-    });
+      const cookies = req.cookies;
 
-  fastify.post("/matchwinner", { 
-    schema: {
-      body: {
-        type: "object",
-        required: ["id", "match", "winner"],
-        properties: {
-          id: { type: "number" },
-          match: { type: "number" },
-          winner: { type: "string" },
+      // Create Tournament if cookie.GameId is not found
+      if (cookies.localTournamentId === undefined) {
+        createLocalTournament(req, reply, localTournamentId++);
+      }
+      else { // Joing tournament if cookie.localTournamentState is found
+        const tournamentId = parseInt(cookies.localTournamentId);
+        if (localTournaments.has(tournamentId)) {
+          const tournament = localTournaments.get(tournamentId);
+          tournament?.matchWinner();
+          reply.send(tournament?.state);
+        }
+        else { // Has cookie.localTournamentState cookie but game does not exist
+          reply.clearCookie("localTournamentId", {
+            path: "/"
+          });
+          createLocalTournament(req, reply, localTournamentId++);
         }
       }
-    }
-  }, (req: FastifyRequest, reply: FastifyReply) => {
-      const data = req.body as Winner;
-      const tournament = tournaments.get(data.id);
-      if (!tournament) {
-        return "tournament id don't exist";
-      }
-      if (data.match === 1) {
-        reply.send(tournament.match1Winner(data.winner));
-      }
-      else if (data.match === 2) {
-        reply.send(tournament.match2Winner(data.winner));
-      }
-      else if (data.match === 3) {
-        reply.send(tournament.match3Winner(data.winner));
-      }
-      else {
-        return "tournament has only match 1, 2 or 3";
-      }
-    });
-
-  fastify.get("/get/:id",{
-    schema: {
-      querystring: {
-        type: "object",
-        properties: {
-          id: { type: "number" },
-        }
-      }
-    }
-  }, (req: FastifyRequest, reply: FastifyReply) => {
-      const data = req.params as TournamentId;
-      const tournament = tournaments.get(Number(data.id));
-      if (!tournament)
-        return "tournament Not Found!";
-      reply.send(tournament.state);
     });
 }
 
@@ -91,7 +58,6 @@ export async function getgame(fastify: FastifyInstance) {
     else { // Joing game if cookie.GameId is found
       const cookieGameId: number = parseInt(cookies.singlePlayerGameId);
       if (singlePlayerGameRooms.has(cookieGameId)) {
-        singlePlayerLastActivity.set(cookieGameId, Date.now());
         reply.send({
           state: "Joined",
           gameMode: "singleplayer",

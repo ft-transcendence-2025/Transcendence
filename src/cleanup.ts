@@ -1,4 +1,4 @@
-import { remoteGameRooms, tournaments, customGameRoom, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
+import { remoteGameRooms, localTournaments, customGameRoom, singlePlayerGameRooms } from "./server.js";
 
 export function remoteGamesCleanup(): void {
   // Close game when there is a winner
@@ -31,15 +31,15 @@ export function singlePlayerRoomCleanup(): void {
   }, 500);
 }
 
-export function setuptournamentCleanup(): void {
-  const timeOut: number = 1000 * 60 * 30; // 30 minutes
-
+export function localTournamentCleanup(): void {
   setInterval(() => {
-    const now = Date.now();
-    for  (const [id, tournament] of tournaments) {
-      if (now - tournament.startTime > timeOut) {
-        tournaments.delete(id);
+    for (const [id, tournament] of localTournaments.entries()) {
+      if (tournament.state.match3.winner) {
+        if (tournament.gameRoom.client) {
+          tournament.gameRoom.cleanup();
+        }
+        localTournaments.delete(id)
       }
     }
-  }, timeOut);
+  }, 500);
 }

@@ -2,14 +2,17 @@ import WebSocket, { WebSocketServer } from "ws"
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
 import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
-import { tournaments, customGameRoom, remoteGameRooms, singlePlayerGameRooms, singlePlayerLastActivity } from "./server.js";
+import { localTournaments, customGameRoom, remoteGameRooms, singlePlayerGameRooms } from "./server.js";
+import { LocalTournament, Players } from "./LocalTournament.js";
 
 
 export function clearSinglePlayerGame(gameRoom: SinglePlayerGameRoom) {
   if (gameRoom.client) {
-    gameRoom.client.close();
+    gameRoom.cleanup();
   }
-  singlePlayerGameRooms.delete(gameRoom.id);
+  if (gameRoom.id !== null) {
+    singlePlayerGameRooms.delete(gameRoom.id);
+  }
 }
 
 export function playerLeftGame(ws: WebSocket, gameRoom: RemoteGameRoom): void {
@@ -101,7 +104,6 @@ export function createCustomGame(reply: FastifyReply, gameId: number, player: st
 
 export function createSinglePlayerGame(reply: FastifyReply, gameId: number) {
   singlePlayerGameRooms.set(gameId, new SinglePlayerGameRoom(gameId));
-  singlePlayerLastActivity.set(gameId, Date.now());
 
   reply.setCookie("singlePlayerGameId", gameId.toString(), {
     path: "/",
@@ -115,4 +117,20 @@ export function createSinglePlayerGame(reply: FastifyReply, gameId: number) {
     gameMode: "singleplayer",
     id: gameId,
   });
+}
+
+export function createLocalTournament(req: FastifyRequest ,reply: FastifyReply, tournamentId: number) {
+  const data = req.body as Players;
+  const tournament = new LocalTournament(data.player1, data.player2, data.player3, data.player4, tournamentId);
+
+  localTournaments.set(tournamentId, tournament);
+
+  reply.setCookie("localTournamentId", JSON.stringify(tournament.state.id), {
+    path: "/",
+    sameSite: "none",
+    secure: true,
+    httpOnly: true,
+  });
+
+  reply.send(tournament.state);
 }

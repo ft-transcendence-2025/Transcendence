@@ -4,9 +4,9 @@ import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
 export class GameRoom {
   public FPS60 = 1000/60;
   public game: Game;
-  public id: number;
+  public id: number | null;
 
-  constructor(gameId: number) {
+  constructor(gameId: number | null) {
     this.id = gameId;
     this.game = new Game();
   }
@@ -62,6 +62,7 @@ export class GameRoom {
         this.game.gameState.score.player1 = 0;
         this.game.gameState.score.player2 = 0;
         this.game.gameState.score.winner = null;
+        this.game.gameState.isPaused = false;
       }
       else {
         this.game.gameState.ball.isRunning = true;
