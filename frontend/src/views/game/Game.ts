@@ -88,6 +88,10 @@ export class Game {
   protected gameOver(player: 1 | 2): void {
     let winnerName: string;
 
+    const gamePausedOverlay = document.getElementById("game-paused") as HTMLCanvasElement;
+    if (gamePausedOverlay)
+      gamePausedOverlay.classList.add("hidden");
+
     const gameOverText = document.getElementById("game-over") as HTMLDivElement;
     if (gameOverText) {
       const gameOverIsHidden = gameOverText.classList.contains("hidden");
@@ -120,30 +124,40 @@ export class Game {
   }
 
 
-  protected sendPayLoad(event: KeyboardEvent): void {
+  protected sendPayLoad(event: KeyboardEvent) {
     if (["ArrowDown", "ArrowUp"].includes(event.key)) {
       event.preventDefault();
     }
-    if (["p", "P", " "].includes(event.key)) {
-      event.preventDefault();
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        const payLoad = {
-          type: "keydown",
-          key: event.key,
-        };
-        this.ws.send(JSON.stringify(payLoad));
-        this.ballMoving = true;
-      }
-      if (event.key === " " && this.gameState && this.gameState.score && this.gameState.score.winner) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      const payLoad = {
+        type: "keydown",
+        key: event.key,
+      };
+      this.ws.send(JSON.stringify(payLoad));
+      this.ballMoving = true;
+    }
+  }
 
-        const mode = window.location.search.split("=")[1];
-        if (mode !== "remote") {
-          localStorage.removeItem("GameMode");
-        }
+  protected leaveGame() {
+    if (!this.ws) return ;
 
-        const container = document.getElementById("content");
-        navigateTo("/dashboard", container);
-      }
+    this.ws.send(JSON.stringify({
+      type: "command",
+      key: "leave",
+    }));
+    this.ws.close();
+    this.ws = null;
+    const mode = window.location.search.split("=")[1];
+    if (mode !== "remote") {
+      localStorage.removeItem("GameMode");
+    }
+    const container = document.getElementById("content");
+
+    if (mode === "localtournament") {
+      navigateTo("/tournament-tree", container);
+    }
+    else {
+      navigateTo("/dashboard", container);
     }
   }
 }

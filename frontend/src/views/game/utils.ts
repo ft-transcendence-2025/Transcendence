@@ -1,20 +1,28 @@
 export interface GameState {
-  player1Name: string | null,
-  player2Name: string | null,
-  status: string,
-  role: string | null,
-  canvas: Canvas | null,
-  paddleLeft: PaddleState | null,
-  paddleRight: PaddleState | null,
-  ball: BallState | null,
-  score: {
+  player1Name?: string,
+  player2Name?: string,
+  status?: string,
+  role?: string | null,
+  canvas?: Canvas,
+  paddleLeft?: PaddleState,
+  paddleRight?: PaddleState,
+  ball?: BallState,
+  score?: {
     player1: number,
     player2: number,
-    winner: 1 | 2 | null,
-  } | null,
+    winner?: 1 | 2,
+  },
   isPaused: boolean,
   timeToWait: number,
 };
+
+export interface FetchData {
+  state: string,
+  side: string,
+  gameMode: string,
+  name: string,
+  id: number,
+}
 
 export interface Canvas {
   width: number,
@@ -72,12 +80,4 @@ export function getRandomAngle(): number {
   if (rng < 0.5)
     return degreesToRadians(randomDeg) + Math.PI;
   return degreesToRadians(randomDeg);
-}
-
-export interface FetchData {
-  state: string,
-  side: string,
-  gameMode: string,
-  name: string,
-  id: number,
 }
