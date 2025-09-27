@@ -18,7 +18,6 @@ export async function renderNavbar(container: HTMLElement | null) {
   const profileIcon = document.getElementById("profile");
   const loginLink = document.getElementById("login-link");
   const dashboardLink = document.getElementById("dashboard-link");
-  const registerLink = document.getElementById("register-link");
   const logoutLink = document.getElementById("logout-link");
   const userMenu = document.getElementById("user-menu");
 
@@ -43,7 +42,6 @@ export async function renderNavbar(container: HTMLElement | null) {
   // Show or hide links based on authentication status
   if (token) {
     loginLink?.classList.add("hidden");
-    registerLink?.classList.add("hidden");
     logoutLink?.classList.remove("hidden");
     dashboardLink?.classList.remove("hidden");
     userMenu?.classList.remove("hidden");
@@ -67,7 +65,6 @@ export async function renderNavbar(container: HTMLElement | null) {
     }
   } else {
     loginLink?.classList.remove("hidden");
-    registerLink?.classList.remove("hidden");
     logoutLink?.classList.add("hidden");
     dashboardLink?.classList.add("hidden");
     userMenu?.classList.add("hidden");
