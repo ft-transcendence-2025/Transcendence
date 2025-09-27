@@ -1,6 +1,6 @@
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername } from "../utils/userUtils.js";
-import { getUserByUsername } from "../services/userService.js";
+import { getCurrentUsername, getCurrentUser } from "../utils/userUtils.js";
+import { getUserByUsername, updateUser } from "../services/userService.js";
 import { generate2FA, enable2FA, disable2FA } from "../services/authService.js";
 import {
   getProfileByUsername,
@@ -79,7 +79,7 @@ function clearFormFields() {
   }
 }
 
-function showUpdateForm() {
+async function showUpdateForm() {
   const updateForm = document.getElementById("fill-profile-container");
   const profileView = document.getElementById("profile-view");
   document.getElementById("fill-profile-title")!.textContent =
@@ -88,7 +88,7 @@ function showUpdateForm() {
 
   // Use stored profile data to populate form fields
   if (currentProfile) {
-    populateFormFields(currentProfile);
+    await populateFormFields(currentProfile);
   }
 
   // Show 2FA toggle for existing profiles
@@ -122,7 +122,7 @@ function showProfileView() {
 
 function setup2FAToggle() {
   const checkbox = document.getElementById(
-    "twoFactorEnabled",
+    "update-two-factor-enabled",
   ) as HTMLInputElement;
   const toggleContainer = checkbox?.nextElementSibling as HTMLElement;
 
@@ -150,16 +150,18 @@ async function populateProfileView(profile: any) {
     };
   }
 
-  // Get user data for 2FA status
+  // Get user data for 2FA status and email from backend
   let twoFAStatus = "Disabled";
+  let currentEmail = "Not set";
   try {
     const userData = await getUserByUsername(profile.userUsername);
     twoFAStatus = userData.twoFactorEnabled ? "Enabled" : "Disabled";
+    currentEmail = userData.email || "Not set";
   } catch (error) {
     console.error("Error fetching user data:", error);
   }
 
-  // Populate profile display fields (including 2FA status)
+  // Populate profile display fields (including 2FA status and current email)
   const fields = [
     { id: "display-username", value: profile.userUsername },
     { id: "display-nickname", value: profile.nickName || "Not set" },
@@ -167,7 +169,8 @@ async function populateProfileView(profile: any) {
     { id: "display-lastname", value: profile.lastName || "Not set" },
     { id: "display-bio", value: profile.bio || "No bio available" },
     { id: "display-gender", value: profile.gender || "Not set" },
-    { id: "display-2fa-status", value: twoFAStatus || "Disabled" },
+    { id: "display-email", value: currentEmail },
+    { id: "display-2fa-status", value: twoFAStatus },
   ];
 
   fields.forEach((field) => {
@@ -176,14 +179,26 @@ async function populateProfileView(profile: any) {
   });
 }
 
-function populateFormFields(profile: any) {
+async function populateFormFields(profile: any) {
+  // Get current user data from backend to get the latest email
+  let currentEmail = "";
+  try {
+    const userData = await getUserByUsername(profile.userUsername);
+    currentEmail = userData.email || "";
+  } catch (error) {
+    console.error("Error fetching user email:", error);
+    // Fallback to JWT token email if backend fails
+    currentEmail = getCurrentUser()?.email || "";
+  }
+
   // Populate form input fields for editing
   const formFields = [
-    { name: "nickName", value: profile.nickName || "" },
-    { name: "firstName", value: profile.firstName || "" },
-    { name: "lastName", value: profile.lastName || "" },
-    { name: "bio", value: profile.bio || "" },
-    { name: "gender", value: profile.gender || "" },
+    { name: "update-nick-name", value: profile.nickName || "" },
+    { name: "update-email", value: currentEmail },
+    { name: "update-first-name", value: profile.firstName || "" },
+    { name: "update-last-name", value: profile.lastName || "" },
+    { name: "update-bio", value: profile.bio || "" },
+    { name: "update-gender", value: profile.gender || "" },
   ];
 
   formFields.forEach((field) => {
@@ -206,7 +221,7 @@ async function populateUser2FAStatus() {
     if (username) {
       const userData = await getUserByUsername(username);
       const twoFactorCheckbox = document.getElementById(
-        "twoFactorEnabled",
+        "update-two-factor-enabled",
       ) as HTMLInputElement;
       if (twoFactorCheckbox) {
         twoFactorCheckbox.checked = userData.twoFactorEnabled || false;
@@ -238,8 +253,8 @@ function setupEventListeners(username: string) {
   // Edit profile button
   const editBtn = document.getElementById("edit-profile-btn");
   if (editBtn) {
-    editBtn.addEventListener("click", () => {
-      showUpdateForm();
+    editBtn.addEventListener("click", async () => {
+      await showUpdateForm();
     });
   }
 
@@ -259,12 +274,15 @@ async function handleCreateProfile(username: string) {
   const form = document.getElementById("fill-profile-form") as HTMLFormElement;
   const formData = new FormData(form);
 
+  // Extract email separately because it will go to a different endpoint
+  const email = (formData.get("update-email") as string) || "";
+  
   const profileData: CreateProfileRequest = {
-    nickName: (formData.get("nickName") as string) || undefined,
-    firstName: (formData.get("firstName") as string) || undefined,
-    lastName: (formData.get("lastName") as string) || undefined,
-    bio: (formData.get("bio") as string) || undefined,
-    gender: (formData.get("gender") as any) || undefined,
+    nickName: (formData.get("update-nick-name") as string) || undefined,
+    firstName: (formData.get("update-first-name") as string) || undefined,
+    lastName: (formData.get("update-last-name") as string) || undefined,
+    bio: (formData.get("update-bio") as string) || undefined,
+    gender: (formData.get("update-gender") as any) || undefined,
   };
 
   // Remove empty strings before sending
@@ -275,6 +293,12 @@ async function handleCreateProfile(username: string) {
   });
 
   try {
+    // Update email first (if provided and different from current)
+    const backendUserData = await getUserByUsername(username);
+    if (email && email.trim() !== "" && email !== backendUserData.email) {
+      await updateUser(username, { email: email.trim() });
+    }
+
     const profile = await createProfile(username, profileData);
     showSuccessMessage("Profile created successfully!");
 
@@ -300,12 +324,16 @@ async function handle2FASetup() {
 async function handleUpdateProfile(username: string) {
   const form = document.getElementById("fill-profile-form") as HTMLFormElement;
   const formData = new FormData(form);
+
+  // Extract email separately because it will go to a different endpoint
+  const email = (formData.get("update-email") as string) || "";
+
   const profileData: Partial<CreateProfileRequest> = {
-    nickName: (formData.get("nickName") as string) || undefined,
-    firstName: (formData.get("firstName") as string) || undefined,
-    lastName: (formData.get("lastName") as string) || undefined,
-    bio: (formData.get("bio") as string) || undefined,
-    gender: (formData.get("gender") as any) || undefined,
+    nickName: (formData.get("update-nick-name") as string) || undefined,
+    firstName: (formData.get("update-first-name") as string) || undefined,
+    lastName: (formData.get("update-last-name") as string) || undefined,
+    bio: (formData.get("update-bio") as string) || undefined,
+    gender: (formData.get("update-gender") as any) || undefined,
   };
 
   // Remove empty strings before sending
@@ -316,9 +344,16 @@ async function handleUpdateProfile(username: string) {
   });
 
   try {
-    // Handle 2FA changes first
+    // Handle email update first (if provided and different from current)
+    const backendUserData = await getUserByUsername(username);
+
+    if (email && email.trim() !== "" && email !== backendUserData.email) {
+      await updateUser(username, { email: email.trim() });
+    }
+
+    // Handle 2FA changes
     const twoFactorCheckbox = document.getElementById(
-      "twoFactorEnabled",
+      "update-two-factor-enabled",
     ) as HTMLInputElement;
     const currentUserData = await getUserByUsername(username);
     const new2FAStatus = twoFactorCheckbox?.checked || false;
@@ -346,9 +381,7 @@ async function handleUpdateProfile(username: string) {
     }
 
     const profile = await updateProfile(username, profileData);
-    if (!new2FAStatus || new2FAStatus === currentUserData.twoFactorEnabled) {
-      showSuccessMessage("Profile updated successfully!");
-    }
+    showSuccessMessage("Profile updated successfully!");
 
     // Fetch the updated profile
     const updatedProfile = await getProfileByUsername(username);

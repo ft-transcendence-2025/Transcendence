@@ -53,9 +53,9 @@ export class Game {
 
   protected renderPaddle(paddle: PaddleState): void {
     if (this.gameState) {
-      this.ctx.fillStyle = "#5FAD56";
+      this.ctx.fillStyle = "#43a17e";
       this.ctx.fillRect(paddle.position.x, paddle.position.y, paddle.attr.width, paddle.attr.height);
-      this.ctx.strokeStyle =  "#396733";
+      this.ctx.strokeStyle = "#21503f";
       this.ctx.lineWidth = 0;
       this.ctx.strokeRect(paddle.position.x, paddle.position.y, paddle.attr.width, paddle.attr.height);
     }
