@@ -38,10 +38,7 @@ export async function renderDashboard(container: HTMLElement | null) {
 
 function setupTournament() {
   const localTournamentBtn = document.getElementById("local-tournament");
-
-  if (!localTournamentBtn) {
-    return;
-  }
+  if (!localTournamentBtn) return;
 
   localTournamentBtn.addEventListener("click", () => {
     const localTournamentState = localStorage.getItem("LocalTournamentState");
@@ -56,7 +53,6 @@ function setupTournament() {
         return ;
       if (tournamentState.match3.winner) {
         localStorage.removeItem("LocalTournamentState")
-        console.log("local storaged reset")
         navigateTo("/tournament?type=local", container);
         return ;
       }

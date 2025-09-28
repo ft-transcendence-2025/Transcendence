@@ -1,7 +1,7 @@
 import { navigateTo } from "../router/router.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUserAvatar } from "../utils/userUtils.js";
-import { getTournamentState, TournamentState, fetchTournament, PlayerInfo } from "./tournamentSetup.js";
+import { getTournamentState, TournamentState, fetchLocalTournament, PlayerInfo } from "./tournamentSetup.js";
 
 export async function renderTournamentTree(container: HTMLElement | null) {
   if (!container) return;
@@ -20,7 +20,7 @@ export async function setupTournamentTree(container: HTMLElement) {
   const playersInfo = JSON.parse(localTournamentPlayersInfo);
   if (!playersInfo) return ;
 
-  await fetchTournament(playersInfo);
+  await fetchLocalTournament(playersInfo);
 
   const localTournamentState = getTournamentState();
   if (!localTournamentState) return 

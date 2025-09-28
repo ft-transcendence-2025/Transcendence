@@ -252,12 +252,12 @@ async function collectLocalTournamentData() {
       avatar: avatarData,
     });
   }
-  fetchTournament(players);
+  fetchLocalTournament(players);
 
   return true;
 }
 
-export async function fetchTournament(players: PlayerInfo[]) {
+export async function fetchLocalTournament(players: PlayerInfo[]) {
   try {
     const baseUrl = window.location.origin;
 
