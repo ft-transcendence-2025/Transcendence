@@ -48,7 +48,7 @@ export async function renderStats(container: HTMLElement | null) {
   const token = getAccessToken();
   const playerId = getPlayerIdQueryString();
   if (!playerId) {
-    console.log("Cannot fetch matches: No valid playerId from token.");
+    console.error("Cannot fetch matches: No valid playerId from token.");
     return; // Stop if no valid playerId
   }
   try {
@@ -280,6 +280,12 @@ export async function renderStats(container: HTMLElement | null) {
 
       if (resultSpan) {
         resultSpan.textContent = match.winner === playerId ? "W" : "L";
+        resultSpan.classList.remove("text-green-600", "text-red-600"); // Remove existing classes first
+        if (match.winner === playerId) {
+          resultSpan.classList.add("text-green-600");
+        } else {
+          resultSpan.classList.add("text-red-600");
+        }
       }
 
     } else if (row) {
@@ -290,7 +296,10 @@ export async function renderStats(container: HTMLElement | null) {
       if (dateSpan) dateSpan.textContent = "No match";
       if (opponentSpan) opponentSpan.textContent = "";
       if (scoreSpan) scoreSpan.textContent = "";
-      if (resultSpan) resultSpan.textContent = "";
+      if (resultSpan) {
+        resultSpan.textContent = "";
+        resultSpan.classList.remove("text-green-600", "text-red-600");
+      }
     }
   };
 
