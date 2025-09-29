@@ -6,15 +6,17 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync } from "fs";
 
-import { localTournamentCleanup, remoteGamesCleanup, singlePlayerRoomCleanup } from "./cleanup.js";
-import { tournament, getgame } from "./routes.js";
-import { WebSocketConnection } from "./WebSocketConnection.js";
-import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
+import { cleanup } from "./cleanup.js";
+import { tournament, getgame } from "./routes/routes.js";
+import { webSocketConnection } from "./sockets/websocketconnection.js";
+import { LocalGameRoom } from "./game/LocalGameRoom.js";
 import { RemoteGameRoom } from "./game/RemoteGameRoom.js";
-import { LocalTournament } from "./LocalTournament.js";
+import { LocalTournament } from "./tournament/LocalTournament.js";
+import { RemoteTournament } from "./tournament/RemoteTournament.js";
 
+export const remoteTournaments = new Map<number, RemoteTournament>;
 export const localTournaments = new Map<number, LocalTournament>();
-export const singlePlayerGameRooms = new Map<number, SinglePlayerGameRoom>();
+export const localGameRooms = new Map<number, LocalGameRoom>();
 export const remoteGameRooms = new Map<number, RemoteGameRoom>();
 export const customGameRoom = new Map<number, RemoteGameRoom>();
 
@@ -38,7 +40,5 @@ fastify.listen({ port: 4000, host: "0.0.0.0" }, (err, address) => {
   }
 })
 
-new WebSocketConnection(fastify.server);
-singlePlayerRoomCleanup();
-remoteGamesCleanup();
-localTournamentCleanup();
+webSocketConnection(fastify.server);
+cleanup();

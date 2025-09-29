@@ -1,6 +1,5 @@
 import WebSocket from "ws"
-import { TimeToWait, Game, PayLoad } from "./Game.js";
-import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
+import { TimeToWait } from "./Game.js";
 import { GameRoom } from "./GameRoom.js";
 import { clearInterval } from "node:timers";
 
@@ -39,6 +38,7 @@ export class RemoteGameRoom extends GameRoom {
       return -1;
     }
 
+    console.log(`${playerName} Added to gameRoom`)
     if (playerName === this.player1Name) {
       this.player1 = ws;
       this.game.gameState.player1Name = playerName;
@@ -61,7 +61,7 @@ export class RemoteGameRoom extends GameRoom {
 
   public startGameLoop(): void {
     if (this.gameInterval)
-      return;
+      return ;
     this.gameInterval = setInterval(() => {
 
       let point;

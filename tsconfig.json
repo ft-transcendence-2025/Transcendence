@@ -10,5 +10,5 @@
     "outDir": "./dist", // Output the compiled code to the dist folder
     "rootDir": "./src" // Root directory for TypeScript files
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "src/sockets"]
 }

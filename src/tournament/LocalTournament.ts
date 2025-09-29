@@ -1,29 +1,6 @@
-import { PayLoad } from "./game/Game.js";
-import { SinglePlayerGameRoom } from "./game/SinglePlayerGameRoom.js";
-
-export interface Players {
-  player1: string,
-  player2: string,
-  player3: string,
-  player4: string,
-}
-
-export interface TournamentState {
-  id: number,
-  match1: Match,
-  match2: Match,
-  match3: Match,
-  currentGameScore: {
-    player1: number,
-    player2: number,
-  }
-}
-
-interface Match {
-  player1: string | null,
-  player2: string | null,
-  winner: string | null,
-}
+import { PayLoad } from "../game/Game.js";
+import { LocalGameRoom } from "../game/LocalGameRoom.js";
+import { Players, TournamentState, Match } from "./Tournament.js";
 
 export class LocalTournament {
   public id;
@@ -31,10 +8,8 @@ export class LocalTournament {
   public player2: string;
   public player3: string;
   public player4: string;
-  public startTime: number = Date.now();
-  private gameWatcherInterval: NodeJS.Timeout | null = null;
 
-  public gameRoom: SinglePlayerGameRoom = new SinglePlayerGameRoom(null);
+  public gameRoom: LocalGameRoom = new LocalGameRoom(null);
 
   public state: TournamentState;
 

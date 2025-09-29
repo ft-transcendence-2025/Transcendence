@@ -111,6 +111,7 @@ export class Ball {
 
       // Adjust ball position to avoid sticking
       if (paddle.side === PaddleSide.Left) {
+
         this.state.x = paddle.state.position.x + paddle.width + this.radius;
         this.state.angle = clamped * maxBounceAngle;
       }

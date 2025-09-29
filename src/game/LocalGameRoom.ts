@@ -1,9 +1,7 @@
 import WebSocket from "ws";
-import { Game, PayLoad,  } from "./Game.js";
-import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
 import { GameRoom } from "./GameRoom.js";
 
-export class SinglePlayerGameRoom extends GameRoom {
+export class LocalGameRoom extends GameRoom {
   public FPS60 = 1000/60;
   public client: WebSocket | null = null;
   private gameInterval: NodeJS.Timeout | null = null;

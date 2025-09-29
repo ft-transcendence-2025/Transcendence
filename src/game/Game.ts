@@ -1,5 +1,4 @@
-import WebSocket from "ws"
-import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
+import { Canvas } from "./utils.js";
 import { Paddle, PaddleSide, PaddleState } from "./Paddle.js";
 import { Ball, BallState } from "./Ball.js";
 

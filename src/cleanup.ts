@@ -1,6 +1,14 @@
-import { remoteGameRooms, localTournaments, customGameRoom, singlePlayerGameRooms } from "./server.js";
+import { 
+  remoteGameRooms, localTournaments, localGameRooms 
+} from "./server.js";
 
-export function remoteGamesCleanup(): void {
+export function cleanup() {
+  localRoomCleanup();
+  remoteGamesCleanup();
+  localTournamentCleanup();
+}
+
+function remoteGamesCleanup(): void {
   // Close game when there is a winner
   setInterval(() => {
     for (const [id, gameRoom] of remoteGameRooms.entries()) {
@@ -17,21 +25,21 @@ export function remoteGamesCleanup(): void {
   }, 500);
 }
 
-export function singlePlayerRoomCleanup(): void {
+function localRoomCleanup(): void {
   // Close game when there is a winner
   setInterval(() => {
-    for (const [id, gameRoom] of singlePlayerGameRooms.entries()) {
+    for (const [id, gameRoom] of localGameRooms.entries()) {
       if (gameRoom.game.gameState.score.winner) {
         if (gameRoom.client) {
           gameRoom.client.close()
         }
-        singlePlayerGameRooms.delete(id)
+        localGameRooms.delete(id)
       }
     }
   }, 500);
 }
 
-export function localTournamentCleanup(): void {
+function localTournamentCleanup(): void {
   setInterval(() => {
     for (const [id, tournament] of localTournaments.entries()) {
       if (tournament.state.match3.winner) {

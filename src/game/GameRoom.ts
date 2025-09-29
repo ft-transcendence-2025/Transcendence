@@ -1,5 +1,5 @@
 import { Game, PayLoad,  } from "./Game.js";
-import { Canvas, getRandomAngle, degreesToRadians } from "./utils.js";
+import { getRandomAngle } from "./utils.js";
 
 export class GameRoom {
   public FPS60 = 1000/60;
