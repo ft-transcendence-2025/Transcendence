@@ -60,10 +60,10 @@ export function upgradeLocalTournament(req: any, socket: any, head: any, wss: We
 export function upgradeRemoteTournament(req: any, socket: any, head: any, wss: WebSocketServer) {
   const mode = "remotetournament";
   const pathname = req.url?.split("?")[0] || "";
-  const gameId: number = parseInt(pathname.split('/')[3]);
-  const playerName: string = pathname.split('/')[4];
+  const gameId: number = parseInt(pathname.split("/")[3]);
+  const playerName: string = pathname.split("/")[4];
+  const remoteTournamentAction: string = pathname.split("/")[5];
 
-  console.log("Upgrading Remote Tournament")
   if (isNaN(gameId)) {
     return ;
   }
@@ -72,7 +72,8 @@ export function upgradeRemoteTournament(req: any, socket: any, head: any, wss: W
     wss.emit('connection', ws, req, {
       gameId,
       mode,
-      playerName
+      playerName,
+      remoteTournamentAction,
     });
   });
 }

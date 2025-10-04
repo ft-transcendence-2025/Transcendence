@@ -39,9 +39,7 @@ export async function tournoment(fastify) {
         }
     }, (req, reply) => {
         const data = req.body;
-        console.log("data:", data);
         const tournoment = tournoments.get(data.id);
-        console.log("Tournoment:", tournoment);
         if (!tournoment) {
             return "Tournoment id don't exist";
         }

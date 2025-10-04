@@ -33,12 +33,13 @@ export class RemoteGameRoom extends GameRoom {
     }
   }
 
-  public addPlayer(ws: WebSocket, playerName: string): number {
+  public addPlayer(ws: WebSocket | null, playerName: string): number {
+    if (ws == null)
+      return -1;
     if (playerName !== this.player1Name && playerName !== this.player2Name) {
       return -1;
     }
 
-    console.log(`${playerName} Added to gameRoom`)
     if (playerName === this.player1Name) {
       this.player1 = ws;
       this.game.gameState.player1Name = playerName;
@@ -101,6 +102,7 @@ export class RemoteGameRoom extends GameRoom {
       this.broadcast();
       if (this.game.gameState.score.winner && !this.isGameOverInProgress){
         this.gameOver();
+        return ;
       } 
     }, this.FPS60);
   }
@@ -147,7 +149,6 @@ export class RemoteGameRoom extends GameRoom {
       endTime: Date.now(),
       finalMatch: false
     };
-
    
     const response = await fetch(`http://blockchain:3000/matches`, {
       method: "POST",
@@ -163,10 +164,6 @@ export class RemoteGameRoom extends GameRoom {
       throw new Error(`POST failed with status ${response.status}`);
     }
     const result = await response.json();
-    console.log("================================================================================================================================================")
-    console.log(`POST Done with success, check the data on the blockchain: https://testnet.snowscan.xyz/tx/${result.txHash}`);
-    console.log("================================================================================================================================================")
-    
 
     if (this.player1) {
       this.player1.close()
@@ -174,6 +171,5 @@ export class RemoteGameRoom extends GameRoom {
     if (this.player2) {
       this.player2.close()
     }
-    
   }
 }

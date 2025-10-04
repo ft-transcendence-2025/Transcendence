@@ -27,9 +27,13 @@ function connection(wss: WebSocketServer): void {
     const gameId: number = context.gameId;
     const mode: string = context.mode;
     const playerName: string = context.playerName;
+    const remoteTournamentAction: string = context.remoteTournamentAction;
 
     if (mode in connect)
-      connect[mode](ws, {ws, gameId, playerName});
+      connect[mode](ws, {
+        ws, gameId, playerName,
+        remoteTournamentAction
+      });
   });
 
   wss.on("error", (e) => {
@@ -49,7 +53,6 @@ function upgrade(server: any, wss: WebSocketServer): void {
   server.on("upgrade", (request: any, socket: any, head: any) => {
     const parts = request.url?.split("?")[0].split("/") || "";
     const pathname = "/" + parts[1] + "/" + parts[2];
-    console.log("PathName:", pathname);
     if (pathname in upgradePath)
       upgradePath[pathname](request, socket, head, wss);
   })

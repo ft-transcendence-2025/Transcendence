@@ -26,21 +26,25 @@ export class LocalTournament {
         player1: this.player1,
         player2: this.player2,
         winner: null,
+        loser: null,
       },
       match2: {
         player1: this.player3,
         player2: this.player4,
         winner: null,
+        loser: null,
       },
       match3: { 
         player1: null,
         player2: null,
         winner: null,
+        loser: null,
       },
       currentGameScore: {
         player1: 0,
         player2: 0,
-      }
+      },
+      gameState: null,
     }
   }
 
@@ -75,5 +79,8 @@ export class LocalTournament {
     else if (!this.state.match3.winner) {
       this.state.match3.winner = winner === 1 ? this.state.match3.player1 : this.state.match3.player2;
     }
+    this.gameRoom.game.gameState.score.winner = null;
+    this.gameRoom.game.gameState.score.player1 = 0;
+    this.gameRoom.game.gameState.score.player2 = 0;
   }
 }

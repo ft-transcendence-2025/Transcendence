@@ -14,9 +14,11 @@ export class GameRoom {
   protected checkWinner(): void {
     if (this.game.gameState.score.player1 === 3) {
       this.game.gameState.score.winner = 1;
+      this.game.gameState.ball.isRunning = false;
     }
     else if (this.game.gameState.score.player2 === 3) {
       this.game.gameState.score.winner = 2;
+      this.game.gameState.ball.isRunning = false;
     }
   }
 
@@ -62,7 +64,7 @@ export class GameRoom {
         this.game.gameState.score.player1 = 0;
         this.game.gameState.score.player2 = 0;
         this.game.gameState.score.winner = null;
-        this.game.gameState.isPaused = false;
+        this.game.gameState.ball.isRunning = false;
       }
       else {
         this.game.gameState.ball.isRunning = true;

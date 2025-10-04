@@ -49,7 +49,6 @@ export function remoteGame(req: FastifyRequest, reply: FastifyReply) {
   const body = req.body as {name: string}
   const playerName = body.name
 
-  console.log("Player looking for game:", playerName)
   if (remoteGameId === 0) { // Create first game
     createRemoteGame(reply, remoteGameId++, playerName);
   }

@@ -26,7 +26,6 @@ export class Tournoment {
         };
     }
     match1Winner(player) {
-        console.log(player);
         if (player !== this.state.match1.player1 && player !== this.state.match1.player2)
             return "Player not in match";
         if (this.state.match1.winner)

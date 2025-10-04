@@ -1,11 +1,24 @@
 import { 
-  remoteGameRooms, localTournaments, localGameRooms 
+  remoteGameRooms, localTournaments, 
+  localGameRooms, remoteTournaments
 } from "./server.js";
 
 export function cleanup() {
   localRoomCleanup();
   remoteGamesCleanup();
   localTournamentCleanup();
+  // remoteTournamentCleanup();
+}
+
+function remoteTournamentCleanup(): void {
+  setInterval(() => {
+    for (const [id, tournament] of remoteTournaments.entries()) {
+      if (tournament.gameRoom.lastStateSent) {
+        tournament.gameRoom.cleanup();
+        remoteTournaments.delete(tournament.id)
+      }
+    }
+  }, 500);
 }
 
 function remoteGamesCleanup(): void {

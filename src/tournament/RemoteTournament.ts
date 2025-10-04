@@ -1,9 +1,10 @@
 import WebSocket from "ws"
-import { RemoteGameRoom } from "./../game/RemoteGameRoom.js";
 import { TournamentState } from "./Tournament.js";
 import { GameRoom } from "../game/GameRoom.js";
+import { GameRoomTournament } from "./GameRoomTournament.js";
+import { PayLoad } from "./../game/Game.js";
 
-interface Player {
+export interface Player {
   name: string | null,
   ws: WebSocket | null,
 }
@@ -13,11 +14,9 @@ export class RemoteTournament {
   public players: Player[] = [];
 
   private playerCapacity: number = 4;
+  public gameRoom: GameRoomTournament;
 
-  public gameRoom: RemoteGameRoom | null = null;
-  public state: TournamentState | null = null;
-
-  constructor(id: number, playerName: string) {
+  constructor(id: number) {
     this.id = id;
 
     for (let i = 0; i < 4; ++i) {
@@ -26,99 +25,79 @@ export class RemoteTournament {
         ws: null,
       }
     }
-
-    this.state = this.getState();
+    this.gameRoom = new GameRoomTournament(id, this.players);
   }
 
-  public getState(): TournamentState | null {
-    return {
-      id: this.id,
-      match1: {
-        player1: this.players[0].name,
-        player2: this.players[1].name,
-        winner: null,
-      },
-      match2: {
-        player1: this.players[2].name,
-        player2: this.players[3].name,
-        winner: null,
-      },
-      match3: { 
-        player1: null,
-        player2: null,
-        winner: null,
-      },
-      currentGameScore: {
-        player1: 0,
-        player2: 0,
-      }
-    }
-  }
-
-  public broadcast() {
-    if (this.players[0] && this.players[0].ws) {
-      this.players[0].ws.send(JSON.stringify(this.state));
-    }
-    if (this.players[1] && this.players[1].ws) {
-      this.players[1].ws.send(JSON.stringify(this.state));
-    }
-    if (this.players[2] && this.players[2].ws) {
-      this.players[2].ws.send(JSON.stringify(this.state));
-    }
-    if (this.players[3] && this.players[3].ws) {
-      this.players[3].ws.send(JSON.stringify(this.state));
-    }
-  }
-
-  public createGameRoom() {
-    if (this.state?.match1.winner === null && this.players[0].name && this.players[1].name) {
-      if (!this.gameRoom) {
-        this.gameRoom = new RemoteGameRoom(0, this.players[0].name);
-        this.gameRoom.player2Name = this.players[1].name;
-      }
-    }
-    else if (this.state?.match2.winner === null && this.players[2].name && this.players[3].name) {
-      if (!this.gameRoom) {
-        this.gameRoom = new RemoteGameRoom(0, this.players[2].name);
-        this.gameRoom.player2Name = this.players[3].name;
-      }
-    }
-    else if (this.state?.match3.winner === null && this.state.match1.winner && this.state.match2.winner) {
-      if (!this.gameRoom) {
-        this.gameRoom = new RemoteGameRoom(0, this.state.match1.winner);
-        this.gameRoom.player2Name = this.state.match2.winner;
-      }
-    }
-    else {
-      if (this.gameRoom) {
-        this.gameRoom.cleanup();
-        this.gameRoom = null;
-      }
-    }
-  }
-
-  public connectPlayer(playerName: string, ws: WebSocket) {
-    for (let i = 0; i < this.playerCapacity; ++i) {
-      if (this.players[i].name != playerName)
-        continue;
+  // Connect the socket from the player already in the tournament
+  public connectPlayer(playerName: string, ws: WebSocket): number {
+    for (let i = 0; i < 4; ++i) {
+      if (this.players[i].name != playerName || !this.players[i].name)
+        continue ;
+      if (this.players[i].name === this.gameRoom.tournamentState.match1.loser)
+        return -1 ;
+      if (this.players[i].name === this.gameRoom.tournamentState.match2.loser)
+        return -1 ;
+      if (this.players[i].name === this.gameRoom.tournamentState.match3.loser)
+        return -1 ;
 
       this.players[i].ws = ws;
-      this.state = this.getState();
-      break;
+      break ;
     }
+    return 0;
   }
 
+  // Add player to the tournament if there is a empty spot
+  // break is player is already in the tournament
   public addPlayer(playerName: string): number {
-    for (let i = 0; i < this.playerCapacity; ++i) {
+    for (let i = 0; i < 4; ++i) {
       if (this.players[i].name === playerName)
         break ;
       if (this.players[i].name)
-        continue;
+        continue ;
 
       this.players[i].name = playerName;
-      break;
+      break ;
     }
-    this.state = this.getState();
+    this.gameRoom.addPlayersToTournament();
     return 0;
   }
+
+  public enterGame(playerName: string) {
+    // restart game points
+    if (this.gameRoom.tournamentState.gameState) {
+      if (this.gameRoom.tournamentState.gameState.score.player1 >= 3 ||
+      this.gameRoom.tournamentState.gameState.score.player2 >= 3) {
+        this.gameRoom.tournamentState.gameState.score = {
+          player1: 0,
+          player2: 0,
+          winner: null,
+        };
+      }
+      this.gameRoom.tournamentState.gameState.status = "waiting for players";
+    }
+    if (this.gameRoom.tournamentState.match1.winner === null) {
+      this.gameRoom.firstMatch(playerName);
+    }
+    else if (this.gameRoom.tournamentState.match2.winner === null) {
+      this.gameRoom.secondMatch(playerName);
+    }
+    else if (this.gameRoom.tournamentState.match3.winner === null) {
+      this.gameRoom.setFinal(playerName);
+    }
+  }
+
+  public isTournamentFull(): boolean {
+    if (this.gameRoom.tournamentState.match1.player1 &&
+      this.gameRoom.tournamentState.match1.player2 && 
+      this.gameRoom.tournamentState.match2.player1 &&
+      this.gameRoom.tournamentState.match2.player2) {
+      return true ;
+    }
+    return false;
+  }
+
+  public handleEvents(msg: PayLoad) {
+    this.gameRoom.handleEvents(msg);
+  }
+
 }
