@@ -1,4 +1,8 @@
-import { GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, SECOND, degreesToRadians, getRandomAngle } from "./utils.js";
+import { 
+  GameState, Canvas, BallState, FetchData,
+  PaddleState, PaddleSide, GameMode, SECOND, 
+  degreesToRadians, getRandomAngle 
+} from "./utils.js";
 import { request, getHeaders } from "../../utils/api.js";
 import { navigateTo } from "../../router/router.js";
 
@@ -61,7 +65,7 @@ export class Game {
     }
   }
 
-  protected checkPoints(): void {
+  protected checkPoints(ws: WebSocket | null): void {
     if (!this.gameState || !this.gameState.score) {
       return ;
     }
@@ -115,6 +119,8 @@ export class Game {
         }
       }
     }
+    if (this.ws)
+      this.ws.close();
   }
 
   protected hiddeGameOver(): void {

@@ -4,7 +4,7 @@ import { AI } from "./AI.js";
 import { navigateTo } from "../../router/router.js";
 import { Game } from "./Game.js";
 
-export class SinglePlayerGame extends Game {
+export class LocalGame extends Game {
   private player1: Player | null = null;
   private player2: Player | null = null;
   private AI: AI | null = null;
@@ -22,7 +22,7 @@ export class SinglePlayerGame extends Game {
       this.joinGame(`wss://${window.location.host}/ws/game/localtournament/${id}`, this.gameMode);
     }
     else {
-      this.joinGame(`wss://${window.location.host}/ws/game/singleplayer/${id}`, this.gameMode);
+      this.joinGame(`wss://${window.location.host}/ws/game/local/${id}`, this.gameMode);
     }
 
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -48,10 +48,10 @@ export class SinglePlayerGame extends Game {
         throw("ws is undefined");
 
       if (gameMode === "2player" || gameMode === "localtournament") {
-        this.startSinglePvP();
+        this.startLocalPvP();
       }
       else if (gameMode === "ai") {
-        this.startSinglePvE(PaddleSide.Right);
+        this.startLocalPvE(PaddleSide.Right);
       }
 
       this.ws.addEventListener("message", (event) => {
@@ -63,7 +63,7 @@ export class SinglePlayerGame extends Game {
     this.gameLoop();
   };
 
-  private startSinglePvP(): void {
+  private startLocalPvP(): void {
     if (this.AI) {
       if (this.updateAIIntervalId)
         clearInterval(this.updateAIIntervalId);
@@ -86,7 +86,7 @@ export class SinglePlayerGame extends Game {
     }
   };
 
-  private startSinglePvE(side: PaddleSide | undefined): void {
+  private startLocalPvE(side: PaddleSide | undefined): void {
     if (this.player1) {
       this.player1 = null;
     }
@@ -136,7 +136,7 @@ export class SinglePlayerGame extends Game {
       this.renderBall();
       this.renderPaddle(this.gameState.paddleLeft);
       this.renderPaddle(this.gameState.paddleRight);
-      this.checkPoints();
+      this.checkPoints(this.ws);
       this.checkIsGamePaused();
     }
     requestAnimationFrame(this.gameLoop.bind(this));

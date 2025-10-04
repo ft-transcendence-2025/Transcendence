@@ -1,12 +1,12 @@
-import { navigateTo } from "../router/router.js";
-import { loadHtml } from "../utils/htmlLoader.js";
+import { navigateTo } from "../../router/router.js";
+import { loadHtml }   from "../../utils/htmlLoader.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
   getCurrentUsername,
-} from "../utils/userUtils.js";
-import { GameData } from "./pong.js";
-import { renderTournamentTree, setupTournamentTree } from "./tournamentTree.js";
+} from "../../utils/userUtils.js";
+import { GameData } from "../pong.js";
+import { GameState } from "../game/utils.js";
 
 export interface TournamentState {
   id: number,
@@ -28,7 +28,8 @@ export interface TournamentState {
   currentGameScore: {
     player1: number,
     player2: number,
-  }
+  },
+  gameState: GameState | null,
 }
 
 export interface PlayerInfo {
@@ -285,7 +286,7 @@ export function localStoreTournamentData(tournamentState: TournamentState, playe
   localStorage.setItem("LocalTournamentPlayersInfo", JSON.stringify(players));
 }
 
-export function getTournamentState() {
+export function getLocalTournamentState() {
   const localTournamentStateString = localStorage.getItem("LocalTournamentState");
   if (!localTournamentStateString) return ;
 
@@ -293,4 +294,15 @@ export function getTournamentState() {
   if (!localTournamentState) return ;
 
   return localTournamentState ;
+}
+
+export function getRemoteTournamentState(): TournamentState | void {
+  const remoteTournamentStateString = localStorage.getItem("RemoteTournament");
+  if (!remoteTournamentStateString)
+    return ;
+
+  const remoteTournamentState = JSON.parse(remoteTournamentStateString) as TournamentState;
+  if (!remoteTournamentState) return ;
+
+  return remoteTournamentState ;
 }
