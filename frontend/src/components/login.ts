@@ -3,11 +3,18 @@ import { login, loginWith2FA } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
 import { renderNavbar } from "./navbar.js";
 import { renderHome } from "../views/home.js";
-import { reloadChatManager } from "../app.js";
+import { initializeChatManager } from "../app.js";
 
 // This function will find the modal on the page and open it.
 export async function openLoginModal(container: HTMLElement | null = null) {
   // If container is provided, render home page as backdrop first (without animations)
+  if (localStorage.getItem("authToken")) {
+    // If already logged in, redirect to dashboard
+    const dashboardContainer = document.getElementById("content");
+    navigateTo("/dashboard", dashboardContainer);
+    return;
+  }
+
   if (container) {
     await renderHome(container, true);
   }
@@ -53,7 +60,7 @@ export async function openLoginModal(container: HTMLElement | null = null) {
     }
 
     const container = document.getElementById("content");
-    reloadChatManager();
+    initializeChatManager();
     navigateTo("/dashboard", container);
   };
 
@@ -108,14 +115,13 @@ export async function openLoginModal(container: HTMLElement | null = null) {
       localStorage.setItem("authToken", response.accessToken);
       close2FAModal();
       closeModal();
-
       const navbarContainer = document.getElementById("navbar");
       if (navbarContainer) {
         await renderNavbar(navbarContainer);
       }
-
+      
       const container = document.getElementById("content");
-      reloadChatManager();
+      initializeChatManager();
       navigateTo("/dashboard", container);
     } catch (error: any) {
       console.error("Error handling 2FA login:", error);

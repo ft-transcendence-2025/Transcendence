@@ -1,13 +1,39 @@
 import { renderNavbar } from "./components/navbar.js";
-import { PrivateMessageResponse } from "./interfaces/message.interfaces.js";
+import { IncomingMessage, PrivateMessageResponse } from "./interfaces/message.interfaces.js";
 import { router, navigateTo } from "./router/router.js";
+import chatService from "./services/chat.service.js";
+import { FriendshipStatus } from "./services/friendship.service.js";
+import { notificationService } from "./services/notifications.service.js";
+import { getUserAvatar } from "./services/profileService.js";
 import { refreshAccessToken } from "./utils/api.js";
+import { getCurrentUsername, getUserNickname } from "./utils/userUtils.js";
 import { ChatComponent } from "./views/chat.js";
+import { handleIncomingMessage, handleNotificationMessage, handlePrivateMessage } from "./views/notificationsHandler.js";
+import { updateFriendshipStatusCache } from "./views/profile.js";
 
-export let chatManager = new ChatComponent("chat-root", []);
+export let chatManager: any | undefined;
 
-export function reloadChatManager() {
-  chatManager = new ChatComponent("chat-root", []);
+export function getChatManager(): ChatComponent {
+  if (!chatManager || !chatManager.chatService.conn ) {
+    initializeChatManager();
+  }
+  return chatManager;
+}
+
+export async function initializeChatManager() {
+  const username = getCurrentUsername();
+  if (!username) {
+    console.warn("No current user. ChatManager will not be initialized.");
+    return;
+  }
+  if (!chatManager || chatManager.chatService === null || chatManager.currentUserId != username) {
+    chatManager = new ChatComponent("chat-root", []);
+    chatManager.chatService.conn.onmessage = async (e: MessageEvent) => {
+      handleIncomingMessage(e);
+    }
+  } else {
+    console.warn("ChatManager is already initialized.");
+  }
 }
 
 // Function to close all open modals
@@ -30,31 +56,22 @@ window.addEventListener("popstate", () => {
   router(contentElement);
 });
 
+
 // listen for dom to be fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
 
   const currentPath = window.location.pathname;
   if (currentPath !== "/login" && currentPath !== "/register" && currentPath !== "/") {
     const token = window.localStorage.getItem("authToken");
-    if (!token || !await refreshAccessToken()) {
+    if (!token /* || !await refreshAccessToken() */) {
       alert("You are not authenticated. Please log in to continue.");
       navigateTo("/login", document.getElementById("content"));
       return;
     }
   }
 
-  if (chatManager.chatService.conn) {
-    chatManager.chatService.conn.onmessage = (e: MessageEvent) => {
-      const message: PrivateMessageResponse = JSON.parse(e.data);
-      if (message.senderId !== chatManager.currentUserId) {
-        let temp = chatManager.messages.get(message.senderId) || [];
-        temp.push(message);
-        chatManager.messages.set(message.senderId, temp);
-        chatManager.updateChatMessages(message.senderId);
-      }
-    };
-  }
   await renderNavbar(navbarElement); // render the navbar component
+  initializeChatManager();
   // global click listener for navigation links (data-links)
   document.body.addEventListener("click", (event) => {
     const target = event.target as HTMLElement;
@@ -72,6 +89,5 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
   });
-
   router(contentElement); // load home view on initial run
 });

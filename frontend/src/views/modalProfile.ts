@@ -1,7 +1,11 @@
 // src/views/modalProfile.ts
+import { getChatManager } from "../app.js";
 import { closeModal } from "../components/modalManager.js";
 import { navigateTo } from "../router/router.js";
+import { logout } from "../services/authService.js";
+import { notificationService } from "../services/notifications.service.js";
 import { getProfileByUsername, getUserAvatar } from "../services/profileService.js";
+import { ChatComponent } from "./chat.js";
 
 export async function getProfileModalContent(username?: string): Promise<HTMLElement> {
   const container = document.createElement("div");
@@ -120,9 +124,19 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   // Add event listener for logout button
   const logoutBtn = container.querySelector("#logout-btn");
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
+    logoutBtn.addEventListener("click", async () => {
       localStorage.removeItem("authToken");
+      sessionStorage.removeItem("authToken");
+      localStorage.clear();
+      sessionStorage.clear();
+      notificationService.clear();
+      let chatManager: ChatComponent | null = getChatManager();
+      if (chatManager) {
+        chatManager.reset();
+      }
+      chatManager = null;
       closeModal();
+      await logout();
       navigateTo("/login", document.getElementById("content"));
     });
   }

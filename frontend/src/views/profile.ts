@@ -7,15 +7,17 @@ import {
 } from "../services/profileService.js";
 import { UserBlockMessageResponse } from "../interfaces/message.interfaces.js";
 import { Friend } from "../views/chat.js";
-import { chatManager } from "../app.js";
+import { getChatManager } from "../app.js";
 import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, sendFriendRequest, unblockUser } from "../services/friendship.service.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
 import { renderStats } from "./stats.js";
+import { notificationService } from "../services/notifications.service.js";
 
 
 let currentProfile: any = null;
 let selectedAvatar: string | null = null;
 let customAvatarFile: File | null = null;
+const friendshipStatusCache = new Map<string, { status: FriendshipStatus; blockedBy?: string }>();
 
 export async function renderProfile(container: HTMLElement | null) {
 	if (!container) return;
@@ -32,15 +34,29 @@ export async function renderProfile(container: HTMLElement | null) {
 
 	try {
 		const profile = await getProfileByUsername(username);
-		populateProfileView(profile);
-		showProfileView();
+		await populateProfileView(profile);
+		const profileContainer = document.getElementById("profile-container");
+        if (profileContainer) {
+            profileContainer.classList.remove("hidden");
+        }
+		// showProfileView();
 	} catch (error: any) {
 		console.error("Error loading profile:", error);
 		container.innerHTML = `<p>Error loading profile: ${error.message}</p>`;
 	}
 
 	setupEventListeners(username);
+
+	notificationService.subscribe(() => {
+		updateButtonStates(username);
+	});
+
 	renderStats(document.getElementById("content") as HTMLElement);
+}
+
+export function updateFriendshipStatusCache(username: string, status: FriendshipStatus, blockedBy?: string) {
+	friendshipStatusCache.set(username, { status, blockedBy });
+	updateButtonStates(username);
 }
 
 async function populateProfileView(profile: any) {
@@ -83,24 +99,39 @@ async function populateProfileView(profile: any) {
 			editProfileButton.classList.add("hidden");
 		}
 	}
+	updateButtonStates(profile.userUsername);
+}
 
+async function updateButtonStates(username: string) {
+	const loggedInUsername = getCurrentUser()?.username || null;
+
+	// Check the cache first
+	let friendshipStatus: { status: FriendshipStatus; blockedBy?: string } | undefined = friendshipStatusCache.get(username);
+
+	// If not in cache, fetch from the server
+	if (!friendshipStatus) {
+		friendshipStatus = await getFriendshipStatus(username) as { status: FriendshipStatus; blockedBy?: string };
+		friendshipStatusCache.set(username, friendshipStatus); // Cache the result
+	}
+
+	// Update Add Friend Button
 	const addFriendButton = document.getElementById("add-friend-button");
 	if (addFriendButton) {
-		const friendshipStatus = await getFriendshipStatus(profile.userUsername) as any;
 		if (
-			profile.userUsername !== loggedInUsername && // Not the logged-in user's profile
-			friendshipStatus.status !== 'BLOCKED' && // No blocked relationship
-			friendshipStatus.status !== 'ACCEPTED' && // Not already friends
-			friendshipStatus.status !== 'PENDING' // No pending request
+			username !== loggedInUsername && // Not the logged-in user's profile
+			friendshipStatus.status !== "BLOCKED" && // No blocked relationship
+			friendshipStatus.status !== "ACCEPTED" && // Not already friends
+			friendshipStatus.status !== "PENDING" // No pending request
 		) {
-			addFriendButton.classList.remove("hidden");
+			addFriendButton.classList.add("bg-(--color-primary)", "text-green-900", "cursor-pointer", "hover:bg-(--color-primary-dark)");
+			addFriendButton.classList.remove("hidden", "bg-gray-400", "text-gray-700", "cursor-not-allowed");
 			addFriendButton.textContent = "Add Friend";
 			(addFriendButton as HTMLButtonElement).disabled = false;
-		} else if (friendshipStatus.status === 'PENDING') {
+		} else if (friendshipStatus.status === "PENDING") {
 			addFriendButton.classList.remove("hidden");
-			addFriendButton.classList.remove("cursor-pointer");
-			addFriendButton.classList.remove("hover:bg-(--color-primary-dark)");
 			addFriendButton.classList.add("bg-gray-400", "text-gray-700");
+			addFriendButton.classList.remove("cursor-pointer", "hover:bg-(--color-primary-dark)");
+			addFriendButton.classList.add("cursor-not-allowed");
 			addFriendButton.textContent = "Request Pending";
 			(addFriendButton as HTMLButtonElement).disabled = true;
 		} else {
@@ -108,23 +139,28 @@ async function populateProfileView(profile: any) {
 		}
 	}
 
+	// Update Block Button
 	const blockButton = document.getElementById("block-button");
 	if (blockButton) {
-		const friendshipStatus = await getFriendshipStatus(profile.userUsername) as any;
-		// If the logged-in user has blocked the profile user
-		if (friendshipStatus.status === 'BLOCKED' && friendshipStatus.blockedBy === loggedInUsername) {
+		if (username === loggedInUsername) {
+			blockButton.classList.add("hidden");
+			blockButton.style.display = "none";
+		} else if (friendshipStatus.status === "BLOCKED" && friendshipStatus.blockedBy === loggedInUsername) {
 			blockButton.textContent = "lock_open";
 			blockButton.title = "Unblock User";
 			blockButton.classList.remove("hidden");
-		}
-		// If the logged-in user is blocked by the profile user (cannot block back)
-		else if (friendshipStatus.status === 'BLOCKED' && friendshipStatus.blockedBy !== loggedInUsername || profile.userUsername === loggedInUsername) {
+			blockButton.style.display = "";
+		} else if (
+			friendshipStatus.status === "BLOCKED" &&
+			friendshipStatus.blockedBy !== loggedInUsername
+		) {
+			blockButton.classList.add("hidden");
 			blockButton.style.display = "none";
-		}
-		else {
+		} else {
 			blockButton.textContent = "account_circle_off";
 			blockButton.title = "Block User";
 			blockButton.classList.remove("hidden");
+			blockButton.style.display = "";
 		}
 	}
 }
@@ -138,6 +174,7 @@ function showProfileView() {
 }
 
 function setupEventListeners(username: string) {
+	const friendshipStatus = friendshipStatusCache.get(username);
 	const changeAvatarBtn = document.getElementById("change-avatar-btn");
 	if (changeAvatarBtn) {
 		changeAvatarBtn.addEventListener("click", () => {
@@ -148,30 +185,41 @@ function setupEventListeners(username: string) {
 	const blockUserBtn = document.getElementById("block-button");
 	if (blockUserBtn) {
 		blockUserBtn.addEventListener("click", async () => {
-			const isUnblock = blockUserBtn.textContent === "lock_open";
-			if (isUnblock) {
-				await unblockUser(username); // Unblock the user
-				blockUserBtn.textContent = "account_circle_off";
-				blockUserBtn.title = "Block User";
-			} else {
-				await blockUser(username);
-				blockUserBtn.textContent = "lock_open";
-				blockUserBtn.title = "Unblock User";
+			try {
+				// Wait for the block/unblock operation to complete
+				const isUnblock = blockUserBtn.textContent === "lock_open";
+				if (isUnblock) {
+					await unblockUser(username); // Unblock the user
+					sendBlockMessage(username);
+					friendshipStatusCache.set(username, { status: FriendshipStatus.DECLINED });
+				} else {
+					await blockUser(username); // Block the user
+					sendBlockMessage(username);
+					const chatManager = getChatManager();
+					chatManager.chatService.markConversationAsRead(username);
+					chatManager.closeChat(username);
+					notificationService.removeFriendRequest(username);
+					notificationService.triggerUpdate();
+					friendshipStatusCache.set(username, { status: FriendshipStatus.BLOCKED, blockedBy: getCurrentUsername() || undefined });
+				}
+
+				// Update the button states after the operation
+				await updateButtonStates(username);
+			} catch (error) {
+				console.error("Error updating block state:", error);
 			}
-			// Optionally update friendship status or UI here
 		});
 	}
 	const addFriendButton = document.getElementById("add-friend-button");
 	if (addFriendButton) {
 		addFriendButton.addEventListener("click", async () => {
 			try {
+				// Wait for the friend request operation to complete
 				await sendFriendRequest(username);
-				addFriendButton.textContent = "Request Sent";
-				(addFriendButton as HTMLButtonElement).disabled = true;
-				addFriendButton.classList.remove("cursor-pointer", "hover:bg-(--color-primary-dark)");
-				addFriendButton.classList.add("bg-gray-400", "text-gray-700");
+				// Update the button states after the operation
+				await updateButtonStates(username);
 			} catch (error) {
-				// Optionally show error message in UI
+				console.error("Error sending friend request:", error);
 			}
 		});
 	}
@@ -181,6 +229,18 @@ function setupEventListeners(username: string) {
 		editProfileBtn.addEventListener("click", () => {
 			window.location.href = `/profile?username=${getCurrentUsername()}&edit=true`;
 		});
+	}
+
+	function sendBlockMessage(blockedUsername: string) {
+		const currentUser = getCurrentUser();
+		if (!currentUser) return;
+
+		const blockMessage: UserBlockMessageResponse = {
+			kind: "user/block",
+			recipientId: blockedUsername
+		};
+		const chatManager = getChatManager();
+		chatManager.sendMessage(blockedUsername, blockMessage);
 	}
 
 	setupAvatarModalEventListeners(username);

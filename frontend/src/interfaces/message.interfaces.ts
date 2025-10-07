@@ -30,6 +30,29 @@ export interface LobbySendMessage extends BaseMessage {
   type?: 'TEXT' | 'SYSTEM';
 }
 
+export interface UserBlockMessageResponse {
+  kind: 'user/block';
+  recipientId: string;
+}
+
+export interface NotificationMessage extends BaseMessage {
+  kind: 'notification/new';
+  recipientId: string;
+  type: string;
+  content: string;
+  senderId: string;
+  ts: number;
+}
+
+export interface FriendRequestMessage extends NotificationMessage {
+  kind: 'notification/new';
+  type: string; // e.g., "FRIEND_REQUEST"
+  friendshipId: string;
+  senderId: string;
+  recipientId: string;
+  content: string;
+}
+
 // Union type for all Outgoing messages
 export type OutgoingMessage = 
   | PrivateSendMessage
@@ -37,6 +60,9 @@ export type OutgoingMessage =
   | LobbyLeaveMessage
   | LobbySendMessage
   | UserBlockMessageResponse
+  | NotificationMessage
+  | FriendRequestMessage
+  | any; // Fallback for unknown message types
 
 // System response messages
 export interface SystemReadyMessage {
@@ -68,9 +94,14 @@ export interface LobbyMessageResponse {
   ts: number;
 }
 
-export interface UserBlockMessageResponse {
-  kind: 'user/block';
+export interface FriendRequestResponse {
+  event: 'notification/new';
+  type: string; // e.g., "FRIEND_REQUEST"
+  friendshipId: string;
+  senderId: string;
   recipientId: string;
+  content: string;
+  ts: number;
 }
 
 // Union type for all Incoming messages
@@ -79,5 +110,7 @@ export type IncomingMessage =
   | SystemErrorMessage
   | PrivateMessageResponse
   | LobbyMessageResponse
-  | UserBlockMessageResponse;
+  | UserBlockMessageResponse
+  | NotificationMessage
+  | any; // Fallback for unknown message types
 
