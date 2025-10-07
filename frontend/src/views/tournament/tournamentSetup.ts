@@ -1,37 +1,42 @@
-import { navigateTo } from "../router/router.js";
-import { loadHtml } from "../utils/htmlLoader.js";
+import { navigateTo } from "../../router/router.js";
+import { loadHtml }   from "../../utils/htmlLoader.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
   getCurrentUsername,
-} from "../utils/userUtils.js";
-import { localStoreTournamentData } from "./tournamentTree.js";
+} from "../../utils/userUtils.js";
+import { GameData } from "../pong.js";
+import { GameState } from "../game/utils.js";
 
-// Tournament data structure
-interface TournamentData {
-  type: "local" | "remote";
-  players: Array<{
-    username: string | null;
-    userDisplayName: string;
-    avatar: string;
-  }>;
+export interface TournamentState {
+  id: number,
+  match1: {
+    player1: string | null,
+    player2: string | null,
+    winner: string | null,
+  }
+  match2: {
+    player1: string | null,
+    player2: string | null,
+    winner: string | null,
+  }
+  match3: {
+    player1: string,
+    player2: string,
+    winner: string,
+  }
+  currentGameScore: {
+    player1: number,
+    player2: number,
+  },
+  gameState: GameState | null,
 }
 
-interface Player {
+export interface PlayerInfo {
   username: string | null;
   userDisplayName: string;
   avatar: string;
 }
-
-export interface LocalTournamentAvatarMap {
-  player1: Player;
-  player2: Player;
-  player3: Player;
-  player4: Player;
-}
-
-// Global storage for tournament data
-let tournamentData: TournamentData | null = null;
 
 // Available avatars for local tournaments
 const avatars = [
@@ -195,15 +200,18 @@ function initializeAvatars() {
   }
 }
 
-function setupLocalEventListeners() {
+async function setupLocalEventListeners() {
   const startButton = document.getElementById("start-tournament-button");
 
   if (startButton) {
     startButton.addEventListener("click", async (e) => {
-      e.preventDefault();
+      localStorage.removeItem("LocalTournamentState");
+      localStorage.removeItem("LocalTournamentPlayersInfo");
+
       // Only proceed if data collection succeeds (no duplicates)
       if (await collectLocalTournamentData()) {
-        const container = document.getElementById("content");
+        let container = document.getElementById("content");
+        if (!container) return ;
         navigateTo("/tournament-tree", container);
       }
     });
@@ -236,33 +244,8 @@ async function collectLocalTournamentData() {
     let username = null;
     let avatarData;
 
-    if (i === 1) {
-      const currentUsername = getCurrentUsername();
-      if (currentUsername) {
-        // User is logged in - always record their username regardless of display name/avatar changes
-        username = currentUsername;
-
-        // Determine avatar data based on current selection
-        const avatarSrc = avatarImg?.src || "";
-        if (avatarSrc.includes("/assets/avatars/")) {
-          // User switched to a local avatar
-          avatarData = avatarSrc.split("/").pop() || "panda.png";
-        } else {
-          // User is still using their profile avatar
-          avatarData = "user-avatar";
-        }
-      } else {
-        // No user logged in - Player 1 is a guest
-        username = null;
-        const avatarSrc = avatarImg?.src || "";
-        avatarData = avatarSrc.split("/").pop() || "panda.png";
-      }
-    } else {
-      // For Players 2-4 (always guests), no username, get avatar from selection
-      username = null;
-      const avatarSrc = avatarImg?.src || "";
-      avatarData = avatarSrc.split("/").pop() || avatars[i - 1];
-    }
+    const avatarSrc = avatarImg?.src || "";
+    avatarData = avatarSrc.split("/").pop() || avatars[i - 1];
 
     players.push({
       username: username,
@@ -270,31 +253,16 @@ async function collectLocalTournamentData() {
       avatar: avatarData,
     });
   }
+  fetchLocalTournament(players);
 
-  tournamentData = {
-    type: "local",
-    players: players,
-  };
-
-  // Debug
-  players.forEach((player, index) => {
-    console.log(
-      `  Player ${index + 1}: ${player.userDisplayName} | Avatar: ${player.avatar} | Username: ${player.username}`,
-    );
-  });
-
-  localStorage.setItem("LocalTournamentAvatarMap", JSON.stringify(players));
-  if (tournamentData) {
-    getTournament(tournamentData.players);
-  }
   return true;
 }
 
-async function getTournament(players: Player[]) {
+export async function fetchLocalTournament(players: PlayerInfo[]) {
   try {
     const baseUrl = window.location.origin;
 
-    const response = await fetch(`${baseUrl}/api/tournament/create`, {
+    const response = await fetch(`${baseUrl}/api/tournament/local`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -306,14 +274,35 @@ async function getTournament(players: Player[]) {
         player4: players[3].userDisplayName,
       }),
     });
-    const data = await response.json();
-    localStoreTournamentData(data);
+    const tournamentState = await response.json();
+    localStoreTournamentData(tournamentState, players);
   } catch (e) {
     console.error("Failed to fetch tournament:", e);
   }
 }
 
-// Export functions for tournament tree to use
-export function getTournamentData(): TournamentData | null {
-  return tournamentData ? { ...tournamentData } : null;
+export function localStoreTournamentData(tournamentState: TournamentState, players: PlayerInfo[]) {
+  localStorage.setItem("LocalTournamentState", JSON.stringify(tournamentState));
+  localStorage.setItem("LocalTournamentPlayersInfo", JSON.stringify(players));
+}
+
+export function getLocalTournamentState() {
+  const localTournamentStateString = localStorage.getItem("LocalTournamentState");
+  if (!localTournamentStateString) return ;
+
+  const localTournamentState = JSON.parse(localTournamentStateString) as TournamentState;
+  if (!localTournamentState) return ;
+
+  return localTournamentState ;
+}
+
+export function getRemoteTournamentState(): TournamentState | void {
+  const remoteTournamentStateString = localStorage.getItem("RemoteTournament");
+  if (!remoteTournamentStateString)
+    return ;
+
+  const remoteTournamentState = JSON.parse(remoteTournamentStateString) as TournamentState;
+  if (!remoteTournamentState) return ;
+
+  return remoteTournamentState ;
 }

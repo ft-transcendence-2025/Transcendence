@@ -1,17 +1,18 @@
 import { loadHtml } from "../utils/htmlLoader.js";
-import { SinglePlayerGame } from "./game/SinglePlayerGame.js";
+import { LocalGame } from "./game/LocalGame.js";
 import { RemoteGame } from "./game/RemoteGame.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
   getCurrentUsername,
 } from "../utils/userUtils.js";
-import { TournomentState, MatchData } from "./tournamentTree.js";
-import {  FetchData } from "./game/utils.js";
+import { getUserAvatar } from "../services/profileService.js";
+import { FetchData } from "./game/utils.js";
 import { request, getHeaders } from "../utils/api.js";
+import { TournamentState, PlayerInfo } from "./tournament/tournamentSetup.js";
 
 
-interface GameData {
+export interface GameData {
   mode: string,
   player1: {
     username: string | null,
@@ -41,30 +42,81 @@ export async function renderPong(container: HTMLElement | null) {
   await updatePlayerInfo(gameMode);
 
   if (gameMode === "localtournament" || gameMode === "remotetournament") {
-    setUpTournoment();
+    enterTournamentGame(gameMode);
   }
-
-  enterGame(gameMode, null);
+  else {
+    enterGame(gameMode, null);
+  }
 }
 
-function setUpTournoment(): void {
-  const player1 = document.getElementById("player1-name") as HTMLCanvasElement;
-  const player2 = document.getElementById("player2-name") as HTMLCanvasElement;
+function enterTournamentGame(gameMode: string): void {
+  if (gameMode === "localtournament") {
+    const localTournamentStateString = localStorage.getItem("LocalTournamentState");
+    const playerInfoString = localStorage.getItem("LocalTournamentPlayersInfo");
+    if (!localTournamentStateString || !playerInfoString) return ;
 
-  const localStorageTournamentState = localStorage.getItem("localTournamentState");
-  if (localStorageTournamentState) {
-    const tournamentState: TournomentState = JSON.parse(localStorageTournamentState);
-    if (tournamentState.match1.winner === null && tournamentState.match1.player1 && tournamentState.match1.player2) {
-      player1.innerHTML = tournamentState.match1.player1;
-      player2.innerHTML = tournamentState.match1.player2;
+    const localTournamentState = JSON.parse(localTournamentStateString);
+    const playerInfo = JSON.parse(playerInfoString);
+    if (!localTournamentState || !playerInfo) return ;
+
+    setTournament(localTournamentState, gameMode,  playerInfo)
+  }
+  else if (gameMode === "remotetournament") {
+    const remoteTournamentStateString = localStorage.getItem("RemoteTournament");
+    if (!remoteTournamentStateString) return ;
+    const remoteTournamentState = JSON.parse(remoteTournamentStateString);
+    if (!remoteTournamentState) return ;
+
+    setTournament(remoteTournamentState, gameMode)
+  }
+
+}
+
+async function setTournament(tournamentState: TournamentState, gameMode: string, playerInfo?: PlayerInfo[]) {
+  const player1 = document.querySelector("#player1-name");
+  const player2 = document.querySelector("#player2-name");
+  const player1Avatar = document.querySelector("#player1-avatar");
+  const player2Avatar = document.querySelector("#player2-avatar");
+  if (!player1 || !player2 || !player1Avatar || !player2Avatar) return ;
+
+  // Set Names depending on which match
+  if (!tournamentState.match1.winner) {
+    player1.textContent = tournamentState.match1.player1;
+    player2.textContent = tournamentState.match1.player2;
+  }
+  else if (!tournamentState.match2.winner) {
+    player1.textContent = tournamentState.match2.player1;
+    player2.textContent = tournamentState.match2.player2;
+  }
+  else {
+    player1.textContent = tournamentState.match3.player1;
+    player2.textContent = tournamentState.match3.player2;
+  }
+
+  if (gameMode === "localtournament" && playerInfo) {
+    // set Avatars
+    for (const i in playerInfo) {
+      if (playerInfo[i].userDisplayName === player1.textContent) {
+        player1Avatar.setAttribute("src", `/assets/avatars/${playerInfo[i].avatar}`)
+      }
+      else if (playerInfo[i].userDisplayName === player2.textContent) {
+        player2Avatar.setAttribute("src", `/assets/avatars/${playerInfo[i].avatar}`)
+      }
     }
-    else if (tournamentState.match2.winner === null && tournamentState.match2.player1 && tournamentState.match2.player2) { 
-      player1.innerHTML = tournamentState.match2.player1;
-      player2.innerHTML = tournamentState.match2.player2;
+    const localGame = new LocalGame(gameMode, tournamentState.id);
+  }
+  else if (gameMode === "remotetournament") {
+    const avatar1 = await getUserAvatar(player1.innerHTML.trim());
+    const avatar2 = await getUserAvatar(player2.innerHTML.trim());
+    player1Avatar.setAttribute("src", `${avatar1}`)
+    player2Avatar.setAttribute("src", `${avatar2}`)
+
+    const userName = getCurrentUsername();
+    if (userName === player1.innerHTML.trim()) {
+      const remotePlayerGame = new RemoteGame(gameMode, tournamentState.id, "left");
     }
-    else if (tournamentState.match3.winner === null && tournamentState.match3.player1 && tournamentState.match3.player2) { 
-      player1.innerHTML = tournamentState.match3.player1;
-      player2.innerHTML = tournamentState.match3.player2;
+    else if (userName === player2.innerHTML.trim()) {
+      const remotePlayerGame = new RemoteGame(gameMode, tournamentState.id, "right");
     }
   }
 }
@@ -83,17 +135,17 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
             name: getCurrentUsername(),
           })
         }) as FetchData;
-        const remoteGame = new RemoteGame(response);
+        const remoteGame = new RemoteGame(response.gameMode, response.id, response.side);
       }
       else {
-        const remoteGame = new RemoteGame(gameData);
+        const remoteGame = new RemoteGame(gameData.gameMode, gameData.id, gameData.side);
       }
     }
     else {
-      const response = await request(`${baseUrl}/api/getgame/singleplayer`, {
+      const response = await request(`${baseUrl}/api/getgame/local`, {
         credentials: "include"
       }) as FetchData;
-      const singlePlayerGame = new SinglePlayerGame(gameMode, response);
+      const localGame = new LocalGame(gameMode, response.id);
     }
   } catch (error) {
     console.error("Failed to fetch game:", error);
@@ -185,7 +237,6 @@ async function updatePlayerInfo(gameMode: string) {
       }
     }
   } else if (gameMode === "remote") {
-    // TODO Remote mode.................................
     if (player1Element) {
       player1Element.textContent = "Remote Player 1";
     }

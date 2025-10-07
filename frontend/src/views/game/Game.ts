@@ -1,4 +1,8 @@
-import { GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, SECOND, degreesToRadians, getRandomAngle } from "./utils.js";
+import { 
+  GameState, Canvas, BallState, FetchData,
+  PaddleState, PaddleSide, GameMode, SECOND, 
+  degreesToRadians, getRandomAngle 
+} from "./utils.js";
 import { request, getHeaders } from "../../utils/api.js";
 import { navigateTo } from "../../router/router.js";
 
@@ -53,15 +57,15 @@ export class Game {
 
   protected renderPaddle(paddle: PaddleState): void {
     if (this.gameState) {
-      this.ctx.fillStyle = "#5FAD56";
+      this.ctx.fillStyle = "#43a17e";
       this.ctx.fillRect(paddle.position.x, paddle.position.y, paddle.attr.width, paddle.attr.height);
-      this.ctx.strokeStyle =  "#396733";
+      this.ctx.strokeStyle = "#21503f";
       this.ctx.lineWidth = 0;
       this.ctx.strokeRect(paddle.position.x, paddle.position.y, paddle.attr.width, paddle.attr.height);
     }
   }
 
-  protected checkPoints(): void {
+  protected checkPoints(ws: WebSocket | null): void {
     if (!this.gameState || !this.gameState.score) {
       return ;
     }
@@ -88,6 +92,10 @@ export class Game {
   protected gameOver(player: 1 | 2): void {
     let winnerName: string;
 
+    const gamePausedOverlay = document.getElementById("game-paused") as HTMLCanvasElement;
+    if (gamePausedOverlay)
+      gamePausedOverlay.classList.add("hidden");
+
     const gameOverText = document.getElementById("game-over") as HTMLDivElement;
     if (gameOverText) {
       const gameOverIsHidden = gameOverText.classList.contains("hidden");
@@ -111,6 +119,8 @@ export class Game {
         }
       }
     }
+    if (this.ws)
+      this.ws.close();
   }
 
   protected hiddeGameOver(): void {
@@ -120,30 +130,40 @@ export class Game {
   }
 
 
-  protected sendPayLoad(event: KeyboardEvent): void {
+  protected sendPayLoad(event: KeyboardEvent) {
     if (["ArrowDown", "ArrowUp"].includes(event.key)) {
       event.preventDefault();
     }
-    if (["p", "P", " "].includes(event.key)) {
-      event.preventDefault();
-      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-        const payLoad = {
-          type: "keydown",
-          key: event.key,
-        };
-        this.ws.send(JSON.stringify(payLoad));
-        this.ballMoving = true;
-      }
-      if (event.key === " " && this.gameState && this.gameState.score && this.gameState.score.winner) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      const payLoad = {
+        type: "keydown",
+        key: event.key,
+      };
+      this.ws.send(JSON.stringify(payLoad));
+      this.ballMoving = true;
+    }
+  }
 
-        const mode = window.location.search.split("=")[1];
-        if (mode !== "remote") {
-          localStorage.removeItem("GameMode");
-        }
+  protected leaveGame() {
+    if (!this.ws) return ;
 
-        const container = document.getElementById("content");
-        navigateTo("/dashboard", container);
-      }
+    this.ws.send(JSON.stringify({
+      type: "command",
+      key: "leave",
+    }));
+    this.ws.close();
+    this.ws = null;
+    const mode = window.location.search.split("=")[1];
+    if (mode !== "remote") {
+      localStorage.removeItem("GameMode");
+    }
+    const container = document.getElementById("content");
+
+    if (mode === "localtournament") {
+      navigateTo("/tournament-tree", container);
+    }
+    else {
+      navigateTo("/dashboard", container);
     }
   }
 }

@@ -67,6 +67,12 @@
           </div>
           <div>
             <label class="block text-sm font-semibold text-gray-700"
+              >E-mail</label
+            >
+            <p id="display-email" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
               >Two-Factor Authentication</label
             >
             <p id="display-2fa-status" class="mt-1 text-gray-900">-</p>
@@ -99,51 +105,75 @@
     <form id="fill-profile-form" class="space-y-4">
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div>
-          <label for="nickName" class="block text-sm font-medium text-gray-700">
+          <label
+            for="update-nick-name"
+            class="block text-sm font-medium text-gray-700"
+          >
             Nickname
           </label>
           <input
             type="text"
-            name="nickName"
-            id="nickName"
+            name="update-nick-name"
+            id="update-nick-name"
             class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your nickname"
           />
         </div>
         <div>
           <label
-            for="firstName"
+            for="update-email"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
+          <input
+            type="text"
+            name="update-email"
+            id="update-email"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            placeholder="Your email"
+          />
+        </div>
+        <div>
+          <label
+            for="update-first-name"
             class="block text-sm font-medium text-gray-700"
           >
             First Name
           </label>
           <input
             type="text"
-            name="firstName"
-            id="firstName"
+            name="update-first-name"
+            id="update-first-name"
             class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your first name"
           />
         </div>
         <div>
-          <label for="lastName" class="block text-sm font-medium text-gray-700">
+          <label
+            for="update-last-name"
+            class="block text-sm font-medium text-gray-700"
+          >
             Last Name
           </label>
           <input
             type="text"
-            name="lastName"
-            id="lastName"
+            name="update-last-name"
+            id="update-last-name"
             class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your last name"
           />
         </div>
         <div>
-          <label for="gender" class="block text-sm font-medium text-gray-700">
+          <label
+            for="update-gender"
+            class="block text-sm font-medium text-gray-700"
+          >
             Gender
           </label>
           <select
-            name="gender"
-            id="gender"
+            name="update-gender"
+            id="update-gender"
             class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
           >
             <option value="">Select gender</option>
@@ -154,12 +184,12 @@
         </div>
       </div>
       <div>
-        <label for="bio" class="block text-sm font-medium text-gray-700">
+        <label for="update-bio" class="block text-sm font-medium text-gray-700">
           Bio
         </label>
         <textarea
-          name="bio"
-          id="bio"
+          name="update-bio"
+          id="update-bio"
           rows="3"
           class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
           placeholder="Tell us about yourself..."
@@ -172,7 +202,7 @@
       >
         <div>
           <label
-            for="twoFactorEnabled"
+            for="update-two-factor-enabled"
             class="block text-sm font-medium text-gray-700"
           >
             Two-Factor Authentication
@@ -184,8 +214,8 @@
         <div class="relative">
           <input
             type="checkbox"
-            id="twoFactorEnabled"
-            name="twoFactorEnabled"
+            id="update-two-factor-enabled"
+            name="update-two-factor-enabled"
             class="peer sr-only"
           />
           <div

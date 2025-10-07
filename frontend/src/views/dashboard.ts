@@ -33,6 +33,32 @@ export async function renderDashboard(container: HTMLElement | null) {
 
   // Setup 2-player modal functionality
   await setup2PlayerModal();
+  setupTournament();
+}
+
+function setupTournament() {
+  const localTournamentBtn = document.getElementById("local-tournament");
+  if (!localTournamentBtn) return;
+
+  localTournamentBtn.addEventListener("click", () => {
+    const localTournamentState = localStorage.getItem("LocalTournamentState");
+    const container = document.getElementById("content");
+
+    if (localTournamentState === null) {
+      navigateTo("/tournament?type=local", container);
+    }
+    else {
+      const tournamentState = JSON.parse(localTournamentState);
+      if (!tournamentState)
+        return ;
+      if (tournamentState.match3.winner) {
+        localStorage.removeItem("LocalTournamentState")
+        navigateTo("/tournament?type=local", container);
+        return ;
+      }
+      navigateTo("/tournament-tree", container);
+    }
+  })
 }
 
 async function setup2PlayerModal() {

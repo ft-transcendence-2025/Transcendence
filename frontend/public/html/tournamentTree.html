@@ -1,11 +1,22 @@
 <div id="tournament-tree" class="mx-auto max-w-6xl p-4">
+
+  <!-- Leave button -->
+  <button
+    id="leave-tournament-btn"
+    title="Leave Game"
+    class="h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-(--color-primary-light) shadow-sm transition-colors hover:bg-(--color-primary)"
+  >
+    <i class="fa-solid fa-door-open"></i>
+  </button>
   <h2 class="mb-8 text-center text-3xl font-bold">Tournament Tree</h2>
 
   <!-- Tournament Layout -->
   <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+
     <!-- Semi-Finals Column -->
     <div class="space-y-6">
       <!-- Game 1 -->
+
       <div
         class="rounded-lg border-2 border-(--color-primary-light) bg-white p-4 shadow-md"
       >
@@ -27,11 +38,10 @@
             </span>
           </div>
         </div>
-        <div id="button-game1" class="mt-3 text-center">
+        <div class="mt-3 text-center">
           <button
+            id="button-game1" 
             class="rounded bg-(--color-secondary) px-4 py-2 text-sm font-medium hover:bg-(--color-secondary-light)"
-            data-game="1"
-            data-state="ready"
           >
             Start Game
           </button>
@@ -60,8 +70,9 @@
             </span>
           </div>
         </div>
-        <div id="button-game2" class="mt-3 text-center">
+        <div class="mt-3 text-center">
           <button
+            id="button-game2" 
             class="rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500"
             data-game="2"
             data-state="waiting"
@@ -95,8 +106,9 @@
             >
           </div>
         </div>
-        <div id="button-game3" class="mt-3 text-center">
+        <div class="mt-3 text-center">
           <button
+            id="button-game3" 
             class="rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500"
             data-game="final"
             data-state="waiting"

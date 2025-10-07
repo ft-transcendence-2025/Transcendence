@@ -1,9 +1,13 @@
-import { GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide, GameMode, degreesToRadians, getRandomAngle } from "./utils.js";
+import { 
+  GameState, Canvas, BallState, FetchData, PaddleState, PaddleSide,
+  GameMode, degreesToRadians, getRandomAngle 
+} from "./utils.js";
 import { Player } from "./Player.js";
 import { Game } from "./Game.js";
-import { getCurrentUsername } from "../../utils/userUtils.js";
+import { getCurrentUsername, getUserDisplayName } from "../../utils/userUtils.js";
 import { getUserAvatar } from "../../services/profileService.js";
 import { navigateTo } from "../../router/router.js";
+import { TournamentState, getRemoteTournamentState } from "../tournament/tournamentSetup.js";
 
 export class RemoteGame extends Game {
   private updateAIIntervalId: number | null = null;
@@ -11,15 +15,20 @@ export class RemoteGame extends Game {
   private side: string | null = null;
   private player1NameSet: boolean = false;
   private player2NameSet: boolean = false;
+  private gameMode: string;
+  private tournamentState: TournamentState | null = null;
 
-  constructor(data: FetchData) {
+  constructor(gameMode: string, gameId: number, side: string) {
     super()
 
+    this.gameMode = gameMode;
     const userName = getCurrentUsername();
-    this.joinGame(`wss://${window.location.host}/ws/game/${data.gameMode}/${data.id}/${userName}`);
-    this.side = data.side;
+    this.joinGame(`wss://${window.location.host}/ws/game/${gameMode}/${gameId}/${userName}/play`);
+    this.side = side;
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
-    this.leaveGame();
+    const button = document.querySelector("#leave-game-btn") as HTMLButtonElement;
+    if (button)
+      button.addEventListener("click", this.leaveGame)
   }
 
   public joinGame(url: string): void {
@@ -47,13 +56,38 @@ export class RemoteGame extends Game {
       }
 
       this.ws.addEventListener("message", (event) => {
-        this.gameState = JSON.parse(event.data) as GameState;
-        if (!this.gameState)
-          throw("gameState is undefined");
+        if (this.gameMode === "remotetournament") {
+          const gameState = JSON.parse(event.data) as TournamentState;
+          this.tournamentState = gameState;
+          if (!gameState)
+            throw("gameState is undefined");
+          this.gameState = gameState.gameState;
+        }
+        else {
+          this.gameState = JSON.parse(event.data) as GameState;
+          if (!this.gameState)
+            throw("gameState is undefined");
+        }
         this.renderNames();
       });
     });
+
     this.gameLoop();
+  }
+
+  public gameLoop(): void {
+    if (!this.gameState || !this.gameState.paddleLeft || !this.gameState.paddleRight) {
+      requestAnimationFrame(this.gameLoop.bind(this));
+      return ;
+    }
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.renderBall();
+    this.renderPaddle(this.gameState.paddleLeft);
+    this.renderPaddle(this.gameState.paddleRight);
+    this.checkPoints(this.ws);
+    this.checkIsGamePaused();
+    this.checkIsWaiting();
+    requestAnimationFrame(this.gameLoop.bind(this));
   }
 
   private async renderNames() {
@@ -89,21 +123,6 @@ export class RemoteGame extends Game {
     }
   }
 
-  public gameLoop(): void {
-    if (!this.gameState || !this.gameState.paddleLeft || !this.gameState.paddleRight) {
-      requestAnimationFrame(this.gameLoop.bind(this));
-      return ;
-    }
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.renderBall();
-    this.renderPaddle(this.gameState.paddleLeft);
-    this.renderPaddle(this.gameState.paddleRight);
-    this.checkPoints();
-    this.checkIsGamePaused();
-    this.checkIsWaiting();
-    requestAnimationFrame(this.gameLoop.bind(this));
-  }
-
   private checkIsWaiting(): void {
     if (!this.gameState)
       return ;
@@ -118,7 +137,7 @@ export class RemoteGame extends Game {
       return ;
     }
 
-    if (this.gameState.status === "playing" || mode !== "remote") {
+    if (this.gameState.status === "playing" || mode !== "remote" && mode !== "remotetournament") {
       if (display) {
         display.classList.add("hidden");
       }
@@ -148,7 +167,7 @@ export class RemoteGame extends Game {
     }
   }
 
-  private handleKeyDown(event: KeyboardEvent): void {
+  private async handleKeyDown(event: KeyboardEvent) {
     if (!this.gameState)
       return ;
     if (["ArrowDown", "ArrowUp"].includes(event.key)) {
@@ -159,29 +178,35 @@ export class RemoteGame extends Game {
       if (this.gameState.status !== "waiting for players") {
         this.sendPayLoad(event);
       }
-      if (this.gameState.score && this.gameState.score.winner && event.key === " "){
+      if (this.gameState.score && this.gameState.score.winner && event.key === " ") {
         if (this.ws)
           this.ws.close();
         const container = document.getElementById("content");
-        navigateTo("/dashboard", container);
+        if (this.gameMode === "remotetournament") {
+          this.remoteTournamentRedirect(event);
+        }
+        else {
+          navigateTo("/dashboard", container);
+        }
       }
     }
   }
 
-  private leaveGame(): void {
-    const button = document.querySelector("#leave-game-btn");
-    if (button) {
-      button.addEventListener("click", () => {
-        if (this.ws) {
-          this.ws.send(JSON.stringify({
-            type: "command",
-            key: "leave",
-          }));
-          this.ws.close();
-          const container = document.getElementById("content");
-          navigateTo("/dashboard", container);
-        }
-      });
+  private async remoteTournamentRedirect(event: KeyboardEvent) {
+    if (!this.gameState?.score)
+      return ;
+    const container = document.getElementById("content");
+
+    const userName = await getUserDisplayName() as string;
+    const player1 = document.querySelector("#player1-name")?.innerHTML.trim();
+    const player2 = document.querySelector("#player2-name")?.innerHTML.trim();
+
+    if ((player1 === userName && this.gameState.score.winner === 1) ||
+      player2 === userName && this.gameState.score.winner === 2) {
+      navigateTo("/tournament-tree?mode=remote", container);
+      return ;
     }
+    localStorage.removeItem("RemoteTournament");
+    navigateTo("/dashboard", container);
   }
 }
