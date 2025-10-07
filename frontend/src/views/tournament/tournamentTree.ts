@@ -50,10 +50,10 @@ async function connectRemoteTournament(container: HTMLElement) {
       setButtons(container, tournamentState);
     }
   });
-  leaveTournament(remoteTournamentState, container, ws);
+  leaveRemoteTournament(container, ws);
 }
 
-function leaveTournament(remoteTournamnetState: TournamentState, container: HTMLElement, ws: WebSocket) {
+function leaveRemoteTournament(container: HTMLElement, ws: WebSocket) {
   const leaveBtn = document.querySelector("#leave-tournament-btn");
   if (!leaveBtn) return ;
 
@@ -83,7 +83,42 @@ async function setupLocalTournamentTree(container: HTMLElement) {
 
   setNames(container, localTournamentState);
   setButtons(container, localTournamentState);
+  leaveLocalTournament(container);
 }
+
+function leaveLocalTournament(container: HTMLElement) {
+  const leaveBtn = document.querySelector("#leave-tournament-btn");
+  if (!leaveBtn) return ;
+
+  leaveBtn.addEventListener("click", async () => {
+    localStorage.removeItem("LocalTournamentPlayersInfo");
+    localStorage.removeItem("LocalTournamentState");
+    const baseUrl = window.location.origin;
+
+    const response = await fetch(`https://localhost:5000/api/tournament/local`, {
+      method: "DELETE",
+    });
+
+    const isLogin = isPlayerLogin();
+    if (isLogin) {
+      localStorage.removeItem("isLogin")
+      navigateTo("/", container);
+    }
+    else {
+      navigateTo("/dashboard", container);
+    }
+
+  })
+}
+
+function isPlayerLogin() {
+  const isLoginStr = localStorage.getItem("isLogin");
+  if (!isLoginStr) {
+    return false;
+  }
+  return true;
+}
+
 
 function setButtons(container: HTMLElement, tournamentState: TournamentState) {
   const localTournamentPlayersInfo = localStorage.getItem("LocalTournamentPlayersInfo");

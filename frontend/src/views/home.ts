@@ -1,4 +1,5 @@
 import { loadHtml } from "../utils/htmlLoader.js";
+import { navigateTo } from "../router/router.js";
 
 export async function renderHome(
   container: HTMLElement | null,
@@ -11,6 +12,7 @@ export async function renderHome(
   if (navbar) {
     navbar.classList.add("hidden");
   }
+  localStorage.removeItem("isLogin")
 
   // Fetch the component's HTML template
   container.innerHTML = await loadHtml("/html/home.html");
@@ -24,4 +26,12 @@ export async function renderHome(
       element.classList.add("hidden");
     });
   }
+
+  const noLogin = document.querySelector("#tournament-link")
+  noLogin?.addEventListener("click", () => {
+    localStorage.removeItem("LocalTournamentState");
+    localStorage.removeItem("LocalTournamentPlayersInfo");
+    localStorage.setItem("isLogin", "false")
+    navigateTo("/tournament?type=local", container);
+  })
 }
