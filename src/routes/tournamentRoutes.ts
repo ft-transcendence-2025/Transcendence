@@ -70,3 +70,23 @@ export function remoteTournament(req: FastifyRequest, reply: FastifyReply) {
     }
   }
 }
+
+export function deleteLocalTournament(req: FastifyRequest, reply: FastifyReply) {
+  const cookies = req.cookies;
+
+  if (cookies.localTournamentId === undefined) {
+    req.send("Tounament Not Found")
+  }
+  const tournamentId = parseInt(cookies.localTournamentId);
+  if (localTournaments.has(tournamentId)) {
+    const tournament = localTournaments.get(tournamentId);
+    tournament?.gameRoom.cleanup();
+    localTournaments.delete(tournamentId);
+    reply.clearCookie("localTournamentId", {
+      path: "/"
+    });
+    reply.send(`Tournament ${tournamentId} Deleted`);
+    return ;
+  }
+  req.send("Tounament Not Found")
+}

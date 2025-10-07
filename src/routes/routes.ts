@@ -5,7 +5,7 @@ import {
 } from "./gameRoutes.js";
 import {
   localTournamentSchema, localTournament,
-  remoteTournamentSchema, remoteTournament
+  remoteTournamentSchema, remoteTournament, deleteLocalTournament
 } from "./tournamentRoutes.js";
 
 let customId: number = 0;
@@ -13,6 +13,7 @@ let customId: number = 0;
 export async function tournament(fastify: FastifyInstance) {
   fastify.post("/remote", remoteTournamentSchema, remoteTournament)
   fastify.post("/local", localTournamentSchema, localTournament);
+  fastify.delete("/local", deleteLocalTournament);
 }
 
 export function getgame(fastify: FastifyInstance) {
