@@ -28,7 +28,7 @@ export class RemoteGame extends Game {
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
     const button = document.querySelector("#leave-game-btn") as HTMLButtonElement;
     if (button)
-      button.addEventListener("click", this.leaveGame)
+      button.addEventListener("click", this.leaveGame.bind(this))
   }
 
   public joinGame(url: string): void {
