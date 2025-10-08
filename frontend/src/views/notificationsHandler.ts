@@ -131,6 +131,7 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 				avatar: senderAvatar,
 				id: `${message.senderId}-${message.ts}`,
 				ts: message.ts,
+				gameId: parseInt(message.content, 10)
 			});
 			break;
 		case "GAME_INVITE_ACCEPTED":

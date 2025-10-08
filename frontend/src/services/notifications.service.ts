@@ -1,11 +1,11 @@
-import {  getChatManager } from "../app.js";
+import { getChatManager } from "../app.js";
 import { FriendshipStatus, getFriendshipStatus, getPendingRequests } from "./friendship.service.js";
 import { getUserAvatar } from "./profileService.js";
 
 type NotificationState = {
 	friendRequests: { requesterUsername: string; avatar: string; id: string }[];
 	messageNotifications: Map<string, number>;
-	gameInvites: { senderUsername: string; avatar: string; id: string; ts: number }[];
+	gameInvites: { senderUsername: string; avatar: string; id: string; ts: number, gameId: number }[];
 	tournamentTurns: Map<string, number>;
 };
 
@@ -85,7 +85,7 @@ class NotificationService {
 	}
 
 	// Game invite methods
-	addGameInvite(invite: { senderUsername: string; avatar: string; id: string; ts: number }) {
+	addGameInvite(invite: { senderUsername: string; avatar: string; id: string; ts: number, gameId: number }) {
 		if (!this.state.gameInvites.some(i => i.id === invite.id)) {
 			this.state.gameInvites.push(invite);
 		}
@@ -97,7 +97,7 @@ class NotificationService {
 		this.notifyListeners();
 	}
 
-	updateGameInvites(invites: { senderUsername: string; avatar: string; id: string; ts: number }[]) {
+	updateGameInvites(invites: { senderUsername: string; avatar: string; id: string; ts: number, gameId: number }[]) {
 		this.state.gameInvites = invites;
 		this.notifyListeners();
 	}

@@ -40,7 +40,6 @@ export async function renderPong(container: HTMLElement | null) {
   const gameMode = urlParams.get("mode") || "2player"; // default to "2player"
 
   await updatePlayerInfo(gameMode);
-
   if (gameMode === "localtournament" || gameMode === "remotetournament") {
     enterTournamentGame(gameMode);
   }
@@ -53,19 +52,19 @@ function enterTournamentGame(gameMode: string): void {
   if (gameMode === "localtournament") {
     const localTournamentStateString = localStorage.getItem("LocalTournamentState");
     const playerInfoString = localStorage.getItem("LocalTournamentPlayersInfo");
-    if (!localTournamentStateString || !playerInfoString) return ;
+    if (!localTournamentStateString || !playerInfoString) return;
 
     const localTournamentState = JSON.parse(localTournamentStateString);
     const playerInfo = JSON.parse(playerInfoString);
-    if (!localTournamentState || !playerInfo) return ;
+    if (!localTournamentState || !playerInfo) return;
 
-    setTournament(localTournamentState, gameMode,  playerInfo)
+    setTournament(localTournamentState, gameMode, playerInfo)
   }
   else if (gameMode === "remotetournament") {
     const remoteTournamentStateString = localStorage.getItem("RemoteTournament");
-    if (!remoteTournamentStateString) return ;
+    if (!remoteTournamentStateString) return;
     const remoteTournamentState = JSON.parse(remoteTournamentStateString);
-    if (!remoteTournamentState) return ;
+    if (!remoteTournamentState) return;
 
     setTournament(remoteTournamentState, gameMode)
   }
@@ -77,7 +76,7 @@ async function setTournament(tournamentState: TournamentState, gameMode: string,
   const player2 = document.querySelector("#player2-name");
   const player1Avatar = document.querySelector("#player1-avatar");
   const player2Avatar = document.querySelector("#player2-avatar");
-  if (!player1 || !player2 || !player1Avatar || !player2Avatar) return ;
+  if (!player1 || !player2 || !player1Avatar || !player2Avatar) return;
 
   // Set Names depending on which match
   if (!tournamentState.match1.winner) {
@@ -123,12 +122,18 @@ async function setTournament(tournamentState: TournamentState, gameMode: string,
 
 async function enterGame(gameMode: string, gameData: FetchData | null) {
   try {
-    const baseUrl = window.location.origin; 
+    const baseUrl = window.location.origin;
     const user = getCurrentUsername();
-
-    if (gameMode === "remote") {
+    if (gameMode === "custom" ) {
+      const params = new URLSearchParams(window.location.search);
+      const modeParam = params.get("mode") || gameMode;
+      const gameIdParam = params.get("gameId") || "0";
+      const sideParam = params.get("side") || "left";
+      new RemoteGame(modeParam, parseInt(gameIdParam, 10), sideParam);
+    }
+    else if (gameMode === "remote") {
       if (!gameData) {
-        const response = await request(`${baseUrl}/api/getgame/remote`, {
+        const response = await request(`${baseUrl}/api/getgame/${gameMode}`, {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({

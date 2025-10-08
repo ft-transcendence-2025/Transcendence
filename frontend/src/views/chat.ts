@@ -11,6 +11,15 @@ import { getCurrentUsername } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
 import { notificationService } from "../services/notifications.service.js";
 import { chatManager } from "../app.js";
+import { getHeaders, request } from "../utils/api.js";
+import { BASE_URL } from "../config/config.js";
+import { RemoteGame } from "./game/RemoteGame.js";
+
+export interface GameInviteResponse {
+  state: string;
+  gameMode: string;
+  id: string;
+}
 
 export type Friend = {
   id: string;
@@ -285,18 +294,34 @@ class ChatComponent {
 
     const sendGameInviteBtn = chatContainer.querySelector(".menu-send-game-invite") as HTMLButtonElement;
     sendGameInviteBtn.addEventListener("click", async () => {
-      chatMenu.classList.add("hidden");
-      // Send game invite through notification service
-      const message: NotificationMessage = {
-        kind: "notification/new",
-        type: "GAME_INVITE",
-        recipientId: friend.username,
-        senderId: this.currentUserId,
-        content: `${this.currentUserId} invited you to play a game!`,
-        ts: Date.now(),
-      };
-      await this.sendMessage(friend.username, message);
-      alert(`Game invite sent to ${friend.username}!`);
+      try {
+        const response = await request(`${BASE_URL}/getgame/custom`, {
+          method: "POST",
+          headers: getHeaders(),
+          body: JSON.stringify({
+            player1: this.currentUserId,
+            player2: friend.username,
+          }),
+        }) as GameInviteResponse;
+
+        chatMenu.classList.add("hidden");
+        // Send game invite through notification service
+        const message: NotificationMessage = {
+          kind: "notification/new",
+          type: "GAME_INVITE",
+          recipientId: friend.username,
+          senderId: this.currentUserId,
+          content: `${response.id}`,
+          ts: Date.now(),
+        };
+        await this.sendMessage(friend.username, message);
+        alert(`Game invite sent to ${friend.username}!`);
+        navigateTo(`/pong?mode=custom?gameId=${response.id}&side=left`, document.getElementById("content"));
+      } catch (err) {
+        console.log(err);
+        alert("could not create game room."!);
+        return;
+      }
     });
 
     const clearChatBtn = chatContainer.querySelector(".menu-clear-chat") as HTMLButtonElement;

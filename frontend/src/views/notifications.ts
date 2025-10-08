@@ -181,6 +181,7 @@ function updateGameInvitesUI(ul: HTMLElement) {
         notificationService.updateGameInvites(
           invites.filter((i) => i.id !== invite.id)
         );
+        navigateTo(`/pong?mode=custom?gameId=${invite.gameId}&side=right`, document.getElementById("content"));
       });
 
       rejectBtn.addEventListener("click", async (e) => {
