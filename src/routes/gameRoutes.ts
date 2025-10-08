@@ -25,7 +25,7 @@ export const customGameSchema = {
   schema: {
     body: {
       type: "object",
-      required: ["name"],
+      required: ["player1", "player2"],
       properties: {
         player1: { type: "string" },
         player2: { type: "string" },
