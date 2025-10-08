@@ -2,7 +2,7 @@ import WebSocket from "ws"
 import { PayLoad } from "./../game/Game.js";
 import {
   remoteTournaments, localTournaments, localGameRooms,
-  remoteGameRooms
+  remoteGameRooms, customGameRoom
 } from "./../server.js";
 import { clearLocalGame, playerLeftGame } from "./../gameUtils.js"
 import { LocalGameRoom } from "../game/LocalGameRoom.js";
@@ -12,6 +12,64 @@ import { RemoteTournament } from "./../tournament/RemoteTournament.js";
 
 export interface Connection {
   [mode: string]: (ws: WebSocket, context: any) => void;
+}
+
+export function customGameConnection(ws: WebSocket, context: any) {
+  const gameId: number = context.gameId;
+  const playerName: string = context.playerName;
+
+  let gameRoom: RemoteGameRoom | undefined = customGameRoom.get(gameId);
+  if (gameRoom === undefined) {
+    ws.close();
+    return;
+  }
+  if (gameRoom.addPlayer(ws, playerName) == -1) {
+    ws.send(JSON.stringify({ 
+      status: "Player not allowed in this room",
+      canvas: null,
+      paddleLeft: null,
+      paddleRight: null,
+      ball: null,
+      score: null,
+      isPaused: false,
+    }))
+    return ;
+  };
+  gameRoom.startGameLoop();
+
+  ws.on("message", (data) => {
+    const msg: PayLoad = JSON.parse(data.toString());
+    if (gameRoom !== undefined) {
+      if (msg.type === "command" && msg.key === "leave") {
+        playerLeftGame(ws, gameRoom);
+      }
+      else {
+        gameRoom.handleEvents(msg);
+      }
+    }
+  });
+
+  ws.on("close", () => {
+    if (gameRoom !== undefined) {
+      if (gameRoom.player1 === ws){
+        gameRoom.player1.close();
+        gameRoom.player1 = null;
+      }
+      if (gameRoom.player2 === ws){
+        gameRoom.player2.close();
+        gameRoom.player2 = null;
+      }
+    }
+  });
+
+  ws.on("error", (e) => {
+    console.log(e);
+    if (gameRoom !== undefined) {
+      if (gameRoom.id)
+        remoteGameRooms.delete(gameRoom.id);
+      gameRoom.cleanup(); 
+    }
+  });
 }
 
 export function localGameConnection(ws: WebSocket, context: any) {

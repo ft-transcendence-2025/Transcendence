@@ -1,7 +1,8 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { createCustomGame } from "./routeUtils.js";
 import {
-  localGameRequest, remoteGameSchema, remoteGame
+  localGameRequest, remoteGameSchema, remoteGame, customGameSchema,
+  customGame
 } from "./gameRoutes.js";
 import {
   localTournamentSchema, localTournament,
@@ -19,21 +20,5 @@ export async function tournament(fastify: FastifyInstance) {
 export function getgame(fastify: FastifyInstance) {
   fastify.get("/local", localGameRequest);
   fastify.post("/remote", remoteGameSchema, remoteGame);
-
-  fastify.post("/custom", {
-    schema: {
-      body: {
-        type: "object",
-        required: ["name"],
-        properties: {
-          name: { type: "string" },
-        }
-      }
-    }
-  }, (req: FastifyRequest, reply: FastifyReply) => {
-      const body = req.body as {name: string}
-      const playerName = body.name
-
-      createCustomGame(reply, customId++, playerName);
-    });
+  fastify.post("/custom", customGameSchema, customGame);
 }

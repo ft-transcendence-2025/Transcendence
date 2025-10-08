@@ -1,11 +1,11 @@
 import WebSocket, { WebSocketServer } from "ws"
 import {
   Upgrade, upgradeRemoteTournament, upgradeLocalTournament,
-  upgradeLocalGame, upgradeRemoteGame 
+  upgradeLocalGame, upgradeRemoteGame, upgradeCustomGame
 } from "./upgrade.js";
 import {
   Connection, localGameConnection, remoteConnection,
-  localTournamentConnection, remoteTournamentConnection 
+  localTournamentConnection, remoteTournamentConnection, customGameConnection
 } from "./connection.js";
 
 
@@ -17,6 +17,7 @@ export function webSocketConnection(server: any) {
 
 function connection(wss: WebSocketServer): void {
   const connect: Connection = {
+    custom: customGameConnection,
     local: localGameConnection,
     remote: remoteConnection,
     localtournament: localTournamentConnection,
@@ -44,6 +45,7 @@ function connection(wss: WebSocketServer): void {
 
 function upgrade(server: any, wss: WebSocketServer): void {
   const upgradePath: Upgrade = {
+    "/game/custon": upgradeCustomGame,
     "/game/local": upgradeLocalGame,
     "/game/remote": upgradeRemoteGame,
     "/game/localtournament": upgradeLocalTournament,

@@ -1,9 +1,11 @@
 #!/bin/sh
 
+cd ..
+
 while [ 1 ]; do
   echo "\n"
 
-  docker logs pong
+  docker compose logs pong
 
   echo "\n"
 

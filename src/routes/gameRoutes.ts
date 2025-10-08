@@ -1,12 +1,13 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { 
   createLocalGame, createRemoteGame,
-  reenterGameRoom, joinGameRoom,
+  reenterGameRoom, joinGameRoom, createCustomGame
 } from "./routeUtils.js";
 import { localGameRooms } from "../server.js";
 
 let localGameId: number = 0;
 let remoteGameId: number = 0;
+let customId: number = 0;
 
 export const remoteGameSchema = {
   schema: {
@@ -15,6 +16,19 @@ export const remoteGameSchema = {
       required: ["name"],
       properties: {
         name: { type: "string" },
+      }
+    }
+  }
+}
+
+export const customGameSchema = {
+  schema: {
+    body: {
+      type: "object",
+      required: ["name"],
+      properties: {
+        player1: { type: "string" },
+        player2: { type: "string" },
       }
     }
   }
@@ -59,4 +73,12 @@ export function remoteGame(req: FastifyRequest, reply: FastifyReply) {
       }
     }
   }
+}
+
+export function customGame(req: FastifyRequest, reply: FastifyReply) {
+  const body = req.body as { player1: string, player2: string}
+  const player1 = body.player1;
+  const player2 = body.player2;
+
+  createCustomGame(reply, customId++, player1, player2);
 }

@@ -4,6 +4,25 @@ export interface Upgrade {
   [path: string]: (req: any, socket: any, head: any, wss: WebSocketServer) => void;
 }
 
+export function upgradeCustomGame(req: any, socket: any, head: any, wss: WebSocketServer) {
+  const mode = "custom";
+  const pathname = req.url?.split("?")[0] || "";
+  const gameId: number = parseInt(pathname.split('/')[3]);
+  const playerName: string = pathname.split('/')[4];
+
+  if (isNaN(gameId)) {
+    return ;
+  }
+
+  wss.handleUpgrade(req, socket, head, (ws) => {
+    wss.emit('connection', ws, req, {
+      gameId,
+      mode,
+      playerName
+    });
+  });
+}
+
 export function upgradeRemoteGame(req: any, socket: any, head: any, wss: WebSocketServer) {
   const mode = "remote";
   const pathname = req.url?.split("?")[0] || "";
