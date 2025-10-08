@@ -122,10 +122,12 @@ async function setTournament(tournamentState: TournamentState, gameMode: string,
 
 async function enterGame(gameMode: string, gameData: FetchData | null) {
   try {
+    console.log("log do enterGame: ", gameMode);
     const baseUrl = window.location.origin;
     const user = getCurrentUsername();
     if (gameMode === "custom" ) {
       const params = new URLSearchParams(window.location.search);
+      console.log("fui chamado para um game custom: ", params);
       const modeParam = params.get("mode") || gameMode;
       const gameIdParam = params.get("gameId") || "0";
       const sideParam = params.get("side") || "left";

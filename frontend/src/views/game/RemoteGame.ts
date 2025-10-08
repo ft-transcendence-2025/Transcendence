@@ -34,6 +34,7 @@ export class RemoteGame extends Game {
   public joinGame(url: string): void {
     if (!this.ws) {
       this.ws = new WebSocket(url)
+      console.log(this.ws);
       if (!this.ws)
         throw("Failed To Connect WebSocket");
       this.openSocket();

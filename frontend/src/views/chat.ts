@@ -316,7 +316,7 @@ class ChatComponent {
         };
         await this.sendMessage(friend.username, message);
         alert(`Game invite sent to ${friend.username}!`);
-        navigateTo(`/pong?mode=custom?gameId=${response.id}&side=left`, document.getElementById("content"));
+        navigateTo(`/pong?mode=custom&gameId=${response.id}&side=left`, document.getElementById("content"));
       } catch (err) {
         console.log(err);
         alert("could not create game room."!);
