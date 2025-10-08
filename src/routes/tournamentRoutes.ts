@@ -75,8 +75,8 @@ export function deleteLocalTournament(req: FastifyRequest, reply: FastifyReply) 
   const cookies = req.cookies;
 
   if (cookies.localTournamentId === undefined) {
-    reply.send("Tounament Not Found")
-    return ;
+    reply.send("Tournament Not Found");
+    return;
   }
   const tournamentId = parseInt(cookies.localTournamentId);
   if (localTournaments.has(tournamentId)) {
