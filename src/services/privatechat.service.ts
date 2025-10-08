@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { NotificationMessage } from '../types/message.types';
 
 export async function sendPendingMessages(userId: string, socket: any) {
   const pending = await prisma.message.findMany({
@@ -103,6 +104,18 @@ export async function markMessagesAsRead(userId: string, conversationId: string)
   }
 }
 
+/**
+ * Handle notification messages between users
+ * Supports various notification types including:
+ * - Friend requests (FRIEND_REQUEST, FRIEND_REQUEST_ACCEPTED, FRIEND_REQUEST_DECLINED)
+ * - Friend blocking (FRIEND_BLOCKED, FRIEND_UNBLOCKED)
+ * - Game invites (GAME_INVITE, GAME_INVITE_ACCEPTED, GAME_INVITE_DECLINED)
+ * 
+ * @param users - Map of connected users
+ * @param userId - ID of the user sending the notification
+ * @param msg - Notification message containing recipientId, type, and content
+ * @param originatingSocket - The WebSocket connection that sent the message
+ */
 export async function handleNotification(users: Map<string, any>, userId: string, msg: any, originatingSocket: any) {
   const { recipientId, type, content } = msg;
   if (!recipientId || !content || !type) return;
@@ -114,12 +127,21 @@ export async function handleNotification(users: Map<string, any>, userId: string
     }
     return;
   }
+
+  // Log game invite related notifications
+  if (type === 'GAME_INVITE' || type === 'GAME_INVITE_ACCEPTED' || type === 'GAME_INVITE_DECLINED') {
+    console.log(`Game invite notification: ${type} from ${userId} to ${recipientId}`);
+  }
+
+  // Send notification to recipient if they're online
   if (users.has(recipientId)) {
     const recipientConn = users.get(recipientId);
     for (const ws of recipientConn.connections) {
       ws.send(JSON.stringify({ event: 'notification/new', ...msg }));
     }
   }
+
+  // Send notification to all sender's connections (except the originating one)
   for (const ws of sender.connections) {
     if (ws !== originatingSocket) {
       ws.send(JSON.stringify({ event: 'notification/new', ...msg , recipientId}));

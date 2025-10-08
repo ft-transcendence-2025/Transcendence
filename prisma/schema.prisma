@@ -1,9 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  provider      = "prisma-client-js"
+  output        = "../generated/prisma"
   binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
 }
 
@@ -13,34 +10,33 @@ datasource db {
 }
 
 model Conversation {
-  id        String      @id @default(uuid())
+  id        String    @id @default(uuid())
   user1Id   String
   user2Id   String
-  delivered      Boolean      @default(false) // Track if the message was delivered
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  delivered Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
 
-  // Relations
-  messages Message[]
-
-  // Ensure unique conversation between two users
   @@unique([user1Id, user2Id])
   @@map("conversations")
 }
 
 model Message {
-  id             String         @id @default(uuid())
+  id             String       @id @default(uuid())
   content        String
-  type           MessageType @default(TEXT)
+  type           MessageType  @default(TEXT)
   senderId       String
   conversationId String
-  delivered      Boolean      @default(false) // Track if the message was delivered
+  delivered      Boolean      @default(false)
   read           Boolean      @default(false)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
-
-  // Relations
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  gifProvider    String?
+  gifThumbnail   String?
+  gifTitle       String?
+  gifUrl         String?
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   @@map("messages")
 }
@@ -50,4 +46,5 @@ enum MessageType {
   IMAGE
   FILE
   SYSTEM
+  GAME_INVITE
 }
