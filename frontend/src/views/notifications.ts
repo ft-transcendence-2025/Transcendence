@@ -14,7 +14,10 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
 
   const tabContents: HTMLElement[] = [];
   const tabLabels = ["Friend Requests", "Game Invites"];
-  const tabCounts = [notificationService.getState().friendRequests.length, 0];
+  const tabCounts = [
+    notificationService.getState().friendRequests.length,
+    notificationService.getState().gameInvites.length
+  ];
 
   tabLabels.forEach((label, index) => {
     const btn = document.createElement("button");
@@ -62,31 +65,19 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
   notificationService.subscribe(() => {
     updateFriendRequestsUI(ul);
     updateTabBadge(0, notificationService.getState().friendRequests.length);
+    updateGameInvitesUI(gameInvitesUl);
+    updateTabBadge(1, notificationService.getState().gameInvites.length);
   });
 
   // Initial rendering of friend requests
   updateFriendRequestsUI(ul);
 
   // Fill the second tab (game invites)
-  tabContents[1].innerHTML = `
-	<div class="flex flex-col items-center my-30 justify-center py-8">
-	  <img src="/assets/icons/noGameInvite.gif" alt="No requests" class="w-20 h-20 mb-4 " />
-	  <span style="
-		font-family: var(--font-poppins), monospace;
-		font-size: 1.25rem;
-		font-weight: 600;
-		color: var(--color-primary-dark);
-		margin-bottom: 0.5rem;
-		letter-spacing: 1px;
-		background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		text-shadow: 0 2px 8px rgba(0,0,0,0.08);
-	  ">
-		No Game Invites
-	  </span>
-	</div>
-  `;
+  const gameInvitesUl = document.createElement("ul");
+  tabContents[1].appendChild(gameInvitesUl);
+
+  // Initial rendering of game invites
+  updateGameInvitesUI(gameInvitesUl);
 
   return container;
 }
@@ -159,6 +150,97 @@ function updateFriendRequestsUI(ul: HTMLElement) {
 	  </div>
 	`;
   }
+}
+
+function updateGameInvitesUI(ul: HTMLElement) {
+  const invites = notificationService.getState().gameInvites;
+
+  ul.innerHTML = ""; // Clear existing content
+  if (invites.length > 0) {
+    invites.forEach((invite) => {
+      const li = document.createElement("li");
+      li.className =
+        "flex items-center px-4 py-2 cursor-pointer hover:bg-(--color-primary)/30 rounded-xl";
+      li.innerHTML = `
+        <img src="${invite.avatar}" class="w-8 h-8 object-cover rounded-full"
+          onerror="this.onerror=null;this.src='assets/avatars/panda.png';"/>
+        <span class="ml-5 text-(--color-secondary-light)">${invite.senderUsername}</span>
+        <div class="flex gap-4 ml-auto justify-end">
+          <button title="Accept" class="accept-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-primary) cursor-pointer">check_circle</button>
+          <button title="Reject" class="reject-btn material-symbols-outlined text-3xl text-(--color-secondary-light) hover:text-(--color-accent) cursor-pointer">cancel</button>
+        </div>
+      `;
+      ul.appendChild(li);
+
+      const acceptBtn = li.querySelector(".accept-btn") as HTMLButtonElement;
+      const rejectBtn = li.querySelector(".reject-btn") as HTMLButtonElement;
+      
+      acceptBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        await respondGameInvite(invite.id, invite.senderUsername, "ACCEPTED");
+        notificationService.updateGameInvites(
+          invites.filter((i) => i.id !== invite.id)
+        );
+      });
+
+      rejectBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        await respondGameInvite(invite.id, invite.senderUsername, "DECLINED");
+        notificationService.updateGameInvites(
+          invites.filter((i) => i.id !== invite.id)
+        );
+      });
+
+      li.addEventListener("click", (e) => {
+        if (
+          (e.target as HTMLElement).closest(".accept-btn") ||
+          (e.target as HTMLElement).closest(".reject-btn")
+        ) {
+          return;
+        }
+        navigateTo(`/friend-profile?username=${encodeURIComponent(invite.senderUsername)}`, document.getElementById("content"));
+      });
+    });
+  } else {
+    ul.innerHTML = `
+	  <div class="flex flex-col my-30 items-center justify-center py-8">
+		<img src="/assets/icons/noGameInvite.gif" alt="No game invites" class="w-20 h-20 mb-4 " />
+		<span style="
+		  font-family: var(--font-poppins), monospace;
+		  font-size: 1.25rem;
+		  font-weight: 600;
+		  color: var(--color-primary-dark);
+		  margin-bottom: 0.5rem;
+		  letter-spacing: 1px;
+		  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary-light) 100%);
+		  -webkit-background-clip: text;
+		  -webkit-text-fill-color: transparent;
+		  text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+		">
+		  No Game Invites
+		</span>
+	  </div>
+	`;
+  }
+}
+
+async function respondGameInvite(inviteId: string, senderUsername: string, response: "ACCEPTED" | "DECLINED") {
+  const chatManager = (await import("../app.js")).getChatManager();
+  const currentUser = (await import("../utils/userUtils.js")).getCurrentUsername();
+  
+  const message = {
+    kind: "notification/new",
+    type: response === "ACCEPTED" ? "GAME_INVITE_ACCEPTED" : "GAME_INVITE_DECLINED",
+    recipientId: senderUsername,
+    senderId: currentUser,
+    content: response === "ACCEPTED" 
+      ? `${currentUser} accepted your game invite!`
+      : `${currentUser} declined your game invite.`,
+    ts: Date.now(),
+    inviteId: inviteId
+  };
+  
+  chatManager.chatService.sendPrivateMessage(message);
 }
 
 function updateTabBadge(tabIndex: number, count: number) {

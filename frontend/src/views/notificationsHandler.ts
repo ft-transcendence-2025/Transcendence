@@ -78,6 +78,15 @@ export async function handleSelfNotification(message: IncomingMessage) {
 		case "FRIEND_UNBLOCKED":
 			updateFriendshipStatusCache(message.recipientId, FriendshipStatus.DECLINED, undefined);
 			break;
+		case "GAME_INVITE_ACCEPTED":
+			notificationService.removeGameInvite(message.recipientId);
+			// TODO: Start game setup when game logic is implemented
+			console.log(`${message.recipientId} accepted your game invite!`);
+			break;
+		case "GAME_INVITE_DECLINED":
+			notificationService.removeGameInvite(message.recipientId);
+			console.log(`${message.recipientId} declined your game invite.`);
+			break;
 	}
 	notificationService.triggerUpdate();
 }
@@ -114,6 +123,22 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 			break;
 		case "FRIEND_UNBLOCKED":
 			updateFriendshipStatusCache(message.senderId, FriendshipStatus.DECLINED, undefined);
+			break;
+		case "GAME_INVITE":
+			const senderAvatar = await getUserAvatar(message.senderId);
+			notificationService.addGameInvite({
+				senderUsername: message.senderId,
+				avatar: senderAvatar,
+				id: `${message.senderId}-${message.ts}`,
+				ts: message.ts,
+			});
+			break;
+		case "GAME_INVITE_ACCEPTED":
+			// TODO: Start game setup when game logic is implemented
+			console.log(`${message.senderId} accepted your game invite!`);
+			break;
+		case "GAME_INVITE_DECLINED":
+			console.log(`${message.senderId} declined your game invite.`);
 			break;
 	}
 	notificationService.triggerUpdate();

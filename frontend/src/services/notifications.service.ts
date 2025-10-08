@@ -5,7 +5,7 @@ import { getUserAvatar } from "./profileService.js";
 type NotificationState = {
 	friendRequests: { requesterUsername: string; avatar: string; id: string }[];
 	messageNotifications: Map<string, number>;
-	gameInvites: Map<string, number>;
+	gameInvites: { senderUsername: string; avatar: string; id: string; ts: number }[];
 	tournamentTurns: Map<string, number>;
 };
 
@@ -13,7 +13,7 @@ class NotificationService {
 	private state: NotificationState = {
 		friendRequests: [],
 		messageNotifications: new Map(),
-		gameInvites: new Map(),
+		gameInvites: [],
 		tournamentTurns: new Map(),
 	};
 
@@ -84,6 +84,24 @@ class NotificationService {
 		this.notifyListeners();
 	}
 
+	// Game invite methods
+	addGameInvite(invite: { senderUsername: string; avatar: string; id: string; ts: number }) {
+		if (!this.state.gameInvites.some(i => i.id === invite.id)) {
+			this.state.gameInvites.push(invite);
+		}
+		this.notifyListeners();
+	}
+
+	removeGameInvite(senderUsername: string) {
+		this.state.gameInvites = this.state.gameInvites.filter(i => i.senderUsername !== senderUsername);
+		this.notifyListeners();
+	}
+
+	updateGameInvites(invites: { senderUsername: string; avatar: string; id: string; ts: number }[]) {
+		this.state.gameInvites = invites;
+		this.notifyListeners();
+	}
+
 	async fetchAllNotifications() {
 		try {
 			const raw = (await getPendingRequests()) as any[];
@@ -108,7 +126,7 @@ class NotificationService {
 	clear() {
 		this.state.friendRequests = [];
 		this.state.messageNotifications.clear();
-		this.state.gameInvites.clear();
+		this.state.gameInvites = [];
 		this.state.tournamentTurns.clear();
 		this.notifyListeners();
 	}

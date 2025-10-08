@@ -188,7 +188,7 @@ function updateNavbarBadgesFromState() {
   const state = notificationService.getState();
 
   // Update the notifications badge (sum of friend requests and game invites)
-  const totalNotifications = state.friendRequests.length + state.gameInvites.size;
+  const totalNotifications = state.friendRequests.length + state.gameInvites.length;
   if (totalNotifications > 0) {
     notificationsBadge?.classList.remove("hidden");
   } else {

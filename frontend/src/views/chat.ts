@@ -181,8 +181,33 @@ class ChatComponent {
         </span>
       </span>
       <span class=" font-bold  ">${friend.username}</span>
-      <div class="flex gap-2">
+      <div class="flex gap-2 items-center relative">
+        <button class="menu-button px-2 py-1 hover:bg-[var(--color-primary-darker)] rounded text-lg" title="Menu">⋮</button>
         <button class="close px-1 hover:bg-[var(--color-primary-darker)] rounded">x</button>
+        <div class="chat-menu hidden absolute right-0 top-8 bg-[var(--color-background)] border border-[var(--color-primary)] rounded-lg shadow-lg z-50 min-w-48">
+          <ul class="py-1">
+            <li>
+              <button class="menu-view-profile w-full text-left px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-primary-light)] transition-colors">
+                View Profile
+              </button>
+            </li>
+            <li>
+              <button class="menu-send-game-invite w-full text-left px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-primary-light)] transition-colors">
+                Send Game Invite
+              </button>
+            </li>
+            <li>
+              <button class="menu-clear-chat w-full text-left px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-primary-light)] transition-colors">
+                Clear Chat History
+              </button>
+            </li>
+            <li>
+              <button class="menu-block-user w-full text-left px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-accent)] hover:text-white transition-colors">
+                Block User
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
       </div>
       <div class="flex-1 p-2 overflow-y-auto text-sm bg-[var(--color-background)]" id="messages">
@@ -232,6 +257,70 @@ class ChatComponent {
     });
 
     chatContainer.querySelector(".close")!.addEventListener("click", () => this.closeChat(friend.username));
+
+    // Menu button and dropdown functionality
+    const menuButton = chatContainer.querySelector(".menu-button") as HTMLButtonElement;
+    const chatMenu = chatContainer.querySelector(".chat-menu") as HTMLElement;
+
+    // Toggle menu on button click
+    menuButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      chatMenu.classList.toggle("hidden");
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      if (!chatContainer.contains(target) || (!menuButton.contains(target) && !chatMenu.contains(target))) {
+        chatMenu.classList.add("hidden");
+      }
+    });
+
+    // Menu action handlers
+    const viewProfileBtn = chatContainer.querySelector(".menu-view-profile") as HTMLButtonElement;
+    viewProfileBtn.addEventListener("click", () => {
+      chatMenu.classList.add("hidden");
+      navigateTo(`/friend-profile?username=${friend.username}`, document.getElementById("content"));
+    });
+
+    const sendGameInviteBtn = chatContainer.querySelector(".menu-send-game-invite") as HTMLButtonElement;
+    sendGameInviteBtn.addEventListener("click", async () => {
+      chatMenu.classList.add("hidden");
+      // Send game invite through notification service
+      const message: NotificationMessage = {
+        kind: "notification/new",
+        type: "GAME_INVITE",
+        recipientId: friend.username,
+        senderId: this.currentUserId,
+        content: `${this.currentUserId} invited you to play a game!`,
+        ts: Date.now(),
+      };
+      await this.sendMessage(friend.username, message);
+      alert(`Game invite sent to ${friend.username}!`);
+    });
+
+    const clearChatBtn = chatContainer.querySelector(".menu-clear-chat") as HTMLButtonElement;
+    clearChatBtn.addEventListener("click", () => {
+      chatMenu.classList.add("hidden");
+      if (confirm(`Are you sure you want to clear chat history with ${friend.username}?`)) {
+        this.messages.set(friend.username, []);
+        this.updateChatMessages(friend.username);
+      }
+    });
+
+    const blockUserBtn = chatContainer.querySelector(".menu-block-user") as HTMLButtonElement;
+    blockUserBtn.addEventListener("click", async () => {
+      chatMenu.classList.add("hidden");
+      if (confirm(`Are you sure you want to block ${friend.username}?`)) {
+        const blockMessage: UserBlockMessageResponse = {
+          kind: "user/block",
+          recipientId: friend.username,
+        };
+        await this.sendMessage(friend.username, blockMessage);
+        this.closeChat(friend.username);
+        alert(`${friend.username} has been blocked.`);
+      }
+    });
 
     this.container.querySelector("#chat-windows")!.appendChild(chatContainer);
     this.openChats.set(friend.username, chatContainer);
