@@ -23,7 +23,23 @@ export function customGameConnection(ws: WebSocket, context: any) {
     ws.close();
     return;
   }
-  if (gameRoom.addPlayer(ws, playerName) == -1) {
+
+  if (gameRoom.player1Name === playerName || gameRoom.player2Name === playerName) {
+    if (gameRoom.addPlayer(ws, playerName) == -1) {
+      ws.send(JSON.stringify({ 
+        status: "Player not allowed in this room",
+        canvas: null,
+        paddleLeft: null,
+        paddleRight: null,
+        ball: null,
+        score: null,
+        isPaused: false,
+      }))
+      return ;
+    };
+    gameRoom.startGameLoop();
+  }
+  else {
     ws.send(JSON.stringify({ 
       status: "Player not allowed in this room",
       canvas: null,
@@ -34,8 +50,8 @@ export function customGameConnection(ws: WebSocket, context: any) {
       isPaused: false,
     }))
     return ;
-  };
-  gameRoom.startGameLoop();
+  }
+
 
   ws.on("message", (data) => {
     const msg: PayLoad = JSON.parse(data.toString());
