@@ -96,10 +96,10 @@ async function setTournament(tournamentState: TournamentState, gameMode: string,
     // set Avatars
     for (const i in playerInfo) {
       if (playerInfo[i].userDisplayName === player1.textContent) {
-        player1Avatar.setAttribute("src", `/assets/avatars/${playerInfo[i].avatar}`)
+        player1Avatar.setAttribute("src", `${playerInfo[i].avatar}`)
       }
       else if (playerInfo[i].userDisplayName === player2.textContent) {
-        player2Avatar.setAttribute("src", `/assets/avatars/${playerInfo[i].avatar}`)
+        player2Avatar.setAttribute("src", `${playerInfo[i].avatar}`)
       }
     }
     const localGame = new LocalGame(gameMode, tournamentState.id);
