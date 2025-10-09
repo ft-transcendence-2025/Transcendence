@@ -21,9 +21,9 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
 
   tabLabels.forEach((label, index) => {
     const btn = document.createElement("button");
-    btn.className = `tab-button flex-1 py-2 font-bold cursor-pointer ${index === 0
-      ? "border-b-2 border-(--color-primary) text-(--color-secondary-light)"
-      : "text-(--color-text-primary)"
+    btn.className = `tab-button flex-1 py-3 font-bold cursor-pointer transition-all duration-200 ${index === 0
+      ? "border-b-4 border-(--color-primary) text-white bg-(--color-primary)/20"
+      : "text-(--color-secondary-light) hover:bg-(--color-primary)/10"
       }`;
     btn.textContent = label;
 
@@ -49,10 +49,13 @@ export async function getNotificationsContent(): Promise<HTMLElement> {
         tab.style.display = i === index ? "block" : "none";
       });
       tabs.querySelectorAll(".tab-button").forEach((b, i) => {
-        b.classList.toggle("border-b-2", i === index);
-        b.classList.toggle("border-(--color-primary)", i === index);
-        b.classList.toggle("text-(--color-secondary-light)", i === index);
-        b.classList.toggle("text-(--color-text-primary)", i !== index);
+        if (i === index) {
+          b.classList.add("border-b-4", "border-(--color-primary)", "text-white", "bg-(--color-primary)/20");
+          b.classList.remove("text-(--color-secondary-light)", "hover:bg-(--color-primary)/10");
+        } else {
+          b.classList.remove("border-b-4", "border-(--color-primary)", "text-white", "bg-(--color-primary)/20");
+          b.classList.add("text-(--color-secondary-light)", "hover:bg-(--color-primary)/10");
+        }
       });
     });
   });
