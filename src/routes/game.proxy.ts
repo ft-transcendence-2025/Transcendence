@@ -10,14 +10,14 @@ const gameProxy: FastifyPluginAsync = async (app: any) => {
 		upstream: upstream.replace("ws://", "http://"),
 		prefix: "/api/getgame",
 		rewritePrefix: "/getgame",
-		preHandler: app.authenticate,
+		// preHandler: app.authenticate,
 	});
 	// HTTP REQUESTS
 	app.register(proxy, {
 		upstream: upstream.replace("ws://", "http://"),
 		prefix: "/api/tournament",
 		rewritePrefix: "/tournament",
-		preHandler: app.authenticate,
+		// preHandler: app.authenticate,
 	});
 
 	const wsReconnect = {
