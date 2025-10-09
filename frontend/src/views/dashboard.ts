@@ -7,6 +7,7 @@ import {
 } from "../utils/userUtils.js";
 import { RemoteGame } from "./game/RemoteGame.js";
 import { FetchData } from "./game/utils.js";
+import { toast } from "../utils/toast.js";
 
 // Available avatars for both players
 const avatars = [
@@ -225,7 +226,7 @@ function startTwoPlayerGame() {
 
   // Check if Player 2 display name is the same as current user (Player 1)
   if (player2Name.trim() === player1Name.trim()) {
-    alert("Please choose a different name.");
+    toast.warning("Please choose a different name.");
     return;
   }
 

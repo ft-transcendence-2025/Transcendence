@@ -11,6 +11,7 @@ import {
   getJungleAvatarFile,
   CreateProfileRequest,
 } from "../services/profileService.js";
+import { toast } from "../utils/toast.js";
 
 // Store profile data for reuse
 let currentProfile: any = null;
@@ -316,7 +317,7 @@ async function handle2FASetup() {
     // Show QR code modal - the modal will handle the rest
     showQRCodeModal(qr);
   } catch (error: any) {
-    alert(`Error setting up 2FA: ${error.message}`);
+    toast.error(`Error setting up 2FA: ${error.message}`);
     throw error;
   }
 }
@@ -511,7 +512,7 @@ async function changeAvatar(username: string) {
     showSuccessMessage("Avatar updated successfully!");
     closeAvatarModal();
   } catch (error: any) {
-    alert(`Error updating avatar: ${error.message}`);
+    toast.error(`Error updating avatar: ${error.message}`);
   } finally {
     // Reset save button
     const saveBtn = document.getElementById(
@@ -558,14 +559,14 @@ function setupAvatarModalEventListeners(username: string) {
       if (file) {
         // Validate file type
         if (!file.type.startsWith("image/")) {
-          alert("Please select a valid image file");
+          toast.warning("Please select a valid image file");
           target.value = "";
           return;
         }
 
         // Validate file size (limit to 2MB)
         if (file.size > 2 * 1024 * 1024) {
-          alert("Image file must be smaller than 2MB");
+          toast.warning("Image file must be smaller than 2MB");
           target.value = "";
           return;
         }
@@ -660,7 +661,7 @@ async function confirm2FASetup() {
   const token = tokenInput.value.trim();
 
   if (token.length !== 6 || !/^\d{6}$/.test(token)) {
-    alert("Please enter a valid 6-digit code");
+    toast.warning("Please enter a valid 6-digit code");
     return;
   }
 
@@ -677,7 +678,7 @@ async function confirm2FASetup() {
       showProfileView();
     }
   } catch (error: any) {
-    alert(`${error.message}`);
+    toast.error(`${error.message}`);
   }
 }
 

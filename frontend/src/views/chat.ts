@@ -14,6 +14,7 @@ import { chatManager } from "../app.js";
 import { getHeaders, request } from "../utils/api.js";
 import { BASE_URL } from "../config/config.js";
 import { RemoteGame } from "./game/RemoteGame.js";
+import { toast } from "../utils/toast.js";
 
 export interface GameInviteResponse {
   state: string;
@@ -315,11 +316,11 @@ class ChatComponent {
           ts: Date.now(),
         };
         await this.sendMessage(friend.username, message);
-        alert(`Game invite sent to ${friend.username}!`);
+        toast.success(`Game invite sent to ${friend.username}!`);
         navigateTo(`/pong?mode=custom&gameId=${response.id}&side=left`, document.getElementById("content"));
       } catch (err) {
         console.log(err);
-        alert("could not create game room."!);
+        toast.error("Could not create game room.");
         return;
       }
     });
@@ -343,7 +344,7 @@ class ChatComponent {
         };
         await this.sendMessage(friend.username, blockMessage);
         this.closeChat(friend.username);
-        alert(`${friend.username} has been blocked.`);
+        toast.info(`${friend.username} has been blocked.`);
       }
     });
 

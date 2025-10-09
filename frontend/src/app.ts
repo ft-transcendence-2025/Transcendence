@@ -10,6 +10,7 @@ import { getCurrentUsername, getUserNickname } from "./utils/userUtils.js";
 import { ChatComponent } from "./views/chat.js";
 import { handleIncomingMessage, handleNotificationMessage, handlePrivateMessage } from "./views/notificationsHandler.js";
 import { updateFriendshipStatusCache } from "./views/profile.js";
+import { toast } from "./utils/toast.js";
 
 export let chatManager: any | undefined;
 
@@ -64,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (currentPath !== "/login" && currentPath !== "/register" && currentPath !== "/") {
     const token = window.localStorage.getItem("authToken");
     if (!token /* || !await refreshAccessToken() */) {
-      alert("You are not authenticated. Please log in to continue.");
+      toast.warning("You are not authenticated. Please log in to continue.");
       navigateTo("/login", document.getElementById("content"));
       return;
     }

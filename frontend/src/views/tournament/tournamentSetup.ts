@@ -7,6 +7,7 @@ import {
 } from "../../utils/userUtils.js";
 import { GameData } from "../pong.js";
 import { GameState } from "../game/utils.js";
+import { toast } from "../../utils/toast.js";
 
 export interface TournamentState {
   id: number,
@@ -235,7 +236,7 @@ async function collectLocalTournamentData() {
 
     // Check for duplicate names and cancel tournament if found
     if (playerNames.has(userDisplayName)) {
-      alert(`Player name "${userDisplayName}" is already used.`);
+      toast.warning(`Player name "${userDisplayName}" is already used.`);
       return false;
     }
     playerNames.add(userDisplayName);

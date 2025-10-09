@@ -4,6 +4,7 @@ import { navigateTo } from "../router/router.js";
 import { renderNavbar } from "./navbar.js";
 import { renderHome } from "../views/home.js";
 import { initializeChatManager } from "../app.js";
+import { toast } from "../utils/toast.js";
 
 // This function will find the modal on the page and open it.
 export async function openLoginModal(container: HTMLElement | null = null) {
@@ -105,7 +106,7 @@ export async function openLoginModal(container: HTMLElement | null = null) {
     try {
       const token = tokenInput.value.trim();
       if (!/^\d{6}$/.test(token)) {
-        alert("Please enter a valid 6-digit code.");
+        toast.warning("Please enter a valid 6-digit code.");
         return;
       }
 
@@ -125,7 +126,7 @@ export async function openLoginModal(container: HTMLElement | null = null) {
       navigateTo("/dashboard", container);
     } catch (error: any) {
       console.error("Error handling 2FA login:", error);
-      alert(`2FA Login failed: ${error.message}`);
+      toast.error(`2FA Login failed: ${error.message}`);
     }
   }
 
