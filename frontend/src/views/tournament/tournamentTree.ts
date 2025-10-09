@@ -15,11 +15,11 @@ export async function renderTournamentTree(container: HTMLElement | null) {
   if (!container) return;
 
   // Fetch the component's HTML template
-  container.innerHTML = await loadHtml("/html/tournamentTree.html");
   const mode = window.location.search.split("=")[1];
 
 
   if (mode === "remote") {
+    container.innerHTML = await loadHtml("/html/tournamentTree.html");
     connectRemoteTournament(container);
   }
   else {
@@ -81,6 +81,7 @@ async function setupLocalTournamentTree(container: HTMLElement) {
   const localTournamentState = getLocalTournamentState();
   if (!localTournamentState) return 
 
+  container.innerHTML = await loadHtml("/html/tournamentTree.html");
   setNames(container, localTournamentState);
   setButtons(container, localTournamentState);
   leaveLocalTournament(container);
