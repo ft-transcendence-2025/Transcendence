@@ -1,4 +1,4 @@
-# Pink Pong Frontend
+# Jungle Pong Frontend
 
 <iframe width="768" height="432" src="https://miro.com/app/live-embed/uXjVIo83pAE=/?embedMode=view_only_without_ui&moveToViewport=-2167,-1117,4398,2098&embedId=799500446367" frameborder="0" scrolling="no" allow="fullscreen; clipboard-read; clipboard-write" allowfullscreen></iframe>
 
