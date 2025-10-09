@@ -97,7 +97,7 @@ function leaveLocalTournament(container: HTMLElement) {
     const baseUrl = window.location.origin;
 
     const response = await fetch(
-      `https://localhost:5000/api/tournament/local`,
+      `${window.location.origin}/api/tournament/local`,
       {
         method: "DELETE",
       },
