@@ -2,7 +2,7 @@
 import { isAuthenticated } from "./userUtils.js";
 
 // Routes that don't require authentication
-const publicRoutes = ["/", "/login", "/register", "/404"];
+const publicRoutes = ["/", "/login", "/register", "/404", "/tournament-tree"];
 
 export function canAccessRoute(
   path: string,
@@ -15,6 +15,11 @@ export function canAccessRoute(
 
   // Allow tournament with type=local for non-logged users
   if (path === "/tournament" && searchParams?.get("type") === "local") {
+    return true;
+  }
+
+  // Allow pong game for local tournaments
+  if (path === "/pong" && searchParams?.get("mode") === "localtournament") {
     return true;
   }
 
