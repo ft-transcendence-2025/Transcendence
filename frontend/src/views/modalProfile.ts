@@ -5,44 +5,94 @@ import { navigateTo } from "../router/router.js";
 import { logout } from "../services/authService.js";
 import { notificationService } from "../services/notifications.service.js";
 import { getProfileByUsername, getUserAvatar } from "../services/profileService.js";
+import { getPlayerMatches, Match } from "../services/blockchainService.js";
+import { getUserFriends } from "../services/friendship.service.js";
 import { ChatComponent } from "./chat.js";
+import { getCurrentUsername } from "../utils/userUtils.js";
+
+interface PlayerStats {
+  totalGames: number;
+  wins: number;
+  losses: number;
+  winRate: number;
+  tournamentCount: number;
+  recentMatches: Match[];
+}
+
+async function getPlayerStats(username: string): Promise<PlayerStats> {
+  try {
+    const matchData = await getPlayerMatches(username);
+    const matches = matchData?.matches || [];
+    
+    const totalGames = matches.length;
+    const wins = matches.filter(m => m.winner === username).length;
+    const losses = totalGames - wins;
+    const winRate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
+    
+    // Count unique tournaments
+    const tournamentIds = new Set(
+      matches
+        .filter(m => m.tournamentId !== "0")
+        .map(m => m.tournamentId)
+    );
+    const tournamentCount = tournamentIds.size;
+    
+    // Get 3 most recent matches
+    const recentMatches = matches
+      .sort((a, b) => parseInt(b.endTime) - parseInt(a.endTime))
+      .slice(0, 3);
+    
+    return { totalGames, wins, losses, winRate, tournamentCount, recentMatches };
+  } catch (error) {
+    console.error("Error fetching player stats:", error);
+    return { totalGames: 0, wins: 0, losses: 0, winRate: 0, tournamentCount: 0, recentMatches: [] };
+  }
+}
 
 export async function getProfileModalContent(username?: string): Promise<HTMLElement> {
   const container = document.createElement("div");
   container.className = "w-full h-full flex text-white rounded-[25px]";
 
-  // If no username provided, try to get current user's profile
+  // Get current username
   if (!username) {
-    // You might need to implement getCurrentUsername() or get it from localStorage/token
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      try {
-        // Decode token to get username or implement a getCurrentUser service
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        username = payload.username || payload.sub || "unknown";
-      } catch (error) {
-        console.error("Could not decode token for username:", error);
-        username = "unknown";
-      }
-    } else {
-      username = "unknown";
-    }
+    username = getCurrentUsername() || "unknown";
   }
 
   // Ensure username is defined
   const finalUsername = username || "unknown";
   let profile: any = null;
-  let avatarUrl = "/assets/avatars/bear.png";
+  let avatarUrl = "/assets/avatars/panda.png";
+  let friendsCount = 0;
+  let stats: PlayerStats = {
+    totalGames: 0,
+    wins: 0,
+    losses: 0,
+    winRate: 0,
+    tournamentCount: 0,
+    recentMatches: []
+  };
 
   try {
-    profile = await getProfileByUsername(finalUsername);
-    avatarUrl = await getUserAvatar(finalUsername);
+    // Fetch all data in parallel
+    [profile, avatarUrl, stats] = await Promise.all([
+      getProfileByUsername(finalUsername),
+      getUserAvatar(finalUsername),
+      getPlayerStats(finalUsername)
+    ]);
+
+    // Get friends count
+    try {
+      const friendsResponse = await getUserFriends();
+      friendsCount = Array.isArray(friendsResponse) ? friendsResponse.length : 0;
+    } catch (error) {
+      console.error("Error fetching friends:", error);
+    }
   } catch (error) {
-    console.error("Error loading profile for modal:", error);
+    console.error("Error loading profile data:", error);
   }
 
   // Calculate member duration
-  let memberDuration = "Unknown";
+  let memberDuration = "New player";
   if (profile?.createdAt) {
     const createdDate = new Date(profile.createdAt);
     const now = new Date();
@@ -62,59 +112,174 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
     }
   }
 
+  // Get unread message count
+  const unreadMessages = notificationService.getState().messageNotifications;
+  const totalUnreadMessages = Object.values(unreadMessages).reduce((sum, count) => sum + count, 0);
+
+  // Get user status
+  const statusColors = {
+    ONLINE: "bg-green-500",
+    OFFLINE: "bg-gray-500",
+    IN_GAME: "bg-yellow-500"
+  };
+  const statusColor = statusColors[profile?.status as keyof typeof statusColors] || statusColors.OFFLINE;
+
   container.innerHTML = `
-    <aside class="flex w-full flex-col gap-8 p-6 h-full justify-between">
+    <style>
+      /* Custom Scrollbar Styling */
+      .profile-modal-content::-webkit-scrollbar {
+        width: 8px;
+      }
+      
+      .profile-modal-content::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        margin: 8px 0;
+      }
+      
+      .profile-modal-content::-webkit-scrollbar-thumb {
+        background: var(--color-secondary);
+        border-radius: 10px;
+        transition: background 0.3s ease;
+      }
+      
+      .profile-modal-content::-webkit-scrollbar-thumb:hover {
+        background: var(--color-secondary-light);
+      }
+      
+      /* Firefox scrollbar styling */
+      .profile-modal-content {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-secondary) rgba(0, 0, 0, 0.2);
+      }
+    </style>
+    <aside class="profile-modal-content flex w-full flex-col gap-6 p-6 h-full justify-between overflow-y-auto">
       <!-- Avatar and User Info -->
       <div>
         <div class="flex flex-col items-center text-center">
-          <img
-            id="user-avatar"
-            src="${avatarUrl}"
-            alt="Avatar"
-            class="mb-4 h-44 w-44 rounded-full border-4 border-(--color-secondary) object-cover"
-            onerror="this.onerror=null;this.src='/assets/avatars/panda.png';"
-          />
-          <h2 id="display-username" class="text-xl font-bold text-white">${profile?.userUsername || finalUsername}</h2>
+          <div class="relative">
+            <img
+              id="user-avatar"
+              src="${avatarUrl}"
+              alt="Avatar"
+              class="mb-4 h-44 w-44 rounded-full border-4 border-(--color-secondary) object-cover cursor-pointer hover:opacity-80 transition-opacity"
+              onerror="this.onerror=null;this.src='/assets/avatars/panda.png';"
+            />
+            <!-- Status Indicator -->
+            <div class="absolute bottom-6 right-2 ${statusColor} w-6 h-6 rounded-full border-4 border-white"></div>
+          </div>
+          <h2 id="display-username" class="text-2xl font-bold text-white">${profile?.userUsername || finalUsername}</h2>
           <p id="user-nickname" class="text-sm text-(--color-secondary-light)">
-            ${profile?.nickName || 'Nickname not set'}
+            ${profile?.nickName || 'No nickname set'}
           </p>
+          <span class="mt-2 text-xs px-3 py-1 rounded-full bg-(--color-primary-dark) text-(--color-secondary-light)">
+            Member for ${memberDuration}
+          </span>
         </div>
 
-        <!-- Stats -->
-        <div class="space-y-4 mt-8">
-          <h3
-            class="border-b border-(--color-secondary-dark) pb-1 text-lg font-bold text-white"
-          >
-            Statistics
+        <!-- Quick Stats Cards -->
+        <div class="grid grid-cols-2 gap-3 mt-6">
+          <div class="bg-(--color-primary-dark)/50 rounded-lg p-3 text-center">
+            <p class="text-2xl font-bold text-(--color-secondary)">${stats.totalGames}</p>
+            <p class="text-xs text-white/70">Total Games</p>
+          </div>
+          <div class="bg-(--color-primary-dark)/50 rounded-lg p-3 text-center">
+            <p class="text-2xl font-bold text-green-500">${stats.wins}</p>
+            <p class="text-xs text-white/70">Victories</p>
+          </div>
+          <div class="bg-(--color-primary-dark)/50 rounded-lg p-3 text-center">
+            <p class="text-2xl font-bold text-(--color-secondary)">${stats.winRate}%</p>
+            <p class="text-xs text-white/70">Win Rate</p>
+          </div>
+          <div class="bg-(--color-primary-dark)/50 rounded-lg p-3 text-center">
+            <p class="text-2xl font-bold text-(--color-secondary)">${friendsCount}</p>
+            <p class="text-xs text-white/70">Friends</p>
+          </div>
+        </div>
+
+        <!-- Performance Stats -->
+        <div class="space-y-3 mt-6">
+          <h3 class="border-b border-(--color-secondary-dark) pb-2 text-sm font-bold text-white uppercase flex items-center gap-2">
+            <span class="material-symbols-outlined text-yellow-500">trophy</span>
+            Performance
           </h3>
           <ul class="space-y-2 text-sm text-white">
-            <li class="flex items-center justify-between">
-              <span>Games played</span>
-              <span class="font-semibold">${profile?.gamesPlayed || 0}</span>
+            <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-green-400 text-lg">check_circle</span> Wins
+              </span>
+              <span class="font-semibold text-green-400">${stats.wins}</span>
             </li>
-            <li class="flex items-center justify-between">
-              <span>Member for</span>
-              <span id="display-createdAt" class="font-semibold">${memberDuration}</span>
+            <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-red-400 text-lg">cancel</span> Losses
+              </span>
+              <span class="font-semibold text-red-400">${stats.losses}</span>
             </li>
-            <li class="flex items-center justify-between">
-              <span>Liked games</span>
-              <span class="font-semibold">${profile?.likedGames || 0}</span>
+            <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-yellow-400 text-lg">emoji_events</span> Tournaments
+              </span>
+              <span class="font-semibold text-yellow-400">${stats.tournamentCount}</span>
             </li>
-            <li class="flex items-center justify-between">
-              <span>Playstreak</span>
-              <span class="font-semibold">${profile?.playstreak || 0} day${(profile?.playstreak || 0) !== 1 ? 's' : ''}</span>
+            ${totalUnreadMessages > 0 ? `
+            <li class="flex items-center justify-between bg-red-500/20 rounded-lg px-3 py-2 border border-red-500/50">
+              <span class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-red-400 text-lg">mail</span> Unread Messages
+              </span>
+              <span class="font-semibold text-red-400">${totalUnreadMessages}</span>
             </li>
+            ` : ''}
           </ul>
         </div>
+
+        <!-- Recent Matches -->
+        ${stats.recentMatches.length > 0 ? `
+        <div class="space-y-3 mt-6">
+          <h3 class="border-b border-(--color-secondary-dark) pb-2 text-sm font-bold text-white uppercase flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-400">history</span>
+            Recent Matches
+          </h3>
+          <ul class="space-y-2 text-xs">
+            ${stats.recentMatches.map(match => {
+              const isWinner = match.winner === finalUsername;
+              const opponent = match.player1 === finalUsername ? match.player2 : match.player1;
+              const score = match.player1 === finalUsername 
+                ? `${match.score1} - ${match.score2}` 
+                : `${match.score2} - ${match.score1}`;
+              return `
+              <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
+                <div class="flex flex-col">
+                  <span class="font-semibold ${isWinner ? 'text-green-400' : 'text-red-400'} flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">${isWinner ? 'check_circle' : 'cancel'}</span>
+                    ${isWinner ? 'Victory' : 'Defeat'}
+                  </span>
+                  <span class="text-white/60">vs ${opponent}</span>
+                </div>
+                <span class="font-bold text-white">${score}</span>
+              </li>
+              `;
+            }).join('')}
+          </ul>
+        </div>
+        ` : `
+        <div class="space-y-3 mt-6">
+          <h3 class="border-b border-(--color-secondary-dark) pb-2 text-sm font-bold text-white uppercase flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-400">history</span>
+            Recent Matches
+          </h3>
+          <p class="text-center text-sm text-white/50 py-4">No matches played yet</p>
+        </div>
+        `}
       </div>
 
-      <!-- Logout Button at the absolute bottom -->
-      <div class="flex flex-col items-center mt-4">
+      <!-- Logout Button -->
+      <div class="flex flex-col items-center mt-4 border-t border-(--color-secondary-dark) pt-4">
         <button
           id="logout-btn"
-          class="flex items-center gap-2 rounded-lg bg-accent px-10 py-2 cursor-pointer text-base font-semibold text-white hover:bg-accent-dark transition-colors duration-150 shadow hover:scale-105"
+          class="flex items-center gap-2 rounded-lg bg-red-600 px-10 py-2 cursor-pointer text-base font-semibold text-white hover:bg-red-700 transition-colors duration-150 shadow hover:scale-105"
         >
-          <span class="fa fa-sign-out-alt"></span>
+          <span class="material-symbols-outlined">logout</span>
           <span>Log out</span>
         </button>
       </div>
@@ -141,19 +306,9 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
     });
   }
 
-  // Add event listener for edit profile button
-  const editBtn = container.querySelector("#edit-profile-btn");
-  if (editBtn) {
-    editBtn.addEventListener("click", () => {
-      closeModal();
-      navigateTo(`/profile?username=${finalUsername}&edit=true`, document.getElementById("content"));
-    });
-  }
-
   // Add event listener for avatar click to navigate to profile
   const avatarImg = container.querySelector("#user-avatar");
   if (avatarImg) {
-    (avatarImg as HTMLImageElement).style.cursor = "pointer";
     avatarImg.addEventListener("click", () => {
       closeModal();
       navigateTo(`/friend-profile?username=${finalUsername}`, document.getElementById("content"));

@@ -8,16 +8,50 @@ import {
 import { UserBlockMessageResponse } from "../interfaces/message.interfaces.js";
 import { Friend } from "../views/chat.js";
 import { getChatManager } from "../app.js";
-import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, sendFriendRequest, unblockUser } from "../services/friendship.service.js";
+import { blockUser, FriendshipStatus, getFriendshipStatus, respondRequest, sendFriendRequest, unblockUser, getUserFriends } from "../services/friendship.service.js";
 import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
 import { renderStats } from "./stats.js";
 import { notificationService } from "../services/notifications.service.js";
+import { getPlayerMatches, Match } from "../services/blockchainService.js";
 
 
 let currentProfile: any = null;
 let selectedAvatar: string | null = null;
 let customAvatarFile: File | null = null;
 const friendshipStatusCache = new Map<string, { status: FriendshipStatus; blockedBy?: string }>();
+
+interface PlayerStats {
+  totalGames: number;
+  wins: number;
+  losses: number;
+  winRate: number;
+  tournamentCount: number;
+}
+
+async function getPlayerStats(username: string): Promise<PlayerStats> {
+  try {
+    const matchData = await getPlayerMatches(username);
+    const matches = matchData?.matches || [];
+    
+    const totalGames = matches.length;
+    const wins = matches.filter(m => m.winner === username).length;
+    const losses = totalGames - wins;
+    const winRate = totalGames > 0 ? Math.round((wins / totalGames) * 100) : 0;
+    
+    // Count unique tournaments
+    const tournamentIds = new Set(
+      matches
+        .filter(m => m.tournamentId !== "0")
+        .map(m => m.tournamentId)
+    );
+    const tournamentCount = tournamentIds.size;
+    
+    return { totalGames, wins, losses, winRate, tournamentCount };
+  } catch (error) {
+    console.error("Error fetching player stats:", error);
+    return { totalGames: 0, wins: 0, losses: 0, winRate: 0, tournamentCount: 0 };
+  }
+}
 
 export async function renderProfile(container: HTMLElement | null) {
 	if (!container) return;
@@ -91,6 +125,9 @@ async function populateProfileView(profile: any) {
 		if (element) element.textContent = field.value;
 	});
 
+	// Fetch and display blockchain stats
+	await updateSidebarStats(profile.userUsername);
+
 	const editProfileButton = document.getElementById("edit-profile-button");
 	if (editProfileButton) {
 		if (profile.userUsername === loggedInUsername) {
@@ -100,6 +137,57 @@ async function populateProfileView(profile: any) {
 		}
 	}
 	updateButtonStates(profile.userUsername);
+}
+
+async function updateSidebarStats(username: string) {
+	const stats = await getPlayerStats(username);
+	
+	// Get friends count (only for current user's friends)
+	let friendsCount = 0;
+	const currentUsername = getCurrentUsername();
+	if (currentUsername === username) {
+		try {
+			const friendsData: any = await getUserFriends();
+			friendsCount = friendsData?.friends?.length || 0;
+		} catch (error) {
+			console.error("Error fetching friends:", error);
+		}
+	}
+
+	// Find the stats ul element and update it
+	const statsUl = document.querySelector('aside .space-y-4 ul');
+	if (statsUl) {
+		const friendsListItem = currentUsername === username 
+			? `<li class="flex items-center justify-between">
+				<span>Friends</span>
+				<span class="font-semibold">${friendsCount}</span>
+			</li>`
+			: '';
+		
+		statsUl.innerHTML = `
+			<li class="flex items-center justify-between">
+				<span>Total Games</span>
+				<span class="font-semibold">${stats.totalGames}</span>
+			</li>
+			<li class="flex items-center justify-between">
+				<span>Wins</span>
+				<span class="font-semibold text-green-400">${stats.wins}</span>
+			</li>
+			<li class="flex items-center justify-between">
+				<span>Losses</span>
+				<span class="font-semibold text-red-400">${stats.losses}</span>
+			</li>
+			<li class="flex items-center justify-between">
+				<span>Win Rate</span>
+				<span class="font-semibold">${stats.winRate}%</span>
+			</li>
+			<li class="flex items-center justify-between">
+				<span>Tournaments</span>
+				<span class="font-semibold">${stats.tournamentCount}</span>
+			</li>
+			${friendsListItem}
+		`;
+	}
 }
 
 async function updateButtonStates(username: string) {
