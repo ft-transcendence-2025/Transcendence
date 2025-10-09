@@ -1,13 +1,16 @@
 import { navigateTo } from "../../router/router.js";
-import { loadHtml }   from "../../utils/htmlLoader.js";
+import { loadHtml } from "../../utils/htmlLoader.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
   getCurrentUsername,
 } from "../../utils/userUtils.js";
-import { 
-  getLocalTournamentState, TournamentState, fetchLocalTournament, 
-  PlayerInfo, getRemoteTournamentState
+import {
+  getLocalTournamentState,
+  TournamentState,
+  fetchLocalTournament,
+  PlayerInfo,
+  getRemoteTournamentState,
 } from "./tournamentSetup.js";
 import { router } from "./../../router/router.js";
 
@@ -17,16 +20,13 @@ export async function renderTournamentTree(container: HTMLElement | null) {
   // Fetch the component's HTML template
   const mode = window.location.search.split("=")[1];
 
-
   if (mode === "remote") {
     container.innerHTML = await loadHtml("/html/tournamentTree.html");
     connectRemoteTournament(container);
-  }
-  else {
+  } else {
     setupLocalTournamentTree(container);
   }
 }
-
 
 async function connectRemoteTournament(container: HTMLElement) {
   const remoteTournamentState = getRemoteTournamentState() as TournamentState;
@@ -37,12 +37,11 @@ async function connectRemoteTournament(container: HTMLElement) {
   const ws = new WebSocket(url);
   if (!ws) {
     console.error("Socket Connection falied at connectRemoteTournament");
-    return ;
+    return;
   }
   ws.addEventListener("message", (event) => {
     const tournamentState = JSON.parse(event.data) as TournamentState;
-    if (!tournamentState)
-      throw("gameState is undefined");
+    if (!tournamentState) throw "gameState is undefined";
     localStorage.setItem("RemoteTournament", JSON.stringify(tournamentState));
     if (location.search.split("=")[1] === "remote") {
       setNames(container, tournamentState);
@@ -54,31 +53,33 @@ async function connectRemoteTournament(container: HTMLElement) {
 
 function leaveRemoteTournament(container: HTMLElement, ws: WebSocket) {
   const leaveBtn = document.querySelector("#leave-tournament-btn");
-  if (!leaveBtn) return ;
+  if (!leaveBtn) return;
 
   leaveBtn.addEventListener("click", (e) => {
     localStorage.removeItem("RemoteTournament");
-    ws.send(JSON.stringify({
-      type: "command",
-      key: "leave",
-    }))
+    ws.send(
+      JSON.stringify({
+        type: "command",
+        key: "leave",
+      }),
+    );
     ws.close();
     navigateTo("/dashboard", container);
-  })
+  });
 }
 
-
 async function setupLocalTournamentTree(container: HTMLElement) {
-  const localTournamentPlayersInfo = localStorage.getItem("LocalTournamentPlayersInfo");
-  if (!localTournamentPlayersInfo) return ;
+  const localTournamentPlayersInfo = localStorage.getItem(
+    "LocalTournamentPlayersInfo",
+  );
+  if (!localTournamentPlayersInfo) return;
   const playersInfo = JSON.parse(localTournamentPlayersInfo);
-  if (!playersInfo) return ;
-
+  if (!playersInfo) return;
 
   await fetchLocalTournament(playersInfo);
 
   const localTournamentState = getLocalTournamentState();
-  if (!localTournamentState) return 
+  if (!localTournamentState) return;
 
   container.innerHTML = await loadHtml("/html/tournamentTree.html");
   setNames(container, localTournamentState);
@@ -88,27 +89,28 @@ async function setupLocalTournamentTree(container: HTMLElement) {
 
 function leaveLocalTournament(container: HTMLElement) {
   const leaveBtn = document.querySelector("#leave-tournament-btn");
-  if (!leaveBtn) return ;
+  if (!leaveBtn) return;
 
   leaveBtn.addEventListener("click", async () => {
     localStorage.removeItem("LocalTournamentPlayersInfo");
     localStorage.removeItem("LocalTournamentState");
     const baseUrl = window.location.origin;
 
-    const response = await fetch(`https://localhost:5000/api/tournament/local`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `https://localhost:5000/api/tournament/local`,
+      {
+        method: "DELETE",
+      },
+    );
 
     const isLogin = isPlayerLogin();
     if (isLogin) {
-      localStorage.removeItem("isLogin")
+      localStorage.removeItem("isLogin");
       navigateTo("/", container);
-    }
-    else {
+    } else {
       navigateTo("/dashboard", container);
     }
-
-  })
+  });
 }
 
 function isPlayerLogin() {
@@ -119,29 +121,32 @@ function isPlayerLogin() {
   return true;
 }
 
-
 function setButtons(container: HTMLElement, tournamentState: TournamentState) {
   let playersInfo = null;
   if (location.search.split("=")[1] !== "remote") {
-    const localTournamentPlayersInfo = localStorage.getItem("LocalTournamentPlayersInfo");
-    if (!localTournamentPlayersInfo) return ;
+    const localTournamentPlayersInfo = localStorage.getItem(
+      "LocalTournamentPlayersInfo",
+    );
+    if (!localTournamentPlayersInfo) return;
     playersInfo = JSON.parse(localTournamentPlayersInfo);
-    if (!playersInfo) return ;
+    if (!playersInfo) return;
   }
 
   const button1 = container.querySelector("#button-game1") as HTMLButtonElement;
   const button2 = container.querySelector("#button-game2") as HTMLButtonElement;
   const button3 = container.querySelector("#button-game3") as HTMLButtonElement;
-  if (!button1 || !button2 || !button3) return ;
+  if (!button1 || !button2 || !button3) return;
 
   if (!tournamentState.match1.winner) {
     setStartBtn(button1, tournamentState);
-  }
-  else if (tournamentState.match1.winner) {
+  } else if (tournamentState.match1.winner) {
     // Go to Second Math
     const finalPlayer1 = container.querySelector("#final-player1");
-    if (!finalPlayer1) return ;
+    if (!finalPlayer1) return;
     finalPlayer1.textContent = tournamentState.match1.winner;
+
+    // Show winner indicator for game 1
+    showWinnerIndicator(container, 1, tournamentState.match1.winner);
 
     setBtnFinished(button1);
     setStartBtn(button2, tournamentState);
@@ -149,8 +154,11 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
   if (tournamentState.match2.winner) {
     // Go to Final Match
     const finalPlayer2 = container.querySelector("#final-player2");
-    if (!finalPlayer2) return ;
+    if (!finalPlayer2) return;
     finalPlayer2.textContent = tournamentState.match2.winner;
+
+    // Show winner indicator for game 2
+    showWinnerIndicator(container, 2, tournamentState.match2.winner);
 
     setBtnFinished(button1);
     setBtnFinished(button2);
@@ -165,21 +173,24 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
   }
 }
 
-async function setTournamentWinner(container: HTMLElement, tournamentState: TournamentState, playerInfo: PlayerInfo[] | null) {
+async function setTournamentWinner(
+  container: HTMLElement,
+  tournamentState: TournamentState,
+  playerInfo: PlayerInfo[] | null,
+) {
   const tournamentWinner = container.querySelector("#TournamentWinnerName");
   const tournamentWinnerAvatar = container.querySelector("#t-avatar-winner");
-  if (!tournamentWinner || !tournamentWinnerAvatar) return ;
+  if (!tournamentWinner || !tournamentWinnerAvatar) return;
   tournamentWinner.textContent = tournamentState.match3.winner;
 
   let avatar = "";
   if (playerInfo === null) {
     avatar = await getCurrentUserAvatar();
-  }
-  else {
+  } else {
     for (let i = 0; i < 4; ++i) {
       if (playerInfo[i].userDisplayName === tournamentState.match3.winner) {
-        avatar = `${playerInfo[i].avatar}`
-        break ;
+        avatar = `${playerInfo[i].avatar}`;
+        break;
       }
     }
   }
@@ -188,12 +199,15 @@ async function setTournamentWinner(container: HTMLElement, tournamentState: Tour
   tournamentWinnerAvatar.setAttribute("src", avatar);
 }
 
-function setNames(container: HTMLElement, localTournamentState: TournamentState) {
+function setNames(
+  container: HTMLElement,
+  localTournamentState: TournamentState,
+) {
   const player1 = container.querySelector("#game1-player1");
   const player2 = container.querySelector("#game1-player2");
   const player3 = container.querySelector("#game2-player1");
   const player4 = container.querySelector("#game2-player2");
-  if (!player1 || !player2 || !player3 || !player4) return ;
+  if (!player1 || !player2 || !player3 || !player4) return;
 
   player1.textContent = localTournamentState.match1.player1;
   player2.textContent = localTournamentState.match1.player2;
@@ -203,22 +217,27 @@ function setNames(container: HTMLElement, localTournamentState: TournamentState)
 
 function setBtnFinished(button: HTMLButtonElement) {
   button.removeAttribute("class");
-  button.setAttribute("class", "rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500")
+  button.setAttribute(
+    "class",
+    "rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500",
+  );
   button.setAttribute("disabled", "");
-  button.textContent = "Finished"
+  button.textContent = "Finished";
 }
 
 function setStartBtn(button: HTMLButtonElement, state: TournamentState) {
   button.removeAttribute("class");
-  button.setAttribute("class", "rounded bg-(--color-secondary) px-4 py-2 text-sm font-medium hover:bg-(--color-secondary-light)")
+  button.setAttribute(
+    "class",
+    "rounded bg-(--color-secondary) px-4 py-2 text-sm font-medium hover:bg-(--color-secondary-light)",
+  );
   if (state.currentGameScore.player1 || state.currentGameScore.player2) {
-    button.textContent = "Continue"
-  }
-  else {
-    button.textContent = "Start Game"
+    button.textContent = "Continue";
+  } else {
+    button.textContent = "Start Game";
   }
   button.removeAttribute("disabled");
-  button.addEventListener("click", enterGame)
+  button.addEventListener("click", enterGame);
 }
 
 function enterGame() {
@@ -227,8 +246,7 @@ function enterGame() {
   if (mode === "remote") {
     const container = document.getElementById("content");
     navigateTo("/pong?mode=remotetournament", container);
-  }
-  else {
+  } else {
     const container = document.getElementById("content");
     navigateTo("/pong?mode=localtournament", container);
   }
@@ -239,5 +257,40 @@ function updateTournamentTitle(type: "local" | "remote") {
   if (titleElement) {
     const typeText = type === "local" ? "Local" : "Remote";
     titleElement.textContent = `${typeText} Tournament Tree`;
+  }
+}
+
+function showWinnerIndicator(
+  container: HTMLElement,
+  gameNumber: number,
+  winnerName: string,
+) {
+  // Determine which player won based on their name
+  const game1Player1 = container.querySelector("#game1-player1")?.textContent;
+  const game1Player2 = container.querySelector("#game1-player2")?.textContent;
+  const game2Player1 = container.querySelector("#game2-player1")?.textContent;
+  const game2Player2 = container.querySelector("#game2-player2")?.textContent;
+
+  let winnerIndicatorId = "";
+
+  if (gameNumber === 1) {
+    if (winnerName === game1Player1) {
+      winnerIndicatorId = "#game1-player1-indicator";
+    } else if (winnerName === game1Player2) {
+      winnerIndicatorId = "#game1-player2-indicator";
+    }
+  } else if (gameNumber === 2) {
+    if (winnerName === game2Player1) {
+      winnerIndicatorId = "#game2-player1-indicator";
+    } else if (winnerName === game2Player2) {
+      winnerIndicatorId = "#game2-player2-indicator";
+    }
+  }
+
+  if (winnerIndicatorId) {
+    const indicator = container.querySelector(winnerIndicatorId);
+    if (indicator) {
+      indicator.classList.remove("hidden");
+    }
   }
 }
