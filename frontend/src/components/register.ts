@@ -3,6 +3,7 @@ import { register } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
 import { renderHome } from "../views/home.js";
 import { JUNGLE_AVATARS, getJungleAvatarFile, saveUserAvatar } from "../services/profileService.js";
+import { UsernameValidator } from "../utils/usernameValidator.js";
 
 export async function openRegisterModal(container: HTMLElement | null = null) {
   // If container is provided, render home page as backdrop first (without animations)
@@ -76,6 +77,36 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
     "register-toggle-confirm-password",
   );
 
+  // Add real-time username validation
+  const usernameInput = modal.querySelector("#register-username") as HTMLInputElement;
+  const usernameError = modal.querySelector("#username-error") as HTMLElement;
+
+  if (usernameInput && usernameError) {
+    usernameInput.addEventListener("input", () => {
+      const validation = UsernameValidator.validate(usernameInput.value);
+      if (!validation.valid && usernameInput.value.length > 0) {
+        usernameError.textContent = UsernameValidator.getErrorMessage(validation);
+        usernameError.classList.remove("hidden");
+        usernameInput.classList.add("border-red-500");
+      } else {
+        usernameError.classList.add("hidden");
+        usernameInput.classList.remove("border-red-500");
+      }
+    });
+
+    // Also validate on blur
+    usernameInput.addEventListener("blur", () => {
+      if (usernameInput.value.length > 0) {
+        const validation = UsernameValidator.validate(usernameInput.value);
+        if (!validation.valid) {
+          usernameError.textContent = UsernameValidator.getErrorMessage(validation);
+          usernameError.classList.remove("hidden");
+          usernameInput.classList.add("border-red-500");
+        }
+      }
+    });
+  }
+
   // Show the modal
   modal.style.display = "flex";
 
@@ -92,6 +123,16 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
       avatar?: string;
     };
     const data = Object.fromEntries(formData.entries()) as RegistrationFormData;
+
+    // Validate username
+    const usernameValidation = UsernameValidator.validate(data.username);
+    if (!usernameValidation.valid) {
+      showError(UsernameValidator.getErrorMessage(usernameValidation));
+      return;
+    }
+
+    // Normalize username to lowercase
+    data.username = UsernameValidator.normalize(data.username);
 
     // Only validate that passwords match on frontend
     if (data.password !== data.confirmPassword) {

@@ -27,7 +27,14 @@
 					id="register-username"
 					class="w-full bg-white appearance-none rounded border px-3 py-2 text-gray-700 shadow"
 					required
+					minlength="3"
+					maxlength="20"
+					pattern="^[a-zA-Z][a-zA-Z0-9_-]{2,19}$"
 				/>
+				<p class="mt-1 text-xs text-gray-600">
+					3-20 characters, start with a letter, use only letters, numbers, _ and -
+				</p>
+				<p id="username-error" class="mt-1 text-xs text-red-600 hidden"></p>
 			</div>
 			<div>
 				<label for="register-email" class="mb-2 block text-sm font-bold text-gray-700"
