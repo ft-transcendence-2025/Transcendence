@@ -10,7 +10,7 @@ export interface GameState {
   score?: {
     player1: number,
     player2: number,
-    winner?: 1 | 2,
+    winner: 1 | 2 | null,
   },
   isPaused: boolean,
   timeToWait: number,

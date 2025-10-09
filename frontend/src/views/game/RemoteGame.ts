@@ -17,6 +17,7 @@ export class RemoteGame extends Game {
   private player2NameSet: boolean = false;
   private gameMode: string;
   private tournamentState: TournamentState | null = null;
+  private redir: boolean = false;
 
   constructor(gameMode: string, gameId: number, side: string) {
     super()
@@ -26,6 +27,7 @@ export class RemoteGame extends Game {
     this.joinGame(`wss://${window.location.host}/ws/game/${gameMode}/${gameId}/${userName}/play`);
     this.side = side;
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
+    this.canvas.focus();
     const button = document.querySelector("#leave-game-btn") as HTMLButtonElement;
     if (button)
       button.addEventListener("click", this.leaveGame.bind(this))
@@ -34,7 +36,6 @@ export class RemoteGame extends Game {
   public joinGame(url: string): void {
     if (!this.ws) {
       this.ws = new WebSocket(url)
-      console.log(this.ws);
       if (!this.ws)
         throw("Failed To Connect WebSocket");
       this.openSocket();
@@ -125,7 +126,7 @@ export class RemoteGame extends Game {
   }
 
   private checkIsWaiting(): void {
-    if (!this.gameState)
+    if (!this.gameState || !this.ws)
       return ;
 
     const display = document.getElementById("reconnect-overlay") as HTMLCanvasElement;
@@ -176,12 +177,9 @@ export class RemoteGame extends Game {
     }
     if (["p", "P", " "].includes(event.key)) {
       event.preventDefault();
-      if (this.gameState.status !== "waiting for players") {
-        this.sendPayLoad(event);
-      }
-      if (this.gameState.score && this.gameState.score.winner && event.key === " ") {
-        if (this.ws)
-          this.ws.close();
+      if (this.gameState.score && this.gameState.score.winner && event.key === " " &&
+        !this.redir) {
+        this.redir = true;
         const container = document.getElementById("content");
         if (this.gameMode === "remotetournament") {
           this.remoteTournamentRedirect(event);
@@ -189,6 +187,9 @@ export class RemoteGame extends Game {
         else {
           navigateTo("/dashboard", container);
         }
+      }
+      if (this.gameState.status !== "waiting for players") {
+        this.sendPayLoad(event);
       }
     }
   }

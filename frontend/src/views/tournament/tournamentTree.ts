@@ -178,7 +178,7 @@ async function setTournamentWinner(container: HTMLElement, tournamentState: Tour
   else {
     for (let i = 0; i < 4; ++i) {
       if (playerInfo[i].userDisplayName === tournamentState.match3.winner) {
-        avatar = `/assets/avatars/${playerInfo[i].avatar}`;
+        avatar = `${playerInfo[i].avatar}`
         break ;
       }
     }

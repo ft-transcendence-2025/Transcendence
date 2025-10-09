@@ -91,7 +91,6 @@ export class Game {
 
   protected gameOver(player: 1 | 2): void {
     let winnerName: string;
-
     const gamePausedOverlay = document.getElementById("game-paused") as HTMLCanvasElement;
     if (gamePausedOverlay)
       gamePausedOverlay.classList.add("hidden");
@@ -119,8 +118,10 @@ export class Game {
         }
       }
     }
-    if (this.ws)
-      this.ws.close();
+    // if (this.ws) {
+    //   this.ws.close();
+    //   this.ws = null;
+    // }
   }
 
   protected hiddeGameOver(): void {
