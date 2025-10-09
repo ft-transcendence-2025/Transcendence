@@ -206,8 +206,6 @@ async function setupLocalEventListeners() {
 
   if (startButton) {
     startButton.addEventListener("click", async (e) => {
-      localStorage.removeItem("LocalTournamentState");
-      localStorage.removeItem("LocalTournamentPlayersInfo");
 
       // Only proceed if data collection succeeds (no duplicates)
       if (await collectLocalTournamentData()) {

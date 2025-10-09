@@ -122,7 +122,6 @@ async function setTournament(tournamentState: TournamentState, gameMode: string,
 
 async function enterGame(gameMode: string, gameData: FetchData | null) {
   try {
-    console.log("log do enterGame: ", gameMode);
     const baseUrl = window.location.origin;
     const user = getCurrentUsername();
     if (gameMode === "custom" ) {
