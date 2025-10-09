@@ -199,13 +199,23 @@ export class GameRoomTournament extends GameRoom {
     this.game.gameState.ball.isRunning = false;
     this.broadcast();
     this.game.gameState.score.winner = null;
-    for (let i = 0; i < 4; i++) {
-      if (this.players[i].name === loser && this.players[i].ws) {
-        this.players[i].ws.close();
-        this.players[i].ws = null;
-      }
+
+    if (this.players[0].name === loser && this.players[0].ws) {
+      this.players[0].ws.close();
+      this.players[0].ws = null;
     }
-    // this.game.gameState.status = "waiting for players";
+    if (this.players[1].name === loser && this.players[1].ws) {
+      this.players[1].ws.close();
+      this.players[1].ws = null;
+    }
+    if (this.players[2].name === loser && this.players[2].ws) {
+      this.players[2].ws.close();
+      this.players[2].ws = null;
+    }
+    if (this.players[3].name === loser && this.players[3].ws) {
+      this.players[3].ws.close();
+      this.players[3].ws = null;
+    }
   }
 
   public setFinal(playerName: string) {

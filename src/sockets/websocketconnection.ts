@@ -55,7 +55,6 @@ function upgrade(server: any, wss: WebSocketServer): void {
   server.on("upgrade", (request: any, socket: any, head: any) => {
     const parts = request.url?.split("?")[0].split("/") || "";
     const pathname = "/" + parts[1] + "/" + parts[2];
-    console.log(" Ronaldo e o maiooorr ", parts, pathname);
     if (pathname in upgradePath)
       upgradePath[pathname](request, socket, head, wss);
   })
