@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import speakeasy from "speakeasy";
 import { PasswordValidator } from "password-validator-pro";
 import { ProfileService } from "./profile.service";
+import { UsernameValidator } from "../lib/usernameValidator";
 
 const profileService = new ProfileService();
 
@@ -32,6 +33,30 @@ export class UserService {
     });
   }
   async createUser(username: string, password: string, email?: string) {
+    // Validate username
+    const usernameValidation = UsernameValidator.validate(username);
+    if (!usernameValidation.valid) {
+      throw new UserServiceError(
+        "Username does not meet requirements.",
+        400,
+        { username: usernameValidation.errors }
+      );
+    }
+
+    // Normalize username to lowercase for storage
+    const normalizedUsername = UsernameValidator.normalize(username);
+
+    // Check if username already exists
+    const existingUser = await this.findUserByUsername(normalizedUsername);
+    if (existingUser) {
+      throw new UserServiceError(
+        "Username already exists.",
+        409,
+        { username: ["This username is already taken"] }
+      );
+    }
+
+    // Validate password
     const result = this.pwValidator.validate(password);
     if (!result.valid) {
       throw new UserServiceError(
@@ -40,12 +65,13 @@ export class UserService {
         result.errors
       );
     }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
-      data: { username, password: hashedPassword, email },
+      data: { username: normalizedUsername, password: hashedPassword, email },
       omit: { password: true },
     });
-    const profile = await profileService.createProfile(username, {});
+    const profile = await profileService.createProfile(normalizedUsername, {});
     return user;
   }
 
