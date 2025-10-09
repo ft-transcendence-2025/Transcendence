@@ -144,6 +144,8 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
     const finalPlayer1 = container.querySelector("#final-player1");
     if (!finalPlayer1) return;
     finalPlayer1.textContent = tournamentState.match1.winner;
+    finalPlayer1.classList.remove("text-gray-400");
+    finalPlayer1.classList.add("text-gray-900");
 
     // Show winner indicator for game 1
     showWinnerIndicator(container, 1, tournamentState.match1.winner);
@@ -156,6 +158,8 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
     const finalPlayer2 = container.querySelector("#final-player2");
     if (!finalPlayer2) return;
     finalPlayer2.textContent = tournamentState.match2.winner;
+    finalPlayer2.classList.remove("text-gray-400");
+    finalPlayer2.classList.add("text-gray-900");
 
     // Show winner indicator for game 2
     showWinnerIndicator(container, 2, tournamentState.match2.winner);
