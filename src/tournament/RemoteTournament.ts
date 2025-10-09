@@ -72,8 +72,9 @@ export class RemoteTournament {
           player2: 0,
           winner: null,
         };
+        this.gameRoom.game.gameState.ball.isRunning = false;
+        this.gameRoom.tournamentState.gameState.status = "waiting for players";
       }
-      this.gameRoom.tournamentState.gameState.status = "waiting for players";
     }
     if (this.gameRoom.tournamentState.match1.winner === null) {
       this.gameRoom.firstMatch(playerName);

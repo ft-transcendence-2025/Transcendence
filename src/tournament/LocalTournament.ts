@@ -82,5 +82,6 @@ export class LocalTournament {
     this.gameRoom.game.gameState.score.winner = null;
     this.gameRoom.game.gameState.score.player1 = 0;
     this.gameRoom.game.gameState.score.player2 = 0;
+    this.gameRoom.game.gameState.ball.isRunning = false;
   }
 }

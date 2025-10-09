@@ -176,6 +176,7 @@ export class GameRoomTournament extends GameRoom {
       this.game.gameState.player1Name : this.game.gameState.player2Name;
     const loser: string = this.game.gameState.score.winner === 2 ?
       this.game.gameState.player1Name : this.game.gameState.player2Name;
+    
 
     this.game.gameState.player1Name = undefined;
     this.game.gameState.player2Name = undefined;
@@ -195,9 +196,16 @@ export class GameRoomTournament extends GameRoom {
       this.tournamentState.match3.winner = winner;
       this.tournamentState.match3.loser = loser;
     }
+    this.game.gameState.ball.isRunning = false;
     this.broadcast();
     this.game.gameState.score.winner = null;
-    this.game.gameState.status = "waiting for players";
+    for (let i = 0; i < 4; i++) {
+      if (this.players[i].name === loser && this.players[i].ws) {
+        this.players[i].ws.close();
+        this.players[i].ws = null;
+      }
+    }
+    // this.game.gameState.status = "waiting for players";
   }
 
   public setFinal(playerName: string) {

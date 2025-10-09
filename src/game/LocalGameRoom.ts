@@ -42,6 +42,7 @@ export class LocalGameRoom extends GameRoom {
     if (this.gameInterval)
       return;
     this.game.gameState.status = "playing";
+    this.game.gameState.ball.isRunning = false;
     this.gameInterval = setInterval(() => {
       let point;
 
