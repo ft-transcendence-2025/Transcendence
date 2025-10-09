@@ -245,11 +245,10 @@ async function collectLocalTournamentData() {
 
     const avatarSrc = avatarImg?.src || "";
     avatarData = avatarSrc.split("/").pop() || avatars[i - 1];
-
     players.push({
       username: username,
       userDisplayName: userDisplayName,
-      avatar: avatarData,
+      avatar: avatarSrc,
     });
   }
   fetchLocalTournament(players);
