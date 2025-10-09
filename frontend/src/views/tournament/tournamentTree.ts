@@ -41,7 +41,6 @@ async function connectRemoteTournament(container: HTMLElement) {
   }
   ws.addEventListener("message", (event) => {
     const tournamentState = JSON.parse(event.data) as TournamentState;
-    // console.log("Tournament State:", tournamentState);
     if (!tournamentState)
       throw("gameState is undefined");
     localStorage.setItem("RemoteTournament", JSON.stringify(tournamentState));
@@ -122,10 +121,13 @@ function isPlayerLogin() {
 
 
 function setButtons(container: HTMLElement, tournamentState: TournamentState) {
-  const localTournamentPlayersInfo = localStorage.getItem("LocalTournamentPlayersInfo");
-  if (!localTournamentPlayersInfo) return ;
-  const playersInfo = JSON.parse(localTournamentPlayersInfo);
-  if (!playersInfo) return ;
+  let playersInfo = null;
+  if (location.search.split("=")[1] !== "remote") {
+    const localTournamentPlayersInfo = localStorage.getItem("LocalTournamentPlayersInfo");
+    if (!localTournamentPlayersInfo) return ;
+    playersInfo = JSON.parse(localTournamentPlayersInfo);
+    if (!playersInfo) return ;
+  }
 
   const button1 = container.querySelector("#button-game1") as HTMLButtonElement;
   const button2 = container.querySelector("#button-game2") as HTMLButtonElement;
@@ -163,18 +165,22 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
   }
 }
 
-async function setTournamentWinner(container: HTMLElement, tournamentState: TournamentState, playerInfo: PlayerInfo[]) {
+async function setTournamentWinner(container: HTMLElement, tournamentState: TournamentState, playerInfo: PlayerInfo[] | null) {
   const tournamentWinner = container.querySelector("#TournamentWinnerName");
   const tournamentWinnerAvatar = container.querySelector("#t-avatar-winner");
   if (!tournamentWinner || !tournamentWinnerAvatar) return ;
   tournamentWinner.textContent = tournamentState.match3.winner;
 
   let avatar = "";
-  console.log("playerInfo:", playerInfo);
-  for (let i = 0; i < 4; ++i) {
-    if (playerInfo[i].userDisplayName === tournamentState.match3.winner) {
-      avatar = `/assets/avatars/${playerInfo[i].avatar}`;
-      break ;
+  if (playerInfo === null) {
+    avatar = await getCurrentUserAvatar();
+  }
+  else {
+    for (let i = 0; i < 4; ++i) {
+      if (playerInfo[i].userDisplayName === tournamentState.match3.winner) {
+        avatar = `/assets/avatars/${playerInfo[i].avatar}`;
+        break ;
+      }
     }
   }
 
