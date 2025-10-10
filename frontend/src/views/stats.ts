@@ -2,32 +2,16 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import {
   getPlayerMatches,
   MatchResponse,
-  Match
+  Match,
 } from "../services/blockchainService.js";
 import { getAccessToken } from "../utils/api.js";
-
-/*
-//Extracting the username from the JWT token.
-function getPlayerIdFromToken(token: string | null): string | null {
-  if (!token) {
-    console.log("No token found. Please log in.");
-    return null;
-  }
-  try {
-    const payload = JSON.parse(atob(token.split('.')[1])); // Rough JWT decode
-    return payload.username || null;
-  } catch (err: any) {
-    console.error("Invalid token format:", err.message);
-    return null;
-  }
-}*/
 
 function getPlayerIdQueryString(): string | null {
   try {
     const urlParams = new URLSearchParams(window.location.search);
-    const username = urlParams.get('username');
+    const username = urlParams.get("username");
     if (!username) {
-      console.log("No username found in query string.");
+      // console.log("No username found in query string.");
       return null;
     }
     return username;
@@ -40,9 +24,6 @@ function getPlayerIdQueryString(): string | null {
 export async function renderStats(container: HTMLElement | null) {
   if (!container) return;
 
-  // Fetch the component's HTML template
-  // container.innerHTML = await loadHtml("/html/stats.html");
-
   // Fetching player games history
   let playerMatchesResponse: MatchResponse | null = null;
   const token = getAccessToken();
@@ -54,13 +35,16 @@ export async function renderStats(container: HTMLElement | null) {
   try {
     playerMatchesResponse = await getPlayerMatches(playerId);
   } catch (err: any) {
-    console.error(`Error fetching matches for ${playerId}:`, err.message || err);
+    console.error(
+      `Error fetching matches for ${playerId}:`,
+      err.message || err,
+    );
   }
 
   // Updating the visual element placeholders
   // User Total Games
   let gamesCount: number = 0;
-  const totalGames = document.getElementById("user-total-games-count"); 
+  const totalGames = document.getElementById("user-total-games-count");
   if (totalGames) {
     gamesCount = playerMatchesResponse?.count ?? 0; //Default value equals 0.
     totalGames.textContent = gamesCount.toString();
@@ -91,7 +75,7 @@ export async function renderStats(container: HTMLElement | null) {
     lostCount = gamesCount - winCount;
     totalGamesLost.textContent = lostCount.toString();
   } else {
-    console.error("Element 'user-games-lost-count' not found")
+    console.error("Element 'user-games-lost-count' not found");
   }
 
   // Overall Win Percentage
@@ -122,24 +106,28 @@ export async function renderStats(container: HTMLElement | null) {
       }, 0);
       v1GamesCount.textContent = `${totalV1Games.toString()} played`;
     } else {
-      v1GamesCount.textContent = "0 played"
+      v1GamesCount.textContent = "0 played";
     }
   } else {
     console.error("Element '1v1-games-played' not found");
   }
-
 
   // 1v1 Total Games Won
   let totalV1GamesWon: number = 0;
   const v1GamesWonCount = document.getElementById("1v1-wins");
   if (v1GamesWonCount) {
     if (playerMatchesResponse?.matches) {
-      totalV1GamesWon = playerMatchesResponse?.matches?.reduce((count, match) => {
-        return match.winner === playerId && match.tournamentId === "0" ? count + 1 : count;
-      }, 0);
+      totalV1GamesWon = playerMatchesResponse?.matches?.reduce(
+        (count, match) => {
+          return match.winner === playerId && match.tournamentId === "0"
+            ? count + 1
+            : count;
+        },
+        0,
+      );
       v1GamesWonCount.textContent = `${totalV1GamesWon.toString()} wins`;
     } else {
-      v1GamesWonCount.textContent = "0 wins"
+      v1GamesWonCount.textContent = "0 wins";
     }
   } else {
     console.error("Element '1v1-wins' not found");
@@ -159,7 +147,6 @@ export async function renderStats(container: HTMLElement | null) {
     console.error("Element '1v1-losses' not found");
   }
 
-
   // 1v1 Overall Win Percentage
   let v1WinRate: number = 0;
   const v1OverallWinRate = document.getElementById("1v1-win-rate");
@@ -170,23 +157,23 @@ export async function renderStats(container: HTMLElement | null) {
     console.error("Element '1v1-win-rate' not found");
   }
 
-
   // Tournament Total Games
   let totalTournamentGames: number = 0;
-  const tournamentGamesCount = document.getElementById("tournament-games-played");
+  const tournamentGamesCount = document.getElementById(
+    "tournament-games-played",
+  );
   if (tournamentGamesCount) {
     if (playerMatchesResponse?.matches) {
-
       // Build a set of tournament Ids (to remove duplicates)
       const uniqueTournamentIds = new Set(
         playerMatchesResponse.matches
-          .filter(match => match.tournamentId !== "0")
-          .map(match => match.tournamentId)
+          .filter((match) => match.tournamentId !== "0")
+          .map((match) => match.tournamentId),
       );
       totalTournamentGames = uniqueTournamentIds.size;
       tournamentGamesCount.textContent = `${totalTournamentGames.toString()} played`;
     } else {
-      tournamentGamesCount.textContent = "0 played"
+      tournamentGamesCount.textContent = "0 played";
     }
   } else {
     console.error("Element 'tournament-games-played' not found");
@@ -197,12 +184,19 @@ export async function renderStats(container: HTMLElement | null) {
   const tournamentGamesWonCount = document.getElementById("tournament-wins");
   if (tournamentGamesWonCount) {
     if (playerMatchesResponse?.matches) {
-      totalTournamentGamesWon = playerMatchesResponse?.matches?.reduce((count, match) => {
-        return match.winner === playerId && match.tournamentId !== "0" && match.finalMatch === true ? count + 1 : count;
-      }, 0);
+      totalTournamentGamesWon = playerMatchesResponse?.matches?.reduce(
+        (count, match) => {
+          return match.winner === playerId &&
+            match.tournamentId !== "0" &&
+            match.finalMatch === true
+            ? count + 1
+            : count;
+        },
+        0,
+      );
       tournamentGamesWonCount.textContent = `${totalTournamentGamesWon.toString()} wins`;
     } else {
-      tournamentGamesWonCount.textContent = "0 wins"
+      tournamentGamesWonCount.textContent = "0 wins";
     }
   } else {
     console.error("Element 'tournament-wins' not found");
@@ -217,16 +211,17 @@ export async function renderStats(container: HTMLElement | null) {
       totalTournamentGamesLost = totalTournamentGames - totalTournamentGamesWon;
       tournamentGamesLostCount.textContent = `${totalTournamentGamesLost.toString()} losses`;
     } else {
-      tournamentGamesLostCount.textContent = "0 losses"
+      tournamentGamesLostCount.textContent = "0 losses";
     }
   } else {
     console.error("Element 'tournament-loss' not found");
   }
 
-
   // Tournament Overall Win Percentage
   let tournamentWinRate: number = 0;
-  const tournamentOverallWinRate = document.getElementById("tournament-win-rate");
+  const tournamentOverallWinRate = document.getElementById(
+    "tournament-win-rate",
+  );
   if (tournamentOverallWinRate && totalTournamentGames > 0) {
     tournamentWinRate = (totalTournamentGamesWon / totalTournamentGames) * 100;
     tournamentOverallWinRate.textContent = `${tournamentWinRate.toFixed(1).toString()}%`;
@@ -234,13 +229,15 @@ export async function renderStats(container: HTMLElement | null) {
     console.error("Element 'tournament-win-rate' not found");
   }
 
-
   // Building the table with recent matches.
   // Fetching the matches and sorting the new array
   const recentMatches: (Match | null)[] = Array(5).fill(null);
-  if (playerMatchesResponse?.matches && playerMatchesResponse.matches.length > 0) {
+  if (
+    playerMatchesResponse?.matches &&
+    playerMatchesResponse.matches.length > 0
+  ) {
     const sortedMatches = [...playerMatchesResponse.matches].sort(
-      (a, b) => Number(b.startTime) - Number(a.startTime)
+      (a, b) => Number(b.startTime) - Number(a.startTime),
     );
     for (let i = 0; i < 5 && i < sortedMatches.length; i++) {
       recentMatches[i] = sortedMatches[i];
@@ -248,8 +245,11 @@ export async function renderStats(container: HTMLElement | null) {
   }
 
   //Updating each table row with recent match data.
-  const updateMatchRow = (elementId: string, match: Match | null, playerid: string) => {
-
+  const updateMatchRow = (
+    elementId: string,
+    match: Match | null,
+    playerid: string,
+  ) => {
     //Selecting the Spans "spaces" from the HTML
     const row = document.getElementById(elementId);
     if (row && match) {
@@ -257,8 +257,7 @@ export async function renderStats(container: HTMLElement | null) {
       const opponentSpan = row.querySelector(".match-opponent");
       const scoreSpan = row.querySelector(".match-score");
       const resultSpan = row.querySelector(".match-result");
-      
-      
+
       if (dateSpan) {
         const startDate = new Date(Number(match.startTime));
         dateSpan.textContent = startDate.toLocaleString("en-US", {
@@ -268,13 +267,16 @@ export async function renderStats(container: HTMLElement | null) {
         });
       }
       if (opponentSpan) {
-        const opponent = match.player1 === playerId ? match.player2 : match.player1;
+        const opponent =
+          match.player1 === playerId ? match.player2 : match.player1;
         opponentSpan.textContent = `vs ${opponent}`;
       }
 
       if (scoreSpan) {
-        const opponentScore = match.player1 === playerId ? match.score2 : match.score1;
-        const myScore = match.player1 === playerId ? match.score1 : match.score2;
+        const opponentScore =
+          match.player1 === playerId ? match.score2 : match.score1;
+        const myScore =
+          match.player1 === playerId ? match.score1 : match.score2;
         scoreSpan.textContent = `${myScore}-${opponentScore}`;
       }
 
@@ -287,7 +289,6 @@ export async function renderStats(container: HTMLElement | null) {
           resultSpan.classList.add("text-red-600");
         }
       }
-
     } else if (row) {
       const dateSpan = row.querySelector(".match-date");
       const opponentSpan = row.querySelector(".match-opponent");
@@ -306,7 +307,6 @@ export async function renderStats(container: HTMLElement | null) {
   for (let i = 0; i < 5; i++) {
     updateMatchRow(`recent-match-${i}`, recentMatches[i], playerId);
   }
-
 }
 
 const container = document.getElementById("user-stats");

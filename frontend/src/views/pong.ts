@@ -126,7 +126,6 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
     const user = getCurrentUsername();
     if (gameMode === "custom" ) {
       const params = new URLSearchParams(window.location.search);
-      console.log("fui chamado para um game custom: ", params);
       const modeParam = params.get("mode") || gameMode;
       const gameIdParam = params.get("gameId") || "0";
       const sideParam = params.get("side") || "left";
