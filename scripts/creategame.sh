@@ -1,5 +1,3 @@
 #!/bin/sh
 
-curl -k -X POST https://localhost:5000/api/getgame/remote \
-  -H "Content-Type: application/json" \
-  -d '{"name": "jhon"}'
+curl -k -X GET https://localhost:5000/api/getgame/local
