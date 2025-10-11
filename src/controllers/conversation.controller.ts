@@ -8,10 +8,10 @@ export const createConversation = async (req: FastifyRequest, res: FastifyReply)
 		user2Id: string;
 	}
 	const conversation = await prisma.conversation.create({
-		data: {user1Id, user2Id},
-		include: {messages: true}
+		data: { user1Id, user2Id },
+		include: { messages: true }
 	});
-	res.code(201).send({message: "Conversation created successfully!", conversation});
+	res.code(201).send({ message: "Conversation created successfully!", conversation });
 }
 
 export const getConversation = async (req: FastifyRequest, res: FastifyReply) => {
@@ -26,7 +26,7 @@ export const getConversation = async (req: FastifyRequest, res: FastifyReply) =>
 				{ user1Id: user2Id, user2Id: user1Id },
 			],
 		},
-		include: { messages: true}
+		include: { messages: true }
 	});
 	res.code(200).send(conversation);
 }
@@ -46,7 +46,7 @@ export const getUnreadMessagesCount = async (req: FastifyRequest, res: FastifyRe
 	}
 	try {
 		const unreadMessages = await prisma.message.findMany({
-			where: { 
+			where: {
 				read: false,
 				NOT: {
 					senderId: userId,
@@ -94,12 +94,12 @@ export async function markConversationAsRead(req: FastifyRequest, res: FastifyRe
 			},
 		});
 
-		if (!conversation) {
-			return res.code(404).send({ error: "Conversation not found." });
+		if (conversation) {
+			await markMessagesAsRead(user1Id, conversation.id);
+		} else {
+			console.log(`No conversation found between the specified users: ${user1Id}, ${user2Id}`);
 		}
-
-		await markMessagesAsRead(user1Id, conversation.id);
-		res.code(200).send({ message: "Messages marked as read." });        
+		res.code(200).send({ message: "Messages marked as read." });
 	} catch (error) {
 		console.error("Failed to mark messages as read:", error);
 		res.code(500).send({ error: "Internal server error." });
