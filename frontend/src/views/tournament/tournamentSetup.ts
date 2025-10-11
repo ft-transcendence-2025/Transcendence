@@ -1,5 +1,5 @@
 import { navigateTo } from "../../router/router.js";
-import { loadHtml }   from "../../utils/htmlLoader.js";
+import { loadHtml } from "../../utils/htmlLoader.js";
 import {
   getUserDisplayName,
   getCurrentUserAvatar,
@@ -10,27 +10,27 @@ import { GameState } from "../game/utils.js";
 import { toast } from "../../utils/toast.js";
 
 export interface TournamentState {
-  id: number,
+  id: number;
   match1: {
-    player1: string | null,
-    player2: string | null,
-    winner: string | null,
-  }
+    player1: string | null;
+    player2: string | null;
+    winner: string | null;
+  };
   match2: {
-    player1: string | null,
-    player2: string | null,
-    winner: string | null,
-  }
+    player1: string | null;
+    player2: string | null;
+    winner: string | null;
+  };
   match3: {
-    player1: string,
-    player2: string,
-    winner: string,
-  }
+    player1: string;
+    player2: string;
+    winner: string;
+  };
   currentGameScore: {
-    player1: number,
-    player2: number,
-  },
-  gameState: GameState | null,
+    player1: number;
+    player2: number;
+  };
+  gameState: GameState | null;
 }
 
 export interface PlayerInfo {
@@ -206,11 +206,10 @@ async function setupLocalEventListeners() {
 
   if (startButton) {
     startButton.addEventListener("click", async (e) => {
-
       // Only proceed if data collection succeeds (no duplicates)
       if (await collectLocalTournamentData()) {
         let container = document.getElementById("content");
-        if (!container) return ;
+        if (!container) return;
         navigateTo("/tournament-tree", container);
       }
     });
@@ -232,12 +231,21 @@ async function collectLocalTournamentData() {
     const userDisplayName =
       nameInput?.value || nameInput?.placeholder || `Player ${i}`;
 
-    // Check for duplicate names and cancel tournament if found
-    if (playerNames.has(userDisplayName)) {
-      toast.warning(`Player name "${userDisplayName}" is already used.`);
+    const trimmedName = userDisplayName.trim();
+
+    // Validate non-empty names
+    if (!trimmedName) {
+      toast.warning(`Player name cannot be empty.`);
       return false;
     }
-    playerNames.add(userDisplayName);
+
+
+    // Check for duplicate names and cancel tournament if found
+    if (playerNames.has(trimmedName)) {
+      toast.warning(`Player name "${trimmedName}" is already used.`);
+      return false;
+    }
+    playerNames.add(trimmedName);
 
     // Determine username and avatar handling
     let username = null;
@@ -247,7 +255,7 @@ async function collectLocalTournamentData() {
     avatarData = avatarSrc.split("/").pop() || avatars[i - 1];
     players.push({
       username: username,
-      userDisplayName: userDisplayName,
+      userDisplayName: trimmedName,
       avatar: avatarSrc,
     });
   }
@@ -279,28 +287,36 @@ export async function fetchLocalTournament(players: PlayerInfo[]) {
   }
 }
 
-export function localStoreTournamentData(tournamentState: TournamentState, players: PlayerInfo[]) {
+export function localStoreTournamentData(
+  tournamentState: TournamentState,
+  players: PlayerInfo[],
+) {
   localStorage.setItem("LocalTournamentState", JSON.stringify(tournamentState));
   localStorage.setItem("LocalTournamentPlayersInfo", JSON.stringify(players));
 }
 
 export function getLocalTournamentState() {
-  const localTournamentStateString = localStorage.getItem("LocalTournamentState");
-  if (!localTournamentStateString) return ;
+  const localTournamentStateString = localStorage.getItem(
+    "LocalTournamentState",
+  );
+  if (!localTournamentStateString) return;
 
-  const localTournamentState = JSON.parse(localTournamentStateString) as TournamentState;
-  if (!localTournamentState) return ;
+  const localTournamentState = JSON.parse(
+    localTournamentStateString,
+  ) as TournamentState;
+  if (!localTournamentState) return;
 
-  return localTournamentState ;
+  return localTournamentState;
 }
 
 export function getRemoteTournamentState(): TournamentState | void {
   const remoteTournamentStateString = localStorage.getItem("RemoteTournament");
-  if (!remoteTournamentStateString)
-    return ;
+  if (!remoteTournamentStateString) return;
 
-  const remoteTournamentState = JSON.parse(remoteTournamentStateString) as TournamentState;
-  if (!remoteTournamentState) return ;
+  const remoteTournamentState = JSON.parse(
+    remoteTournamentStateString,
+  ) as TournamentState;
+  if (!remoteTournamentState) return;
 
-  return remoteTournamentState ;
+  return remoteTournamentState;
 }

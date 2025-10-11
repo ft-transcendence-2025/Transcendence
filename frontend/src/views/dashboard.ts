@@ -223,6 +223,12 @@ function startTwoPlayerGame() {
   const player2Name =
     (document.getElementById("2p-name-player-2") as HTMLInputElement)?.value ||
     "Player 2";
+    
+  //If any player name is empty, show warning and return
+  if (player1Name.trim() === "" || player2Name.trim() === "") {
+    toast.warning("Player names cannot be empty.");
+    return;
+  }
 
   // Check if Player 2 display name is the same as current user (Player 1)
   if (player2Name.trim() === player1Name.trim()) {

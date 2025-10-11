@@ -330,9 +330,9 @@ async function handleUpdateProfile(username: string) {
   const email = (formData.get("update-email") as string) || "";
 
   const profileData: Partial<CreateProfileRequest> = {
-    nickName: (formData.get("update-nick-name") as string) || undefined,
-    firstName: (formData.get("update-first-name") as string) || undefined,
-    lastName: (formData.get("update-last-name") as string) || undefined,
+    nickName: ((formData.get("update-nick-name") as string) || "").trim() || undefined,
+    firstName: ((formData.get("update-first-name") as string) || "").trim() || undefined,
+    lastName: ((formData.get("update-last-name") as string) || "").trim() || undefined,
     bio: (formData.get("update-bio") as string) || undefined,
     gender: (formData.get("update-gender") as any) || undefined,
   };
@@ -679,12 +679,7 @@ async function confirm2FASetup() {
     }
   } catch (error: any) {
     toast.error(`${error.message}`);
-  }
-}
-
-function setupQRCodeModalEventListeners() {
-  // Cancel button
-  const cancelBtn = document.getElementById("profile-2fa-cancel-btn");
+tn = document.getElementById("profile-2fa-cancel-btn");
   if (cancelBtn) {
     cancelBtn.addEventListener("click", closeQRCodeModal);
   }
