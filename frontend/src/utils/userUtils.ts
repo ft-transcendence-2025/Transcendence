@@ -164,3 +164,19 @@ export function truncateString25(str: string | null): string {
 
   return str;
 }
+
+/**
+ ** Get full player name from data-full-name attribute
+ ** fall back to textContent
+ **/
+export function getFullPlayerName(element: Element | null): string {
+  if (!element) return "";
+
+  const fullName = element.getAttribute("data-full-name");
+  if (fullName) {
+    return fullName;
+  }
+
+  // Fallback to text content if no data attribute
+  return element.textContent?.trim() || "";
+}

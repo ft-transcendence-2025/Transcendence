@@ -6,25 +6,25 @@ import {
   getCurrentUserAvatar,
   getCurrentUsername,
   truncateString15,
+  getFullPlayerName,
 } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
 import { FetchData } from "./game/utils.js";
 import { request, getHeaders } from "../utils/api.js";
 import { TournamentState, PlayerInfo } from "./tournament/tournamentSetup.js";
 
-
 export interface GameData {
-  mode: string,
+  mode: string;
   player1: {
-    username: string | null,
-    userDisplayName: string,
-    avatar: string,
-  },
+    username: string | null;
+    userDisplayName: string;
+    avatar: string;
+  };
   player2: {
-    username: string | null,
-    userDisplayName: string,
-    avatar: string,
-  },
+    username: string | null;
+    userDisplayName: string;
+    avatar: string;
+  };
 }
 
 export async function renderPong(container: HTMLElement | null) {
@@ -43,15 +43,16 @@ export async function renderPong(container: HTMLElement | null) {
   await updatePlayerInfo(gameMode);
   if (gameMode === "localtournament" || gameMode === "remotetournament") {
     enterTournamentGame(gameMode);
-  }
-  else {
+  } else {
     enterGame(gameMode, null);
   }
 }
 
 function enterTournamentGame(gameMode: string): void {
   if (gameMode === "localtournament") {
-    const localTournamentStateString = localStorage.getItem("LocalTournamentState");
+    const localTournamentStateString = localStorage.getItem(
+      "LocalTournamentState",
+    );
     const playerInfoString = localStorage.getItem("LocalTournamentPlayersInfo");
     if (!localTournamentStateString || !playerInfoString) return;
 
@@ -59,64 +60,82 @@ function enterTournamentGame(gameMode: string): void {
     const playerInfo = JSON.parse(playerInfoString);
     if (!localTournamentState || !playerInfo) return;
 
-    setTournament(localTournamentState, gameMode, playerInfo)
-  }
-  else if (gameMode === "remotetournament") {
-    const remoteTournamentStateString = localStorage.getItem("RemoteTournament");
+    setTournament(localTournamentState, gameMode, playerInfo);
+  } else if (gameMode === "remotetournament") {
+    const remoteTournamentStateString =
+      localStorage.getItem("RemoteTournament");
     if (!remoteTournamentStateString) return;
     const remoteTournamentState = JSON.parse(remoteTournamentStateString);
     if (!remoteTournamentState) return;
 
-    setTournament(remoteTournamentState, gameMode)
+    setTournament(remoteTournamentState, gameMode);
   }
-
 }
 
-async function setTournament(tournamentState: TournamentState, gameMode: string, playerInfo?: PlayerInfo[]) {
+async function setTournament(
+  tournamentState: TournamentState,
+  gameMode: string,
+  playerInfo?: PlayerInfo[],
+) {
   const player1 = document.querySelector("#player1-name");
   const player2 = document.querySelector("#player2-name");
   const player1Avatar = document.querySelector("#player1-avatar");
   const player2Avatar = document.querySelector("#player2-avatar");
   if (!player1 || !player2 || !player1Avatar || !player2Avatar) return;
 
+  // Store full names and set truncated display names
+  let player1FullName = "";
+  let player2FullName = "";
+
   // Set Names depending on which match
   if (!tournamentState.match1.winner) {
-    player1.textContent = truncateString15(tournamentState.match1.player1);
-    player2.textContent = truncateString15(tournamentState.match1.player2);
-  }
-  else if (!tournamentState.match2.winner) {
-    player1.textContent = truncateString15(tournamentState.match2.player1);
-    player2.textContent = truncateString15(tournamentState.match2.player2);
-  }
-  else {
-    player1.textContent = truncateString15(tournamentState.match3.player1);
-    player2.textContent = truncateString15(tournamentState.match3.player2);
+    player1FullName = tournamentState.match1.player1 || "";
+    player2FullName = tournamentState.match1.player2 || "";
+  } else if (!tournamentState.match2.winner) {
+    player1FullName = tournamentState.match2.player1 || "";
+    player2FullName = tournamentState.match2.player2 || "";
+  } else {
+    player1FullName = tournamentState.match3.player1 || "";
+    player2FullName = tournamentState.match3.player2 || "";
   }
 
+  // Store full names in data attributes and display truncated names
+  player1.setAttribute("data-full-name", player1FullName);
+  player1.textContent = truncateString15(player1FullName);
+
+  player2.setAttribute("data-full-name", player2FullName);
+  player2.textContent = truncateString15(player2FullName);
+
   if (gameMode === "localtournament" && playerInfo) {
-    // set Avatars
+    // set Avatars using full names
     for (const i in playerInfo) {
-      if (playerInfo[i].userDisplayName === player1.textContent) {
-        player1Avatar.setAttribute("src", `${playerInfo[i].avatar}`)
-      }
-      else if (playerInfo[i].userDisplayName === player2.textContent) {
-        player2Avatar.setAttribute("src", `${playerInfo[i].avatar}`)
+      if (playerInfo[i].userDisplayName === player1FullName) {
+        player1Avatar.setAttribute("src", `${playerInfo[i].avatar}`);
+      } else if (playerInfo[i].userDisplayName === player2FullName) {
+        player2Avatar.setAttribute("src", `${playerInfo[i].avatar}`);
       }
     }
     const localGame = new LocalGame(gameMode, tournamentState.id);
-  }
-  else if (gameMode === "remotetournament") {
-    const avatar1 = await getUserAvatar(player1.innerHTML.trim());
-    const avatar2 = await getUserAvatar(player2.innerHTML.trim());
-    player1Avatar.setAttribute("src", `${avatar1}`)
-    player2Avatar.setAttribute("src", `${avatar2}`)
+  } else if (gameMode === "remotetournament") {
+    // Use full names for avatar lookup and username comparison
+    const avatar1 = await getUserAvatar(player1FullName);
+    const avatar2 = await getUserAvatar(player2FullName);
+    player1Avatar.setAttribute("src", `${avatar1}`);
+    player2Avatar.setAttribute("src", `${avatar2}`);
 
     const userName = getCurrentUsername();
-    if (userName === player1.innerHTML.trim()) {
-      const remotePlayerGame = new RemoteGame(gameMode, tournamentState.id, "left");
-    }
-    else if (userName === player2.innerHTML.trim()) {
-      const remotePlayerGame = new RemoteGame(gameMode, tournamentState.id, "right");
+    if (userName === player1FullName) {
+      const remotePlayerGame = new RemoteGame(
+        gameMode,
+        tournamentState.id,
+        "left",
+      );
+    } else if (userName === player2FullName) {
+      const remotePlayerGame = new RemoteGame(
+        gameMode,
+        tournamentState.id,
+        "right",
+      );
     }
   }
 }
@@ -125,39 +144,43 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
   try {
     const baseUrl = window.location.origin;
     const user = getCurrentUsername();
-    if (gameMode === "custom" ) {
+    if (gameMode === "custom") {
       const params = new URLSearchParams(window.location.search);
       const modeParam = params.get("mode") || gameMode;
       const gameIdParam = params.get("gameId") || "0";
       const sideParam = params.get("side") || "left";
       new RemoteGame(modeParam, parseInt(gameIdParam, 10), sideParam);
-    }
-    else if (gameMode === "remote") {
+    } else if (gameMode === "remote") {
       if (!gameData) {
-        const response = await request(`${baseUrl}/api/getgame/${gameMode}`, {
+        const response = (await request(`${baseUrl}/api/getgame/${gameMode}`, {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({
             name: getCurrentUsername(),
-          })
-        }) as FetchData;
-        const remoteGame = new RemoteGame(response.gameMode, response.id, response.side);
+          }),
+        })) as FetchData;
+        const remoteGame = new RemoteGame(
+          response.gameMode,
+          response.id,
+          response.side,
+        );
+      } else {
+        const remoteGame = new RemoteGame(
+          gameData.gameMode,
+          gameData.id,
+          gameData.side,
+        );
       }
-      else {
-        const remoteGame = new RemoteGame(gameData.gameMode, gameData.id, gameData.side);
-      }
-    }
-    else {
-      const response = await request(`${baseUrl}/api/getgame/local`, {
-        credentials: "include"
-      }) as FetchData;
+    } else {
+      const response = (await request(`${baseUrl}/api/getgame/local`, {
+        credentials: "include",
+      })) as FetchData;
       const localGame = new LocalGame(gameMode, response.id);
     }
   } catch (error) {
     console.error("Failed to fetch game:", error);
   }
 }
-
 
 /**
  ** Update the player usernames based on game mode
@@ -193,12 +216,16 @@ async function updatePlayerInfo(gameMode: string) {
       const data = JSON.parse(gameData) as GameData;
 
       if (player1Element) {
-        player1Element.textContent = truncateString15(data.player1.userDisplayName);
+        player1Element.textContent = truncateString15(
+          data.player1.userDisplayName,
+        );
         player1Avatar.src = data.player1.avatar;
       }
 
       if (player2Element) {
-        player2Element.textContent = truncateString15(data.player2.userDisplayName);
+        player2Element.textContent = truncateString15(
+          data.player2.userDisplayName,
+        );
         player2Avatar.src = data.player2.avatar;
       }
     } else {
