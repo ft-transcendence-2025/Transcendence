@@ -206,16 +206,6 @@ class ChatComponent {
                 Send Game Invite
               </button>
             </li>
-            <li>
-              <button class="menu-clear-chat w-full text-left px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-primary-light)] transition-colors">
-                Clear Chat History
-              </button>
-            </li>
-            <li>
-              <button class="menu-block-user w-full text-left px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-accent)] hover:text-white transition-colors">
-                Block User
-              </button>
-            </li>
           </ul>
         </div>
       </div>
@@ -325,28 +315,28 @@ class ChatComponent {
       }
     });
 
-    const clearChatBtn = chatContainer.querySelector(".menu-clear-chat") as HTMLButtonElement;
-    clearChatBtn.addEventListener("click", () => {
-      chatMenu.classList.add("hidden");
-      if (confirm(`Are you sure you want to clear chat history with ${friend.username}?`)) {
-        this.messages.set(friend.username, []);
-        this.updateChatMessages(friend.username);
-      }
-    });
+    // const clearChatBtn = chatContainer.querySelector(".menu-clear-chat") as HTMLButtonElement;
+    // clearChatBtn.addEventListener("click", () => {
+    //   chatMenu.classList.add("hidden");
+    //   if (confirm(`Are you sure you want to clear chat history with ${friend.username}?`)) {
+    //     this.messages.set(friend.username, []);
+    //     this.updateChatMessages(friend.username);
+    //   }
+    // });
 
-    const blockUserBtn = chatContainer.querySelector(".menu-block-user") as HTMLButtonElement;
-    blockUserBtn.addEventListener("click", async () => {
-      chatMenu.classList.add("hidden");
-      if (confirm(`Are you sure you want to block ${friend.username}?`)) {
-        const blockMessage: UserBlockMessageResponse = {
-          kind: "user/block",
-          recipientId: friend.username,
-        };
-        await this.sendMessage(friend.username, blockMessage);
-        this.closeChat(friend.username);
-        toast.info(`${friend.username} has been blocked.`);
-      }
-    });
+    // const blockUserBtn = chatContainer.querySelector(".menu-block-user") as HTMLButtonElement;
+    // blockUserBtn.addEventListener("click", async () => {
+    //   chatMenu.classList.add("hidden");
+    //   if (confirm(`Are you sure you want to block ${friend.username}?`)) {
+    //     const blockMessage: UserBlockMessageResponse = {
+    //       kind: "user/block",
+    //       recipientId: friend.username,
+    //     };
+    //     await this.sendMessage(friend.username, blockMessage);
+    //     this.closeChat(friend.username);
+    //     toast.info(`${friend.username} has been blocked.`);
+    //   }
+    // });
 
     this.container.querySelector("#chat-windows")!.appendChild(chatContainer);
     this.openChats.set(friend.username, chatContainer);

@@ -56,13 +56,13 @@ export class UsernameValidator {
     }
 
     // Character validation - only alphanumeric, underscores, and hyphens
-    const validCharactersRegex = /^[a-zA-Z0-9_-]+$/;
+    const validCharactersRegex = /^[a-z0-9_-]+$/;
     if (!validCharactersRegex.test(normalized)) {
-      errors.push('Username can only contain letters, numbers, underscores, and hyphens');
+      errors.push('Username can only contain lower case letters, numbers, underscores, and hyphens');
     }
 
     // Must start with a letter
-    const startsWithLetterRegex = /^[a-zA-Z]/;
+    const startsWithLetterRegex = /^[a-z]/;
     if (!startsWithLetterRegex.test(normalized)) {
       errors.push('Username must start with a letter');
     }
