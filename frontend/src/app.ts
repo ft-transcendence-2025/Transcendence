@@ -61,16 +61,6 @@ window.addEventListener("popstate", () => {
 // listen for dom to be fully loaded
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // const currentPath = window.location.pathname;
-  // if (currentPath !== "/login" && currentPath !== "/register" && currentPath !== "/") {
-  //   const token = window.localStorage.getItem("authToken");
-  //   if (!token /* || !await refreshAccessToken() */) {
-  //     toast.warning("You are not authenticated. Please log in to continue.");
-  //     navigateTo("/login", document.getElementById("content"));
-  //     return;
-  //   }
-  // }
-
   await renderNavbar(navbarElement); // render the navbar component
   initializeChatManager();
   // global click listener for navigation links (data-links)

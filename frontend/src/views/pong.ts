@@ -5,6 +5,7 @@ import {
   getUserDisplayName,
   getCurrentUserAvatar,
   getCurrentUsername,
+  truncateString15,
 } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
 import { FetchData } from "./game/utils.js";
@@ -80,16 +81,16 @@ async function setTournament(tournamentState: TournamentState, gameMode: string,
 
   // Set Names depending on which match
   if (!tournamentState.match1.winner) {
-    player1.textContent = tournamentState.match1.player1;
-    player2.textContent = tournamentState.match1.player2;
+    player1.textContent = truncateString15(tournamentState.match1.player1);
+    player2.textContent = truncateString15(tournamentState.match1.player2);
   }
   else if (!tournamentState.match2.winner) {
-    player1.textContent = tournamentState.match2.player1;
-    player2.textContent = tournamentState.match2.player2;
+    player1.textContent = truncateString15(tournamentState.match2.player1);
+    player2.textContent = truncateString15(tournamentState.match2.player2);
   }
   else {
-    player1.textContent = tournamentState.match3.player1;
-    player2.textContent = tournamentState.match3.player2;
+    player1.textContent = truncateString15(tournamentState.match3.player1);
+    player2.textContent = truncateString15(tournamentState.match3.player2);
   }
 
   if (gameMode === "localtournament" && playerInfo) {
@@ -180,7 +181,7 @@ async function updatePlayerInfo(gameMode: string) {
       player1Avatar.src = "/assets/avatars/robot.png"; // Set AI avatar
     }
     if (player2Element) {
-      player2Element.textContent = userDisplayName;
+      player2Element.textContent = truncateString15(userDisplayName);
       player2Avatar.src = userAvatar; // Set user avatar
     }
   } else if (gameMode === "2player") {
@@ -192,18 +193,18 @@ async function updatePlayerInfo(gameMode: string) {
       const data = JSON.parse(gameData) as GameData;
 
       if (player1Element) {
-        player1Element.textContent = data.player1.userDisplayName;
+        player1Element.textContent = truncateString15(data.player1.userDisplayName);
         player1Avatar.src = data.player1.avatar;
       }
 
       if (player2Element) {
-        player2Element.textContent = data.player2.userDisplayName;
+        player2Element.textContent = truncateString15(data.player2.userDisplayName);
         player2Avatar.src = data.player2.avatar;
       }
     } else {
       // Fallback to default behavior
       if (player1Element) {
-        player1Element.textContent = userDisplayName;
+        player1Element.textContent = truncateString15(userDisplayName);
         player1Avatar.src = userAvatar;
       }
       if (player2Element) {
@@ -220,12 +221,12 @@ async function updatePlayerInfo(gameMode: string) {
       const data = JSON.parse(gameData);
 
       if (player1Element) {
-        player1Element.textContent = data.player1.name;
+        player1Element.textContent = truncateString15(data.player1.name);
         player1Avatar.src = data.player1.avatar;
       }
 
       if (player2Element) {
-        player2Element.textContent = data.player2.name;
+        player2Element.textContent = truncateString15(data.player2.name);
         player2Avatar.src = data.player2.avatar;
       }
 
@@ -243,10 +244,10 @@ async function updatePlayerInfo(gameMode: string) {
     }
   } else if (gameMode === "remote") {
     if (player1Element) {
-      player1Element.textContent = "Remote Player 1";
+      player1Element.textContent = "Player 1";
     }
     if (player2Element) {
-      player2Element.textContent = "Remote Player 2";
+      player2Element.textContent = "Player 2";
     }
   }
 }
