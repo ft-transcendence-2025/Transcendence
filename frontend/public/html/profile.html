@@ -1,6 +1,6 @@
 <div
-  class="hidden font-poppins flex bg-[var(--color-background)] text-[var(--color-text-primary)]"
-  style="min-height: calc(100vh - 76px);"
+  class="font-poppins flex hidden bg-[var(--color-background)] text-[var(--color-text-primary)]"
+  style="min-height: calc(100vh - 76px)"
   id="profile-container"
 >
   <!-- Sidebar -->
@@ -15,15 +15,11 @@
         alt="Avatar"
         class="mb-4 h-44 w-44 rounded-full border-4 border-(--color-secondary) object-cover"
       />
-      <h2 id="display-username" class="text-xl font-bold">UglyNinja.ezWk</h2>
+      <h2 id="display-username" class="text-xl font-bold">SoftShell</h2>
       <p id="display-nickname" class="text-sm text-(--color-secondary-light)">
         Nickname not set
       </p>
-      <!-- <button
-        class="mt-3 rounded-lg bg-(--color-secondary) px-4 py-2 text-sm font-semibold text-(--color-text-primary) hover:bg-(--color-secondary-dark)"
-      >
-        Edit my profile
-      </button> -->
+
       <div class="mt-3 flex gap-2">
         <button
           id="edit-profile-button"
@@ -39,7 +35,7 @@
         </button>
         <button
           id="block-button"
-          class="material-symbols-outlined bg-accent hover:bg-accent-dark cursor-pointer rounded-lg px-4 py-2 text-3xl hover:text-white focus:outline-none hidden"
+          class="material-symbols-outlined bg-accent hover:bg-accent-dark hidden cursor-pointer rounded-lg px-4 py-2 text-3xl hover:text-white focus:outline-none"
           title="Block user"
         >
           account_circle_off

@@ -80,7 +80,12 @@
         </div>
         <div>
           <label class="block text-sm font-semibold text-gray-700">Bio</label>
-          <p id="display-bio" class="mt-1 text-gray-900">-</p>
+          <p
+            id="display-bio"
+            class="mt-1 leading-relaxed break-words whitespace-pre-wrap text-gray-900"
+          >
+            -
+          </p>
         </div>
       </div>
 
@@ -117,6 +122,7 @@
             id="update-nick-name"
             class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your nickname"
+            maxlength="30"
           />
         </div>
         <div>
@@ -127,7 +133,7 @@
             Email
           </label>
           <input
-            type="text"
+            type="email"
             name="update-email"
             id="update-email"
             class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
@@ -147,6 +153,7 @@
             id="update-first-name"
             class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your first name"
+            maxlength="30"
           />
         </div>
         <div>
@@ -162,6 +169,7 @@
             id="update-last-name"
             class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
             placeholder="Your last name"
+            maxlength="30"
           />
         </div>
         <div>
@@ -193,6 +201,7 @@
           rows="3"
           class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
           placeholder="Tell us about yourself..."
+          maxlength="256"
         ></textarea>
       </div>
       <!-- 2FA Toggle -->

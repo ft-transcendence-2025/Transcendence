@@ -4,6 +4,7 @@ import {
   getUserDisplayName,
   getCurrentUserAvatar,
   getCurrentUsername,
+  truncateString25,
 } from "../../utils/userUtils.js";
 import {
   getLocalTournamentState,
@@ -143,7 +144,7 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
     // Go to Second Math
     const finalPlayer1 = container.querySelector("#final-player1");
     if (!finalPlayer1) return;
-    finalPlayer1.textContent = tournamentState.match1.winner;
+    finalPlayer1.textContent = truncateString25(tournamentState.match1.winner);
     finalPlayer1.classList.remove("text-gray-400");
     finalPlayer1.classList.add("text-gray-900");
 
@@ -157,7 +158,7 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
     // Go to Final Match
     const finalPlayer2 = container.querySelector("#final-player2");
     if (!finalPlayer2) return;
-    finalPlayer2.textContent = tournamentState.match2.winner;
+    finalPlayer2.textContent = truncateString25(tournamentState.match2.winner);
     finalPlayer2.classList.remove("text-gray-400");
     finalPlayer2.classList.add("text-gray-900");
 
@@ -185,7 +186,7 @@ async function setTournamentWinner(
   const tournamentWinner = container.querySelector("#TournamentWinnerName");
   const tournamentWinnerAvatar = container.querySelector("#t-avatar-winner");
   if (!tournamentWinner || !tournamentWinnerAvatar) return;
-  tournamentWinner.textContent = tournamentState.match3.winner;
+  tournamentWinner.textContent = truncateString25(tournamentState.match3.winner);
 
   let avatar = "";
   if (playerInfo === null) {
@@ -213,10 +214,10 @@ function setNames(
   const player4 = container.querySelector("#game2-player2");
   if (!player1 || !player2 || !player3 || !player4) return;
 
-  player1.textContent = localTournamentState.match1.player1;
-  player2.textContent = localTournamentState.match1.player2;
-  player3.textContent = localTournamentState.match2.player1;
-  player4.textContent = localTournamentState.match2.player2;
+  player1.textContent = truncateString25(localTournamentState.match1.player1);
+  player2.textContent = truncateString25(localTournamentState.match1.player2);
+  player3.textContent = truncateString25(localTournamentState.match2.player1);
+  player4.textContent = truncateString25(localTournamentState.match2.player2);
 }
 
 function setBtnFinished(button: HTMLButtonElement) {

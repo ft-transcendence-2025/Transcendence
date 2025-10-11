@@ -136,3 +136,31 @@ export async function getCurrentUserAvatar(username?: string): Promise<string> {
     return "/assets/avatars/panda.png"; // Fallback avatar
   }
 }
+
+/**
+ ** Truncate player name if longer than 15 characters
+ ** Keeps 13 characters and adds ".." at the end
+ **/
+export function truncateString15(str: string | null): string {
+  if (!str) return "";
+
+  if (str.length > 15) {
+    return str.substring(0, 13) + "..";
+  }
+
+  return str;
+}
+
+/**
+ ** Truncate player name if longer than 15 characters
+ ** Keeps 13 characters and adds ".." at the end
+ **/
+export function truncateString25(str: string | null): string {
+  if (!str) return "";
+
+  if (str.length > 25) {
+    return str.substring(0, 23) + "..";
+  }
+
+  return str;
+}
