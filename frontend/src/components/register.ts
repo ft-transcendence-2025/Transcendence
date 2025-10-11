@@ -132,7 +132,7 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
     }
 
     // Normalize username to lowercase
-    data.username = UsernameValidator.normalize(data.username);
+    // data.username = UsernameValidator.normalize(data.username);
 
     // Only validate that passwords match on frontend
     if (data.password !== data.confirmPassword) {
@@ -175,7 +175,7 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
       form.reset();
 
       // Show the login modal
-      navigateTo("/login", container);
+      navigateTo("/dashboard", container);
     } catch (error) {
       showError(
         error instanceof Error
