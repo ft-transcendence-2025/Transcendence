@@ -4,9 +4,8 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
-  binaryTargets = ["native", "linux-arm64-openssl-3.0.x"]
+  binaryTargets = ["native", "linux-arm64-openssl-3.0.x", "debian-openssl-3.0.x"]
 }
-
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
