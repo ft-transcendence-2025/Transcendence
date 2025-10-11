@@ -2,7 +2,11 @@ import { loadHtml } from "../utils/htmlLoader.js";
 import { register } from "../services/authService.js";
 import { navigateTo } from "../router/router.js";
 import { renderHome } from "../views/home.js";
-import { JUNGLE_AVATARS, getJungleAvatarFile, saveUserAvatar } from "../services/profileService.js";
+import {
+  JUNGLE_AVATARS,
+  getJungleAvatarFile,
+  saveUserAvatar,
+} from "../services/profileService.js";
 import { UsernameValidator } from "../utils/usernameValidator.js";
 
 export async function openRegisterModal(container: HTMLElement | null = null) {
@@ -78,14 +82,17 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
   );
 
   // Add real-time username validation
-  const usernameInput = modal.querySelector("#register-username") as HTMLInputElement;
+  const usernameInput = modal.querySelector(
+    "#register-username",
+  ) as HTMLInputElement;
   const usernameError = modal.querySelector("#username-error") as HTMLElement;
 
   if (usernameInput && usernameError) {
     usernameInput.addEventListener("input", () => {
       const validation = UsernameValidator.validate(usernameInput.value);
       if (!validation.valid && usernameInput.value.length > 0) {
-        usernameError.textContent = UsernameValidator.getErrorMessage(validation);
+        usernameError.textContent =
+          UsernameValidator.getErrorMessage(validation);
         usernameError.classList.remove("hidden");
         usernameInput.classList.add("border-red-500");
       } else {
@@ -99,7 +106,8 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
       if (usernameInput.value.length > 0) {
         const validation = UsernameValidator.validate(usernameInput.value);
         if (!validation.valid) {
-          usernameError.textContent = UsernameValidator.getErrorMessage(validation);
+          usernameError.textContent =
+            UsernameValidator.getErrorMessage(validation);
           usernameError.classList.remove("hidden");
           usernameInput.classList.add("border-red-500");
         }
@@ -153,16 +161,28 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
 
     // Assign a random avatar from the avatars folder
     const avatarList = [
-      "bear.png", "cat.png", "chicken.png", "dog.png", "gorilla.png", "koala.png", "meerkat.png", "panda.png", "rabbit.png", "robot.png", "sloth.png"
+      "bear.png",
+      "cat.png",
+      "chicken.png",
+      "dog.png",
+      "gorilla.png",
+      "koala.png",
+      "meerkat.png",
+      "panda.png",
+      "rabbit.png",
+      "robot.png",
+      "sloth.png",
     ];
-    const randomAvatar = avatarList[Math.floor(Math.random() * avatarList.length)];
+    const randomAvatar =
+      avatarList[Math.floor(Math.random() * avatarList.length)];
     registrationData.avatar = randomAvatar;
 
     try {
       await register(registrationData);
 
       // After successful registration, assign a random avatar
-      const randomAvatar = JUNGLE_AVATARS[Math.floor(Math.random() * JUNGLE_AVATARS.length)];
+      const randomAvatar =
+        JUNGLE_AVATARS[Math.floor(Math.random() * JUNGLE_AVATARS.length)];
       try {
         const avatarFile = await getJungleAvatarFile(randomAvatar);
         await saveUserAvatar(registrationData.username, avatarFile);
@@ -175,7 +195,7 @@ export async function openRegisterModal(container: HTMLElement | null = null) {
       form.reset();
 
       // Show the login modal
-      navigateTo("/dashboard", container);
+      navigateTo("/login", container);
     } catch (error) {
       showError(
         error instanceof Error
