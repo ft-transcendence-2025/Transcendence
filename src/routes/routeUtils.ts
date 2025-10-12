@@ -104,7 +104,6 @@ export function createLocalTournament(req: FastifyRequest ,reply: FastifyReply, 
 
 export function createCustomGame(reply: FastifyReply, gameId: number, player1: string, player2: string) {
   const gameRoom = new RemoteGameRoom(gameId, player1);
-  gameRoom.player2Name = player2;
 
   customGameRoom.set(gameId, gameRoom);
 

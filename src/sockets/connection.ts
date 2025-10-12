@@ -24,6 +24,9 @@ export function customGameConnection(ws: WebSocket, context: any) {
     return;
   }
 
+  if (playerName !== gameRoom.player1Name) {
+    gameRoom.player2Name = playerName;
+  }
   if (gameRoom.player1Name === playerName || gameRoom.player2Name === playerName) {
     if (gameRoom.addPlayer(ws, playerName) == -1) {
       ws.send(JSON.stringify({ 

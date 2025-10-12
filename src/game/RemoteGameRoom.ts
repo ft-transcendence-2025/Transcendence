@@ -161,7 +161,7 @@ export class RemoteGameRoom extends GameRoom {
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`POST failed with status ${response.status}: ${errorText}`);
-      throw new Error(`POST failed with status ${response.status}`);
+      // throw new Error(`POST failed with status ${response.status}`);
     }
     const result = await response.json();
 
