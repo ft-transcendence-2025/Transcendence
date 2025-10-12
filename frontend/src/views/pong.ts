@@ -150,28 +150,32 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
       const gameIdParam = params.get("gameId") || "0";
       const sideParam = params.get("side") || "left";
       new RemoteGame(modeParam, parseInt(gameIdParam, 10), sideParam);
-    } else if (gameMode === "remote") {
+    }
+    else if (gameMode === "remote") {
       if (!gameData) {
-        const response = (await request(`${baseUrl}/api/getgame/${gameMode}`, {
+        const userName: string = await getUserDisplayName();
+        const response = await request(`${baseUrl}/api/getgame/${gameMode}`, {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({
-            name: getCurrentUsername(),
+            name: userName,
           }),
-        })) as FetchData;
+        }) as FetchData;
         const remoteGame = new RemoteGame(
           response.gameMode,
           response.id,
           response.side,
         );
-      } else {
+      }
+      else {
         const remoteGame = new RemoteGame(
           gameData.gameMode,
           gameData.id,
           gameData.side,
         );
       }
-    } else {
+    }
+    else {
       const response = (await request(`${baseUrl}/api/getgame/local`, {
         credentials: "include",
       })) as FetchData;

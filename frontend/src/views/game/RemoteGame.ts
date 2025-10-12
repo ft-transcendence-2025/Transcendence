@@ -23,8 +23,7 @@ export class RemoteGame extends Game {
     super()
 
     this.gameMode = gameMode;
-    const userName = getCurrentUsername();
-    this.joinGame(`wss://${window.location.host}/ws/game/${gameMode}/${gameId}/${userName}/play`);
+    this.joinGame(gameMode, gameId);
     this.side = side;
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
     this.canvas.focus();
@@ -33,7 +32,9 @@ export class RemoteGame extends Game {
       button.addEventListener("click", this.leaveGame.bind(this))
   }
 
-  public joinGame(url: string): void {
+  public async joinGame(gameMode: string, gameId: number) {
+    const userName: string = await getUserDisplayName();
+    const url = `wss://${window.location.host}/ws/game/${gameMode}/${gameId}/${userName}/play`
     if (!this.ws) {
       this.ws = new WebSocket(url)
       if (!this.ws)
