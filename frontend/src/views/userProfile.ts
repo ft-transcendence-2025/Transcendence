@@ -679,7 +679,12 @@ async function confirm2FASetup() {
     }
   } catch (error: any) {
     toast.error(`${error.message}`);
-tn = document.getElementById("profile-2fa-cancel-btn");
+  }
+}
+
+function setupQRCodeModalEventListeners() {
+  // Cancel button
+  const cancelBtn = document.getElementById("profile-2fa-cancel-btn");
   if (cancelBtn) {
     cancelBtn.addEventListener("click", closeQRCodeModal);
   }
