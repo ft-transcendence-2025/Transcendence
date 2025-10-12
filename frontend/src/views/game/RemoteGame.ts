@@ -139,7 +139,7 @@ export class RemoteGame extends Game {
       return ;
     }
 
-    if (this.gameState.status === "playing" || mode !== "remote" && mode !== "remotetournament") {
+    if (this.gameState.status === "playing" || mode !== "remote" && mode !== "remotetournament" && mode !== "custom&gameId") {
       if (display) {
         display.classList.add("hidden");
       }
