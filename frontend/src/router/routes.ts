@@ -12,6 +12,7 @@ import { renderTournamentTree } from "../views/tournament/tournamentTree.js";
 import { renderStats } from "../views/stats.js";
 import { renderChat } from "../views/chat.js";
 import { renderProfile } from "../views/profile.js";
+import { renderSearchResults } from "../views/searchResults.js";
 
 interface Route {
   path: string;
@@ -32,4 +33,5 @@ export const routes: Route[] = [
   { path: "/tournament-tree", action: renderTournamentTree },
   { path: "/stats", action: renderStats },
   { path: "/friends", action: renderFriends },
+  { path: "/search-results", action: renderSearchResults },
 ];

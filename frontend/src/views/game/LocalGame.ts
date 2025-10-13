@@ -13,6 +13,8 @@ export class LocalGame extends Game {
   private winningPoint: number = 3;
 
   private gameMode: string;
+  private gameLoopId: number | null = null;
+  private isGameActive: boolean = true;
 
   constructor(gameMode: string, id: number) {
     super()
@@ -26,9 +28,11 @@ export class LocalGame extends Game {
     }
 
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
-    const button = document.querySelector("#leave-game-btn") as HTMLButtonElement;
-    if (button)
-      button.addEventListener("click", this.leaveGame.bind(this))
+    
+    // Register this game's leave handler with the confirmation modal
+    if ((window as any).setLeaveGameHandler) {
+      (window as any).setLeaveGameHandler(this.leaveGame.bind(this));
+    }
   }
 
   public joinGame(url: string, gameMode: string) {
@@ -126,9 +130,30 @@ export class LocalGame extends Game {
     }, SECOND);
   }
 
+  public stopGame(): void {
+    this.isGameActive = false;
+    if (this.gameLoopId !== null) {
+      cancelAnimationFrame(this.gameLoopId);
+      this.gameLoopId = null;
+    }
+    if (this.updateAIIntervalId !== null) {
+      clearInterval(this.updateAIIntervalId);
+      this.updateAIIntervalId = null;
+    }
+  }
+
   public gameLoop(): void {
+    // Stop game loop if game is no longer active
+    if (!this.isGameActive) {
+      if (this.gameLoopId !== null) {
+        cancelAnimationFrame(this.gameLoopId);
+        this.gameLoopId = null;
+      }
+      return;
+    }
+
     if (!this.gameState || !this.gameState.paddleLeft || !this.gameState.paddleRight) {
-      requestAnimationFrame(this.gameLoop.bind(this));
+      this.gameLoopId = requestAnimationFrame(this.gameLoop.bind(this));
       return ;
     }
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -139,7 +164,15 @@ export class LocalGame extends Game {
       this.checkPoints(this.ws);
       this.checkIsGamePaused();
     }
-    requestAnimationFrame(this.gameLoop.bind(this));
+    this.gameLoopId = requestAnimationFrame(this.gameLoop.bind(this));
+  }
+
+  protected leaveGame(): void {
+    // Stop the game loop first
+    this.stopGame();
+    
+    // Then call parent's leaveGame to handle WebSocket cleanup and navigation
+    super.leaveGame();
   }
 
   private async handleKeyDown(event: KeyboardEvent) {

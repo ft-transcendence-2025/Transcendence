@@ -19,7 +19,33 @@ interface PlayerStats {
   recentMatches: Match[];
 }
 
-async function getPlayerStats(username: string): Promise<PlayerStats> {
+// Cache for blockchain stats
+interface CachedStats {
+  data: PlayerStats;
+  timestamp: number;
+  username: string;
+}
+
+let statsCache: CachedStats | null = null;
+const CACHE_TTL = 120000; // 2 minutes in milliseconds
+
+/**
+ * Invalidate the stats cache (call this after completing a game)
+ */
+export function invalidateStatsCache(): void {
+  statsCache = null;
+  console.log("Stats cache invalidated");
+}
+
+async function getPlayerStats(username: string, useCache: boolean = true): Promise<PlayerStats> {
+  // Check cache first
+  if (useCache && statsCache && 
+      statsCache.username === username && 
+      Date.now() - statsCache.timestamp < CACHE_TTL) {
+    console.log("Using cached blockchain stats");
+    return statsCache.data;
+  }
+
   try {
     const matchData = await getPlayerMatches(username);
     const matches = matchData?.matches || [];
@@ -42,7 +68,16 @@ async function getPlayerStats(username: string): Promise<PlayerStats> {
       .sort((a, b) => parseInt(b.endTime) - parseInt(a.endTime))
       .slice(0, 3);
     
-    return { totalGames, wins, losses, winRate, tournamentCount, recentMatches };
+    const stats = { totalGames, wins, losses, winRate, tournamentCount, recentMatches };
+    
+    // Update cache
+    statsCache = {
+      data: stats,
+      timestamp: Date.now(),
+      username: username
+    };
+    
+    return stats;
   } catch (error) {
     console.error("Error fetching player stats:", error);
     return { totalGames: 0, wins: 0, losses: 0, winRate: 0, tournamentCount: 0, recentMatches: [] };
@@ -63,6 +98,8 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   let profile: any = null;
   let avatarUrl = "/assets/avatars/panda.png";
   let friendsCount = 0;
+  
+  // Start with loading state for stats
   let stats: PlayerStats = {
     totalGames: 0,
     wins: 0,
@@ -73,11 +110,10 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
   };
 
   try {
-    // Fetch all data in parallel
-    [profile, avatarUrl, stats] = await Promise.all([
+    // Fetch profile and avatar first (fast)
+    [profile, avatarUrl] = await Promise.all([
       getProfileByUsername(finalUsername),
-      getUserAvatar(finalUsername),
-      getPlayerStats(finalUsername)
+      getUserAvatar(finalUsername)
     ]);
 
     // Get friends count
@@ -180,15 +216,21 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
         <!-- Quick Stats Cards -->
         <div class="grid grid-cols-2 gap-3 mt-6">
           <div class="bg-(--color-primary-dark)/50 rounded-lg p-3 text-center">
-            <p class="text-2xl font-bold text-(--color-secondary)">${stats.totalGames}</p>
+            <p class="text-2xl font-bold text-(--color-secondary)" data-stat="totalGames">
+              <span class="inline-block animate-pulse">...</span>
+            </p>
             <p class="text-xs text-white/70">Total Games</p>
           </div>
           <div class="bg-(--color-primary-dark)/50 rounded-lg p-3 text-center">
-            <p class="text-2xl font-bold text-green-500">${stats.wins}</p>
+            <p class="text-2xl font-bold text-green-500" data-stat="wins">
+              <span class="inline-block animate-pulse">...</span>
+            </p>
             <p class="text-xs text-white/70">Victories</p>
           </div>
           <div class="bg-(--color-primary-dark)/50 rounded-lg p-3 text-center">
-            <p class="text-2xl font-bold text-(--color-secondary)">${stats.winRate}%</p>
+            <p class="text-2xl font-bold text-(--color-secondary)" data-stat="winRate">
+              <span class="inline-block animate-pulse">...</span>
+            </p>
             <p class="text-xs text-white/70">Win Rate</p>
           </div>
           <div class="bg-(--color-primary-dark)/50 rounded-lg p-3 text-center">
@@ -208,19 +250,25 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
               <span class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-green-400 text-lg">check_circle</span> Wins
               </span>
-              <span class="font-semibold text-green-400">${stats.wins}</span>
+              <span class="font-semibold text-green-400" data-stat="wins">
+                <span class="inline-block animate-pulse">...</span>
+              </span>
             </li>
             <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
               <span class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-red-400 text-lg">cancel</span> Losses
               </span>
-              <span class="font-semibold text-red-400">${stats.losses}</span>
+              <span class="font-semibold text-red-400" data-stat="losses">
+                <span class="inline-block animate-pulse">...</span>
+              </span>
             </li>
             <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
               <span class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-yellow-400 text-lg">emoji_events</span> Tournaments
               </span>
-              <span class="font-semibold text-yellow-400">${stats.tournamentCount}</span>
+              <span class="font-semibold text-yellow-400" data-stat="tournaments">
+                <span class="inline-block animate-pulse">...</span>
+              </span>
             </li>
             ${totalUnreadMessages > 0 ? `
             <li class="flex items-center justify-between bg-red-500/20 rounded-lg px-3 py-2 border border-red-500/50">
@@ -234,43 +282,15 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
         </div>
 
         <!-- Recent Matches -->
-        ${stats.recentMatches.length > 0 ? `
-        <div class="space-y-3 mt-6">
+        <div class="space-y-3 mt-6" data-section="recent-matches">
           <h3 class="border-b border-(--color-secondary-dark) pb-2 text-sm font-bold text-white uppercase flex items-center gap-2">
             <span class="material-symbols-outlined text-blue-400">history</span>
             Recent Matches
           </h3>
-          <ul class="space-y-2 text-xs">
-            ${stats.recentMatches.map(match => {
-              const isWinner = match.winner === finalUsername;
-              const opponent = match.player1 === finalUsername ? match.player2 : match.player1;
-              const score = match.player1 === finalUsername 
-                ? `${match.score1} - ${match.score2}` 
-                : `${match.score2} - ${match.score1}`;
-              return `
-              <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
-                <div class="flex flex-col">
-                  <span class="font-semibold ${isWinner ? 'text-green-400' : 'text-red-400'} flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">${isWinner ? 'check_circle' : 'cancel'}</span>
-                    ${isWinner ? 'Victory' : 'Defeat'}
-                  </span>
-                  <span class="text-white/60">vs ${opponent}</span>
-                </div>
-                <span class="font-bold text-white">${score}</span>
-              </li>
-              `;
-            }).join('')}
-          </ul>
+          <p class="text-center text-sm text-white/50 py-4">
+            <span class="inline-block animate-pulse">Loading matches...</span>
+          </p>
         </div>
-        ` : `
-        <div class="space-y-3 mt-6">
-          <h3 class="border-b border-(--color-secondary-dark) pb-2 text-sm font-bold text-white uppercase flex items-center gap-2">
-            <span class="material-symbols-outlined text-blue-400">history</span>
-            Recent Matches
-          </h3>
-          <p class="text-center text-sm text-white/50 py-4">No matches played yet</p>
-        </div>
-        `}
       </div>
 
       <!-- Logout Button -->
@@ -314,6 +334,63 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
       navigateTo(`/friend-profile?username=${finalUsername}`, document.getElementById("content"));
     });
   }
+
+  // Progressively load blockchain stats in the background
+  setTimeout(async () => {
+    try {
+      const blockchainStats = await getPlayerStats(finalUsername, true);
+      
+      // Update stats in the UI
+      const totalGamesEl = container.querySelector('[data-stat="totalGames"]');
+      const winsEl = container.querySelectorAll('[data-stat="wins"]');
+      const lossesEl = container.querySelector('[data-stat="losses"]');
+      const winRateEl = container.querySelector('[data-stat="winRate"]');
+      const tournamentsEl = container.querySelector('[data-stat="tournaments"]');
+      
+      if (totalGamesEl) totalGamesEl.textContent = blockchainStats.totalGames.toString();
+      // Update both wins elements (in quick stats and performance)
+      winsEl.forEach(el => el.textContent = blockchainStats.wins.toString());
+      if (lossesEl) lossesEl.textContent = blockchainStats.losses.toString();
+      if (winRateEl) winRateEl.textContent = `${blockchainStats.winRate}%`;
+      if (tournamentsEl) tournamentsEl.textContent = blockchainStats.tournamentCount.toString();
+      
+      // Update recent matches section if there are matches
+      const recentMatchesContainer = container.querySelector('[data-section="recent-matches"]');
+      if (recentMatchesContainer && blockchainStats.recentMatches.length > 0) {
+        const matchesHtml = blockchainStats.recentMatches.map(match => {
+          const isWinner = match.winner === finalUsername;
+          const opponent = match.player1 === finalUsername ? match.player2 : match.player1;
+          const score = match.player1 === finalUsername 
+            ? `${match.score1} - ${match.score2}` 
+            : `${match.score2} - ${match.score1}`;
+          return `
+          <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
+            <div class="flex flex-col">
+              <span class="font-semibold ${isWinner ? 'text-green-400' : 'text-red-400'} flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">${isWinner ? 'check_circle' : 'cancel'}</span>
+                ${isWinner ? 'Victory' : 'Defeat'}
+              </span>
+              <span class="text-white/60">vs ${opponent}</span>
+            </div>
+            <span class="font-bold text-white">${score}</span>
+          </li>
+          `;
+        }).join('');
+        
+        recentMatchesContainer.innerHTML = `
+          <h3 class="border-b border-(--color-secondary-dark) pb-2 text-sm font-bold text-white uppercase flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-400">history</span>
+            Recent Matches
+          </h3>
+          <ul class="space-y-2 text-xs">
+            ${matchesHtml}
+          </ul>
+        `;
+      }
+    } catch (error) {
+      console.error("Error loading blockchain stats:", error);
+    }
+  }, 0);
 
   return container;
 }

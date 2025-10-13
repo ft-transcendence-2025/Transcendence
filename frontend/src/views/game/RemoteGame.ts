@@ -8,6 +8,7 @@ import { getCurrentUsername, getUserDisplayName } from "../../utils/userUtils.js
 import { getUserAvatar } from "../../services/profileService.js";
 import { navigateTo } from "../../router/router.js";
 import { TournamentState, getRemoteTournamentState } from "../tournament/tournamentSetup.js";
+import { getChatManager } from "../../app.js";
 
 export class RemoteGame extends Game {
   private updateAIIntervalId: number | null = null;
@@ -18,6 +19,8 @@ export class RemoteGame extends Game {
   private gameMode: string;
   private tournamentState: TournamentState | null = null;
   private redir: boolean = false;
+  private gameLoopId: number | null = null;
+  private isGameActive: boolean = true;
 
   constructor(gameMode: string, gameId: number, side: string) {
     super()
@@ -27,13 +30,23 @@ export class RemoteGame extends Game {
     this.side = side;
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
     this.canvas.focus();
-    const button = document.querySelector("#leave-game-btn") as HTMLButtonElement;
-    if (button)
-      button.addEventListener("click", this.leaveGame.bind(this))
+    
+    // Register this game's leave handler with the confirmation modal
+    if ((window as any).setLeaveGameHandler) {
+      (window as any).setLeaveGameHandler(this.leaveGame.bind(this));
+    }
+  }
+
+  public stopGame(): void {
+    this.isGameActive = false;
+    if (this.gameLoopId !== null) {
+      cancelAnimationFrame(this.gameLoopId);
+      this.gameLoopId = null;
+    }
   }
 
   public async joinGame(gameMode: string, gameId: number) {
-    const userName: string = await getUserDisplayName();
+    const userName: string = getCurrentUsername() || "Guest";
     const url = `wss://${window.location.host}/ws/game/${gameMode}/${gameId}/${userName}/play`
     if (!this.ws) {
       this.ws = new WebSocket(url)
@@ -79,8 +92,17 @@ export class RemoteGame extends Game {
   }
 
   public gameLoop(): void {
+    // Stop game loop if game is no longer active
+    if (!this.isGameActive) {
+      if (this.gameLoopId !== null) {
+        cancelAnimationFrame(this.gameLoopId);
+        this.gameLoopId = null;
+      }
+      return;
+    }
+
     if (!this.gameState || !this.gameState.paddleLeft || !this.gameState.paddleRight) {
-      requestAnimationFrame(this.gameLoop.bind(this));
+      this.gameLoopId = requestAnimationFrame(this.gameLoop.bind(this));
       return ;
     }
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -90,7 +112,7 @@ export class RemoteGame extends Game {
     this.checkPoints(this.ws);
     this.checkIsGamePaused();
     this.checkIsWaiting();
-    requestAnimationFrame(this.gameLoop.bind(this));
+    this.gameLoopId = requestAnimationFrame(this.gameLoop.bind(this));
   }
 
   private async renderNames() {
@@ -102,7 +124,11 @@ export class RemoteGame extends Game {
       const player1Avatar = document.getElementById("player1-avatar") as HTMLImageElement;
 
       if (this.gameState.player1Name && player1Display) {
-        player1Display.innerHTML = this.gameState.player1Name;
+        // Display the nickname if available, otherwise show username
+        const displayName = await getUserDisplayName(this.gameState.player1Name);
+        player1Display.innerHTML = displayName;
+        
+        // Fetch avatar using actual username
         const avatarUrl = await getUserAvatar(this.gameState.player1Name);
         if (player1Avatar && avatarUrl) {
           player1Avatar.src = avatarUrl;
@@ -116,7 +142,11 @@ export class RemoteGame extends Game {
       const player2Avatar = document.getElementById("player2-avatar") as HTMLImageElement;
 
       if (this.gameState.player2Name && player2Display) {
-        player2Display.innerHTML = this.gameState.player2Name;
+        // Display the nickname if available, otherwise show username
+        const displayName = await getUserDisplayName(this.gameState.player2Name);
+        player2Display.innerHTML = displayName;
+        
+        // Fetch avatar using actual username
         const avatarUrl = await getUserAvatar(this.gameState.player2Name);
         if (player2Avatar && avatarUrl) {
           player2Avatar.src = avatarUrl;
@@ -126,7 +156,7 @@ export class RemoteGame extends Game {
     }
   }
 
-  private checkIsWaiting(): void {
+  private async checkIsWaiting(): Promise<void> {
     if (!this.gameState || !this.ws)
       return ;
 
@@ -154,10 +184,12 @@ export class RemoteGame extends Game {
         if (connectionMsg && counter) {
           if (this.gameState.player1Name && this.gameState.player2Name) {
             if (this.side === "left") {
-              connectionMsg.textContent = ` Waiting for ${this.gameState.player2Name} to reconnect ... `
+              const player2DisplayName = await getUserDisplayName(this.gameState.player2Name);
+              connectionMsg.textContent = ` Waiting for ${player2DisplayName} to reconnect ... `
             }
             else if (this.side === "right") {
-              connectionMsg.textContent = ` Waiting for ${this.gameState.player1Name} to reconnect ... `
+              const player1DisplayName = await getUserDisplayName(this.gameState.player1Name);
+              connectionMsg.textContent = ` Waiting for ${player1DisplayName} to reconnect ... `
             }
             counter.textContent = `( ${this.gameState.timeToWait} )`;
           }
@@ -181,6 +213,10 @@ export class RemoteGame extends Game {
       if (this.gameState.score && this.gameState.score.winner && event.key === " " &&
         !this.redir) {
         this.redir = true;
+        
+        // Stop the game loop before navigating
+        this.stopGame();
+        
         const container = document.getElementById("content");
         if (this.gameMode === "remotetournament") {
           this.remoteTournamentRedirect(event);
@@ -211,5 +247,13 @@ export class RemoteGame extends Game {
     }
     localStorage.removeItem("RemoteTournament");
     navigateTo("/dashboard", container);
+  }
+
+  protected leaveGame(): void {
+    // Stop the game loop first
+    this.stopGame();
+    
+    // Then call parent's leaveGame to handle WebSocket cleanup and navigation
+    super.leaveGame();
   }
 }

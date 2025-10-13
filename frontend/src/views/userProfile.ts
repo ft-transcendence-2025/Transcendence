@@ -12,6 +12,7 @@ import {
   CreateProfileRequest,
 } from "../services/profileService.js";
 import { toast } from "../utils/toast.js";
+import { refreshNavbar, refreshCurrentPage } from "../utils/pageRefresh.js";
 
 // Store profile data for reuse
 let currentProfile: any = null;
@@ -306,6 +307,9 @@ async function handleCreateProfile(username: string) {
     // Switch to profile view and populate with new data
     await populateProfileView(profile);
     showProfileView();
+    
+    // Refresh navbar to show updated profile info
+    await refreshNavbar();
   } catch (error: any) {
     showErrorMessage(`Error creating profile: ${error.message}`);
   }
@@ -389,6 +393,9 @@ async function handleUpdateProfile(username: string) {
 
     await populateProfileView(updatedProfile);
     showProfileView();
+    
+    // Refresh navbar to show updated avatar/info
+    await refreshNavbar();
   } catch (error: any) {
     console.error("Error updating profile:", error);
     showErrorMessage(`Error updating profile: ${error.message}`);
@@ -511,6 +518,9 @@ async function changeAvatar(username: string) {
 
     showSuccessMessage("Avatar updated successfully!");
     closeAvatarModal();
+    
+    // Refresh both navbar and current page to show updated avatar immediately
+    await refreshCurrentPage();
   } catch (error: any) {
     toast.error(`Error updating avatar: ${error.message}`);
   } finally {

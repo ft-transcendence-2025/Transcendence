@@ -1,49 +1,49 @@
 <div id="pong">
   <div
   id="pong-container"
-    class="bg-opacity-80 relative flex flex-col items-center justify-center border-2 border-(--color-primary-light) bg-white p-6"
+    class="relative flex flex-col items-center justify-center border-2 border-[var(--color-primary)] bg-white p-6 rounded-xl shadow-2xl"
   >
     <!-- Scoreboard Section -->
     <div
-      class="mb-4 flex w-full max-w-[700px] items-center rounded-md border border-(--color-primary-light) bg-(--color-secondary-light) p-2 shadow-md"
+      class="mb-6 flex w-full max-w-[700px] items-center justify-between rounded-xl border-2 border-[var(--color-primary)] bg-white p-4 shadow-lg"
     >
       <!-- Left Section: Player 1 -->
-      <div class="flex flex-1 items-center justify-end space-x-5">
-         <span class="w-14 h-14 rounded-full flex items-center justify-center">
+      <div class="flex items-center space-x-4">
+         <span class="w-16 h-16 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-300">
 	      <img
 	        id="player1-avatar"
 	        src="/assets/avatars/undefined.png"
 	        alt="Player1 avatar"
-	        class="w-14 h-14 object-cover rounded-full border-2 border-(--color-primary-dark)">
+	        class="w-16 h-16 object-cover rounded-full border-4 border-[var(--color-primary-dark)] shadow-lg">
          </span>
-        <span id="player1-name" class="text-lg font-semibold"></span>
+        <span id="player1-name" class="text-lg font-bold text-[var(--color-primary-darker)] drop-shadow-sm min-w-[100px]"></span>
         <span
           id="player1-score"
-          class="font-greek text-4xl font-bold text-(--color-primary-dark) text-shadow-sm"
+          class="font-greek text-5xl font-bold text-[var(--color-primary-dark)] drop-shadow-md"
           >0</span
         >
       </div>
 
 
       <!-- Center: VS Separator -->
-      <div class="px-8">
-        <span class="text-xl font-bold text-(--color-primary-dark)">VS</span>
+      <div class="px-6">
+        <span class="text-2xl font-black text-[var(--color-primary-dark)] bg-[var(--color-secondary-light)] px-4 py-2 rounded-full shadow-md">VS</span>
       </div>
 
       <!-- Right Section: Player 2 -->
-      <div class="flex flex-1 items-center justify-start space-x-4">
+      <div class="flex items-center space-x-4">
         <span
           id="player2-score"
-          class="font-greek text-4xl font-bold text-(--color-accent) text-shadow-sm"
+          class="font-greek text-5xl font-bold text-[var(--color-accent)] drop-shadow-md"
           >0</span
         >
-        <span id="player2-name" class="text-lg font-semibold"></span>
-        <span class="w-14 h-14 rounded-full flex items-center justify-center">
+        <span id="player2-name" class="text-lg font-bold text-[var(--color-accent-dark)] drop-shadow-sm min-w-[100px]"></span>
+        <span class="w-16 h-16 rounded-full flex items-center justify-center shadow-md hover:scale-110 transition-transform duration-300">
 	      <img
 	        id="player2-avatar"
 	        src="/assets/avatars/undefined.png"
 	        alt="Player2 avatar"
-	        class="w-14 h-14 object-cover rounded-full border-2 border-(--color-primary-dark)">
+	        class="w-16 h-16 object-cover rounded-full border-4 border-[var(--color-primary-dark)] shadow-lg">
          </span>
       </div>
     </div>
@@ -51,22 +51,22 @@
     <button
       id="instructions-btn"
       title="Instructions"
-      class="absolute top-4 right-22 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-(--color-primary-light) shadow-sm transition-colors hover:bg-(--color-primary)"
+      class="absolute top-4 right-22 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-[var(--color-primary)] text-white shadow-lg transition-all duration-300 hover:bg-[var(--color-primary-dark)] hover:scale-110 hover:shadow-xl"
     >
-      <i class="fa-solid fa-book"></i>
+      <i class="fa-solid fa-book text-lg"></i>
     </button>
     <button
       id="leave-game-btn"
       title="Leave Game"
-      class="absolute top-4 right-4 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-(--color-primary-light) shadow-sm transition-colors hover:bg-(--color-primary)"
+      class="absolute top-4 right-4 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-[var(--color-accent)] text-white shadow-lg transition-all duration-300 hover:bg-[var(--color-accent-dark)] hover:scale-110 hover:shadow-xl"
     >
-      <i class="fa-solid fa-door-open"></i>
+      <i class="fa-solid fa-door-open text-lg"></i>
     </button>
     <!-- Pong Canvas -->
     <div class="relative flex items-center justify-center">
       <canvas
         id="pong-canvas"
-        class="border-2 border-(--color-primary-dark) bg-(--color-primary-light)"
+        class="border-4 border-[var(--color-primary-dark)] bg-[var(--color-primary-light)] rounded-lg shadow-2xl"
       ></canvas>
 
       <!-- Game Over Overlay -->
@@ -75,16 +75,16 @@
         class="absolute flex hidden items-center justify-center"
       >
         <div
-          class="rounded-md border-2 border-(--color-primary-dark) bg-(--color-background) px-8 py-6 text-center shadow-lg"
+          class="rounded-xl border-4 border-[var(--color-primary-dark)] bg-gradient-to-br from-white to-[var(--color-secondary-light)] px-12 py-8 text-center shadow-2xl animate-pulse"
         >
           <div
-            class="font-greek text-6xl font-bold text-(--color-accent) text-shadow-sm"
+            class="font-greek text-7xl font-black text-[var(--color-accent)] drop-shadow-lg"
           >
             GAME OVER
           </div>
           <p
             id="winner-text"
-            class="mt-4 text-xl font-bold text-(--color-primary-dark)"
+            class="mt-6 text-2xl font-bold text-[var(--color-primary-dark)] drop-shadow-sm"
           >
             Player XXX WINS!
         </p>
@@ -97,12 +97,12 @@
         class="absolute flex hidden items-center justify-center"
       >
         <div
-          class="rounded-md text-(--color-text-primary) border-2 border-(--color-primary-dark) bg-(--color-background) px-8 py-6 text-center shadow-lg"
+          class="rounded-xl text-[var(--color-text-primary)] border-4 border-[var(--color-primary-dark)] bg-gradient-to-br from-white to-[var(--color-secondary-light)] px-12 py-8 text-center shadow-2xl"
         >
-          <p>
-            <i class="fa-solid fa-spinner animate-spin"></i>
-            <span id="connection-msg"> Waiting for players to connect ...&nbsp; </span>
-            <span id="reconnect-counter">30</span>
+          <p class="text-lg font-semibold">
+            <i class="fa-solid fa-spinner animate-spin text-[var(--color-primary)] text-2xl"></i>
+            <span id="connection-msg" class="ml-2"> Waiting for players to connect ...&nbsp; </span>
+            <span id="reconnect-counter" class="font-bold text-[var(--color-accent)] text-xl">30</span>
           </p>
         </div>
       </div>
@@ -113,12 +113,12 @@
         class="absolute hidden flex items-center justify-center"
       >
         <div
-          class="text-(--color-text-primary) rounded-md border-2 border-(--color-primary-dark) bg-(--color-background) px-12 py-6 text-center shadow-lg"
+          class="text-[var(--color-text-primary)] rounded-xl border-4 border-[var(--color-primary-dark)] bg-gradient-to-br from-white to-[var(--color-secondary-light)] px-16 py-8 text-center shadow-2xl"
         >
-          <h2 class="text-xl font-semibold mb-4">
+          <h2 class="text-3xl font-black mb-6 text-[var(--color-primary-dark)] drop-shadow-sm">
             GAME PAUSED
           </h3>
-          <p>Press <kbd class="rounded bg-(--color-primary-light) px-2 py-1">P</kbd> to resume</p>
+          <p class="text-lg font-semibold">Press <kbd class="rounded-lg bg-[var(--color-primary)] text-white px-4 py-2 font-bold shadow-md">P</kbd> to resume</p>
       </div>
 
     </div>
@@ -130,10 +130,10 @@
     class="modal fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-sm"
   >
     <div
-      class="mx-4 max-w-md rounded-lg border-2 border-(--color-primary-dark) bg-white p-6 shadow-xl"
+      class="mx-4 max-w-md rounded-lg border-2 border-[var(--color-primary-dark)] bg-white p-6 shadow-xl"
     >
       <div class="mb-4 flex items-center justify-between">
-        <h3 class="text-xl font-bold text-(--color-text-primary)">
+        <h3 class="text-xl font-bold text-[var(--color-text-primary)]">
           How to Play Pong
         </h3>
         <button
@@ -146,36 +146,24 @@
 
       <div class="space-y-3 text-sm">
         <div class="flex space-x-3">
-          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
-            >↑</kbd
-          >
-          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
-            >↓</kbd
-          >
+          <kbd class="rounded bg-[var(--color-primary-light)] px-2 py-1 text-xs">↑</kbd>
+          <kbd class="rounded bg-[var(--color-primary-light)] px-2 py-1 text-xs">↓</kbd>
           <span>Move paddle up/down</span>
         </div>
         <div class="flex space-x-3">
-          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
-            >W</kbd
-          >
-          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
-            >S</kbd
-          >
+          <kbd class="rounded bg-[var(--color-primary-light)] px-2 py-1 text-xs">W</kbd>
+          <kbd class="rounded bg-[var(--color-primary-light)] px-2 py-1 text-xs">S</kbd>
           <span>Alternative controls / player on the left</span>
         </div>
         <div class="flex space-x-3">
-          <kbd class="rounded bg-(--color-primary-light) px-3 py-1 text-xs"
-            >Space</kbd
-          >
+          <kbd class="rounded bg-[var(--color-primary-light)] px-3 py-1 text-xs">Space</kbd>
           <span>Start the game</span>
         </div>
         <div class="flex space-x-3">
-          <kbd class="rounded bg-(--color-primary-light) px-2 py-1 text-xs"
-            >P</kbd
-          >
+          <kbd class="rounded bg-[var(--color-primary-light)] px-2 py-1 text-xs">P</kbd>
           <span>Pause the game</span>
         </div>
-        <div class="mt-4 rounded-md bg-(--color-secondary-light) p-3">
+        <div class="mt-4 rounded-md bg-[var(--color-secondary-light)] p-3">
           <p class="text-xs text-gray-600">
             <strong>Objective:</strong> Score 3 points to win
           </p>
@@ -185,9 +173,44 @@
       <div class="mt-6 flex justify-center">
         <button
           id="got-it-btn"
-          class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
+          class="rounded-lg bg-[var(--color-primary)] px-6 py-2 text-white hover:bg-[var(--color-primary-dark)]"
         >
           Got it!
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leave Game Confirmation Modal -->
+  <div
+    id="leave-confirmation-modal"
+    class="modal fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-sm bg-black/30"
+  >
+    <div
+      class="mx-4 max-w-sm rounded-lg border-2 border-[var(--color-accent)] bg-white p-6 shadow-xl"
+    >
+      <div class="mb-4">
+        <h3 class="text-xl font-bold text-[var(--color-text-primary)]">
+          Leave Game?
+        </h3>
+      </div>
+
+      <p class="mb-6 text-sm text-gray-600">
+        Are you sure you want to leave? This will end the current game.
+      </p>
+
+      <div class="flex justify-end space-x-3">
+        <button
+          id="cancel-leave-btn"
+          class="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300 transition-colors"
+        >
+          Cancel
+        </button>
+        <button
+          id="confirm-leave-btn"
+          class="rounded-lg bg-[var(--color-accent)] px-4 py-2 text-white hover:bg-[var(--color-accent-dark)] transition-colors"
+        >
+          Leave Game
         </button>
       </div>
     </div>
