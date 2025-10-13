@@ -7,7 +7,7 @@ import { navigateTo } from "../router/router.js";
 import chatService from "../services/chat.service.js";
 import { getPendingRequests, getUserFriends } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername } from "../utils/userUtils.js";
+import { getCurrentUsername, getUserDisplayName } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
 import { notificationService } from "../services/notifications.service.js";
 import { chatManager } from "../app.js";
@@ -286,12 +286,14 @@ class ChatComponent {
     const sendGameInviteBtn = chatContainer.querySelector(".menu-send-game-invite") as HTMLButtonElement;
     sendGameInviteBtn.addEventListener("click", async () => {
       try {
+        const user1DisplayName = await getUserDisplayName();
         const response = await request(`${BASE_URL}/getgame/custom`, {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({
             player1: this.currentUserId,
             player2: friend.username,
+            player1Display: user1DisplayName,
           }),
         }) as GameInviteResponse;
 
