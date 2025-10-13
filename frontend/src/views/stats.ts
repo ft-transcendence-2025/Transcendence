@@ -5,6 +5,7 @@ import {
   Match,
 } from "../services/blockchainService.js";
 import { getAccessToken } from "../utils/api.js";
+import { truncateString15 } from "../utils/userUtils.js";
 
 function getPlayerIdQueryString(): string | null {
   try {
@@ -269,7 +270,8 @@ export async function renderStats(container: HTMLElement | null) {
       if (opponentSpan) {
         const opponent =
           match.player1 === playerId ? match.player2 : match.player1;
-        opponentSpan.textContent = `vs ${opponent}`;
+        const truncatedOpponent = truncateString15(opponent);
+        opponentSpan.textContent = `vs ${truncatedOpponent}`;
       }
 
       if (scoreSpan) {
