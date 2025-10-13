@@ -83,7 +83,6 @@ export async function handleSelfNotification(message: IncomingMessage) {
 		case "GAME_INVITE_ACCEPTED":
 			notificationService.removeGameInvite(message.recipientId);
 			toast.success(`${message.recipientId} accepted your game invite!`);
-			console.log(`${message.recipientId} accepted your game invite!`);
 			break;
 		case "GAME_INVITE_DECLINED":
 			notificationService.removeGameInvite(message.recipientId);
@@ -93,7 +92,6 @@ export async function handleSelfNotification(message: IncomingMessage) {
 				chatManager2.clearSentGameInvite(message.recipientId);
 			}
 			toast.info(`${message.recipientId} declined your game invite.`);
-			console.log(`${message.recipientId} declined your game invite.`);
 			
 			// If sender is on the pong page waiting, navigate them back to dashboard
 			if (window.location.pathname.startsWith('/pong')) {
@@ -151,7 +149,6 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 			break;
 		case "GAME_INVITE_ACCEPTED":
 			toast.success(`${message.senderId} accepted your game invite!`);
-			console.log(`${message.senderId} accepted your game invite!`);
 			break;
 		case "GAME_INVITE_DECLINED":
 			// Clear from sent invites tracking so user can send new invite later
@@ -160,7 +157,6 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 				chatManagerDecline.clearSentGameInvite(message.senderId);
 			}
 			toast.info(`${message.senderId} declined your game invite.`);
-			console.log(`${message.senderId} declined your game invite.`);
 			break;
 	}
 	notificationService.triggerUpdate();

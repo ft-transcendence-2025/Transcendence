@@ -72,21 +72,24 @@
       <!-- Game Over Overlay -->
       <div
         id="game-over"
-        class="absolute flex hidden items-center justify-center"
+        class="hidden"
       >
         <div
-          class="rounded-xl border-4 border-[var(--color-primary-dark)] bg-gradient-to-br from-white to-[var(--color-secondary-light)] px-12 py-8 text-center shadow-2xl animate-pulse"
+          class="rounded-2xl border-4 border-[var(--color-primary-dark)] bg-white px-16 py-10 text-center shadow-2xl"
         >
           <div
-            class="font-greek text-7xl font-black text-[var(--color-accent)] drop-shadow-lg"
+            class="font-greek text-7xl font-black text-[var(--color-accent)] mb-2"
           >
             GAME OVER
           </div>
           <p
             id="winner-text"
-            class="mt-6 text-2xl font-bold text-[var(--color-primary-dark)] drop-shadow-sm"
+            class="mt-4 text-2xl font-bold text-[var(--color-primary-dark)]"
           >
             Player XXX WINS!
+        </p>
+        <p class="mt-6 text-sm font-medium text-gray-500">
+          Press <kbd class="rounded bg-[var(--color-primary)] text-white px-3 py-1 font-bold shadow-sm">SPACE</kbd> to continue
         </p>
         </div>
       </div>
@@ -94,15 +97,19 @@
       <!-- Waiting for player to reconnect Overlay -->
       <div
         id="reconnect-overlay"
-        class="absolute flex hidden items-center justify-center"
+        class="hidden"
       >
         <div
-          class="rounded-xl text-[var(--color-text-primary)] border-4 border-[var(--color-primary-dark)] bg-gradient-to-br from-white to-[var(--color-secondary-light)] px-12 py-8 text-center shadow-2xl"
+          class="rounded-2xl border-4 border-[var(--color-primary-dark)] bg-white px-12 py-8 text-center shadow-2xl"
         >
-          <p class="text-lg font-semibold">
-            <i class="fa-solid fa-spinner animate-spin text-[var(--color-primary)] text-2xl"></i>
-            <span id="connection-msg" class="ml-2"> Waiting for players to connect ...&nbsp; </span>
-            <span id="reconnect-counter" class="font-bold text-[var(--color-accent)] text-xl">30</span>
+          <div class="flex items-center justify-center mb-4">
+            <i class="fa-solid fa-spinner animate-spin text-[var(--color-primary)] text-3xl"></i>
+          </div>
+          <p class="text-xl font-bold text-[var(--color-primary-dark)] mb-2">
+            <span id="connection-msg">Waiting for players to connect...</span>
+          </p>
+          <p class="text-lg font-semibold text-[var(--color-accent)]">
+            <span id="reconnect-counter">(30)</span>
           </p>
         </div>
       </div>
@@ -110,15 +117,18 @@
       <!-- Paused game Overlay -->
       <div
         id="game-paused"
-        class="absolute hidden flex items-center justify-center"
+        class="hidden"
       >
         <div
-          class="text-[var(--color-text-primary)] rounded-xl border-4 border-[var(--color-primary-dark)] bg-gradient-to-br from-white to-[var(--color-secondary-light)] px-16 py-8 text-center shadow-2xl"
+          class="rounded-2xl border-4 border-[var(--color-primary-dark)] bg-white px-16 py-10 text-center shadow-2xl"
         >
-          <h2 class="text-3xl font-black mb-6 text-[var(--color-primary-dark)] drop-shadow-sm">
+          <h2 class="text-4xl font-black mb-6 text-[var(--color-primary-dark)]">
             GAME PAUSED
-          </h3>
-          <p class="text-lg font-semibold">Press <kbd class="rounded-lg bg-[var(--color-primary)] text-white px-4 py-2 font-bold shadow-md">P</kbd> to resume</p>
+          </h2>
+          <p class="text-lg font-semibold text-gray-600">
+            Press <kbd class="rounded-lg bg-[var(--color-primary)] text-white px-4 py-2 font-bold shadow-md">P</kbd> to resume
+          </p>
+        </div>
       </div>
 
     </div>

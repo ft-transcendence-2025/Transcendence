@@ -34,7 +34,6 @@ const CACHE_TTL = 120000; // 2 minutes in milliseconds
  */
 export function invalidateStatsCache(): void {
   statsCache = null;
-  console.log("Stats cache invalidated");
 }
 
 async function getPlayerStats(username: string, useCache: boolean = true): Promise<PlayerStats> {
@@ -42,7 +41,6 @@ async function getPlayerStats(username: string, useCache: boolean = true): Promi
   if (useCache && statsCache && 
       statsCache.username === username && 
       Date.now() - statsCache.timestamp < CACHE_TTL) {
-    console.log("Using cached blockchain stats");
     return statsCache.data;
   }
 
