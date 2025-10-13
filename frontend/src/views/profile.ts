@@ -13,6 +13,7 @@ import { getCurrentUser, getCurrentUsername } from "../utils/userUtils.js";
 import { renderStats } from "./stats.js";
 import { notificationService } from "../services/notifications.service.js";
 import { getPlayerMatches, Match } from "../services/blockchainService.js";
+import { navigateTo } from "../router/router.js";
 
 
 let currentProfile: any = null;
@@ -315,7 +316,8 @@ function setupEventListeners(username: string) {
 	const editProfileBtn = document.getElementById("edit-profile-button");
 	if (editProfileBtn) {
 		editProfileBtn.addEventListener("click", () => {
-			window.location.href = `/profile?username=${getCurrentUsername()}&edit=true`;
+			const contentElement = document.getElementById("content");
+			navigateTo(`/profile?username=${getCurrentUsername()}&edit=true`, contentElement);
 		});
 	}
 

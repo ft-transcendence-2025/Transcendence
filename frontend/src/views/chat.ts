@@ -40,6 +40,7 @@ class ChatComponent {
   messages: Map<string, any[]>;
   currentUserId: string = getCurrentUsername() as string;
   public chatService: chatService = new chatService();
+  private sentGameInvites: Set<string> = new Set(); // Track sent invites to prevent duplicates
 
   constructor(containerId: string, friends: any) {
     this.container = document.getElementById(containerId)!;
@@ -67,8 +68,19 @@ class ChatComponent {
     // Clear other state
     this.friends = [];
     this.currentUserId = "";
+    this.sentGameInvites.clear();
     this.container = null as any;
     this.chatService = null as any;
+  }
+
+  // Method to clear a sent game invite (called when accepted/declined)
+  clearSentGameInvite(username: string) {
+    this.sentGameInvites.delete(username);
+  }
+
+  // Method to clear all sent game invites (called when leaving a game)
+  clearAllSentGameInvites() {
+    this.sentGameInvites.clear();
   }
 
   async updateChatMessages(friendId: string) {
@@ -286,7 +298,23 @@ class ChatComponent {
     const sendGameInviteBtn = chatContainer.querySelector(".menu-send-game-invite") as HTMLButtonElement;
     sendGameInviteBtn.addEventListener("click", async () => {
       try {
-        const user1DisplayName = await getUserDisplayName();
+        // Check if we've already received an invite from this user
+        const pendingInvites = notificationService.getState().gameInvites;
+        const alreadyHaveInvite = pendingInvites.some(invite => invite.senderUsername === friend.username);
+        
+        if (alreadyHaveInvite) {
+          chatMenu.classList.add("hidden");
+          toast.warning(`You already have a pending game invite from ${friend.username}!`);
+          return;
+        }
+
+        // Check if we've already sent an invite to this user
+        if (this.sentGameInvites.has(friend.username)) {
+          chatMenu.classList.add("hidden");
+          toast.warning(`You already sent a game invite to ${friend.username}!`);
+          return;
+        }
+
         const response = await request(`${BASE_URL}/getgame/custom`, {
           method: "POST",
           headers: getHeaders(),
@@ -308,6 +336,10 @@ class ChatComponent {
           ts: Date.now(),
         };
         await this.sendMessage(friend.username, message);
+        
+        // Track that we sent an invite to this user
+        this.sentGameInvites.add(friend.username);
+        
         toast.success(`Game invite sent to ${friend.username}!`);
         navigateTo(`/pong?mode=custom&gameId=${response.id}&side=left`, document.getElementById("content"));
       } catch (err) {

@@ -124,3 +124,22 @@
   border-radius: 50%;
   margin-right: 0.5rem;
 }
+
+/* Game overlays styling */
+#game-over,
+#game-paused,
+#reconnect-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+#game-over:not(.hidden),
+#game-paused:not(.hidden),
+#reconnect-overlay:not(.hidden) {
+  display: flex;
+}

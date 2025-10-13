@@ -35,6 +35,9 @@ export async function renderPong(container: HTMLElement | null) {
 
   // Event listeners to open/close game instructions modal
   renderInstructionsModal();
+  
+  // Event listeners for leave game confirmation
+  renderLeaveConfirmationModal();
 
   // Get the game parameters from URL
   const urlParams = new URLSearchParams(window.location.search);
@@ -315,4 +318,44 @@ function renderInstructionsModal() {
     instructionsModal?.classList.add("hidden");
     instructionsModal?.classList.remove("flex");
   });
+}
+
+function renderLeaveConfirmationModal() {
+  const leaveConfirmationModal = document.getElementById("leave-confirmation-modal");
+  const leaveGameBtn = document.getElementById("leave-game-btn");
+  const cancelLeaveBtn = document.getElementById("cancel-leave-btn");
+  const confirmLeaveBtn = document.getElementById("confirm-leave-btn");
+
+  // Store the actual leave game handler
+  let actualLeaveHandler: (() => void) | null = null;
+
+  // Show confirmation modal when leave button is clicked
+  leaveGameBtn?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    leaveConfirmationModal?.classList.remove("hidden");
+    leaveConfirmationModal?.classList.add("flex");
+  });
+
+  // Hide modal when cancel is clicked
+  cancelLeaveBtn?.addEventListener("click", () => {
+    leaveConfirmationModal?.classList.add("hidden");
+    leaveConfirmationModal?.classList.remove("flex");
+  });
+
+  // Trigger the actual leave when confirm is clicked
+  confirmLeaveBtn?.addEventListener("click", () => {
+    leaveConfirmationModal?.classList.add("hidden");
+    leaveConfirmationModal?.classList.remove("flex");
+    
+    // Call the game's leave handler if it exists
+    if (actualLeaveHandler) {
+      actualLeaveHandler();
+    }
+  });
+
+  // Expose a way for game instances to register their leave handler
+  (window as any).setLeaveGameHandler = (handler: () => void) => {
+    actualLeaveHandler = handler;
+  };
 }

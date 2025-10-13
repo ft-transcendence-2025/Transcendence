@@ -71,7 +71,8 @@ export const getUserAvatar = async (username: string): Promise<string> => {
     });
 
     if (response.ok) {
-      return `${PROFILE_BASE_URL}/${username}/avatar`;
+      // Add timestamp to bust browser cache for avatar images
+      return `${PROFILE_BASE_URL}/${username}/avatar?t=${Date.now()}`;
     } else {
       return "/assets/avatars/panda.png";
     }

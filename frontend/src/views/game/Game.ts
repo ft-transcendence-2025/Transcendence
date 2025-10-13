@@ -5,6 +5,7 @@ import {
 } from "./utils.js";
 import { request, getHeaders } from "../../utils/api.js";
 import { navigateTo } from "../../router/router.js";
+import { getChatManager } from "../../app.js";
 
 export class Game {
   protected canvas = document.getElementById("pong-canvas") as HTMLCanvasElement;

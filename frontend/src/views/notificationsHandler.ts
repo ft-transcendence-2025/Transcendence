@@ -5,6 +5,8 @@ import { updateFriendshipStatusCache } from "../views/profile.js";
 import { FriendshipStatus } from "../services/friendship.service.js";
 import { getChatManager } from "../app.js";
 import { getCurrentUsername } from "../utils/userUtils.js";
+import { toast } from "../utils/toast.js";
+import { navigateTo } from "../router/router.js";
 
 // Function to handle incoming WebSocket messages
 export async function handleIncomingMessage(event: MessageEvent) {
@@ -80,12 +82,23 @@ export async function handleSelfNotification(message: IncomingMessage) {
 			break;
 		case "GAME_INVITE_ACCEPTED":
 			notificationService.removeGameInvite(message.recipientId);
-			// TODO: Start game setup when game logic is implemented
-			console.log(`${message.recipientId} accepted your game invite!`);
+			toast.success(`${message.recipientId} accepted your game invite!`);
 			break;
 		case "GAME_INVITE_DECLINED":
 			notificationService.removeGameInvite(message.recipientId);
-			console.log(`${message.recipientId} declined your game invite.`);
+			// Clear from sent invites tracking
+			const chatManager2 = getChatManager();
+			if (chatManager2) {
+				chatManager2.clearSentGameInvite(message.recipientId);
+			}
+			toast.info(`${message.recipientId} declined your game invite.`);
+			
+			// If sender is on the pong page waiting, navigate them back to dashboard
+			if (window.location.pathname.startsWith('/pong')) {
+				setTimeout(() => {
+					navigateTo('/dashboard', document.getElementById('content'));
+				}, 500);
+			}
 			break;
 	}
 	notificationService.triggerUpdate();
@@ -135,11 +148,15 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 			});
 			break;
 		case "GAME_INVITE_ACCEPTED":
-			// TODO: Start game setup when game logic is implemented
-			console.log(`${message.senderId} accepted your game invite!`);
+			toast.success(`${message.senderId} accepted your game invite!`);
 			break;
 		case "GAME_INVITE_DECLINED":
-			console.log(`${message.senderId} declined your game invite.`);
+			// Clear from sent invites tracking so user can send new invite later
+			const chatManagerDecline = getChatManager();
+			if (chatManagerDecline) {
+				chatManagerDecline.clearSentGameInvite(message.senderId);
+			}
+			toast.info(`${message.senderId} declined your game invite.`);
 			break;
 	}
 	notificationService.triggerUpdate();
