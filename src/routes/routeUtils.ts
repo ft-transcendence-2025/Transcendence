@@ -11,10 +11,11 @@ import { Players } from "./../tournament/Tournament.js";
 import { tournament } from "./routes.js";
 
 
-export function joinGameRoom(reply: FastifyReply, playerName: string): number {
+export function joinGameRoom(reply: FastifyReply, playerName: string, playerStoredName: string): number {
   for (const [id, gameRoom] of remoteGameRooms) {
     if (gameRoom.player2Name === null) {
       gameRoom.player2Name = playerName;
+      gameRoom.player2StoredName = playerStoredName;
       reply.send({
         state: "joined",
         side: "right",
@@ -54,9 +55,10 @@ export function reenterGameRoom(reply: FastifyReply, playerName: string): number
   return -1;
 }
 
-export function createRemoteGame(reply: FastifyReply, gameId: number, playerName: string) {
+export function createRemoteGame(reply: FastifyReply, gameId: number, playerName: string, playerStoredName: string) {
   const gameRoom = new RemoteGameRoom(gameId, playerName);
   gameRoom.player1Name = playerName;
+  gameRoom.player1StoredName = playerStoredName;
   remoteGameRooms.set(gameId, gameRoom);
 
   reply.send({
@@ -102,8 +104,16 @@ export function createLocalTournament(req: FastifyRequest ,reply: FastifyReply, 
 
 }
 
-export function createCustomGame(reply: FastifyReply, gameId: number, player1: string, player2: string) {
+export function createCustomGame(
+  reply: FastifyReply, gameId: number,
+  player1: string, player2: string,
+  player1Display: string
+) {
   const gameRoom = new RemoteGameRoom(gameId, player1);
+  gameRoom.player1Name = player1Display;
+  gameRoom.player2StoredName = player2;
+  gameRoom.player1StoredName = player1;
+
 
   customGameRoom.set(gameId, gameRoom);
 

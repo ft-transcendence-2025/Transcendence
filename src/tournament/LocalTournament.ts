@@ -70,18 +70,89 @@ export class LocalTournament {
     // Set the match winners
     if (!this.state.match1.winner) {
       this.state.match1.winner = winner === 1 ? this.player1 : this.player2;
+      this.state.match1.loser = winner === 1 ? this.player2 : this.player1;
       this.state.match3.player1 = this.state.match1.winner;
+      this.storeResolt(1);
     }
     else if (!this.state.match2.winner) {
       this.state.match2.winner = winner === 1 ? this.player3 : this.player4;
+      this.state.match1.loser = winner === 1 ? this.player4 : this.player3;
       this.state.match3.player2 = this.state.match2.winner;
+      this.storeResolt(2);
     }
     else if (!this.state.match3.winner) {
       this.state.match3.winner = winner === 1 ? this.state.match3.player1 : this.state.match3.player2;
+      this.state.match3.loser = winner === 1 ? this.state.match3.player2 : this.state.match3.player1;
+      this.storeResolt(3);
     }
+
+
     this.gameRoom.game.gameState.score.winner = null;
     this.gameRoom.game.gameState.score.player1 = 0;
     this.gameRoom.game.gameState.score.player2 = 0;
     this.gameRoom.game.gameState.ball.isRunning = false;
   }
+
+  private async storeResolt(match: number) {
+    let winner;
+    let loser;
+    let player1;
+    let player2;
+    let isFinal: boolean = false;
+
+    switch (match) {
+      case 1:
+        winner = this.state.match1.winner;
+        loser = this.state.match1.loser;
+        player1 = this.state.match1.player1;
+        player2 = this.state.match1.player2;
+        break;
+
+      case 2:
+        winner = this.state.match2.winner;
+        loser = this.state.match2.loser;
+        player1 = this.state.match2.player1;
+        player2 = this.state.match2.player2;
+        break;
+
+      case 3:
+        winner = this.state.match3.winner;
+        loser = this.state.match3.loser;
+        player1 = this.state.match3.player1;
+        player2 = this.state.match3.player2;
+        isFinal = true;
+        break ;
+
+      default:
+        break;
+    }
+
+    const requestBody = {
+      tournamentId: this.id,
+      player1: player1,
+      player2: player2,
+      score1: this.gameRoom.game.gameState.score.player1,
+      score2: this.gameRoom.game.gameState.score.player2,
+      winner: winner,
+      startTime: Date.now(),
+      endTime: Date.now(),
+      finalMatch: isFinal,
+    };
+   
+    const response = await fetch(`http://blockchain:3000/matches`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`POST failed with status ${response.status}: ${errorText}`);
+      // throw new Error(`POST failed with status ${response.status}`);
+    }
+    const result = await response.json();
+  }
+
 }

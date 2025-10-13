@@ -13,9 +13,10 @@ export const remoteGameSchema = {
   schema: {
     body: {
       type: "object",
-      required: ["name"],
+      required: ["name", "storedName"],
       properties: {
         name: { type: "string" },
+        storedName: { type: "string" },
       }
     }
   }
@@ -25,10 +26,14 @@ export const customGameSchema = {
   schema: {
     body: {
       type: "object",
-      required: ["player1", "player2"],
+      required: [
+        "player1", "player2",
+        "player1Display"
+      ],
       properties: {
         player1: { type: "string" },
         player2: { type: "string" },
+        player1Display: { type: "string" },
       }
     }
   }
@@ -60,25 +65,36 @@ export function localGameRequest(req: FastifyRequest, reply: FastifyReply) {
 }
 
 export function remoteGame(req: FastifyRequest, reply: FastifyReply) {
-  const body = req.body as {name: string}
-  const playerName = body.name
+  const body = req.body as {name: string, storedName: string}
+  const playerName = body.name;
+  const playerStoredName = body.storedName;
 
   if (remoteGameId === 0) { // Create first game
-    createRemoteGame(reply, remoteGameId++, playerName);
+    createRemoteGame(reply, remoteGameId++, playerName, playerStoredName);
   }
   else {
     if (reenterGameRoom(reply, playerName) === -1) { // Trys to reenter game if playerName was previous on a gameRoom
-      if (joinGameRoom(reply, playerName) === -1) {  // In case playerName was never in a room previous, in enter a new game
-        createRemoteGame(reply, remoteGameId++, playerName); // If no gameRoom open waiting for player to foin, will create a new
+      if (joinGameRoom(reply, playerName, playerStoredName) === -1) {  // In case playerName was never in a room previous, in enter a new game
+        createRemoteGame(reply, remoteGameId++, playerName, playerStoredName); // If no gameRoom open waiting for player to foin, will create a new
       }
     }
   }
 }
 
 export function customGame(req: FastifyRequest, reply: FastifyReply) {
-  const body = req.body as { player1: string, player2: string}
+  const body = req.body as { 
+    player1: string,
+    player2: string,
+    player1Display: string,
+  }
   const player1 = body.player1;
   const player2 = body.player2;
+  const player1Display = body.player1Display;
 
-  createCustomGame(reply, customId++, player1, player2);
+
+  createCustomGame(
+    reply, customId++,
+    player1, player2,
+    player1Display
+  );
 }

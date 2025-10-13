@@ -12,6 +12,10 @@ export class RemoteGameRoom extends GameRoom {
   private timePlayerLeft: number = Date.now();
   private isGameOverInProgress = false;
 
+  public player1StoredName: string | null = null;
+  public player2StoredName: string | null = null;
+
+
 
   constructor(id: number, player1: string) {
     super(id)
@@ -132,16 +136,17 @@ export class RemoteGameRoom extends GameRoom {
   public async gameOver() {
     if (this.isGameOverInProgress) return;
     this.isGameOverInProgress = true;
-    if(!this.game.gameState.score.winner || !this.player1Name || !this.player2Name || !this.gameInterval)
+    if(!this.game.gameState.score.winner || !this.player1StoredName || !this.player2StoredName || !this.gameInterval)
       return ;
     clearInterval(this.gameInterval);
     this.gameInterval = null;
-    const winner: string = this.game.gameState.score.winner === 1 ? this.player1Name : this.player2Name;
+    const winner: string = this.game.gameState.score.winner === 1 ?
+      this.player1StoredName : this.player2StoredName;
 
     const requestBody = {
       tournamentId: 0,
-      player1: this.player1Name,
-      player2: this.player2Name,
+      player1: this.player1StoredName,
+      player2: this.player2StoredName,
       score1: this.game.gameState.score.player1,
       score2: this.game.gameState.score.player2,
       winner: winner,

@@ -24,7 +24,7 @@ export function customGameConnection(ws: WebSocket, context: any) {
     return;
   }
 
-  if (playerName !== gameRoom.player1Name) {
+  if (playerName !== gameRoom.player2Name) {
     gameRoom.player2Name = playerName;
   }
   if (gameRoom.player1Name === playerName || gameRoom.player2Name === playerName) {
