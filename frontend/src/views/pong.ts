@@ -46,7 +46,8 @@ export async function renderPong(container: HTMLElement | null) {
   await updatePlayerInfo(gameMode);
   if (gameMode === "localtournament" || gameMode === "remotetournament") {
     enterTournamentGame(gameMode);
-  } else {
+  } 
+  else {
     enterGame(gameMode, null);
   }
 }
@@ -64,7 +65,8 @@ function enterTournamentGame(gameMode: string): void {
     if (!localTournamentState || !playerInfo) return;
 
     setTournament(localTournamentState, gameMode, playerInfo);
-  } else if (gameMode === "remotetournament") {
+  }
+  else if (gameMode === "remotetournament") {
     const remoteTournamentStateString =
       localStorage.getItem("RemoteTournament");
     if (!remoteTournamentStateString) return;
@@ -119,7 +121,8 @@ async function setTournament(
       }
     }
     const localGame = new LocalGame(gameMode, tournamentState.id);
-  } else if (gameMode === "remotetournament") {
+  }
+  else if (gameMode === "remotetournament") {
     // Use full names for avatar lookup and username comparison
     const avatar1 = await getUserAvatar(player1FullName);
     const avatar2 = await getUserAvatar(player2FullName);
@@ -133,7 +136,8 @@ async function setTournament(
         tournamentState.id,
         "left",
       );
-    } else if (userName === player2FullName) {
+    }
+    else if (userName === player2FullName) {
       const remotePlayerGame = new RemoteGame(
         gameMode,
         tournamentState.id,
@@ -162,6 +166,7 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
           headers: getHeaders(),
           body: JSON.stringify({
             name: userName,
+            storedName: getCurrentUsername(),
           }),
         }) as FetchData;
         const remoteGame = new RemoteGame(
@@ -184,7 +189,8 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
       })) as FetchData;
       const localGame = new LocalGame(gameMode, response.id);
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error("Failed to fetch game:", error);
   }
 }
