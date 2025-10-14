@@ -19,10 +19,21 @@ export class ProfileService {
     if (!username) {
       throw new ProfileServiceError("Username is required.", 400);
     }
-    const profile = await prisma.profile.findUnique({
+    
+    // Try to find by username first, then by nickname
+    let profile = await prisma.profile.findUnique({
       where: { userUsername: username },
       select: { avatar: true },
     });
+    
+    // If not found by username, try by nickname
+    if (!profile) {
+      profile = await prisma.profile.findUnique({
+        where: { nickName: username },
+        select: { avatar: true },
+      });
+    }
+    
     if (!profile || !profile.avatar) {
       throw new ProfileServiceError("Avatar not found.", 404);
     }
