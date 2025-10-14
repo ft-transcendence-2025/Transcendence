@@ -1,4 +1,10 @@
+import WebSocket from "ws";
 import { GameState } from "../game/Game.js";
+
+export interface Player {
+  name: string | null,
+  ws: WebSocket | null,
+}
 
 export interface Players {
   player1: string,

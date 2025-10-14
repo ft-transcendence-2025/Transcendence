@@ -1,11 +1,10 @@
 import WebSocket from "ws"
 import { TimeToWait } from "../game/Game.js";
 import { GameRoom } from "../game/GameRoom.js";
-import { Player } from "./RemoteTournament.js";
-import { TournamentState } from "./Tournament.js";
+import { Player, TournamentState } from "./Tournament.js";
 
 export class GameRoomTournament extends GameRoom {
-  private gameInterval: NodeJS.Timeout | null = null;
+  private gameInterval: ReturnType<typeof setInterval> | null = null;
   public player1Name: string | null = null;
   public player2Name: string | null = null;
   private timePlayerLeft: number = Date.now();
@@ -170,6 +169,9 @@ export class GameRoomTournament extends GameRoom {
     if(!this.game.gameState.score.winner || !this.game.gameState.player1Name ||
       !this.game.gameState.player2Name || !this.gameInterval)
       return ;
+    
+    this.isGameOverInProgress = true;
+    
     clearInterval(this.gameInterval);
     this.gameInterval = null;
     const winner: string = this.game.gameState.score.winner === 1 ?
@@ -193,13 +195,32 @@ export class GameRoomTournament extends GameRoom {
       this.tournamentState.match3.player2 = winner;
     }
     else if (!this.tournamentState.match3.winner) {
+      // This is the FINAL match - set winner and broadcast BEFORE cleaning up
       this.tournamentState.match3.winner = winner;
       this.tournamentState.match3.loser = loser;
+      
+      // Broadcast the final state multiple times to ensure all clients receive it
+      this.broadcast();
+      await new Promise(resolve => setTimeout(resolve, 100));
+      this.broadcast();
+      await new Promise(resolve => setTimeout(resolve, 100));
+      this.broadcast();
+      
+      // Mark that we've sent the final state
+      this.lastStateSent = true;
+      
+      // Don't reset winner for final match, keep it for display
+      // Don't close connections yet - let clients see the final result
+      this.game.gameState.ball.isRunning = false;
+      this.isGameOverInProgress = false;
+      return;
     }
+    
     this.game.gameState.ball.isRunning = false;
     this.broadcast();
     this.game.gameState.score.winner = null;
 
+    // Only close loser's connection for semifinal matches
     if (this.players[0].name === loser && this.players[0].ws) {
       this.players[0].ws.close();
       this.players[0].ws = null;
@@ -216,6 +237,8 @@ export class GameRoomTournament extends GameRoom {
       this.players[3].ws.close();
       this.players[3].ws = null;
     }
+    
+    this.isGameOverInProgress = false;
   }
 
   public setFinal(playerName: string) {

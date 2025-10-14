@@ -1,12 +1,11 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import {
-  remoteTournaments, localTournaments, customGameRoom,
+  localTournaments, customGameRoom,
   remoteGameRooms, localGameRooms
 } from "./../server.js";
 import { RemoteGameRoom } from "./../game/RemoteGameRoom.js";
 import { LocalGameRoom } from "./../game/LocalGameRoom.js";
 import { LocalTournament } from "./../tournament/LocalTournament.js";
-import { RemoteTournament } from "./../tournament/RemoteTournament.js";
 import { Players } from "./../tournament/Tournament.js";
 import { tournament } from "./routes.js";
 
@@ -14,13 +13,14 @@ import { tournament } from "./routes.js";
 export function joinGameRoom(reply: FastifyReply, playerName: string, playerStoredName: string): number {
   for (const [id, gameRoom] of remoteGameRooms) {
     if (gameRoom.player2Name === null) {
-      gameRoom.player2Name = playerName;
+      // Store actual username for connection matching
+      gameRoom.player2Name = playerStoredName;
       gameRoom.player2StoredName = playerStoredName;
       reply.send({
         state: "joined",
         side: "right",
         gameMode: "remote",
-        name: playerName,
+        name: playerStoredName,  // Return actual username for WebSocket connection
         id: id,
       });
       return id;
@@ -31,7 +31,8 @@ export function joinGameRoom(reply: FastifyReply, playerName: string, playerStor
 
 export function reenterGameRoom(reply: FastifyReply, playerName: string): number {
   for (const [id, gameRoom] of remoteGameRooms) {
-    if (gameRoom.player1Name === playerName) {
+    // Check against stored names (actual usernames)
+    if (gameRoom.player1StoredName === playerName) {
       reply.send({
         state: "enter",
         side: "left",
@@ -41,7 +42,7 @@ export function reenterGameRoom(reply: FastifyReply, playerName: string): number
       });
       return id;
     }
-    else if (gameRoom.player2Name === playerName) {
+    else if (gameRoom.player2StoredName === playerName) {
       reply.send({
         state: "enter",
         side: "right",
@@ -56,8 +57,9 @@ export function reenterGameRoom(reply: FastifyReply, playerName: string): number
 }
 
 export function createRemoteGame(reply: FastifyReply, gameId: number, playerName: string, playerStoredName: string) {
-  const gameRoom = new RemoteGameRoom(gameId, playerName);
-  gameRoom.player1Name = playerName;
+  const gameRoom = new RemoteGameRoom(gameId, playerStoredName);
+  // Store actual username for connection matching, not display name
+  gameRoom.player1Name = playerStoredName;
   gameRoom.player1StoredName = playerStoredName;
   remoteGameRooms.set(gameId, gameRoom);
 
@@ -65,7 +67,7 @@ export function createRemoteGame(reply: FastifyReply, gameId: number, playerName
     state: "Created",
     side: "left",
     gameMode: "remote",
-    name: playerName,
+    name: playerStoredName,  // Return actual username for WebSocket connection
     id: gameId,
   });
 }
@@ -110,7 +112,8 @@ export function createCustomGame(
   player1Display: string
 ) {
   const gameRoom = new RemoteGameRoom(gameId, player1);
-  gameRoom.player1Name = player1Display;
+  // Store actual usernames for connection matching
+  gameRoom.player1Name = player1;  // Use actual username, not display name
   gameRoom.player2StoredName = player2;
   gameRoom.player1StoredName = player1;
 
@@ -121,139 +124,5 @@ export function createCustomGame(
     state: "Created",
     gameMode: "custom",
     id: gameId,
-  });
-}
-
-export function joinRemoteTournamentRoom(req: FastifyRequest, reply: FastifyReply): number {
-  const cookies = req.cookies;
-  const tournamentId = cookies.remoteTournamentId;
-  const body = req.body as { name: "string" };
-  const playerName: string = body.name;
-
-  for (const [id, tournament] of remoteTournaments) {
-    for (let i = 0; i < 4; ++i) {
-      if (!tournament.players[i].name) {
-        tournament.addPlayer(playerName);
-        reply.send({
-          state: "joined",
-          gameMode: "remoteTournament",
-          name: playerName,
-          playerNbr: i,
-          id: id,
-        });
-        return id;
-      }
-    }
-  }
-  return -1;
-}
-
-export function reenterRemoteTournamentRoom(req: FastifyRequest, reply: FastifyReply): number {
-  const cookies = req.cookies;
-  if (!cookies.remoteTournamentId)
-    return -1;
-  const body = req.body as { name: "string" };
-  const playerName: string = body.name;
-  for (const [id, tournament] of remoteTournaments) {
-    for (let i = 0; i < 4; ++i) {
-      if (playerName == tournament.players[i].name) {
-        if (checkIfPlayerIsEliminatedFromMatch(tournament, playerName) === -1) {
-          return -1 ;
-        }
-        reply.send({
-          state: "enter",
-          gameMode: "remoteTournament",
-          name: playerName,
-          playerNbr: i,
-          id: id,
-        });
-        return id ;
-      }
-    }
-  }
-  return -1;
-}
-
-function checkIfPlayerIsEliminatedFromMatch(tournament: RemoteTournament, playerName: string): number {
-  if (checkIfPlayerIsEliminatedFromFirstMatch(tournament, playerName) === 0) {
-    return 0;
-  }
-  if (checkIfPlayerIsEliminatedFromSecondMatch(tournament, playerName) === 0) {
-    return 0;
-  }
-  return -1 ;
-}
-
-function checkIfPlayerIsEliminatedFromSecondMatch(tournament: RemoteTournament, playerName: string): number {
-  const winner: string | null = tournament.gameRoom.tournamentState.match2.winner;
-  const player1 = tournament.gameRoom.tournamentState.match2.player1;
-  const player2 = tournament.gameRoom.tournamentState.match2.player2;
-
-  if (winner && playerName === winner) {
-    return 0;
-  }
-  if (!winner) {
-    if (player2 === playerName || player1 === playerName) {
-      return 0;
-    }
-  }
-  return checkIfPlayerIsEliminatedFromThirdMatch(tournament, playerName);
-}
-
-function checkIfPlayerIsEliminatedFromFirstMatch(tournament: RemoteTournament, playerName: string): number {
-  const winner: string | null = tournament.gameRoom.tournamentState.match1.winner;
-  const player1 = tournament.gameRoom.tournamentState.match1.player1;
-  const player2 = tournament.gameRoom.tournamentState.match1.player2;
-
-  if (winner && playerName === winner) {
-    return 0;
-  }
-  if (!winner) {
-    if (player2 === playerName || player1 === playerName) {
-      return 0;
-    }
-  }
-  return checkIfPlayerIsEliminatedFromThirdMatch(tournament, playerName);
-}
-
-function checkIfPlayerIsEliminatedFromThirdMatch(tournament: RemoteTournament, playerName: string): number {
-  const winner: string | null = tournament.gameRoom.tournamentState.match3.winner;
-  const player1 = tournament.gameRoom.tournamentState.match3.player1;
-  const player2 = tournament.gameRoom.tournamentState.match3.player2;
-
-  if (!player1 && !player2) {
-    return -1;
-  }
-  if (winner && playerName === winner) {
-    return 0;
-  }
-  if (!winner) {
-    if (player2 === playerName || player1 === playerName) {
-      return 0;
-    }
-  }
-  return -1
-}
-
-export function createRemoteTournament(req: FastifyRequest, reply: FastifyReply, tournamentId: number) {
-  const player = req.body as { name: string, };
-
-  const tournament = new RemoteTournament(tournamentId);
-  tournament.addPlayer(player.name);
-
-  remoteTournaments.set(tournamentId, tournament);
-  reply.setCookie("remoteTournamentId", JSON.stringify(tournament.id), {
-    path: "/",
-    sameSite: "none",
-    secure: true,
-    httpOnly: true,
-  });
-
-  reply.send({
-    state: "created",
-    gameMode: "remoteTournament",
-    name: player.name,
-    playerNbr: 0,
-    id: tournament.id,
   });
 }

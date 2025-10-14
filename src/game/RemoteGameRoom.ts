@@ -15,6 +15,12 @@ export class RemoteGameRoom extends GameRoom {
   public player1StoredName: string | null = null;
   public player2StoredName: string | null = null;
 
+  public onTournamentResult?: (result: {
+    winnerId: string;
+    loserId: string;
+    score: { player1: number; player2: number };
+  }) => void;
+
 
 
   constructor(id: number, player1: string) {
@@ -138,10 +144,33 @@ export class RemoteGameRoom extends GameRoom {
     this.isGameOverInProgress = true;
     if(!this.game.gameState.score.winner || !this.player1StoredName || !this.player2StoredName || !this.gameInterval)
       return ;
+    
+    // Stop the game interval
     clearInterval(this.gameInterval);
     this.gameInterval = null;
+    
+    // Send final game state to both players before closing
+    this.broadcast();
+    
     const winner: string = this.game.gameState.score.winner === 1 ?
       this.player1StoredName : this.player2StoredName;
+    const loser: string = this.game.gameState.score.winner === 2 ?
+      this.player1StoredName : this.player2StoredName;
+
+    if (this.onTournamentResult && winner && loser) {
+      try {
+        this.onTournamentResult({
+          winnerId: winner,
+          loserId: loser,
+          score: {
+            player1: this.game.gameState.score.player1,
+            player2: this.game.gameState.score.player2,
+          },
+        });
+      } catch (error) {
+        console.error("[RemoteGameRoom] Tournament result callback failed:", error);
+      }
+    }
 
     const requestBody = {
       tournamentId: 0,
@@ -155,26 +184,35 @@ export class RemoteGameRoom extends GameRoom {
       finalMatch: false
     };
    
-    const response = await fetch(`http://blockchain:3000/matches`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(requestBody)
-    });
+    try {
+      const response = await fetch(`http://blockchain:3000/matches`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`POST failed with status ${response.status}: ${errorText}`);
-      // throw new Error(`POST failed with status ${response.status}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`POST failed with status ${response.status}: ${errorText}`);
+      } else {
+        const result = await response.json();
+      }
+    } catch (error) {
+      console.error("Error saving match to blockchain:", error);
     }
-    const result = await response.json();
 
-    if (this.player1) {
-      this.player1.close()
-    }
-    if (this.player2) {
-      this.player2.close()
-    }
+    // Wait 6 seconds before closing connections to give clients time to receive final state and auto-navigate
+    setTimeout(() => {
+      if (this.player1) {
+        this.player1.close();
+        this.player1 = null;
+      }
+      if (this.player2) {
+        this.player2.close();
+        this.player2 = null;
+      }
+    }, 6000);
   }
 }

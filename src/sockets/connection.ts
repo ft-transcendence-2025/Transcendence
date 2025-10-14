@@ -1,14 +1,14 @@
 import WebSocket from "ws"
 import { PayLoad } from "./../game/Game.js";
 import {
-  remoteTournaments, localTournaments, localGameRooms,
+  localTournaments, localGameRooms,
   remoteGameRooms, customGameRoom
 } from "./../server.js";
 import { clearLocalGame, playerLeftGame } from "./../gameUtils.js"
 import { LocalGameRoom } from "../game/LocalGameRoom.js";
 import { RemoteGameRoom } from "./../game/RemoteGameRoom.js";
 import { LocalTournament } from "./../tournament/LocalTournament.js";
-import { RemoteTournament } from "./../tournament/RemoteTournament.js";
+import { handleTournamentConnection } from "./tournamentConnection.js";
 
 export interface Connection {
   [mode: string]: (ws: WebSocket, context: any) => void;
@@ -71,12 +71,16 @@ export function customGameConnection(ws: WebSocket, context: any) {
   ws.on("close", () => {
     if (gameRoom !== undefined) {
       if (gameRoom.player1 === ws){
-        gameRoom.player1.close();
         gameRoom.player1 = null;
       }
       if (gameRoom.player2 === ws){
-        gameRoom.player2.close();
         gameRoom.player2 = null;
+      }
+      
+      // If both players disconnected and game is over, cleanup the room
+      if (!gameRoom.player1 && !gameRoom.player2 && gameRoom.game?.gameState?.score?.winner) {
+        customGameRoom.delete(gameId);
+        gameRoom.cleanup();
       }
     }
   });
@@ -85,7 +89,7 @@ export function customGameConnection(ws: WebSocket, context: any) {
     console.log(e);
     if (gameRoom !== undefined) {
       if (gameRoom.id)
-        remoteGameRooms.delete(gameRoom.id);
+        customGameRoom.delete(gameRoom.id);
       gameRoom.cleanup(); 
     }
   });
@@ -219,171 +223,23 @@ export function remoteConnection(ws: WebSocket, context: any) {
   });
 }
 
+/**
+ * Remote Tournament Connection Handler
+ * Uses the new industry-grade tournament system
+ */
 export function remoteTournamentConnection(ws: WebSocket, context: any) {
-  const tournamentId: number = context.gameId;
-  const playerName: string = context.playerName;
-  const tournament: RemoteTournament | undefined = remoteTournaments.get(tournamentId);
-  const remoteTournamentAction: string = context.remoteTournamentAction;
+  // Create a fake FastifyRequest-like object with the params
+  const fakeRequest = {
+    params: {
+      tournamentId: context.tournamentId,
+      username: context.username,
+      action: context.action,
+    }
+  } as any;
 
-  if (tournament === undefined) {
+  // Call the new tournament connection handler
+  handleTournamentConnection(ws, fakeRequest).catch(error => {
+    console.error("[Remote Tournament Connection] Error:", error);
     ws.close();
-    return ;
-  }
-
-  if (remoteTournamentAction === "play") {
-    tournament.enterGame(playerName);
-  }
-  if (tournament.connectPlayer(playerName, ws) === -1)
-    return ;
-  tournament.gameRoom.startGameLoop(tournament.players);
-
-  ws.on("message", (data) => {
-    const msg: PayLoad = JSON.parse(data.toString());
-    if (msg.type === "command" && msg.key === "leave") {
-      leaveTournament(playerName, tournament);
-      ws.close();
-    }
-    else {
-      tournament.handleEvents(msg);
-    }
   });
-
-  ws.on("close", () => {
-    if (tournament.players[0].ws == ws) {
-      tournament.players[0].ws.close();
-      tournament.players[0].ws = null;
-    }
-    if (tournament.players[1].ws == ws) {
-      tournament.players[1].ws.close();
-      tournament.players[1].ws = null;
-    }
-    if (tournament.players[2].ws == ws) {
-      tournament.players[2].ws.close();
-      tournament.players[2].ws = null;
-    }
-    if (tournament.players[3].ws == ws) {
-      tournament.players[3].ws.close();
-      tournament.players[3].ws = null;
-    }
-  })
-
-  ws.on("error", (e) => {
-    console.log(e);
-    if (tournament !== undefined) {
-      remoteTournaments.delete(tournament.id);
-    }
-  });
-}
-
-
-function leaveTournament(playerName: string, tournament: RemoteTournament) {
-  if (!tournament.gameRoom.tournamentState.match1.winner && isInFirstMatch(playerName, tournament)) {
-    firstMatchLeft(playerName, tournament);
-    return ;
-  }
-  if (!tournament.gameRoom.tournamentState.match2.winner && isInSecondMatch(playerName, tournament)) {
-    secondMatchLeft(playerName, tournament);
-    return ;
-  }
-  if (!tournament.gameRoom.tournamentState.match3.winner && isInThirdMatch(playerName, tournament)) {
-    thirdMatchLeft(playerName, tournament);
-    return ;
-  }
-  if (tournament.gameRoom.tournamentState.match3.winner) {
-    remoteTournaments.delete(tournament.id);
-  }
-}
-
-
-function firstMatchLeft(playerName: string, tournament: RemoteTournament) {
-  tournament.gameRoom.tournamentState.match1.loser = playerName;
-
-  const player1 = tournament.gameRoom.tournamentState.match1.player1;
-  const player2 = tournament.gameRoom.tournamentState.match1.player2;
-
-  if (player1 === playerName) {
-    tournament.gameRoom.tournamentState.match1.winner = player2;
-    tournament.gameRoom.tournamentState.match1.loser = player1;
-  }
-  else {
-    tournament.gameRoom.tournamentState.match1.winner = player1;
-    tournament.gameRoom.tournamentState.match1.loser = player2;
-  }
-
-  if (!tournament.gameRoom.tournamentState.match3.player1) {
-    tournament.gameRoom.tournamentState.match3.player1 = tournament.gameRoom.tournamentState.match1.winner;
-  }
-  else {
-    tournament.gameRoom.tournamentState.match3.player2 = tournament.gameRoom.tournamentState.match1.winner;
-  }
-
-  if (tournament.gameRoom.tournamentState.match3.loser) {
-    thirdMatchLeft(tournament.gameRoom.tournamentState.match3.loser, tournament);
-  }
-
-}
-
-function secondMatchLeft(playerName: string, tournament: RemoteTournament) {
-  tournament.gameRoom.tournamentState.match2.loser = playerName;
-  const player1 = tournament.gameRoom.tournamentState.match2.player1;
-  const player2 = tournament.gameRoom.tournamentState.match2.player2;
-
-  if (player1 === playerName) {
-    tournament.gameRoom.tournamentState.match2.winner = player2;
-    tournament.gameRoom.tournamentState.match2.loser = player1;
-  }
-  else {
-    tournament.gameRoom.tournamentState.match2.winner = player1;
-    tournament.gameRoom.tournamentState.match2.loser = player2;
-  }
-  
-  if (!tournament.gameRoom.tournamentState.match3.player1) {
-    tournament.gameRoom.tournamentState.match3.player1 = tournament.gameRoom.tournamentState.match2.winner;
-  }
-  else {
-    tournament.gameRoom.tournamentState.match3.player2 = tournament.gameRoom.tournamentState.match2.winner;
-  }
-
-  if (tournament.gameRoom.tournamentState.match3.loser) {
-    thirdMatchLeft(tournament.gameRoom.tournamentState.match3.loser, tournament);
-  }
-}
-
-function thirdMatchLeft(playerName: string, tournament: RemoteTournament) {
-  tournament.gameRoom.tournamentState.match3.loser = playerName;
-  const player1 = tournament.gameRoom.tournamentState.match3.player1;
-  const player2 = tournament.gameRoom.tournamentState.match3.player2;
-
-  if (player1 === playerName) {
-    tournament.gameRoom.tournamentState.match3.winner = player2;
-    tournament.gameRoom.tournamentState.match3.loser = player1;
-  }
-  else {
-    tournament.gameRoom.tournamentState.match3.winner = player1;
-    tournament.gameRoom.tournamentState.match3.loser = player2;
-  }
-}
-
-function isInFirstMatch(playerName: string, tournament: RemoteTournament): boolean {
-  const player1 = tournament.gameRoom.tournamentState.match1.player1;
-  const player2 = tournament.gameRoom.tournamentState.match1.player2;
-  if (player1 === playerName || player2 === playerName)
-    return true;
-  return false;
-}
-
-function isInSecondMatch(playerName: string, tournament: RemoteTournament): boolean {
-  const player1 = tournament.gameRoom.tournamentState.match2.player1;
-  const player2 = tournament.gameRoom.tournamentState.match2.player2;
-  if (player1 === playerName || player2 === playerName)
-    return true;
-  return false;
-}
-
-function isInThirdMatch(playerName: string, tournament: RemoteTournament): boolean {
-  const player1 = tournament.gameRoom.tournamentState.match3.player1;
-  const player2 = tournament.gameRoom.tournamentState.match3.player2;
-  if (player1 === playerName || player2 === playerName)
-    return true;
-  return false;
 }

@@ -73,9 +73,10 @@ export function remoteGame(req: FastifyRequest, reply: FastifyReply) {
     createRemoteGame(reply, remoteGameId++, playerName, playerStoredName);
   }
   else {
-    if (reenterGameRoom(reply, playerName) === -1) { // Trys to reenter game if playerName was previous on a gameRoom
-      if (joinGameRoom(reply, playerName, playerStoredName) === -1) {  // In case playerName was never in a room previous, in enter a new game
-        createRemoteGame(reply, remoteGameId++, playerName, playerStoredName); // If no gameRoom open waiting for player to foin, will create a new
+    // Use storedName (actual username) for reentry check
+    if (reenterGameRoom(reply, playerStoredName) === -1) {
+      if (joinGameRoom(reply, playerName, playerStoredName) === -1) {
+        createRemoteGame(reply, remoteGameId++, playerName, playerStoredName);
       }
     }
   }

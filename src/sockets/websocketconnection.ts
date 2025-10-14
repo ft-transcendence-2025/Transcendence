@@ -1,11 +1,11 @@
 import WebSocket, { WebSocketServer } from "ws"
 import {
-  Upgrade, upgradeRemoteTournament, upgradeLocalTournament,
-  upgradeLocalGame, upgradeRemoteGame, upgradeCustomGame
+  Upgrade, upgradeLocalTournament,
+  upgradeLocalGame, upgradeRemoteGame, upgradeCustomGame, upgradeRemoteTournament
 } from "./upgrade.js";
 import {
   Connection, localGameConnection, remoteConnection,
-  localTournamentConnection, remoteTournamentConnection, customGameConnection
+  localTournamentConnection, customGameConnection, remoteTournamentConnection
 } from "./connection.js";
 
 
@@ -25,16 +25,15 @@ function connection(wss: WebSocketServer): void {
   }
 
   wss.on("connection", (ws: WebSocket, request: any, context: any) => {
-    const gameId: number = context.gameId;
     const mode: string = context.mode;
-    const playerName: string = context.playerName;
-    const remoteTournamentAction: string = context.remoteTournamentAction;
 
-    if (mode in connect)
-      connect[mode](ws, {
-        ws, gameId, playerName,
-        remoteTournamentAction
-      });
+    if (mode in connect) {
+      // Pass the entire context to the connection handler
+      // Different modes need different context properties:
+      // - remote/local/custom: gameId, playerName
+      // - remotetournament: tournamentId, username, action
+      connect[mode](ws, context);
+    }
   });
 
   wss.on("error", (e) => {

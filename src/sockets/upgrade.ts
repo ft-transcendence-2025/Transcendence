@@ -79,20 +79,23 @@ export function upgradeLocalTournament(req: any, socket: any, head: any, wss: We
 export function upgradeRemoteTournament(req: any, socket: any, head: any, wss: WebSocketServer) {
   const mode = "remotetournament";
   const pathname = req.url?.split("?")[0] || "";
-  const gameId: number = parseInt(pathname.split("/")[3]);
-  const playerName: string = pathname.split("/")[4];
-  const remoteTournamentAction: string = pathname.split("/")[5];
+  // URL pattern: /game/remotetournament/{tournamentId}/{username}/{action?}
+  const parts = pathname.split('/');
+  const tournamentId: string = parts[3];
+  const username: string = parts[4];
+  const action: string | undefined = parts[5]; // 'reconnect' or undefined
 
-  if (isNaN(gameId)) {
-    return ;
+  if (!tournamentId || !username) {
+    socket.destroy();
+    return;
   }
 
   wss.handleUpgrade(req, socket, head, (ws) => {
     wss.emit('connection', ws, req, {
-      gameId,
+      tournamentId,
+      username,
+      action,
       mode,
-      playerName,
-      remoteTournamentAction,
     });
   });
 }
