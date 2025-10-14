@@ -7,7 +7,7 @@ import { navigateTo } from "../router/router.js";
 import chatService from "../services/chat.service.js";
 import { getPendingRequests, getUserFriends } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername, getUserDisplayName } from "../utils/userUtils.js";
+import { getCurrentUsername, getUserNickname } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
 import { notificationService } from "../services/notifications.service.js";
 import { chatManager } from "../app.js";
@@ -301,7 +301,7 @@ class ChatComponent {
         // Check if we've already received an invite from this user
         const pendingInvites = notificationService.getState().gameInvites;
         const alreadyHaveInvite = pendingInvites.some(invite => invite.senderUsername === friend.username);
-        
+
         if (alreadyHaveInvite) {
           chatMenu.classList.add("hidden");
           toast.warning(`You already have a pending game invite from ${friend.username}!`);
@@ -321,7 +321,7 @@ class ChatComponent {
           body: JSON.stringify({
             player1: this.currentUserId,
             player2: friend.username,
-            player1Display: user1DisplayName,
+            player1Display : await getUserNickname() || this.currentUserId
           }),
         }) as GameInviteResponse;
 
@@ -336,10 +336,10 @@ class ChatComponent {
           ts: Date.now(),
         };
         await this.sendMessage(friend.username, message);
-        
+
         // Track that we sent an invite to this user
         this.sentGameInvites.add(friend.username);
-        
+
         toast.success(`Game invite sent to ${friend.username}!`);
         navigateTo(`/pong?mode=custom&gameId=${response.id}&side=left`, document.getElementById("content"));
       } catch (err) {

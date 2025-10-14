@@ -82,6 +82,11 @@ export async function handleSelfNotification(message: IncomingMessage) {
 			break;
 		case "GAME_INVITE_ACCEPTED":
 			notificationService.removeGameInvite(message.recipientId);
+			// Clear from sent invites tracking so user can send new invite later
+			const chatManagerAccept = getChatManager();
+			if (chatManagerAccept) {
+				chatManagerAccept.clearSentGameInvite(message.recipientId);
+			}
 			toast.success(`${message.recipientId} accepted your game invite!`);
 			break;
 		case "GAME_INVITE_DECLINED":
@@ -148,6 +153,11 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 			});
 			break;
 		case "GAME_INVITE_ACCEPTED":
+			// Clear from sent invites tracking so user can send new invite later
+			const chatManagerAccept = getChatManager();
+			if (chatManagerAccept) {
+				chatManagerAccept.clearSentGameInvite(message.senderId);
+			}
 			toast.success(`${message.senderId} accepted your game invite!`);
 			break;
 		case "GAME_INVITE_DECLINED":

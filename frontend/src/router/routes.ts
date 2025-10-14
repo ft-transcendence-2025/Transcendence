@@ -6,13 +6,14 @@ import { renderFriends } from "../views/friends.js";
 import { renderDashboard } from "../views/dashboard.js";
 import { renderPong } from "../views/pong.js";
 import { renderTournament } from "../views/tournament/tournamentSetup.js";
-import { renderRemoteTournamentLobby } from "../views/tournament/remoteTournamentLobby.js";
 import { renderUserProfile } from "../views/userProfile.js";
 import { renderTournamentTree } from "../views/tournament/tournamentTree.js";
 import { renderStats } from "../views/stats.js";
 import { renderChat } from "../views/chat.js";
 import { renderProfile } from "../views/profile.js";
 import { renderSearchResults } from "../views/searchResults.js";
+import { renderRemoteTournamentLobby } from "../views/tournament/remoteTournamentLobby.js";
+import { renderRemoteTournamentBrowser } from "../views/tournament/remoteTournamentBrowser.js";
 
 interface Route {
   path: string;
@@ -29,8 +30,9 @@ export const routes: Route[] = [
   { path: "/dashboard", action: renderDashboard },
   { path: "/pong", action: renderPong },
   { path: "/tournament", action: renderTournament },
-  { path: "/remote-tournament-lobby", action: renderRemoteTournamentLobby },
   { path: "/tournament-tree", action: renderTournamentTree },
+  { path: "/remote-tournament", action: renderRemoteTournamentBrowser },
+  { path: "/remote-tournament-lobby", action: renderRemoteTournamentLobby },
   { path: "/stats", action: renderStats },
   { path: "/friends", action: renderFriends },
   { path: "/search-results", action: renderSearchResults },

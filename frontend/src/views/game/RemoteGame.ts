@@ -7,7 +7,6 @@ import { Game } from "./Game.js";
 import { getCurrentUsername, getUserDisplayName } from "../../utils/userUtils.js";
 import { getUserAvatar } from "../../services/profileService.js";
 import { navigateTo } from "../../router/router.js";
-import { TournamentState, getRemoteTournamentState } from "../tournament/tournamentSetup.js";
 import { getChatManager } from "../../app.js";
 
 export class RemoteGame extends Game {
@@ -17,15 +16,20 @@ export class RemoteGame extends Game {
   private player1NameSet: boolean = false;
   private player2NameSet: boolean = false;
   private gameMode: string;
-  private tournamentState: TournamentState | null = null;
   private redir: boolean = false;
   private gameLoopId: number | null = null;
   private isGameActive: boolean = true;
+  private redirectPath: string = "/dashboard";
 
   constructor(gameMode: string, gameId: number, side: string) {
     super()
 
     this.gameMode = gameMode;
+    const params = new URLSearchParams(window.location.search);
+    const tournamentId = params.get("tournamentId");
+    if (tournamentId) {
+      this.redirectPath = `/remote-tournament-lobby?id=${tournamentId}`;
+    }
     this.joinGame(gameMode, gameId);
     this.side = side;
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
@@ -72,18 +76,9 @@ export class RemoteGame extends Game {
       }
 
       this.ws.addEventListener("message", (event) => {
-        if (this.gameMode === "remotetournament") {
-          const gameState = JSON.parse(event.data) as TournamentState;
-          this.tournamentState = gameState;
-          if (!gameState)
-            throw("gameState is undefined");
-          this.gameState = gameState.gameState;
-        }
-        else {
-          this.gameState = JSON.parse(event.data) as GameState;
-          if (!this.gameState)
-            throw("gameState is undefined");
-        }
+        this.gameState = JSON.parse(event.data) as GameState;
+        if (!this.gameState)
+          throw("gameState is undefined");
         this.renderNames();
       });
     });
@@ -105,6 +100,7 @@ export class RemoteGame extends Game {
       this.gameLoopId = requestAnimationFrame(this.gameLoop.bind(this));
       return ;
     }
+    
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.renderBall();
     this.renderPaddle(this.gameState.paddleLeft);
@@ -112,6 +108,20 @@ export class RemoteGame extends Game {
     this.checkPoints(this.ws);
     this.checkIsGamePaused();
     this.checkIsWaiting();
+    
+    // Check if game just ended and setup auto-redirect AFTER rendering victory screen
+    if (this.gameState.score && this.gameState.score.winner && !this.redir) {
+      this.redir = true;
+      this.stopGame();
+      
+      // Show game over screen for 5 seconds then auto-navigate
+      setTimeout(() => {
+        const container = document.getElementById("content");
+        navigateTo(this.redirectPath, container);
+      }, 5000);
+      return;
+    }
+    
     this.gameLoopId = requestAnimationFrame(this.gameLoop.bind(this));
   }
 
@@ -170,7 +180,7 @@ export class RemoteGame extends Game {
       return ;
     }
 
-    if (this.gameState.status === "playing" || mode !== "remote" && mode !== "remotetournament" && mode !== "custom&gameId") {
+    if (this.gameState.status === "playing" || mode !== "remote" && mode !== "custom&gameId") {
       if (display) {
         display.classList.add("hidden");
       }
@@ -205,48 +215,31 @@ export class RemoteGame extends Game {
   private async handleKeyDown(event: KeyboardEvent) {
     if (!this.gameState)
       return ;
-    if (["ArrowDown", "ArrowUp"].includes(event.key)) {
+    
+    // If game is over, only allow space key for navigation after a delay
+    if (this.gameState.score && this.gameState.score.winner) {
       event.preventDefault();
-    }
-    if (["p", "P", " "].includes(event.key)) {
-      event.preventDefault();
-      if (this.gameState.score && this.gameState.score.winner && event.key === " " &&
-        !this.redir) {
+      if (event.key === " " && !this.redir) {
         this.redir = true;
         
         // Stop the game loop before navigating
         this.stopGame();
         
         const container = document.getElementById("content");
-        if (this.gameMode === "remotetournament") {
-          this.remoteTournamentRedirect(event);
-        }
-        else {
-          navigateTo("/dashboard", container);
-        }
+        navigateTo(this.redirectPath, container);
       }
+      return; // Don't process any other keys when game is over
+    }
+    
+    if (["ArrowDown", "ArrowUp"].includes(event.key)) {
+      event.preventDefault();
+    }
+    if (["p", "P", " "].includes(event.key)) {
+      event.preventDefault();
       if (this.gameState.status !== "waiting for players") {
         this.sendPayLoad(event);
       }
     }
-  }
-
-  private async remoteTournamentRedirect(event: KeyboardEvent) {
-    if (!this.gameState?.score)
-      return ;
-    const container = document.getElementById("content");
-
-    const userName = await getUserDisplayName() as string;
-    const player1 = document.querySelector("#player1-name")?.innerHTML.trim();
-    const player2 = document.querySelector("#player2-name")?.innerHTML.trim();
-
-    if ((player1 === userName && this.gameState.score.winner === 1) ||
-      player2 === userName && this.gameState.score.winner === 2) {
-      navigateTo("/tournament-tree?mode=remote", container);
-      return ;
-    }
-    localStorage.removeItem("RemoteTournament");
-    navigateTo("/dashboard", container);
   }
 
   protected leaveGame(): void {

@@ -42,45 +42,50 @@ export async function renderPong(container: HTMLElement | null) {
   // Get the game parameters from URL
   const urlParams = new URLSearchParams(window.location.search);
   const gameMode = urlParams.get("mode") || "2player"; // default to "2player"
+  const gameIdParam = urlParams.get("gameId");
+  const sideParam = urlParams.get("side");
+
+  let preassignedGameData: FetchData | null = null;
+  if (gameMode === "remote" && gameIdParam && sideParam) {
+    const parsedGameId = Number.parseInt(gameIdParam, 10);
+    if (!Number.isNaN(parsedGameId)) {
+      preassignedGameData = {
+        state: "assigned",
+        gameMode: "remote",
+        id: parsedGameId,
+        side: sideParam,
+        name: getCurrentUsername() || "Guest",
+      } as FetchData;
+    }
+  }
 
   await updatePlayerInfo(gameMode);
-  if (gameMode === "localtournament" || gameMode === "remotetournament") {
+  if (gameMode === "localtournament") {
     enterTournamentGame(gameMode);
   } 
   else {
-    enterGame(gameMode, null);
+    enterGame(gameMode, preassignedGameData);
   }
 }
 
 function enterTournamentGame(gameMode: string): void {
-  if (gameMode === "localtournament") {
-    const localTournamentStateString = localStorage.getItem(
-      "LocalTournamentState",
-    );
-    const playerInfoString = localStorage.getItem("LocalTournamentPlayersInfo");
-    if (!localTournamentStateString || !playerInfoString) return;
+  const localTournamentStateString = localStorage.getItem(
+    "LocalTournamentState",
+  );
+  const playerInfoString = localStorage.getItem("LocalTournamentPlayersInfo");
+  if (!localTournamentStateString || !playerInfoString) return;
 
-    const localTournamentState = JSON.parse(localTournamentStateString);
-    const playerInfo = JSON.parse(playerInfoString);
-    if (!localTournamentState || !playerInfo) return;
+  const localTournamentState = JSON.parse(localTournamentStateString);
+  const playerInfo = JSON.parse(playerInfoString);
+  if (!localTournamentState || !playerInfo) return;
 
-    setTournament(localTournamentState, gameMode, playerInfo);
-  }
-  else if (gameMode === "remotetournament") {
-    const remoteTournamentStateString =
-      localStorage.getItem("RemoteTournament");
-    if (!remoteTournamentStateString) return;
-    const remoteTournamentState = JSON.parse(remoteTournamentStateString);
-    if (!remoteTournamentState) return;
-
-    setTournament(remoteTournamentState, gameMode);
-  }
+  setTournament(localTournamentState, gameMode, playerInfo);
 }
 
 async function setTournament(
   tournamentState: TournamentState,
   gameMode: string,
-  playerInfo?: PlayerInfo[],
+  playerInfo: PlayerInfo[],
 ) {
   const player1 = document.querySelector("#player1-name");
   const player2 = document.querySelector("#player2-name");
@@ -111,40 +116,15 @@ async function setTournament(
   player2.setAttribute("data-full-name", player2FullName);
   player2.textContent = truncateString15(player2FullName);
 
-  if (gameMode === "localtournament" && playerInfo) {
-    // set Avatars using full names
-    for (const i in playerInfo) {
-      if (playerInfo[i].userDisplayName === player1FullName) {
-        player1Avatar.setAttribute("src", `${playerInfo[i].avatar}`);
-      } else if (playerInfo[i].userDisplayName === player2FullName) {
-        player2Avatar.setAttribute("src", `${playerInfo[i].avatar}`);
-      }
-    }
-    const localGame = new LocalGame(gameMode, tournamentState.id);
-  }
-  else if (gameMode === "remotetournament") {
-    // Use full names for avatar lookup and username comparison
-    const avatar1 = await getUserAvatar(player1FullName);
-    const avatar2 = await getUserAvatar(player2FullName);
-    player1Avatar.setAttribute("src", `${avatar1}`);
-    player2Avatar.setAttribute("src", `${avatar2}`);
-
-    const userName = getCurrentUsername();
-    if (userName === player1FullName) {
-      const remotePlayerGame = new RemoteGame(
-        gameMode,
-        tournamentState.id,
-        "left",
-      );
-    }
-    else if (userName === player2FullName) {
-      const remotePlayerGame = new RemoteGame(
-        gameMode,
-        tournamentState.id,
-        "right",
-      );
+  // set Avatars using full names
+  for (const i in playerInfo) {
+    if (playerInfo[i].userDisplayName === player1FullName) {
+      player1Avatar.setAttribute("src", `${playerInfo[i].avatar}`);
+    } else if (playerInfo[i].userDisplayName === player2FullName) {
+      player2Avatar.setAttribute("src", `${playerInfo[i].avatar}`);
     }
   }
+  const localGame = new LocalGame(gameMode, tournamentState.id);
 }
 
 async function enterGame(gameMode: string, gameData: FetchData | null) {

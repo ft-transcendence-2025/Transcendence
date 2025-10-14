@@ -35,6 +35,7 @@ export async function renderDashboard(container: HTMLElement | null) {
   // Setup 2-player modal functionality
   await setup2PlayerModal();
   setupTournament();
+  setupRemoteTournament();
 }
 
 function setupTournament() {
@@ -60,6 +61,17 @@ function setupTournament() {
       navigateTo("/tournament-tree", container);
     }
   })
+}
+
+function setupRemoteTournament() {
+  const remoteTournamentBtn = document.getElementById("remote-tournament-btn");
+  if (!remoteTournamentBtn) return;
+
+  remoteTournamentBtn.addEventListener("click", () => {
+    const container = document.getElementById("content");
+    // Navigate to remote tournament browser (list/create page)
+    navigateTo("/remote-tournament", container);
+  });
 }
 
 async function setup2PlayerModal() {

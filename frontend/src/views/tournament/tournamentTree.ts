@@ -6,67 +6,19 @@ import {
   getCurrentUsername,
   truncateString25,
 } from "../../utils/userUtils.js";
+import { getUserAvatar } from "../../services/profileService.js";
 import {
   getLocalTournamentState,
   TournamentState,
   fetchLocalTournament,
   PlayerInfo,
-  getRemoteTournamentState,
 } from "./tournamentSetup.js";
 import { router } from "./../../router/router.js";
 
 export async function renderTournamentTree(container: HTMLElement | null) {
   if (!container) return;
 
-  // Fetch the component's HTML template
-  const mode = window.location.search.split("=")[1];
-
-  if (mode === "remote") {
-    container.innerHTML = await loadHtml("/html/tournamentTree.html");
-    connectRemoteTournament(container);
-  } else {
-    setupLocalTournamentTree(container);
-  }
-}
-
-async function connectRemoteTournament(container: HTMLElement) {
-  const remoteTournamentState = getRemoteTournamentState() as TournamentState;
-
-  const userName = await getUserDisplayName();
-
-  const url = `wss://${window.location.host}/ws/game/remotetournament/${remoteTournamentState.id}/${userName}`;
-  const ws = new WebSocket(url);
-  if (!ws) {
-    console.error("Socket Connection falied at connectRemoteTournament");
-    return;
-  }
-  ws.addEventListener("message", (event) => {
-    const tournamentState = JSON.parse(event.data) as TournamentState;
-    if (!tournamentState) throw "gameState is undefined";
-    localStorage.setItem("RemoteTournament", JSON.stringify(tournamentState));
-    if (location.search.split("=")[1] === "remote") {
-      setNames(container, tournamentState);
-      setButtons(container, tournamentState);
-    }
-  });
-  leaveRemoteTournament(container, ws);
-}
-
-function leaveRemoteTournament(container: HTMLElement, ws: WebSocket) {
-  const leaveBtn = document.querySelector("#leave-tournament-btn");
-  if (!leaveBtn) return;
-
-  leaveBtn.addEventListener("click", (e) => {
-    localStorage.removeItem("RemoteTournament");
-    ws.send(
-      JSON.stringify({
-        type: "command",
-        key: "leave",
-      }),
-    );
-    ws.close();
-    navigateTo("/dashboard", container);
-  });
+  setupLocalTournamentTree(container);
 }
 
 async function setupLocalTournamentTree(container: HTMLElement) {
@@ -140,6 +92,8 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
 
   if (!tournamentState.match1.winner) {
     setStartBtn(button1, tournamentState);
+    updateMatchStatus(container, 1, "active");
+    updateProgressBar(container, 33, "Match 1 in Progress");
   } else if (tournamentState.match1.winner) {
     // Go to Second Math
     const finalPlayer1 = container.querySelector("#final-player1");
@@ -150,13 +104,16 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
     );
     finalPlayer1.textContent = truncateString25(tournamentState.match1.winner);
     finalPlayer1.classList.remove("text-gray-400");
-    finalPlayer1.classList.add("text-gray-900");
+    finalPlayer1.classList.add("text-gray-900", "font-bold");
 
     // Show winner indicator for game 1
     showWinnerIndicator(container, 1, tournamentState.match1.winner);
 
+    updateMatchStatus(container, 1, "completed");
     setBtnFinished(button1);
     setStartBtn(button2, tournamentState);
+    updateMatchStatus(container, 2, "active");
+    updateProgressBar(container, 50, "Match 2 in Progress");
   }
   if (tournamentState.match2.winner) {
     // Go to Final Match
@@ -168,21 +125,30 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
     );
     finalPlayer2.textContent = truncateString25(tournamentState.match2.winner);
     finalPlayer2.classList.remove("text-gray-400");
-    finalPlayer2.classList.add("text-gray-900");
+    finalPlayer2.classList.add("text-gray-900", "font-bold");
 
     // Show winner indicator for game 2
     showWinnerIndicator(container, 2, tournamentState.match2.winner);
 
+    updateMatchStatus(container, 1, "completed");
+    updateMatchStatus(container, 2, "completed");
     setBtnFinished(button1);
     setBtnFinished(button2);
     setStartBtn(button3, tournamentState);
+    updateMatchStatus(container, 3, "active");
+    updateProgressBar(container, 75, "Final Match in Progress");
   }
   if (tournamentState.match3.winner) {
+    console.log("[Tournament Tree] Match 3 winner detected:", tournamentState.match3.winner);
     // Disable buttom
+    updateMatchStatus(container, 1, "completed");
+    updateMatchStatus(container, 2, "completed");
+    updateMatchStatus(container, 3, "completed");
     setBtnFinished(button1);
     setBtnFinished(button2);
     setBtnFinished(button3);
     setTournamentWinner(container, tournamentState, playersInfo);
+    updateProgressBar(container, 100, "Tournament Complete!");
   }
 }
 
@@ -194,6 +160,12 @@ async function setTournamentWinner(
   const tournamentWinner = container.querySelector("#TournamentWinnerName");
   const tournamentWinnerAvatar = container.querySelector("#t-avatar-winner");
   if (!tournamentWinner || !tournamentWinnerAvatar) return;
+  
+  if (!tournamentState.match3.winner) {
+    console.error("No winner found in tournament state");
+    return;
+  }
+  
   tournamentWinner.setAttribute(
     "data-full-name",
     tournamentState.match3.winner || "",
@@ -204,8 +176,11 @@ async function setTournamentWinner(
 
   let avatar = "";
   if (playerInfo === null) {
-    avatar = await getCurrentUserAvatar();
+    // Remote tournament - fetch winner's avatar from server by username
+    console.log(`Fetching avatar for tournament winner: ${tournamentState.match3.winner}`);
+    avatar = await getUserAvatar(tournamentState.match3.winner);
   } else {
+    // Local tournament - find avatar in player info
     for (let i = 0; i < 4; ++i) {
       if (playerInfo[i].userDisplayName === tournamentState.match3.winner) {
         avatar = `${playerInfo[i].avatar}`;
@@ -258,37 +233,126 @@ function setBtnFinished(button: HTMLButtonElement) {
   button.removeAttribute("class");
   button.setAttribute(
     "class",
-    "rounded bg-gray-300 px-4 py-2 text-sm font-medium text-gray-500",
+    "game-button w-full rounded-lg bg-gray-200 px-6 py-2.5 text-sm font-semibold text-gray-400 cursor-not-allowed",
   );
   button.setAttribute("disabled", "");
-  button.textContent = "Finished";
+  const buttonText = button.querySelector(".button-text");
+  const icon = button.querySelector("i");
+  if (buttonText && icon) {
+    icon.className = "fa-solid fa-check mr-2";
+    buttonText.textContent = "Completed";
+  } else {
+    button.innerHTML = '<i class="fa-solid fa-check mr-2"></i><span class="button-text">Completed</span>';
+  }
 }
 
 function setStartBtn(button: HTMLButtonElement, state: TournamentState) {
   button.removeAttribute("class");
   button.setAttribute(
     "class",
-    "rounded bg-(--color-secondary) px-4 py-2 text-sm font-medium hover:bg-(--color-secondary-light)",
+    "game-button w-full rounded-lg bg-(--color-primary) px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-(--color-primary-dark) hover:shadow-md",
   );
+  
+  const buttonText = button.querySelector(".button-text");
+  const icon = button.querySelector("i");
+  
   if (state.currentGameScore.player1 || state.currentGameScore.player2) {
-    button.textContent = "Continue";
+    if (buttonText && icon) {
+      icon.className = "fa-solid fa-rotate-right mr-2";
+      buttonText.textContent = "Continue Match";
+    } else {
+      button.innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i><span class="button-text">Continue Match</span>';
+    }
   } else {
-    button.textContent = "Start Game";
+    if (buttonText && icon) {
+      icon.className = "fa-solid fa-play mr-2";
+      buttonText.textContent = "Start Match";
+    } else {
+      button.innerHTML = '<i class="fa-solid fa-play mr-2"></i><span class="button-text">Start Match</span>';
+    }
   }
+  
   button.removeAttribute("disabled");
   button.addEventListener("click", enterGame);
 }
 
-function enterGame() {
-  const mode = window.location.search.split("=")[1];
+// Update match status badges
+function updateMatchStatus(container: HTMLElement, matchNumber: number, status: "waiting" | "active" | "completed") {
+  const statusBadge = container.querySelector(`.match-status-${matchNumber}`) as HTMLElement;
+  if (!statusBadge) return;
 
-  if (mode === "remote") {
-    const container = document.getElementById("content");
-    navigateTo("/pong?mode=remotetournament", container);
-  } else {
-    const container = document.getElementById("content");
-    navigateTo("/pong?mode=localtournament", container);
+  const statusText = statusBadge.querySelector(".status-text");
+  const icon = statusBadge.querySelector("i");
+  
+  if (!statusText || !icon) return;
+
+  // Reset classes
+  statusBadge.className = "match-status-badge match-status-" + matchNumber + " rounded-full px-3 py-1 text-xs font-medium";
+
+  switch (status) {
+    case "active":
+      statusBadge.classList.add("bg-(--color-primary)", "text-white");
+      icon.className = "fa-solid fa-circle-dot mr-1";
+      statusText.textContent = "Live";
+      break;
+    case "completed":
+      statusBadge.classList.add("bg-(--color-primary-dark)", "text-white");
+      icon.className = "fa-solid fa-check mr-1";
+      statusText.textContent = "Complete";
+      break;
+    case "waiting":
+    default:
+      statusBadge.classList.add("bg-gray-100", "text-gray-500");
+      icon.className = "fa-solid fa-clock mr-1";
+      statusText.textContent = "Waiting";
+      break;
   }
+  
+  // Update player number badges color
+  updatePlayerBadges(container, matchNumber, status);
+}
+
+// Update player number badge colors based on match status
+function updatePlayerBadges(container: HTMLElement, matchNumber: number, status: string) {
+  let badge1: Element | null | undefined = null;
+  let badge2: Element | null | undefined = null;
+  
+  if (matchNumber === 1) {
+    badge1 = container.querySelector("#game1-player1")?.previousElementSibling?.querySelector("div");
+    badge2 = container.querySelector("#game1-player2")?.previousElementSibling?.querySelector("div");
+  } else if (matchNumber === 2) {
+    badge1 = container.querySelector("#game2-player1")?.previousElementSibling?.querySelector("div");
+    badge2 = container.querySelector("#game2-player2")?.previousElementSibling?.querySelector("div");
+  }
+  
+  if (badge1 && badge2) {
+    if (status === "active") {
+      badge1.className = "flex h-7 w-7 items-center justify-center rounded-full bg-(--color-primary) text-xs font-bold text-white";
+      badge2.className = "flex h-7 w-7 items-center justify-center rounded-full bg-(--color-primary) text-xs font-bold text-white";
+    } else if (status === "completed") {
+      badge1.className = "flex h-7 w-7 items-center justify-center rounded-full bg-(--color-primary-dark) text-xs font-bold text-white";
+      badge2.className = "flex h-7 w-7 items-center justify-center rounded-full bg-(--color-primary-dark) text-xs font-bold text-white";
+    }
+  }
+}
+
+// Update progress bar
+function updateProgressBar(container: HTMLElement, percentage: number, text: string) {
+  const progressBar = container.querySelector("#tournament-progress-bar") as HTMLElement;
+  const progressText = container.querySelector("#tournament-progress-text");
+  
+  if (progressBar) {
+    progressBar.style.width = `${percentage}%`;
+  }
+  
+  if (progressText) {
+    progressText.textContent = text;
+  }
+}
+
+function enterGame() {
+  const container = document.getElementById("content");
+  navigateTo("/pong?mode=localtournament", container);
 }
 
 function updateTournamentTitle(type: "local" | "remote") {
