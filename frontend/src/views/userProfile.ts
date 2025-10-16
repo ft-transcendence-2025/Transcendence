@@ -278,21 +278,17 @@ async function handleCreateProfile(username: string) {
 
   // Extract email separately because it will go to a different endpoint
   const email = (formData.get("update-email") as string) || "";
-  
-  const profileData: CreateProfileRequest = {
-    nickName: (formData.get("update-nick-name") as string) || undefined,
-    firstName: (formData.get("update-first-name") as string) || undefined,
-    lastName: (formData.get("update-last-name") as string) || undefined,
-    bio: (formData.get("update-bio") as string) || undefined,
-    gender: (formData.get("update-gender") as any) || undefined,
-  };
 
-  // Remove empty strings before sending
-  Object.keys(profileData).forEach((key) => {
-    if (profileData[key as keyof CreateProfileRequest] === "") {
-      delete profileData[key as keyof CreateProfileRequest];
-    }
-  });
+  const genderValue = formData.get("update-gender") as string;
+
+  const profileData: CreateProfileRequest = {
+    nickName: ((formData.get("update-nick-name") as string) || "").trim(),
+    firstName: ((formData.get("update-first-name") as string) || "").trim(),
+    lastName: ((formData.get("update-last-name") as string) || "").trim(),
+    bio: (formData.get("update-bio") as string) || "",
+    gender:
+      genderValue && genderValue !== "" ? (genderValue as any) : null,
+  };
 
   try {
     // Update email first (if provided and different from current)
@@ -307,7 +303,7 @@ async function handleCreateProfile(username: string) {
     // Switch to profile view and populate with new data
     await populateProfileView(profile);
     showProfileView();
-    
+
     // Refresh navbar to show updated profile info
     await refreshNavbar();
   } catch (error: any) {
@@ -333,20 +329,16 @@ async function handleUpdateProfile(username: string) {
   // Extract email separately because it will go to a different endpoint
   const email = (formData.get("update-email") as string) || "";
 
-  const profileData: Partial<CreateProfileRequest> = {
-    nickName: ((formData.get("update-nick-name") as string) || "").trim() || undefined,
-    firstName: ((formData.get("update-first-name") as string) || "").trim() || undefined,
-    lastName: ((formData.get("update-last-name") as string) || "").trim() || undefined,
-    bio: (formData.get("update-bio") as string) || undefined,
-    gender: (formData.get("update-gender") as any) || undefined,
-  };
+  const genderValue = formData.get("update-gender") as string;
 
-  // Remove empty strings before sending
-  Object.keys(profileData).forEach((key) => {
-    if (profileData[key as keyof CreateProfileRequest] === "") {
-      delete profileData[key as keyof CreateProfileRequest];
-    }
-  });
+  const profileData: Partial<CreateProfileRequest> = {
+    nickName: ((formData.get("update-nick-name") as string) || "").trim(),
+    firstName: ((formData.get("update-first-name") as string) || "").trim(),
+    lastName: ((formData.get("update-last-name") as string) || "").trim(),
+    bio: (formData.get("update-bio") as string) || "",
+    gender:
+      genderValue && genderValue !== "" ? (genderValue as any) : null,
+  };
 
   try {
     // Handle email update first (if provided and different from current)
@@ -393,7 +385,7 @@ async function handleUpdateProfile(username: string) {
 
     await populateProfileView(updatedProfile);
     showProfileView();
-    
+
     // Refresh navbar to show updated avatar/info
     await refreshNavbar();
   } catch (error: any) {
@@ -518,7 +510,7 @@ async function changeAvatar(username: string) {
 
     showSuccessMessage("Avatar updated successfully!");
     closeAvatarModal();
-    
+
     // Refresh both navbar and current page to show updated avatar immediately
     await refreshCurrentPage();
   } catch (error: any) {
