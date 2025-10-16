@@ -5,7 +5,10 @@ import {
 } from "../interfaces/message.interfaces.js";
 import { navigateTo } from "../router/router.js";
 import chatService from "../services/chat.service.js";
-import { getPendingRequests, getUserFriends } from "../services/friendship.service.js";
+import {
+  getPendingRequests,
+  getUserFriends,
+} from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
 import { getCurrentUsername, getUserDisplayName } from "../utils/userUtils.js";
 import { getUserAvatar } from "../services/profileService.js";
@@ -90,7 +93,9 @@ class ChatComponent {
       notificationService.updateMessageNotifications(friendId, 1, "add");
       return;
     }
-    const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
+    const messagesContainer = chatWindow.querySelector(
+      "#messages",
+    ) as HTMLElement;
 
     const messages = this.messages.get(friendId);
 
@@ -99,20 +104,24 @@ class ChatComponent {
         .map(
           (message) => `
         <div class="mb-2 ${message.recipientId || message.senderId == this.currentUserId ? "text-right" : "text-left"}">
-          <div class="inline-block p-2 rounded-lg max-w-xs ${message.recipientId || message.senderId == this.currentUserId
+          <div class="inline-block p-2 rounded-lg max-w-xs ${
+            message.recipientId || message.senderId == this.currentUserId
               ? "bg-[var(--color-primary)] text-[var(--color-background)] ml-auto"
               : "bg-[var(--color-secondary-light)] text-[var(--color-text-primary)]"
-            }">
+          }">
             <div class="text-xs">${message.content}</div>
             <div class="text-xs opacity-70 mt-1">
-              ${new Date(message.ts || message.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+              ${new Date(message.ts || message.createdAt).toLocaleTimeString(
+                [],
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                },
+              )}
             </div>
           </div>
         </div>
-      `
+      `,
         )
         .join("");
 
@@ -124,7 +133,9 @@ class ChatComponent {
   async updateChatHistory(friendId: string) {
     const chatWindow = this.openChats.get(friendId);
     if (!chatWindow) return;
-    const messagesContainer = chatWindow.querySelector("#messages") as HTMLElement;
+    const messagesContainer = chatWindow.querySelector(
+      "#messages",
+    ) as HTMLElement;
 
     const messages: [any] = await this.chatService.getConversation(friendId);
     this.messages.set(friendId, messages);
@@ -134,20 +145,21 @@ class ChatComponent {
         .map(
           (message) => `
         <div class="mb-2 ${message.senderId == this.currentUserId ? "text-right" : "text-left"}">
-          <div class="inline-block p-2 rounded-lg max-w-xs ${message.senderId == this.currentUserId
+          <div class="inline-block p-2 rounded-lg max-w-xs ${
+            message.senderId == this.currentUserId
               ? "bg-[var(--color-primary)] text-[var(--color-background)] ml-auto"
               : "bg-[var(--color-secondary-light)] text-[var(--color-text-primary)]"
-            }">
+          }">
             <div class="text-xs">${message.content}</div>
             <div class="text-xs opacity-70 mt-1">
               ${new Date(message.createdAt).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </div>
           </div>
         </div>
-      `
+      `,
         )
         .join("");
 
@@ -156,8 +168,16 @@ class ChatComponent {
     await this.chatService.markConversationAsRead(friendId);
   }
 
-  async sendMessage(friendId: string, message: PrivateSendMessage | UserBlockMessageResponse | NotificationMessage | any) {
-    if ("content" in message && (!message.content || !message.content.trim())) return;
+  async sendMessage(
+    friendId: string,
+    message:
+      | PrivateSendMessage
+      | UserBlockMessageResponse
+      | NotificationMessage
+      | any,
+  ) {
+    if ("content" in message && (!message.content || !message.content.trim()))
+      return;
     this.chatService.sendPrivateMessage(message);
     if (message.kind === "private/send") {
       let temp = this.messages.get(friendId);
@@ -177,8 +197,10 @@ class ChatComponent {
 
     if (this.openChats.has(friend.username)) {
       const existingChat = this.openChats.get(friend.username)!;
-      const messagesSection = existingChat.querySelector("#messages")!.parentElement!;
-      const inputSection = existingChat.querySelector("#message-input")!.parentElement!;
+      const messagesSection =
+        existingChat.querySelector("#messages")!.parentElement!;
+      const inputSection =
+        existingChat.querySelector("#message-input")!.parentElement!;
 
       if (messagesSection.classList.contains("hidden")) {
         messagesSection.classList.remove("hidden");
@@ -186,7 +208,9 @@ class ChatComponent {
         existingChat.classList.remove("h-auto");
         existingChat.classList.add("h-80");
 
-        const messageInput = existingChat.querySelector("#message-input") as HTMLInputElement;
+        const messageInput = existingChat.querySelector(
+          "#message-input",
+        ) as HTMLInputElement;
         messageInput.focus();
       }
       return;
@@ -238,12 +262,19 @@ class ChatComponent {
     const friendAvatarImg = chatContainer.querySelector("#friend-avatar");
     if (friendAvatarImg) {
       friendAvatarImg.addEventListener("click", () => {
-        navigateTo(`/friend-profile?username=${friend.username}`, document.getElementById("content"));
+        navigateTo(
+          `/friend-profile?username=${friend.username}`,
+          document.getElementById("content"),
+        );
       });
     }
 
-    const messageInput = chatContainer.querySelector("#message-input") as HTMLInputElement;
-    const sendButton = chatContainer.querySelector("#send-button") as HTMLButtonElement;
+    const messageInput = chatContainer.querySelector(
+      "#message-input",
+    ) as HTMLInputElement;
+    const sendButton = chatContainer.querySelector(
+      "#send-button",
+    ) as HTMLButtonElement;
 
     const sendMessageHandler = () => {
       const text = messageInput.value.trim();
@@ -268,10 +299,14 @@ class ChatComponent {
       }
     });
 
-    chatContainer.querySelector(".close")!.addEventListener("click", () => this.closeChat(friend.username));
+    chatContainer
+      .querySelector(".close")!
+      .addEventListener("click", () => this.closeChat(friend.username));
 
     // Menu button and dropdown functionality
-    const menuButton = chatContainer.querySelector(".menu-button") as HTMLButtonElement;
+    const menuButton = chatContainer.querySelector(
+      ".menu-button",
+    ) as HTMLButtonElement;
     const chatMenu = chatContainer.querySelector(".chat-menu") as HTMLElement;
 
     // Toggle menu on button click
@@ -283,39 +318,57 @@ class ChatComponent {
     // Close menu when clicking outside
     document.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
-      if (!chatContainer.contains(target) || (!menuButton.contains(target) && !chatMenu.contains(target))) {
+      if (
+        !chatContainer.contains(target) ||
+        (!menuButton.contains(target) && !chatMenu.contains(target))
+      ) {
         chatMenu.classList.add("hidden");
       }
     });
 
     // Menu action handlers
-    const viewProfileBtn = chatContainer.querySelector(".menu-view-profile") as HTMLButtonElement;
+    const viewProfileBtn = chatContainer.querySelector(
+      ".menu-view-profile",
+    ) as HTMLButtonElement;
     viewProfileBtn.addEventListener("click", () => {
       chatMenu.classList.add("hidden");
-      navigateTo(`/friend-profile?username=${friend.username}`, document.getElementById("content"));
+      navigateTo(
+        `/friend-profile?username=${friend.username}`,
+        document.getElementById("content"),
+      );
     });
 
-    const sendGameInviteBtn = chatContainer.querySelector(".menu-send-game-invite") as HTMLButtonElement;
+    const sendGameInviteBtn = chatContainer.querySelector(
+      ".menu-send-game-invite",
+    ) as HTMLButtonElement;
     sendGameInviteBtn.addEventListener("click", async () => {
       try {
         // Check if we've already received an invite from this user
         const pendingInvites = notificationService.getState().gameInvites;
-        const alreadyHaveInvite = pendingInvites.some(invite => invite.senderUsername === friend.username);
-        
+        const alreadyHaveInvite = pendingInvites.some(
+          (invite) => invite.senderUsername === friend.username,
+        );
+
         if (alreadyHaveInvite) {
           chatMenu.classList.add("hidden");
-          toast.warning(`You already have a pending game invite from ${friend.username}!`);
+          toast.warning(
+            `You already have a pending game invite from ${friend.username}!`,
+          );
           return;
         }
 
         // Check if we've already sent an invite to this user
         if (this.sentGameInvites.has(friend.username)) {
           chatMenu.classList.add("hidden");
-          toast.warning(`You already sent a game invite to ${friend.username}!`);
+          toast.warning(
+            `You already sent a game invite to ${friend.username}!`,
+          );
           return;
         }
 
-        const response = await request(`${BASE_URL}/getgame/custom`, {
+        const user1DisplayName = await getUserDisplayName();
+
+        const response = (await request(`${BASE_URL}/getgame/custom`, {
           method: "POST",
           headers: getHeaders(),
           body: JSON.stringify({
@@ -323,7 +376,7 @@ class ChatComponent {
             player2: friend.username,
             player1Display: user1DisplayName,
           }),
-        }) as GameInviteResponse;
+        })) as GameInviteResponse;
 
         chatMenu.classList.add("hidden");
         // Send game invite through notification service
@@ -336,12 +389,15 @@ class ChatComponent {
           ts: Date.now(),
         };
         await this.sendMessage(friend.username, message);
-        
+
         // Track that we sent an invite to this user
         this.sentGameInvites.add(friend.username);
-        
+
         toast.success(`Game invite sent to ${friend.username}!`);
-        navigateTo(`/pong?mode=custom&gameId=${response.id}&side=left`, document.getElementById("content"));
+        navigateTo(
+          `/pong?mode=custom&gameId=${response.id}&side=left`,
+          document.getElementById("content"),
+        );
       } catch (err) {
         console.log(err);
         toast.error("Could not create game room.");
