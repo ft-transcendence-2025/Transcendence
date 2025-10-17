@@ -167,6 +167,7 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 				chatManagerDecline.clearSentGameInvite(message.senderId);
 			}
 			toast.info(`${message.senderId} declined your game invite.`);
+			navigateTo('/dashboard', document.getElementById('content'));
 			break;
 	}
 	notificationService.triggerUpdate();
