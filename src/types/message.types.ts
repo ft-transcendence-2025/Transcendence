@@ -75,7 +75,8 @@ export type NotificationType =
   | 'FRIEND_UNBLOCKED'
   | 'GAME_INVITE'
   | 'GAME_INVITE_ACCEPTED'
-  | 'GAME_INVITE_DECLINED';
+  | 'GAME_INVITE_DECLINED'
+  | 'GAME_INVITE_CANCELLED';
 
 /**
  * Union type for all incoming WebSocket messages

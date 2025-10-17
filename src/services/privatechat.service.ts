@@ -129,7 +129,7 @@ export async function handleNotification(users: Map<string, any>, userId: string
   }
 
   // Log game invite related notifications
-  if (type === 'GAME_INVITE' || type === 'GAME_INVITE_ACCEPTED' || type === 'GAME_INVITE_DECLINED') {
+  if (type === 'GAME_INVITE' || type === 'GAME_INVITE_ACCEPTED' || type === 'GAME_INVITE_DECLINED' || type === 'GAME_INVITE_CANCELLED') {
     console.log(`Game invite notification: ${type} from ${userId} to ${recipientId}`);
   }
 
