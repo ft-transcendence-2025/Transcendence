@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { FastifyRequest, FastifyReply } from "fastify";
 import {
   localTournaments, customGameRoom,
   remoteGameRooms, localGameRooms
@@ -9,8 +9,54 @@ import { LocalTournament } from "./../tournament/LocalTournament.js";
 import { Players } from "./../tournament/Tournament.js";
 import { tournament } from "./routes.js";
 
+function isSamePlayer(room: RemoteGameRoom, playerName: string): boolean {
+  return room.player1StoredName === playerName || room.player2StoredName === playerName;
+}
+
+function isRoomActive(room: RemoteGameRoom): boolean {
+  const state = room.game?.gameState;
+  if (!state) {
+    return false;
+  }
+  if (state.status === "cancelled") {
+    return false;
+  }
+  if (state.score?.winner) {
+    return false;
+  }
+  return true;
+}
+
+export function isPlayerInActiveGame(playerName: string): boolean {
+  if (!playerName) {
+    return false;
+  }
+
+  for (const room of remoteGameRooms.values()) {
+    if (isSamePlayer(room, playerName) && isRoomActive(room)) {
+      return true;
+    }
+  }
+
+  for (const room of customGameRoom.values()) {
+    if (isSamePlayer(room, playerName) && isRoomActive(room)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
 export function joinGameRoom(reply: FastifyReply, playerName: string, playerStoredName: string): number {
+  if (isPlayerInActiveGame(playerStoredName)) {
+    reply.code(409).send({
+      state: "busy",
+      message: "Player is already participating in a game."
+    });
+    return -1;
+  }
+
   for (const [id, gameRoom] of remoteGameRooms) {
     if (gameRoom.player2Name === null) {
       // Store actual username for connection matching
@@ -57,6 +103,14 @@ export function reenterGameRoom(reply: FastifyReply, playerName: string): number
 }
 
 export function createRemoteGame(reply: FastifyReply, gameId: number, playerName: string, playerStoredName: string) {
+  if (isPlayerInActiveGame(playerStoredName)) {
+    reply.code(409).send({
+      state: "busy",
+      message: "Player is already participating in a game."
+    });
+    return;
+  }
+
   const gameRoom = new RemoteGameRoom(gameId, playerStoredName, {
     gameType: "remote",
     onRoomClose: (roomId) => {
@@ -116,6 +170,22 @@ export function createCustomGame(
   player1: string, player2: string,
   player1Display: string
 ) {
+  if (isPlayerInActiveGame(player1)) {
+    reply.code(409).send({
+      state: "busy",
+      message: "You are already participating in a game."
+    });
+    return;
+  }
+
+  if (isPlayerInActiveGame(player2)) {
+    reply.code(409).send({
+      state: "busy",
+      message: "The invited player is already participating in a game."
+    });
+    return;
+  }
+
   const gameRoom = new RemoteGameRoom(gameId, player1, {
     gameType: "custom",
     onRoomClose: (roomId) => {

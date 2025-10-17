@@ -2,7 +2,8 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { 
   createLocalGame, createRemoteGame,
   reenterGameRoom, joinGameRoom, createCustomGame,
-  cancelCustomGameRoom
+  cancelCustomGameRoom,
+  isPlayerInActiveGame
 } from "./routeUtils.js";
 import type { CancelReason } from "../game/RemoteGameRoom.js";
 import { localGameRooms } from "../server.js";
@@ -92,17 +93,23 @@ export function remoteGame(req: FastifyRequest, reply: FastifyReply) {
   const playerName = body.name;
   const playerStoredName = body.storedName;
 
-  if (remoteGameId === 0) { // Create first game
-    createRemoteGame(reply, remoteGameId++, playerName, playerStoredName);
+  if (reenterGameRoom(reply, playerStoredName) !== -1) {
+    return;
   }
-  else {
-    // Use storedName (actual username) for reentry check
-    if (reenterGameRoom(reply, playerStoredName) === -1) {
-      if (joinGameRoom(reply, playerName, playerStoredName) === -1) {
-        createRemoteGame(reply, remoteGameId++, playerName, playerStoredName);
-      }
-    }
+
+  if (isPlayerInActiveGame(playerStoredName)) {
+    reply.code(409).send({
+      state: "busy",
+      message: "Player is already participating in a game."
+    });
+    return;
   }
+
+  if (joinGameRoom(reply, playerName, playerStoredName) !== -1 || reply.sent) {
+    return;
+  }
+
+  createRemoteGame(reply, remoteGameId++, playerName, playerStoredName);
 }
 
 export function customGame(req: FastifyRequest, reply: FastifyReply) {
