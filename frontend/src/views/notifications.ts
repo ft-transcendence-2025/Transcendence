@@ -257,7 +257,8 @@ async function respondGameInvite(inviteId: string, senderUsername: string, gameI
       ? `${currentUser} accepted your game invite!`
       : `${currentUser} declined your game invite.`,
     ts: Date.now(),
-    inviteId: inviteId
+    inviteId: inviteId,
+    gameId,
   };
   
   chatManager.chatService.sendPrivateMessage(message);

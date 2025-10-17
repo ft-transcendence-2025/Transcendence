@@ -151,12 +151,19 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 			break;
 		case "GAME_INVITE":
 			const senderAvatar = await getUserAvatar(message.senderId);
+			const parsedGameId = typeof message.gameId === "number"
+				? message.gameId
+				: Number.parseInt(message.content, 10);
+			if (Number.isNaN(parsedGameId)) {
+				console.warn("Missing gameId for game invite notification", message);
+				break;
+			}
 			notificationService.addGameInvite({
 				senderUsername: message.senderId,
 				avatar: senderAvatar,
 				id: `${message.senderId}-${message.ts}`,
 				ts: message.ts,
-				gameId: parseInt(message.content, 10)
+				gameId: parsedGameId
 			});
 			break;
 		case "GAME_INVITE_ACCEPTED":
@@ -178,7 +185,7 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 			break;
 		case "GAME_INVITE_CANCELLED":
 			notificationService.removeGameInvite(message.senderId);
-			toast.info(`${message.senderId} cancelled the game invite.`);
+			toast.info(`${message.senderId} left the game room.`);
 			break;
 	}
 	notificationService.triggerUpdate();

@@ -361,7 +361,7 @@ export class RemoteGame extends Game {
     }
 
     const content = reason === "player_left"
-      ? `${currentUser} cancelled the game invite.`
+      ? `${currentUser} has left the game.`
       : `${currentUser}'s game invite expired.`;
 
     const message: NotificationMessage = {

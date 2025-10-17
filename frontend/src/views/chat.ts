@@ -19,7 +19,7 @@ import { toast } from "../utils/toast.js";
 export interface GameInviteResponse {
   state: string;
   gameMode: string;
-  id: string;
+  id: number;
 }
 
 export type Friend = {
@@ -345,6 +345,7 @@ class ChatComponent {
           senderId: this.currentUserId,
           content: `${response.id}`,
           ts: Date.now(),
+          gameId: response.id,
         };
         await this.sendMessage(friend.username, message);
 

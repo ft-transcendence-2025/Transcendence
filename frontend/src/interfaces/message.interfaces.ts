@@ -53,6 +53,9 @@ export interface NotificationMessage extends BaseMessage {
   content: string;
   senderId: string;
   ts: number;
+  friendshipId?: string;
+  inviteId?: string;
+  gameId?: number;
 }
 
 export interface FriendRequestMessage extends NotificationMessage {
