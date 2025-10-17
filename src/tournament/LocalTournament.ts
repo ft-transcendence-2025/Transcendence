@@ -72,18 +72,18 @@ export class LocalTournament {
       this.state.match1.winner = winner === 1 ? this.player1 : this.player2;
       this.state.match1.loser = winner === 1 ? this.player2 : this.player1;
       this.state.match3.player1 = this.state.match1.winner;
-      this.storeResolt(1);
+      // this.storeResolt(1);
     }
     else if (!this.state.match2.winner) {
       this.state.match2.winner = winner === 1 ? this.player3 : this.player4;
       this.state.match1.loser = winner === 1 ? this.player4 : this.player3;
       this.state.match3.player2 = this.state.match2.winner;
-      this.storeResolt(2);
+      // this.storeResolt(2);
     }
     else if (!this.state.match3.winner) {
       this.state.match3.winner = winner === 1 ? this.state.match3.player1 : this.state.match3.player2;
       this.state.match3.loser = winner === 1 ? this.state.match3.player2 : this.state.match3.player1;
-      this.storeResolt(3);
+      // this.storeResolt(3);
     }
 
 
