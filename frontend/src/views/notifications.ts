@@ -2,6 +2,8 @@
 import { FriendshipStatus, respondRequest } from "../services/friendship.service.js";
 import { navigateTo } from "../router/router.js";
 import { notificationService } from "../services/notifications.service.js";
+import { request, getHeaders } from "../utils/api.js";
+import { BASE_URL } from "../config/config.js";
 
 export async function getNotificationsContent(): Promise<HTMLElement> {
   const container = document.createElement("div");
@@ -180,7 +182,7 @@ function updateGameInvitesUI(ul: HTMLElement) {
       
       acceptBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        await respondGameInvite(invite.id, invite.senderUsername, "ACCEPTED");
+        await respondGameInvite(invite.id, invite.senderUsername, invite.gameId, "ACCEPTED");
         notificationService.updateGameInvites(
           invites.filter((i) => i.id !== invite.id)
         );
@@ -189,7 +191,7 @@ function updateGameInvitesUI(ul: HTMLElement) {
 
       rejectBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
-        await respondGameInvite(invite.id, invite.senderUsername, "DECLINED");
+        await respondGameInvite(invite.id, invite.senderUsername, invite.gameId, "DECLINED");
         notificationService.updateGameInvites(
           invites.filter((i) => i.id !== invite.id)
         );
@@ -228,9 +230,22 @@ function updateGameInvitesUI(ul: HTMLElement) {
   }
 }
 
-async function respondGameInvite(inviteId: string, senderUsername: string, response: "ACCEPTED" | "DECLINED") {
+async function respondGameInvite(inviteId: string, senderUsername: string, gameId: number, response: "ACCEPTED" | "DECLINED") {
   const chatManager = (await import("../app.js")).getChatManager();
   const currentUser = (await import("../utils/userUtils.js")).getCurrentUsername();
+
+  if (response === "DECLINED") {
+    try {
+      await request(`${BASE_URL}/getgame/custom/${gameId}/cancel`, {
+        method: "POST",
+        headers: getHeaders(),
+        body: JSON.stringify({ reason: "invite_declined" }),
+      });
+    }
+    catch (error) {
+      console.error("Failed to cancel custom game:", error);
+    }
+  }
   
   const message = {
     kind: "notification/new",

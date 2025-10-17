@@ -2,6 +2,7 @@ export interface GameState {
   player1Name?: string,
   player2Name?: string,
   status?: string,
+  cancelReason?: "invite_declined" | "invite_expired" | "player_left" | null,
   role?: string | null,
   canvas?: Canvas,
   paddleLeft?: PaddleState,

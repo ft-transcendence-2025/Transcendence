@@ -8,6 +8,7 @@ import { getCurrentUsername, getUserDisplayName } from "../../utils/userUtils.js
 import { getUserAvatar } from "../../services/profileService.js";
 import { navigateTo } from "../../router/router.js";
 import { getChatManager } from "../../app.js";
+import { toast } from "../../utils/toast.js";
 
 export class RemoteGame extends Game {
   private updateAIIntervalId: number | null = null;
@@ -20,6 +21,7 @@ export class RemoteGame extends Game {
   private gameLoopId: number | null = null;
   private isGameActive: boolean = true;
   private redirectPath: string = "/dashboard";
+  private hasHandledCancellation = false;
 
   constructor(gameMode: string, gameId: number, side: string) {
     super()
@@ -108,6 +110,11 @@ export class RemoteGame extends Game {
     this.checkPoints(this.ws);
     this.checkIsGamePaused();
     this.checkIsWaiting();
+
+    if (this.gameState?.status === "cancelled" && !this.hasHandledCancellation) {
+      this.handleCancellation();
+      return;
+    }
     
     // Check if game just ended and setup auto-redirect AFTER rendering victory screen
     if (this.gameState.score && this.gameState.score.winner && !this.redir) {
@@ -248,5 +255,51 @@ export class RemoteGame extends Game {
     
     // Then call parent's leaveGame to handle WebSocket cleanup and navigation
     super.leaveGame();
+  }
+
+  private handleCancellation(): void {
+    if (!this.gameState) {
+      return;
+    }
+
+    this.hasHandledCancellation = true;
+    this.stopGame();
+
+    if (this.ws) {
+      this.ws.close();
+      this.ws = null;
+    }
+
+    const chatManager = getChatManager();
+    if (chatManager && typeof chatManager.clearAllSentGameInvites === "function") {
+      chatManager.clearAllSentGameInvites();
+    }
+
+    const waitingOverlay = document.getElementById("reconnect-overlay") as HTMLCanvasElement | null;
+    if (waitingOverlay) {
+      waitingOverlay.classList.add("hidden");
+    }
+
+    let message: string | null = "The game invite was cancelled.";
+    switch (this.gameState.cancelReason) {
+      case "invite_declined":
+        message = null;
+        break;
+      case "invite_expired":
+        message = "Game invite expired without an opponent.";
+        break;
+      case "player_left":
+        message = "The other player left the lobby.";
+        break;
+    }
+
+    if (message) {
+      toast.info(message);
+    }
+
+    setTimeout(() => {
+      const container = document.getElementById("content");
+      navigateTo(this.redirectPath, container);
+    }, 2000);
   }
 }
