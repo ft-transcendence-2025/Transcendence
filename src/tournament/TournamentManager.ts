@@ -447,6 +447,15 @@ export class TournamentManager {
     this.clearRegistrationTimer(tournament.id);
     this.clearAllMatchTimers(tournament.id);
 
+    // Release all players so they can join/create other tournaments immediately
+    console.log(`[TournamentManager] Releasing players for tournament ${tournament.id}`);
+    tournament.players.forEach((player) => {
+      this.playerToTournament.delete(player.id);
+    });
+
+    // Notify players about completion/release
+    this.broadcastTournamentState(tournament);
+
     // Archive after some time
     setTimeout(() => {
       tournament.setPhase(TournamentPhase.ARCHIVED);
