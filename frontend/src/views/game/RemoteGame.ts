@@ -25,10 +25,12 @@ export class RemoteGame extends Game {
   private hasHandledCancellation = false;
   private opponentUsername?: string;
   private hasSentCancellationNotification = false;
+  private redirectTimeoutId: number | null = null;
 
   constructor(gameMode: string, gameId: number, side: string, opponentUsername?: string) {
     super()
 
+    this.clearPendingRedirect();
     this.gameMode = gameMode;
     this.opponentUsername = opponentUsername;
     const params = new URLSearchParams(window.location.search);
@@ -126,10 +128,20 @@ export class RemoteGame extends Game {
       this.stopGame();
       
       // Show game over screen for 5 seconds then auto-navigate
-      setTimeout(() => {
+      this.clearPendingRedirect();
+      const timeoutId = window.setTimeout(() => {
         const container = document.getElementById("content");
         navigateTo(this.redirectPath, container);
+        if (this.redirectTimeoutId === timeoutId) {
+          this.redirectTimeoutId = null;
+        }
+        const globalWindow = window as any;
+        if (globalWindow.__pongRedirectTimeout === timeoutId) {
+          globalWindow.__pongRedirectTimeout = null;
+        }
       }, 5000);
+      this.redirectTimeoutId = timeoutId;
+      (window as any).__pongRedirectTimeout = timeoutId;
       return;
     }
     
@@ -256,6 +268,7 @@ export class RemoteGame extends Game {
   protected leaveGame(): void {
     // Stop the game loop first
     this.stopGame();
+    this.clearPendingRedirect();
     this.sendCancellationNotification("player_left");
     
     // Then call parent's leaveGame to handle WebSocket cleanup and navigation
@@ -269,6 +282,7 @@ export class RemoteGame extends Game {
 
     this.hasHandledCancellation = true;
     this.stopGame();
+    this.clearPendingRedirect();
 
     if (this.ws) {
       this.ws.close();
@@ -306,10 +320,19 @@ export class RemoteGame extends Game {
       toast.info(message);
     }
 
-    setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       const container = document.getElementById("content");
       navigateTo(this.redirectPath, container);
+      if (this.redirectTimeoutId === timeoutId) {
+        this.redirectTimeoutId = null;
+      }
+      const globalWindow = window as any;
+      if (globalWindow.__pongRedirectTimeout === timeoutId) {
+        globalWindow.__pongRedirectTimeout = null;
+      }
     }, 2000);
+    this.redirectTimeoutId = timeoutId;
+    (window as any).__pongRedirectTimeout = timeoutId;
   }
 
   private sendCancellationNotification(reason: "invite_declined" | "invite_expired" | "player_left"): void {
@@ -357,5 +380,18 @@ export class RemoteGame extends Game {
     }
 
     this.hasSentCancellationNotification = true;
+  }
+
+  private clearPendingRedirect(): void {
+    if (this.redirectTimeoutId !== null) {
+      clearTimeout(this.redirectTimeoutId);
+      this.redirectTimeoutId = null;
+    }
+
+    const globalWindow = window as any;
+    if (typeof globalWindow.__pongRedirectTimeout === "number") {
+      clearTimeout(globalWindow.__pongRedirectTimeout);
+      globalWindow.__pongRedirectTimeout = null;
+    }
   }
 }
