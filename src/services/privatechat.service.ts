@@ -1,6 +1,29 @@
 import prisma from '../lib/prisma';
 import { NotificationMessage } from '../types/message.types';
 
+const PONG_SERVICE_URL = process.env.PONG_SERVICE_URL ?? 'http://pong:4000';
+
+async function cancelCustomGameRoom(gameId: number): Promise<void> {
+  if (!Number.isInteger(gameId)) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${PONG_SERVICE_URL}/getgame/custom/${gameId}/cancel`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ reason: 'invite_declined' }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`Failed to cancel custom game ${gameId}: ${response.status} ${errorText}`);
+    }
+  } catch (error) {
+    console.error(`Error cancelling custom game ${gameId}:`, error);
+  }
+}
+
 export async function sendPendingMessages(userId: string, socket: any) {
   const pending = await prisma.message.findMany({
     where: {
@@ -126,6 +149,13 @@ export async function handleNotification(users: Map<string, any>, userId: string
       ws.send(JSON.stringify({ msg: "Notification not delivered." }));
     }
     return;
+  }
+
+  if (type === 'GAME_INVITE_DECLINED') {
+    const gameId = typeof msg.gameId === 'number' ? msg.gameId : Number.parseInt(msg.gameId, 10);
+    if (!Number.isNaN(gameId)) {
+      await cancelCustomGameRoom(gameId);
+    }
   }
 
   // Log game invite related notifications

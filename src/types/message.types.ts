@@ -62,6 +62,7 @@ export interface NotificationMessage extends BaseMessage {
   ts: number;
   friendshipId?: string; // For friend request notifications
   inviteId?: string; // For game invite responses
+  gameId?: number; // For custom game invite context
 }
 
 /**
@@ -122,6 +123,7 @@ export interface NotificationResponse {
   ts: number;
   friendshipId?: string;
   inviteId?: string;
+  gameId?: number;
 }
 
 /**
