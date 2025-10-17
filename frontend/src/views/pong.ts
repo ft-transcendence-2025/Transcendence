@@ -136,7 +136,8 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
       const modeParam = params.get("mode") || gameMode;
       const gameIdParam = params.get("gameId") || "0";
       const sideParam = params.get("side") || "left";
-      new RemoteGame(modeParam, parseInt(gameIdParam, 10), sideParam);
+      const opponentParam = params.get("opponent") || undefined;
+      new RemoteGame(modeParam, parseInt(gameIdParam, 10), sideParam, opponentParam);
     }
     else if (gameMode === "remote") {
       if (!gameData) {
@@ -153,6 +154,7 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
           response.gameMode,
           response.id,
           response.side,
+          undefined,
         );
       }
       else {
@@ -160,6 +162,7 @@ async function enterGame(gameMode: string, gameData: FetchData | null) {
           gameData.gameMode,
           gameData.id,
           gameData.side,
+          undefined,
         );
       }
     }

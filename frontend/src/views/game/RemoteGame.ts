@@ -9,6 +9,7 @@ import { getUserAvatar } from "../../services/profileService.js";
 import { navigateTo } from "../../router/router.js";
 import { getChatManager } from "../../app.js";
 import { toast } from "../../utils/toast.js";
+import { NotificationMessage } from "../../interfaces/message.interfaces.js";
 
 export class RemoteGame extends Game {
   private updateAIIntervalId: number | null = null;
@@ -22,11 +23,14 @@ export class RemoteGame extends Game {
   private isGameActive: boolean = true;
   private redirectPath: string = "/dashboard";
   private hasHandledCancellation = false;
+  private opponentUsername?: string;
+  private hasSentCancellationNotification = false;
 
-  constructor(gameMode: string, gameId: number, side: string) {
+  constructor(gameMode: string, gameId: number, side: string, opponentUsername?: string) {
     super()
 
     this.gameMode = gameMode;
+    this.opponentUsername = opponentUsername;
     const params = new URLSearchParams(window.location.search);
     const tournamentId = params.get("tournamentId");
     if (tournamentId) {
@@ -252,6 +256,7 @@ export class RemoteGame extends Game {
   protected leaveGame(): void {
     // Stop the game loop first
     this.stopGame();
+    this.sendCancellationNotification("player_left");
     
     // Then call parent's leaveGame to handle WebSocket cleanup and navigation
     super.leaveGame();
@@ -275,6 +280,8 @@ export class RemoteGame extends Game {
       chatManager.clearAllSentGameInvites();
     }
 
+    this.sendCancellationNotification(this.gameState.cancelReason ?? "player_left");
+
     const waitingOverlay = document.getElementById("reconnect-overlay") as HTMLCanvasElement | null;
     if (waitingOverlay) {
       waitingOverlay.classList.add("hidden");
@@ -289,7 +296,9 @@ export class RemoteGame extends Game {
         message = "Game invite expired without an opponent.";
         break;
       case "player_left":
-        message = "The other player left the lobby.";
+        message = this.side === "left"
+          ? null
+          : "The other player left the lobby.";
         break;
     }
 
@@ -301,5 +310,52 @@ export class RemoteGame extends Game {
       const container = document.getElementById("content");
       navigateTo(this.redirectPath, container);
     }, 2000);
+  }
+
+  private sendCancellationNotification(reason: "invite_declined" | "invite_expired" | "player_left"): void {
+    if (this.gameMode !== "custom" || this.side !== "left" || this.hasSentCancellationNotification) {
+      return;
+    }
+
+    if (!this.opponentUsername) {
+      return;
+    }
+
+    if (reason === "invite_declined") {
+      this.hasSentCancellationNotification = true;
+      return;
+    }
+
+    const currentUser = getCurrentUsername();
+    if (!currentUser) {
+      return;
+    }
+
+    const chatManager = getChatManager();
+    const chatService = chatManager?.chatService;
+    if (!chatService?.conn || chatService.conn.readyState !== WebSocket.OPEN) {
+      return;
+    }
+
+    const content = reason === "player_left"
+      ? `${currentUser} cancelled the game invite.`
+      : `${currentUser}'s game invite expired.`;
+
+    const message: NotificationMessage = {
+      kind: "notification/new",
+      type: "GAME_INVITE_CANCELLED",
+      recipientId: this.opponentUsername,
+      senderId: currentUser,
+      content,
+      ts: Date.now(),
+    };
+
+    chatService.sendPrivateMessage(message);
+
+    if (typeof chatManager?.clearSentGameInvite === "function") {
+      chatManager.clearSentGameInvite(this.opponentUsername);
+    }
+
+    this.hasSentCancellationNotification = true;
   }
 }

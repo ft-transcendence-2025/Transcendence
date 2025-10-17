@@ -105,6 +105,13 @@ export async function handleSelfNotification(message: IncomingMessage) {
 				}, 500);
 			}
 			break;
+		case "GAME_INVITE_CANCELLED":
+			notificationService.removeGameInvite(message.recipientId);
+			const chatManagerCancelSelf = getChatManager();
+			if (chatManagerCancelSelf) {
+				chatManagerCancelSelf.clearSentGameInvite(message.recipientId);
+			}
+			break;
 	}
 	notificationService.triggerUpdate();
 }
@@ -168,6 +175,10 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 			}
 			toast.info(`${message.senderId} declined your game invite.`);
 			navigateTo('/dashboard', document.getElementById('content'));
+			break;
+		case "GAME_INVITE_CANCELLED":
+			notificationService.removeGameInvite(message.senderId);
+			toast.info(`${message.senderId} cancelled the game invite.`);
 			break;
 	}
 	notificationService.triggerUpdate();

@@ -341,7 +341,8 @@ class ChatComponent {
         this.sentGameInvites.add(friend.username);
 
         toast.success(`Game invite sent to ${friend.username}!`);
-        navigateTo(`/pong?mode=custom&gameId=${response.id}&side=left`, document.getElementById("content"));
+        navigateTo(`/pong?mode=custom&gameId=${response.id}&side=left&opponent=${encodeURIComponent(friend.username)}`,
+          document.getElementById("content"));
       } catch (err) {
         console.log(err);
         toast.error("Could not create game room.");

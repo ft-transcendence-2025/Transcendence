@@ -35,10 +35,21 @@ export interface UserBlockMessageResponse {
   recipientId: string;
 }
 
+export type NotificationType =
+  | 'FRIEND_REQUEST'
+  | 'FRIEND_REQUEST_ACCEPTED'
+  | 'FRIEND_REQUEST_DECLINED'
+  | 'FRIEND_BLOCKED'
+  | 'FRIEND_UNBLOCKED'
+  | 'GAME_INVITE'
+  | 'GAME_INVITE_ACCEPTED'
+  | 'GAME_INVITE_DECLINED'
+  | 'GAME_INVITE_CANCELLED';
+
 export interface NotificationMessage extends BaseMessage {
   kind: 'notification/new';
   recipientId: string;
-  type: string;
+  type: NotificationType;
   content: string;
   senderId: string;
   ts: number;
@@ -46,7 +57,7 @@ export interface NotificationMessage extends BaseMessage {
 
 export interface FriendRequestMessage extends NotificationMessage {
   kind: 'notification/new';
-  type: string; // e.g., "FRIEND_REQUEST"
+  type: 'FRIEND_REQUEST';
   friendshipId: string;
   senderId: string;
   recipientId: string;
