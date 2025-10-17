@@ -1,7 +1,7 @@
-import { 
+import {
   GameState, Canvas, BallState, FetchData,
-  PaddleState, PaddleSide, GameMode, SECOND, 
-  degreesToRadians, getRandomAngle 
+  PaddleState, PaddleSide, GameMode, SECOND,
+  degreesToRadians, getRandomAngle
 } from "./utils.js";
 import { request, getHeaders } from "../../utils/api.js";
 import { navigateTo } from "../../router/router.js";
@@ -13,7 +13,7 @@ export class Game {
 
   protected ws: WebSocket | null = null;
 
-  protected gameState: GameState |  null = null;
+  protected gameState: GameState | null = null;
   protected ballMoving: boolean = false;
 
   constructor() {
@@ -26,9 +26,9 @@ export class Game {
 
   protected checkIsGamePaused(): void {
     if (!this.gameState || !this.gameState.score)
-      return ;
+      return;
     if (this.gameState.score.winner)
-      return ;
+      return;
     if (this.gameState.status === "waiting for players" || !this.gameState.isPaused) {
       const gamePausedOverlay = document.getElementById("game-paused") as HTMLCanvasElement;
 
@@ -66,9 +66,9 @@ export class Game {
     }
   }
 
-  protected checkPoints(ws: WebSocket | null): void {
+  protected checkPoints(ws: WebSocket | null): number {
     if (!this.gameState || !this.gameState.score) {
-      return ;
+      return 0;
     }
 
     const player1ScoreElement = document.getElementById(`player1-score`) as HTMLSpanElement;
@@ -84,10 +84,12 @@ export class Game {
 
     if (this.gameState.score.winner) {
       this.gameOver(this.gameState.score.winner)
+      return -1;
     }
     else {
       this.hiddeGameOver();
     }
+    return 0;
   }
 
   protected gameOver(player: 1 | 2): void {
@@ -147,7 +149,7 @@ export class Game {
   }
 
   protected leaveGame() {
-    if (!this.ws) return ;
+    if (!this.ws) return;
 
     this.ws.send(JSON.stringify({
       type: "command",

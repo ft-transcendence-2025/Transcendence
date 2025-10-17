@@ -82,6 +82,11 @@ export async function handleSelfNotification(message: IncomingMessage) {
 			break;
 		case "GAME_INVITE_ACCEPTED":
 			notificationService.removeGameInvite(message.recipientId);
+			// Clear from sent invites tracking so user can send new invite later
+			const chatManagerAccept = getChatManager();
+			if (chatManagerAccept) {
+				chatManagerAccept.clearSentGameInvite(message.recipientId);
+			}
 			toast.success(`${message.recipientId} accepted your game invite!`);
 			break;
 		case "GAME_INVITE_DECLINED":
@@ -98,6 +103,13 @@ export async function handleSelfNotification(message: IncomingMessage) {
 				setTimeout(() => {
 					navigateTo('/dashboard', document.getElementById('content'));
 				}, 500);
+			}
+			break;
+		case "GAME_INVITE_CANCELLED":
+			notificationService.removeGameInvite(message.recipientId);
+			const chatManagerCancelSelf = getChatManager();
+			if (chatManagerCancelSelf) {
+				chatManagerCancelSelf.clearSentGameInvite(message.recipientId);
 			}
 			break;
 	}
@@ -139,15 +151,27 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 			break;
 		case "GAME_INVITE":
 			const senderAvatar = await getUserAvatar(message.senderId);
+			const parsedGameId = typeof message.gameId === "number"
+				? message.gameId
+				: Number.parseInt(message.content, 10);
+			if (Number.isNaN(parsedGameId)) {
+				console.warn("Missing gameId for game invite notification", message);
+				break;
+			}
 			notificationService.addGameInvite({
 				senderUsername: message.senderId,
 				avatar: senderAvatar,
 				id: `${message.senderId}-${message.ts}`,
 				ts: message.ts,
-				gameId: parseInt(message.content, 10)
+				gameId: parsedGameId
 			});
 			break;
 		case "GAME_INVITE_ACCEPTED":
+			// Clear from sent invites tracking so user can send new invite later
+			const chatManagerAccept = getChatManager();
+			if (chatManagerAccept) {
+				chatManagerAccept.clearSentGameInvite(message.senderId);
+			}
 			toast.success(`${message.senderId} accepted your game invite!`);
 			break;
 		case "GAME_INVITE_DECLINED":
@@ -157,6 +181,11 @@ export async function handleOtherUserNotification(message: IncomingMessage) {
 				chatManagerDecline.clearSentGameInvite(message.senderId);
 			}
 			toast.info(`${message.senderId} declined your game invite.`);
+			navigateTo('/dashboard', document.getElementById('content'));
+			break;
+		case "GAME_INVITE_CANCELLED":
+			notificationService.removeGameInvite(message.senderId);
+			toast.info(`${message.senderId} left the game room.`);
 			break;
 	}
 	notificationService.triggerUpdate();

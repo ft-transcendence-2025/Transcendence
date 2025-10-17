@@ -61,20 +61,8 @@ export async function renderTournament(container: HTMLElement | null) {
   // Fetch the component's HTML template
   container.innerHTML = await loadHtml("/html/tournament.html");
 
-  // Get tournament type from URL params
-  const urlParams = new URLSearchParams(window.location.search);
-  const tournamentType =
-    (urlParams.get("type") as "local" | "remote") || "local";
-
-  // Handle local tournaments, redirect remote to waiting room
-  if (tournamentType === "local") {
-    setupLocalTournament();
-  } else {
-    // Redirect remote tournaments to the waiting view
-    const waitingContainer = document.getElementById("content");
-    navigateTo("/remote-tournament-lobby", waitingContainer);
-    return;
-  }
+  // Setup local tournament
+  setupLocalTournament();
 }
 
 function setupLocalTournament() {
@@ -309,14 +297,3 @@ export function getLocalTournamentState() {
   return localTournamentState;
 }
 
-export function getRemoteTournamentState(): TournamentState | void {
-  const remoteTournamentStateString = localStorage.getItem("RemoteTournament");
-  if (!remoteTournamentStateString) return;
-
-  const remoteTournamentState = JSON.parse(
-    remoteTournamentStateString,
-  ) as TournamentState;
-  if (!remoteTournamentState) return;
-
-  return remoteTournamentState;
-}

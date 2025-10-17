@@ -10,8 +10,8 @@ import {
   getUserFriends,
 } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername, getUserDisplayName } from "../utils/userUtils.js";
-import { getUserAvatar } from "../services/profileService.js";
+import { getCurrentUsername, getUserNickname } from "../utils/userUtils.js";
+import { getUserAvatar, getProfileByUsername } from "../services/profileService.js";
 import { notificationService } from "../services/notifications.service.js";
 import { chatManager } from "../app.js";
 import { getHeaders, request } from "../utils/api.js";
@@ -22,13 +22,13 @@ import { toast } from "../utils/toast.js";
 export interface GameInviteResponse {
   state: string;
   gameMode: string;
-  id: string;
+  id: number;
 }
 
 export type Friend = {
   id: string;
   username: string;
-  status?: "ONLINE" | "OFFLINE";
+  status?: "ONLINE" | "OFFLINE" | "IN_GAME";
 };
 
 export async function renderChat(container: HTMLElement | null) {
@@ -345,9 +345,7 @@ class ChatComponent {
       try {
         // Check if we've already received an invite from this user
         const pendingInvites = notificationService.getState().gameInvites;
-        const alreadyHaveInvite = pendingInvites.some(
-          (invite) => invite.senderUsername === friend.username,
-        );
+        const alreadyHaveInvite = pendingInvites.some(invite => invite.senderUsername === friend.username);
 
         if (alreadyHaveInvite) {
           chatMenu.classList.add("hidden");
@@ -360,9 +358,18 @@ class ChatComponent {
         // Check if we've already sent an invite to this user
         if (this.sentGameInvites.has(friend.username)) {
           chatMenu.classList.add("hidden");
-          toast.warning(
-            `You already sent a game invite to ${friend.username}!`,
-          );
+          toast.warning(`You already sent a game invite to ${friend.username}!`);
+          return;
+        }
+
+        const friendStatus = await this.getFriendStatus(friend.username);
+        if (friendStatus !== "ONLINE") {
+          chatMenu.classList.add("hidden");
+          if (friendStatus === "IN_GAME") {
+            toast.warning(`${friend.username} is already playing another match.`);
+          } else {
+            toast.warning(`${friend.username} is offline and cannot receive game invites right now.`);
+          }
           return;
         }
 
@@ -374,7 +381,7 @@ class ChatComponent {
           body: JSON.stringify({
             player1: this.currentUserId,
             player2: friend.username,
-            player1Display: user1DisplayName,
+            player1Display: (await getUserNickname()) || this.currentUserId,
           }),
         })) as GameInviteResponse;
 
@@ -387,21 +394,27 @@ class ChatComponent {
           senderId: this.currentUserId,
           content: `${response.id}`,
           ts: Date.now(),
+          gameId: response.id,
         };
         await this.sendMessage(friend.username, message);
+
 
         // Track that we sent an invite to this user
         this.sentGameInvites.add(friend.username);
 
+
         toast.success(`Game invite sent to ${friend.username}!`);
-        navigateTo(
-          `/pong?mode=custom&gameId=${response.id}&side=left`,
-          document.getElementById("content"),
-        );
+        navigateTo(`/pong?mode=custom&gameId=${response.id}&side=left&opponent=${encodeURIComponent(friend.username)}`,
+          document.getElementById("content"));
       } catch (err) {
         console.log(err);
-        toast.error("Could not create game room.");
-        return;
+        const errorMessage = err instanceof Error ? err.message : "Could not create game room.";
+        if (errorMessage.includes("already participating in a game")) {
+          toast.warning(errorMessage);
+        }
+        else {
+          toast.error("Could not create game room.");
+        }
       }
     });
 
@@ -434,6 +447,24 @@ class ChatComponent {
     this.updateChatHistory(friend.username);
 
     messageInput.focus();
+  }
+
+  private async getFriendStatus(friendUsername: string): Promise<"ONLINE" | "OFFLINE" | "IN_GAME" | null> {
+    const friendEntry = this.friends.find((f) => f.username === friendUsername);
+    if (friendEntry?.status) {
+      return friendEntry.status;
+    }
+
+    try {
+      const profile = await getProfileByUsername(friendUsername);
+      if (friendEntry) {
+        friendEntry.status = profile.status;
+      }
+      return profile.status;
+    } catch (error) {
+      console.error(`Failed to verify status for ${friendUsername}:`, error);
+      return null;
+    }
   }
 
   closeChat(friendId: string) {

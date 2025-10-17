@@ -15,6 +15,7 @@ export class LocalGame extends Game {
   private gameMode: string;
   private gameLoopId: number | null = null;
   private isGameActive: boolean = true;
+  private isGameOver: boolean = false;
 
   constructor(gameMode: string, id: number) {
     super()
@@ -28,7 +29,7 @@ export class LocalGame extends Game {
     }
 
     this.canvas.addEventListener("keydown", this.handleKeyDown.bind(this));
-    
+
     // Register this game's leave handler with the confirmation modal
     if ((window as any).setLeaveGameHandler) {
       (window as any).setLeaveGameHandler(this.leaveGame.bind(this));
@@ -39,17 +40,17 @@ export class LocalGame extends Game {
     if (!this.ws) {
       this.ws = new WebSocket(url)
       if (!this.ws)
-        throw("Failed To Connect WebSocket");
+        throw ("Failed To Connect WebSocket");
       this.openSocket(gameMode);
     }
   }
 
   private openSocket(gameMode: string) {
     if (!this.ws)
-      throw("ws is undefined");
+      throw ("ws is undefined");
     this.ws.addEventListener("open", () => {
       if (!this.ws)
-        throw("ws is undefined");
+        throw ("ws is undefined");
 
       if (gameMode === "2player" || gameMode === "localtournament") {
         this.startLocalPvP();
@@ -61,7 +62,7 @@ export class LocalGame extends Game {
       this.ws.addEventListener("message", (event) => {
         this.gameState = JSON.parse(event.data) as GameState;
         if (!this.gameState)
-          throw("gameState is undefined");
+          throw ("gameState is undefined");
       });
     });
     this.gameLoop();
@@ -154,14 +155,17 @@ export class LocalGame extends Game {
 
     if (!this.gameState || !this.gameState.paddleLeft || !this.gameState.paddleRight) {
       this.gameLoopId = requestAnimationFrame(this.gameLoop.bind(this));
-      return ;
+      return;
     }
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     if (this.gameState.status === "playing") {
       this.renderBall();
       this.renderPaddle(this.gameState.paddleLeft);
       this.renderPaddle(this.gameState.paddleRight);
-      this.checkPoints(this.ws);
+      if (this.checkPoints(this.ws) === -1) {
+        this.isGameOver = true;
+        return ;
+      }
       this.checkIsGamePaused();
     }
     this.gameLoopId = requestAnimationFrame(this.gameLoop.bind(this));
@@ -170,7 +174,7 @@ export class LocalGame extends Game {
   protected leaveGame(): void {
     // Stop the game loop first
     this.stopGame();
-    
+
     // Then call parent's leaveGame to handle WebSocket cleanup and navigation
     super.leaveGame();
   }
@@ -181,10 +185,13 @@ export class LocalGame extends Game {
     }
     if (["p", "P", " "].includes(event.key)) {
       event.preventDefault();
+    }
+    if (this.isGameOver) {
+      this.leaveGame();
+      return;
+    }
+    else {
       this.sendPayLoad(event);
-      if (event.key === " " && this.gameState && this.gameState.score && this.gameState.score.winner) {
-        this.leaveGame();
-      }
     }
   }
 }
