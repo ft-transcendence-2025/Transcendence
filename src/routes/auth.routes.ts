@@ -48,13 +48,36 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
           httpOnly: true,
           secure: true,
         });
+
+        // Clear Pong game-related cookies
+        reply.clearCookie("localGameId", {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
+
+        reply.clearCookie("localTournamentId", {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
+
+        reply.clearCookie("remoteTournamentId", {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
+
         reply.code(200).send({ message: "Logged out successfully." });
       } catch (error) {
         reply.code(500).send({ message: "Failed to log out.", error });
       }
     }
   );
-  
+
   app.post(
     "/api/auth/refresh",
     { preHandler: [app.authenticateRefresh] },
@@ -101,8 +124,6 @@ const authRoutes: FastifyPluginAsync = async (app: any) => {
       }
     }
   );
-
-
 
   const upstream =
     process.env.NODE_ENV === "production"
