@@ -10,7 +10,7 @@ import {
   getUserFriends,
 } from "../services/friendship.service.js";
 import { loadHtml } from "../utils/htmlLoader.js";
-import { getCurrentUsername, getUserNickname } from "../utils/userUtils.js";
+import { getCurrentUsername, getUserDisplayName, getUserNickname } from "../utils/userUtils.js";
 import { getUserAvatar, getProfileByUsername } from "../services/profileService.js";
 import { notificationService } from "../services/notifications.service.js";
 import { chatManager } from "../app.js";
