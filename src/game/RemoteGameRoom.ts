@@ -1,16 +1,20 @@
 import WebSocket from "ws"
 import { TimeToWait } from "./Game.js";
 import { GameRoom } from "./GameRoom.js";
-import { clearInterval } from "node:timers";
+
+export type CancelReason = "invite_declined" | "invite_expired" | "player_left";
 
 export class RemoteGameRoom extends GameRoom {
   public player1: WebSocket | null = null;
   public player2: WebSocket | null = null;
-  private gameInterval: NodeJS.Timeout | null = null;
+  private gameInterval: ReturnType<typeof setInterval> | null = null;
   public player1Name: string | null = null;
   public player2Name: string | null = null;
   private timePlayerLeft: number = Date.now();
   private isGameOverInProgress = false;
+  public onRoomClose?: (roomId: number) => void;
+  private readonly gameType: "remote" | "custom" | "tournament";
+  private hasMatchStarted = false;
 
   public player1StoredName: string | null = null;
   public player2StoredName: string | null = null;
@@ -23,9 +27,16 @@ export class RemoteGameRoom extends GameRoom {
 
 
 
-  constructor(id: number, player1: string) {
+  constructor(id: number, player1: string, options?: {
+    gameType?: "remote" | "custom" | "tournament",
+    onRoomClose?: (roomId: number) => void,
+  }) {
     super(id)
     this.player1Name = player1;
+    this.gameType = options?.gameType ?? "remote";
+    if (options?.onRoomClose) {
+      this.onRoomClose = options.onRoomClose;
+    }
   }
 
   public cleanup() {
@@ -75,11 +86,15 @@ export class RemoteGameRoom extends GameRoom {
       return ;
     this.gameInterval = setInterval(() => {
 
+      this.game.gameState.cancelReason = null;
       let point;
       if (this.player1 && this.player2) {
         this.game.gameState.status = "playing";
         this.timePlayerLeft = Date.now();
         this.game.gameState.timeToWait = TimeToWait;
+        if (!this.hasMatchStarted) {
+          this.hasMatchStarted = true;
+        }
       }
       else {
         this.game.gameState.status = "waiting for players";
@@ -117,6 +132,33 @@ export class RemoteGameRoom extends GameRoom {
     }, this.FPS60);
   }
 
+  public cancelGame(reason: CancelReason): void {
+    if (this.isGameOverInProgress)
+      return;
+    this.isGameOverInProgress = true;
+
+    if (this.gameInterval) {
+      clearInterval(this.gameInterval);
+      this.gameInterval = null;
+    }
+
+    this.game.gameState.status = "cancelled";
+    this.game.gameState.cancelReason = reason;
+    this.game.gameState.isPaused = true;
+    this.game.gameState.timeToWait = 0;
+    this.game.gameState.ball.isRunning = false;
+    this.game.gameState.score.winner = null;
+
+    this.broadcast();
+
+    setTimeout(() => {
+      const roomId = this.id;
+      if (roomId !== null)
+        this.onRoomClose?.(roomId);
+      this.cleanup();
+    }, 2000);
+  }
+
   public waitingForPlayer() {
     if (!this.game.gameState || !this.player2Name || !this.player1Name)
       return ;
@@ -124,19 +166,38 @@ export class RemoteGameRoom extends GameRoom {
     const timePassed = Date.now() - this.timePlayerLeft
 
     if (timePassed >= 1000) {
-      this.game.gameState.timeToWait -= 1;
+      this.game.gameState.timeToWait = Math.max(0, this.game.gameState.timeToWait - 1);
       this.timePlayerLeft = Date.now();
     }
 
     // Set gameWinner when 45 seconds passed
     if (this.game.gameState.timeToWait <= 0) {
-      if (!this.player1) {
-        this.game.gameState.score.winner = 2;
-      }
-      else if (!this.player2) {
-        this.game.gameState.score.winner = 1;
+      const player1Missing = !this.player1;
+      const player2Missing = !this.player2;
+
+      if (player1Missing || player2Missing) {
+        if (this.gameType === "custom") {
+          const reason: CancelReason = player2Missing ? "invite_expired" : "player_left";
+          this.cancelGame(reason);
+        }
+        else {
+          if (player1Missing) {
+            this.game.gameState.score.winner = 2;
+          }
+          else if (player2Missing) {
+            this.game.gameState.score.winner = 1;
+          }
+        }
       }
     }
+  }
+
+  public get type(): "remote" | "custom" | "tournament" {
+    return this.gameType;
+  }
+
+  public hasStarted(): boolean {
+    return this.hasMatchStarted;
   }
 
   public async gameOver() {

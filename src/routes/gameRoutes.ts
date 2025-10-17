@@ -1,8 +1,10 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { 
   createLocalGame, createRemoteGame,
-  reenterGameRoom, joinGameRoom, createCustomGame
+  reenterGameRoom, joinGameRoom, createCustomGame,
+  cancelCustomGameRoom
 } from "./routeUtils.js";
+import type { CancelReason } from "../game/RemoteGameRoom.js";
 import { localGameRooms } from "../server.js";
 
 let localGameId: number = 0;
@@ -38,6 +40,27 @@ export const customGameSchema = {
     }
   }
 }
+
+export const cancelCustomGameSchema = {
+  schema: {
+    params: {
+      type: "object",
+      required: ["gameId"],
+      properties: {
+        gameId: { type: "integer", minimum: 0 },
+      },
+    },
+    body: {
+      type: "object",
+      properties: {
+        reason: {
+          type: "string",
+          enum: ["invite_declined", "invite_expired", "player_left"],
+        },
+      },
+    },
+  },
+};
 
 export function localGameRequest(req: FastifyRequest, reply: FastifyReply) {
     const cookies = req.cookies;
@@ -98,4 +121,23 @@ export function customGame(req: FastifyRequest, reply: FastifyReply) {
     player1, player2,
     player1Display
   );
+}
+
+export function cancelCustomGame(req: FastifyRequest, reply: FastifyReply) {
+  const params = req.params as { gameId: string };
+  const body = (req.body ?? {}) as { reason?: CancelReason };
+
+  const gameId = Number.parseInt(params.gameId, 10);
+  if (Number.isNaN(gameId)) {
+    reply.code(400).send({ message: "Invalid game id" });
+    return;
+  }
+
+  const cancelReason = body.reason ?? "invite_declined";
+  if (!cancelCustomGameRoom(gameId, cancelReason)) {
+    reply.code(404).send({ message: "Game room not found" });
+    return;
+  }
+
+  reply.send({ status: "cancelled" });
 }

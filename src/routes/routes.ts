@@ -1,8 +1,8 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { createCustomGame } from "./routeUtils.js";
-import {
+import { 
   localGameRequest, remoteGameSchema, remoteGame, customGameSchema,
-  customGame
+  customGame, cancelCustomGameSchema, cancelCustomGame
 } from "./gameRoutes.js";
 import {
   localTournamentSchema, localTournament, deleteLocalTournament
@@ -19,4 +19,5 @@ export function getgame(fastify: FastifyInstance) {
   fastify.get("/local", localGameRequest);
   fastify.post("/remote", remoteGameSchema, remoteGame);
   fastify.post("/custom", customGameSchema, customGame);
+  fastify.post("/custom/:gameId/cancel", cancelCustomGameSchema, cancelCustomGame);
 }

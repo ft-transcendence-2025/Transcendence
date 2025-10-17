@@ -360,7 +360,12 @@ function handleMatchReady(
 
   if (!assignment) {
     const gameId = generateTournamentGameId();
-    const room = new RemoteGameRoom(gameId, match.player1.username);
+    const room = new RemoteGameRoom(gameId, match.player1.username, {
+      gameType: "tournament",
+      onRoomClose: (roomId) => {
+        remoteGameRooms.delete(roomId);
+      },
+    });
     room.player1Name = match.player1.username;
     room.player1StoredName = match.player1.username;
     room.player2Name = match.player2.username;

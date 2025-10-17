@@ -13,7 +13,14 @@ export function clearLocalGame(gameRoom: LocalGameRoom) {
 }
 
 export function playerLeftGame(ws: WebSocket, gameRoom: RemoteGameRoom): void {
-  gameRoom.game.gameState.status = "Player left the game"
+  const isCustomLobby = gameRoom.type === "custom" && !gameRoom.hasStarted();
+
+  if (isCustomLobby) {
+    gameRoom.cancelGame("player_left");
+    return;
+  }
+
+  gameRoom.game.gameState.status = "Player left the game";
   if (ws === gameRoom.player1) {
     gameRoom.game.gameState.score.winner = 2;
   }

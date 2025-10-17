@@ -3,7 +3,7 @@ import {
   localTournaments, customGameRoom,
   remoteGameRooms, localGameRooms
 } from "./../server.js";
-import { RemoteGameRoom } from "./../game/RemoteGameRoom.js";
+import { RemoteGameRoom, CancelReason } from "./../game/RemoteGameRoom.js";
 import { LocalGameRoom } from "./../game/LocalGameRoom.js";
 import { LocalTournament } from "./../tournament/LocalTournament.js";
 import { Players } from "./../tournament/Tournament.js";
@@ -57,7 +57,12 @@ export function reenterGameRoom(reply: FastifyReply, playerName: string): number
 }
 
 export function createRemoteGame(reply: FastifyReply, gameId: number, playerName: string, playerStoredName: string) {
-  const gameRoom = new RemoteGameRoom(gameId, playerStoredName);
+  const gameRoom = new RemoteGameRoom(gameId, playerStoredName, {
+    gameType: "remote",
+    onRoomClose: (roomId) => {
+      remoteGameRooms.delete(roomId);
+    },
+  });
   // Store actual username for connection matching, not display name
   gameRoom.player1Name = playerStoredName;
   gameRoom.player1StoredName = playerStoredName;
@@ -111,9 +116,15 @@ export function createCustomGame(
   player1: string, player2: string,
   player1Display: string
 ) {
-  const gameRoom = new RemoteGameRoom(gameId, player1);
+  const gameRoom = new RemoteGameRoom(gameId, player1, {
+    gameType: "custom",
+    onRoomClose: (roomId) => {
+      customGameRoom.delete(roomId);
+    },
+  });
   // Store actual usernames for connection matching
   gameRoom.player1Name = player1;  // Use actual username, not display name
+  gameRoom.player2Name = player2;
   gameRoom.player2StoredName = player2;
   gameRoom.player1StoredName = player1;
 
@@ -125,4 +136,14 @@ export function createCustomGame(
     gameMode: "custom",
     id: gameId,
   });
+}
+
+export function cancelCustomGameRoom(gameId: number, reason: CancelReason = "invite_declined"): boolean {
+  const room = customGameRoom.get(gameId);
+  if (!room) {
+    return false;
+  }
+
+  room.cancelGame(reason);
+  return true;
 }
