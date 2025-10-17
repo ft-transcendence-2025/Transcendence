@@ -4,7 +4,7 @@ import {
   getUserDisplayName,
   getCurrentUserAvatar,
   getCurrentUsername,
-  truncateString25,
+  truncateString15,
 } from "../../utils/userUtils.js";
 import { getUserAvatar } from "../../services/profileService.js";
 import {
@@ -102,7 +102,7 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
       "data-full-name",
       tournamentState.match1.winner || "",
     );
-    finalPlayer1.textContent = truncateString25(tournamentState.match1.winner);
+    finalPlayer1.textContent = truncateString15(tournamentState.match1.winner);
     finalPlayer1.classList.remove("text-gray-400");
     finalPlayer1.classList.add("text-gray-900", "font-bold");
 
@@ -123,7 +123,7 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
       "data-full-name",
       tournamentState.match2.winner || "",
     );
-    finalPlayer2.textContent = truncateString25(tournamentState.match2.winner);
+    finalPlayer2.textContent = truncateString15(tournamentState.match2.winner);
     finalPlayer2.classList.remove("text-gray-400");
     finalPlayer2.classList.add("text-gray-900", "font-bold");
 
@@ -170,7 +170,7 @@ async function setTournamentWinner(
     "data-full-name",
     tournamentState.match3.winner || "",
   );
-  tournamentWinner.textContent = truncateString25(
+  tournamentWinner.textContent = truncateString15(
     tournamentState.match3.winner,
   );
 
@@ -208,25 +208,25 @@ function setNames(
     "data-full-name",
     localTournamentState.match1.player1 || "",
   );
-  player1.textContent = truncateString25(localTournamentState.match1.player1);
+  player1.textContent = truncateString15(localTournamentState.match1.player1);
 
   player2.setAttribute(
     "data-full-name",
     localTournamentState.match1.player2 || "",
   );
-  player2.textContent = truncateString25(localTournamentState.match1.player2);
+  player2.textContent = truncateString15(localTournamentState.match1.player2);
 
   player3.setAttribute(
     "data-full-name",
     localTournamentState.match2.player1 || "",
   );
-  player3.textContent = truncateString25(localTournamentState.match2.player1);
+  player3.textContent = truncateString15(localTournamentState.match2.player1);
 
   player4.setAttribute(
     "data-full-name",
     localTournamentState.match2.player2 || "",
   );
-  player4.textContent = truncateString25(localTournamentState.match2.player2);
+  player4.textContent = truncateString15(localTournamentState.match2.player2);
 }
 
 function setBtnFinished(button: HTMLButtonElement) {
