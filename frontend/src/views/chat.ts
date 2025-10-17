@@ -345,7 +345,13 @@ class ChatComponent {
           document.getElementById("content"));
       } catch (err) {
         console.log(err);
-        toast.error("Could not create game room.");
+        const errorMessage = err instanceof Error ? err.message : "Could not create game room.";
+        if (errorMessage.includes("already participating in a game")) {
+          toast.warning(errorMessage);
+        }
+        else {
+          toast.error("Could not create game room.");
+        }
         return;
       }
     });
