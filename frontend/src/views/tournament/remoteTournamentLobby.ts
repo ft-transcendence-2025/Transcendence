@@ -95,9 +95,11 @@ class TournamentLobby {
 
   private setupEventListeners() {
     document.getElementById('leave-tournament-btn')?.addEventListener('click', () => this.leaveTournament());
-    document.getElementById('toggle-ready-btn')?.addEventListener('click', () => {
+    const readyBtn = document.getElementById('toggle-ready-btn') as HTMLButtonElement | null;
+    readyBtn?.addEventListener('click', () => {
       console.log('[Lobby] Ready button clicked');
-      remoteTournamentService.toggleReady();
+      readyBtn.setAttribute('disabled', 'true');
+      remoteTournamentService.markReady();
     });
     document.getElementById('start-tournament-btn')?.addEventListener('click', () => {
       console.log('[Lobby] Start button clicked');
@@ -441,14 +443,16 @@ class TournamentLobby {
     }
     console.log('[Lobby] Current player ready status:', cp.isReady);
     if (cp.isReady) {
-      btn.innerHTML = '<i class="fas fa-times mr-2"></i> Not Ready';
+      btn.innerHTML = '<i class="fas fa-check mr-2"></i> Ready';
       btn.classList.remove('bg-primary');
       btn.classList.add('bg-gray-600');
+      btn.setAttribute('disabled', 'true');
       txt.textContent = 'You are ready! Waiting for others...';
     } else {
-      btn.innerHTML = '<i class="fas fa-check mr-2"></i> Ready';
+      btn.innerHTML = '<i class="fas fa-check mr-2"></i> Mark Ready';
       btn.classList.add('bg-primary');
       btn.classList.remove('bg-gray-600');
+      btn.removeAttribute('disabled');
       txt.textContent = "Click ready when you're prepared to start";
     }
   }
