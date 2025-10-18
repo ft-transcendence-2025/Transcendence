@@ -163,11 +163,8 @@ class TournamentBrowser {
 
   private async createTournament() {
     const nameInput = document.getElementById('tournament-name') as HTMLInputElement;
-    const maxPlayersInput = document.getElementById('tournament-max-players') as HTMLSelectElement;
-    const rankedInput = document.getElementById('tournament-ranked') as HTMLInputElement;
-    const spectatorsInput = document.getElementById('tournament-spectators') as HTMLInputElement;
 
-    if (!nameInput || !maxPlayersInput) return;
+    if (!nameInput) return;
 
     const name = nameInput.value.trim();
     if (!name) {
@@ -177,9 +174,9 @@ class TournamentBrowser {
 
     try {
       const config = {
-        maxPlayers: parseInt(maxPlayersInput.value),
-        isRanked: rankedInput?.checked || false,
-        allowSpectators: spectatorsInput?.checked || true,
+        maxPlayers: 4,
+        isRanked: false,
+        allowSpectators: false,
       };
 
       console.log('[Browser] Creating tournament:', name, config);

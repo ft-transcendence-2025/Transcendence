@@ -378,7 +378,6 @@ class TournamentLobby {
     const avatar = frag.querySelector('.player-avatar') as HTMLImageElement;
     avatar.src = p.avatar || await getUserAvatar(p.username) || '/assets/avatars/default.png';
     (frag.querySelector('.player-name') as HTMLElement).textContent = p.displayName;
-    (frag.querySelector('.player-skill span') as HTMLElement).textContent = p.skill?.toString() || '1000';
     (frag.querySelector('.player-status') as HTMLElement).classList.add(p.isConnected ? 'bg-green-500' : 'bg-gray-500');
     const ready = frag.querySelector('.player-ready-badge') as HTMLElement;
     const waiting = frag.querySelector('.player-waiting-badge') as HTMLElement;

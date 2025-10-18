@@ -27,7 +27,6 @@ export interface TournamentPlayer {
   username: string;
   displayName: string;
   avatar?: string;
-  skill?: number;
   joinedAt: number;
   isReady: boolean;
   isConnected: boolean;
