@@ -1,7 +1,7 @@
-version: "3.9"
 services:
   nginx:
     build: ./Front-End
+    image: frontend
     ports:
       - "5000:443" # Porta 443 do container exposta como 5000 no host
       - "8080:80"
@@ -11,28 +11,69 @@ services:
     depends_on:
       - api-gateway-1
       - api-gateway-2
+    restart: unless-stopped
 
   api-gateway-1:
     build: ./API-Gateway
-    env_file:
-      - ./API-Gateway/.env
+    image: api-gateway
     networks:
       - internal
 
   api-gateway-2:
     build: ./API-Gateway
-    env_file:
-      - ./API-Gateway/.env
+    image: api-gateway
     networks:
       - internal
 
   user-management:
     build: ./User-Management
-    env_file:
-      - ./User-Management/prisma/.env
+    image: user-management
+    volumes:
+      - ./User-Management/DB:/app/DB
     networks:
       - internal
+
+  chat-service:
+    build: ./Chat-Service
+    image: chat-service
+    volumes:
+      - ./Chat-Service/DB:/app/DB
+    networks:
+      - internal
+
+  blockchain:
+    build:
+      context: ./Blockchain/avalanche
+      dockerfile: Dockerfile
+    image: avalanche
+    container_name: blockchain
+    volumes:
+      - avalanche-data:/app/avalanche-data
+    restart: unless-stopped
+    secrets:
+      - avalanche_private_key
+    networks:
+      - internal
+
+  pong:
+    build:
+      context: ./Pong
+      dockerfile: Dockerfile
+    image: pong
+    container_name: pong
+    restart: unless-stopped
+    volumes:
+      - ./Pong/src:/pong/src
+    networks:
+      - internal
+
+volumes:
+  avalanche-data:
 
 networks:
   public:
   internal:
+
+secrets:
+  avalanche_private_key:
+    file: ./Blockchain/secrets/avalanche_private_key.txt
