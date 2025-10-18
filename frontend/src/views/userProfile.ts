@@ -285,7 +285,7 @@ async function handleCreateProfile(username: string) {
     nickName: ((formData.get("update-nick-name") as string) || "").trim(),
     firstName: ((formData.get("update-first-name") as string) || "").trim(),
     lastName: ((formData.get("update-last-name") as string) || "").trim(),
-    bio: (formData.get("update-bio") as string) || "",
+    bio: ((formData.get("update-bio") as string) || "").trim(),
     gender:
       genderValue && genderValue !== "" ? (genderValue as any) : null,
   };
@@ -335,7 +335,7 @@ async function handleUpdateProfile(username: string) {
     nickName: ((formData.get("update-nick-name") as string) || "").trim(),
     firstName: ((formData.get("update-first-name") as string) || "").trim(),
     lastName: ((formData.get("update-last-name") as string) || "").trim(),
-    bio: (formData.get("update-bio") as string) || "",
+    bio: ((formData.get("update-bio") as string) || "").trim(),
     gender:
       genderValue && genderValue !== "" ? (genderValue as any) : null,
   };
