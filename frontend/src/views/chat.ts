@@ -373,8 +373,6 @@ class ChatComponent {
           return;
         }
 
-        const user1DisplayName = await getUserDisplayName();
-
         const response = (await request(`${BASE_URL}/getgame/custom`, {
           method: "POST",
           headers: getHeaders(),
