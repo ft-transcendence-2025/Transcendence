@@ -446,12 +446,12 @@ export class RemoteTournamentService {
     const username = this.getCurrentUsername();
     const currentPlayer = currentState.players.find((player: TournamentPlayer) => player.username === username);
     if (!currentPlayer) {
-      console.warn('[TournamentService] Cannot mark ready - player not found in tournament');
+      // console.warn('[TournamentService] Cannot mark ready - player not found in tournament');
       return;
     }
 
     if (currentPlayer.isReady) {
-      console.log('[TournamentService] Player already ready; skipping mark');
+      // console.log('[TournamentService] Player already ready; skipping mark');
       return;
     }
 
