@@ -162,10 +162,9 @@ export class TournamentManager {
     return { success: true };
   }
 
-  public setPlayerReady(
+  public markPlayerReady(
     tournamentId: string,
-    playerId: string,
-    ready: boolean
+    playerId: string
   ): { success: boolean; message?: string } {
     const tournament = this.tournaments.get(tournamentId);
 
@@ -173,7 +172,7 @@ export class TournamentManager {
       return { success: false, message: "Tournament not found" };
     }
 
-    const updated = tournament.setPlayerReady(playerId, ready);
+    const updated = tournament.markPlayerReady(playerId);
     if (!updated) {
       return { success: false, message: "Could not update ready status" };
     }
@@ -393,7 +392,7 @@ export class TournamentManager {
         if (tournament.players.size >= tournament.config.minPlayers) {
           // Force all players to ready and start
           tournament.players.forEach((player) => {
-            tournament.setPlayerReady(player.id, true);
+            tournament.markPlayerReady(player.id);
           });
           tournament.start();
         } else {

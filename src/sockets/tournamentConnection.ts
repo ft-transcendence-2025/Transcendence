@@ -191,9 +191,6 @@ async function handleMessage(
       handlePlayerReady(ws, message, tournamentId, playerId, manager);
       break;
 
-    case "player:unready":
-      handlePlayerUnready(ws, message, tournamentId, playerId, manager);
-      break;
 
     case "tournament:start":
       handleTournamentStart(ws, message, tournamentId, playerId, manager);
@@ -233,7 +230,7 @@ function handlePlayerReady(
   playerId: string,
   manager: TournamentManager
 ): void {
-  const result = manager.setPlayerReady(tournamentId, playerId, true);
+  const result = manager.markPlayerReady(tournamentId, playerId);
 
   if (result.success) {
     // Broadcast to all players
@@ -242,31 +239,6 @@ function handlePlayerReady(
       data: {
         playerId,
         status: "ready",
-      },
-    });
-  } else {
-    ws.send(JSON.stringify({
-      type: "error",
-      message: result.message,
-    }));
-  }
-}
-
-function handlePlayerUnready(
-  ws: WebSocket,
-  message: TournamentMessage,
-  tournamentId: string,
-  playerId: string,
-  manager: TournamentManager
-): void {
-  const result = manager.setPlayerReady(tournamentId, playerId, false);
-
-  if (result.success) {
-    manager.broadcastToTournament(tournamentId, {
-      type: "player:status",
-      data: {
-        playerId,
-        status: "not_ready",
       },
     });
   } else {

@@ -176,14 +176,18 @@ export class TournamentState {
     return true;
   }
 
-  public setPlayerReady(playerId: string, ready: boolean): boolean {
+  public markPlayerReady(playerId: string): boolean {
     const player = this.players.get(playerId);
     if (!player || this.phase !== TournamentPhase.REGISTRATION) {
       return false;
     }
 
-    player.isReady = ready;
-    this.emit("player:ready", { player, ready });
+    if (player.isReady) {
+      return true;
+    }
+
+    player.isReady = true;
+    this.emit("player:ready", player);
 
     this.checkReadyToStart();
     return true;
