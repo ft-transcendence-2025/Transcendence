@@ -1,5 +1,5 @@
 # Transcendence Project Makefile
-.PHONY: run dev start stop logs status build clean fclean re install help
+.PHONY: run dev start stop logs status build clean fclean re install help prune
 .DEFAULT_GOAL := run
 
 # Colors
@@ -13,36 +13,35 @@ NC := \033[0m
 USER_MGMT_DIR := User-Management
 CHAT_SERVICE_DIR := Chat-Service
 API_GATEWAY_DIR := API-Gateway
-FRONTEND_DIR := Front-End/frontend 
+FRONTEND_DIR := Front-End/frontend
 
 ## 🚀 START EVERYTHING
-run: ## Just run 'make' to start the entire application
+run: install build ## Just run 'make' to start the entire application
 	@echo "$(GREEN)🚀 STARTING TRANSCENDENCE$(NC)"
-	@cd $(USER_MGMT_DIR) && npm install && npx prisma generate && npx prisma migrate deploy && npm run build
-	@cd $(CHAT_SERVICE_DIR) && npm install && npx prisma generate && npx prisma migrate deploy && npm run build
-	@cd $(API_GATEWAY_DIR) && npm install && npm run build
-	@cd $(FRONTEND_DIR) && npm install && npm run build
 	@docker compose up -d --build
 	@echo "$(GREEN)🎉 READY! Frontend: https://localhost:5000$(NC)"
 
-## Before running 'make dev' run 'npm run dev' in frontend directory locally in another terminal
-dev: ## Start the entire application in development mode with live reloading
+dev: ## Start the entire application in development mode with live reloading, run 'npm run dev' in frontend directory locally in another terminal before
 	@echo "$(GREEN)🚀 STARTING TRANSCENDENCE (DEVELOPMENT MODE)$(NC)"
 	@docker compose -f docker-compose.dev.yml build
 	@docker compose -f docker-compose.dev.yml up
 
 ## Essential Commands
 install: ## Install dependencies for all services
+	@echo "$(CYAN)📥 Installing dependencies...$(NC)"
 	@cd $(USER_MGMT_DIR) && npm install
 	@cd $(CHAT_SERVICE_DIR) && npm install
 	@cd $(API_GATEWAY_DIR) && npm install
 	@cd $(FRONTEND_DIR) && npm install
+	@echo "$(GREEN)✅ Dependencies installed!$(NC)"
 
 build: ## Build all services
-	@cd $(USER_MGMT_DIR) && npx prisma generate && npm run build
-	@cd $(CHAT_SERVICE_DIR) && npx prisma generate && npm run build
+	@echo "$(CYAN)📦 Building all services...$(NC)"
+	@cd $(USER_MGMT_DIR) && npx prisma generate && npx prisma migrate deploy && npm run build
+	@cd $(CHAT_SERVICE_DIR) && npx prisma generate && npx prisma migrate deploy && npm run build
 	@cd $(API_GATEWAY_DIR) && npm run build
 	@cd $(FRONTEND_DIR) && npm run build
+	@echo "$(GREEN)✅ Build complete!$(NC)"
 
 start: ## Start services with Docker
 	@docker compose up -d
@@ -58,7 +57,7 @@ logs: ## Show logs
 status: ## Show service status
 	@docker compose ps
 
-prune:
+prune: ## Prune Docker system
 	@docker system prune -af
 
 clean: ## Clean everything (keeps avalanche image and database)
