@@ -25,11 +25,11 @@ run: ## Just run 'make' to start the entire application
 	@docker compose up -d --build
 	@echo "$(GREEN)🎉 READY! Frontend: https://localhost:5000$(NC)"
 
+## Before running 'make dev' run 'npm run dev' in frontend directory locally in another terminal
 dev: ## Start the entire application in development mode with live reloading
 	@echo "$(GREEN)🚀 STARTING TRANSCENDENCE (DEVELOPMENT MODE)$(NC)"
 	@docker compose -f docker-compose.dev.yml build
 	@docker compose -f docker-compose.dev.yml up
-## Run 'npm run dev' in frontend directory locally in another terminal
 
 ## Essential Commands
 install: ## Install dependencies for all services
