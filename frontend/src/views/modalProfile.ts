@@ -77,7 +77,7 @@ async function getPlayerStats(username: string, useCache: boolean = true): Promi
     
     return stats;
   } catch (error) {
-    console.error("Error fetching player stats:", error);
+    // console.error("Error fetching player stats:", error);
     return { totalGames: 0, wins: 0, losses: 0, winRate: 0, tournamentCount: 0, recentMatches: [] };
   }
 }

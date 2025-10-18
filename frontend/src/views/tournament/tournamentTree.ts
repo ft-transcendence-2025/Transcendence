@@ -139,7 +139,7 @@ function setButtons(container: HTMLElement, tournamentState: TournamentState) {
     updateProgressBar(container, 75, "Final Match in Progress");
   }
   if (tournamentState.match3.winner) {
-    console.log("[Tournament Tree] Match 3 winner detected:", tournamentState.match3.winner);
+    // console.log("[Tournament Tree] Match 3 winner detected:", tournamentState.match3.winner);
     // Disable buttom
     updateMatchStatus(container, 1, "completed");
     updateMatchStatus(container, 2, "completed");
@@ -177,7 +177,7 @@ async function setTournamentWinner(
   let avatar = "";
   if (playerInfo === null) {
     // Remote tournament - fetch winner's avatar from server by username
-    console.log(`Fetching avatar for tournament winner: ${tournamentState.match3.winner}`);
+    // console.log(`Fetching avatar for tournament winner: ${tournamentState.match3.winner}`);
     avatar = await getUserAvatar(tournamentState.match3.winner);
   } else {
     // Local tournament - find avatar in player info

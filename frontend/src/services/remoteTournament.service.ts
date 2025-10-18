@@ -222,7 +222,7 @@ export class RemoteTournamentService {
         return { success: false, error: result.message };
       }
     } catch (error) {
-      console.error('[TournamentService] Error creating tournament:', error);
+      // console.error('[TournamentService] Error creating tournament:', error);
       return { success: false, error: 'Failed to create tournament' };
     }
   }
@@ -241,7 +241,7 @@ export class RemoteTournamentService {
         return { success: false, error: result.message };
       }
     } catch (error) {
-      console.error('[TournamentService] Error listing tournaments:', error);
+      // console.error('[TournamentService] Error listing tournaments:', error);
       return { success: false, error: 'Failed to list tournaments' };
     }
   }
@@ -260,7 +260,7 @@ export class RemoteTournamentService {
         return { success: false, error: result.message };
       }
     } catch (error) {
-      console.error('[TournamentService] Error getting tournament:', error);
+      // console.error('[TournamentService] Error getting tournament:', error);
       return { success: false, error: 'Failed to get tournament' };
     }
   }
@@ -270,16 +270,16 @@ export class RemoteTournamentService {
    */
   public connect(tournamentId: string, reconnect: boolean = false): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      console.warn('[TournamentService] Already connected');
+      // console.warn('[TournamentService] Already connected');
       return;
     }
 
     const username = this.getCurrentUsername();
     const action = reconnect ? 'reconnect' : '';
-    console.log('[TournamentService] Attempting connection', { username, tournamentId, reconnect });
+    // console.log('[TournamentService] Attempting connection', { username, tournamentId, reconnect });
     const url = `wss://${window.location.host}/ws/game/remotetournament/${tournamentId}/${username}${action ? '/' + action : ''}`;
 
-    console.log(`[TournamentService] Connecting to ${url}`);
+    // console.log(`[TournamentService] Connecting to ${url}`);
 
     this.intentionalDisconnect = false;
     this.reconnectAttempts = 0;
@@ -298,7 +298,7 @@ export class RemoteTournamentService {
 
     // Open event
     this.ws.addEventListener('open', () => {
-      console.log('[TournamentService] Connected');
+      // console.log('[TournamentService] Connected');
       this._connectionStatus$.next('connected');
       this.reconnectAttempts = 0;
 
@@ -312,18 +312,18 @@ export class RemoteTournamentService {
         const message: TournamentMessage = JSON.parse(event.data);
         this.handleMessage(message);
       } catch (error) {
-        console.error('[TournamentService] Error parsing message:', error);
+        // console.error('[TournamentService] Error parsing message:', error);
       }
     });
 
     // Close event
     this.ws.addEventListener('close', (event) => {
-      console.log('[TournamentService] Disconnected');
+      // console.log('[TournamentService] Disconnected');
       this._connectionStatus$.next('disconnected');
 
       // Don't reconnect if this was an intentional disconnect
       if (this.intentionalDisconnect) {
-        console.log('[TournamentService] Intentional disconnect - not reconnecting');
+        // console.log('[TournamentService] Intentional disconnect - not reconnecting');
         this.intentionalDisconnect = false; // Reset flag
         return;
       }
@@ -331,7 +331,7 @@ export class RemoteTournamentService {
       // Attempt reconnection for unintentional disconnects
       if (this.reconnectAttempts < this.maxReconnectAttempts) {
         this.reconnectAttempts++;
-        console.log(`[TournamentService] Reconnecting... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+        // console.log(`[TournamentService] Reconnecting... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
         
         setTimeout(() => {
           const tournamentId = this._tournamentState$.value?.id;
@@ -346,7 +346,7 @@ export class RemoteTournamentService {
 
     // Error event
     this.ws.addEventListener('error', (error) => {
-      console.error('[TournamentService] WebSocket error:', error);
+      // console.error('[TournamentService] WebSocket error:', error);
       this._connectionStatus$.next('error');
     });
   }
@@ -355,27 +355,27 @@ export class RemoteTournamentService {
    * Handle incoming WebSocket messages
    */
   private handleMessage(message: TournamentMessage): void {
-    console.log('[TournamentService] Received message:', message.type, message);
+    // console.log('[TournamentService] Received message:', message.type, message);
 
     switch (message.type) {
       case 'connected':
-        console.log('[TournamentService] Connection confirmed');
+        // console.log('[TournamentService] Connection confirmed');
         break;
 
       case 'tournament:state':
-        console.log('[TournamentService] Tournament state update:', message.data);
+        // console.log('[TournamentService] Tournament state update:', message.data);
         this._tournamentState$.next(message.data);
         this.evaluateMatchRequest(message.data as TournamentState);
         break;
 
       case 'tournament:started':
-        console.log('[TournamentService] Tournament started:', message.data);
+        // console.log('[TournamentService] Tournament started:', message.data);
         this._tournamentState$.next(message.data);
         this.evaluateMatchRequest(message.data as TournamentState);
         break;
 
       case 'player:status':
-        console.log('[TournamentService] Player status update:', message.data);
+        // console.log('[TournamentService] Player status update:', message.data);
         // Update player status in current state
         const currentState = this._tournamentState$.value;
         if (currentState) {
@@ -389,28 +389,28 @@ export class RemoteTournamentService {
         break;
 
       case 'match:assigned':
-        console.log('[TournamentService] Match assigned:', message.data);
+        // console.log('[TournamentService] Match assigned:', message.data);
         this.lastAssignedMatchId = message.data?.matchId || null;
         this.pendingMatchRequestId = null;
         this._matchAssignments$.next(message.data as MatchAssignmentPayload);
         break;
 
       case 'match:pending':
-        console.log('[TournamentService] Match pending opponent:', message.data);
+        // console.log('[TournamentService] Match pending opponent:', message.data);
         break;
 
       case 'match:none':
-        console.log('[TournamentService] No match available:', message.message);
+        // console.log('[TournamentService] No match available:', message.message);
         this.pendingMatchRequestId = null;
         break;
 
       case 'chat:message':
-        console.log('[TournamentService] Chat message:', message.data);
+        // console.log('[TournamentService] Chat message:', message.data);
         this._chatMessages$.next(message.data);
         break;
 
       case 'error':
-        console.error('[TournamentService] Error message:', message.message);
+        // console.error('[TournamentService] Error message:', message.message);
         this._errors$.next(message.message || 'Unknown error');
         break;
 
@@ -419,7 +419,7 @@ export class RemoteTournamentService {
         break;
 
       default:
-        console.warn('[TournamentService] Unknown message type:', message.type, message);
+        // console.warn('[TournamentService] Unknown message type:', message.type, message);
     }
   }
 
@@ -430,7 +430,7 @@ export class RemoteTournamentService {
     if (this.ws?.readyState === WebSocket.OPEN) {
       this.ws.send(JSON.stringify(message));
     } else {
-      console.warn('[TournamentService] Cannot send - not connected');
+      // console.warn('[TournamentService] Cannot send - not connected');
     }
   }
 
@@ -440,14 +440,14 @@ export class RemoteTournamentService {
   public toggleReady(): void {
     const currentState = this._tournamentState$.value;
     if (!currentState) {
-      console.warn('[TournamentService] Cannot toggle ready - no tournament state');
+      // console.warn('[TournamentService] Cannot toggle ready - no tournament state');
       return;
     }
 
     const username = this.getCurrentUsername();
     const currentPlayer = currentState.players.find((player: TournamentPlayer) => player.username === username);
     if (!currentPlayer) {
-      console.warn('[TournamentService] Cannot toggle ready - player not found in tournament');
+      // console.warn('[TournamentService] Cannot toggle ready - player not found in tournament');
       return;
     }
 
@@ -464,7 +464,7 @@ export class RemoteTournamentService {
    * Start tournament (creator only)
    */
   public startTournament(): void {
-    console.log('[TournamentService] Starting tournament...');
+    // console.log('[TournamentService] Starting tournament...');
     this.send({ type: 'tournament:start' });
   }
 
@@ -605,7 +605,7 @@ export class RemoteTournamentService {
     }
 
     if (match.status === MatchStatus.PENDING || match.status === MatchStatus.IN_PROGRESS) {
-      console.log('[TournamentService] Requesting match assignment', { matchId, status: match.status });
+      // console.log('[TournamentService] Requesting match assignment', { matchId, status: match.status });
       this.pendingMatchRequestId = matchId;
       this.requestMatch();
     }
@@ -617,7 +617,7 @@ export class RemoteTournamentService {
   private getCurrentUsername(): string {
     const username = getUsernameFromAuth();
     if (!username) {
-      console.error('[TournamentService] No authenticated user found');
+      // console.error('[TournamentService] No authenticated user found');
       return 'Guest';
     }
     return username;

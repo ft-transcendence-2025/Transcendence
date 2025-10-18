@@ -12,7 +12,7 @@ export async function renderRemoteTournamentLobby(container: HTMLElement | null)
   if (!container) return;
 
   if (activeLobby) {
-    console.log('[RemoteTournamentLobby] Cleaning up previous lobby instance');
+    // console.log('[RemoteTournamentLobby] Cleaning up previous lobby instance');
     activeLobby.destroy();
     activeLobby = null;
   }
@@ -24,7 +24,7 @@ export async function renderRemoteTournamentLobby(container: HTMLElement | null)
   const urlParams = new URLSearchParams(window.location.search);
   const tournamentId = urlParams.get('id') || localStorage.getItem('currentTournamentId');
   
-  console.log('[RemoteTournamentLobby] Tournament ID:', tournamentId);
+  // console.log('[RemoteTournamentLobby] Tournament ID:', tournamentId);
   
   if (!tournamentId) {
     toast.error('No tournament selected');
@@ -52,7 +52,7 @@ class TournamentLobby {
   }
 
   async initialize() {
-    console.log('[Lobby] Initializing with tournament ID:', this.tournamentId);
+    // console.log('[Lobby] Initializing with tournament ID:', this.tournamentId);
     
     // First, verify the tournament exists via REST API
     let shouldReconnect = false;
@@ -60,10 +60,10 @@ class TournamentLobby {
       const response = await fetch(`/api/tournament/remote/${this.tournamentId}`);
       const result = await response.json();
       
-      console.log('[Lobby] Tournament fetch result:', result);
+      // console.log('[Lobby] Tournament fetch result:', result);
       
       if (!result.success) {
-        console.error('[Lobby] Tournament not found:', result.message);
+        // console.error('[Lobby] Tournament not found:', result.message);
         toast.error('Tournament not found');
         navigateTo('/remote-tournament', this.container);
         return;
@@ -81,7 +81,7 @@ class TournamentLobby {
 
       shouldReconnect = Boolean(existingPlayer);
     } catch (error) {
-      console.error('[Lobby] Error fetching tournament:', error);
+      // console.error('[Lobby] Error fetching tournament:', error);
       toast.error('Failed to load tournament');
       navigateTo('/remote-tournament', this.container);
       return;
@@ -96,11 +96,11 @@ class TournamentLobby {
   private setupEventListeners() {
     document.getElementById('leave-tournament-btn')?.addEventListener('click', () => this.leaveTournament());
     document.getElementById('toggle-ready-btn')?.addEventListener('click', () => {
-      console.log('[Lobby] Ready button clicked');
+      // console.log('[Lobby] Ready button clicked');
       remoteTournamentService.toggleReady();
     });
     document.getElementById('start-tournament-btn')?.addEventListener('click', () => {
-      console.log('[Lobby] Start button clicked');
+      // console.log('[Lobby] Start button clicked');
       remoteTournamentService.startTournament();
     });
     const chatInput = document.getElementById('chat-input') as HTMLInputElement;
@@ -115,14 +115,14 @@ class TournamentLobby {
   private subscribeToStreams() {
     // Subscribe to tournament state updates
     const tournamentSub = remoteTournamentService.tournament$.subscribe(async (t: TournamentState | null) => {
-      console.log('[Lobby] Tournament update:', t);
+      // console.log('[Lobby] Tournament update:', t);
       if (!t) return;
       this.updateTournamentInfo(t);
       await this.updatePlayers(t);
       this.updatePhase(t.phase);
       this.updateBracket(t);
       if (t.phase === TournamentPhase.IN_PROGRESS) {
-        console.log('[Lobby] Tournament started! Bracket:', t.bracket);
+        // console.log('[Lobby] Tournament started! Bracket:', t.bracket);
         toast.success('Tournament is starting!');
         // For now, just show the bracket info
         // TODO: Navigate to game/match when backend assigns matches
@@ -133,28 +133,28 @@ class TournamentLobby {
 
     // Subscribe to connection status
     const statusSub = remoteTournamentService.connectionStatus$.subscribe((s: string) => {
-      console.log('[Lobby] Connection status:', s);
+      // console.log('[Lobby] Connection status:', s);
       this.updateConnectionStatus(s);
     });
     this.subscriptions.push(statusSub);
 
     // Subscribe to chat messages
     const chatSub = remoteTournamentService.chatMessages$.subscribe((m: ChatMessage) => {
-      console.log('[Lobby] Chat message:', m);
+      // console.log('[Lobby] Chat message:', m);
       this.addChatMessage(m);
     });
     this.subscriptions.push(chatSub);
 
     // Subscribe to errors
     const errorSub = remoteTournamentService.errors$.subscribe((e: string) => {
-      console.error('[Lobby] Error:', e);
+      // console.error('[Lobby] Error:', e);
       toast.error(e);
     });
     this.subscriptions.push(errorSub);
 
     const matchSub = remoteTournamentService.matchAssignments$.subscribe((assignment: MatchAssignmentPayload) => {
       if (!assignment) return;
-      console.log('[Lobby] Match assignment received:', assignment);
+      // console.log('[Lobby] Match assignment received:', assignment);
 
       try {
         localStorage.setItem('remoteTournamentMatch', JSON.stringify({
@@ -163,7 +163,7 @@ class TournamentLobby {
           opponent: assignment.opponent || null,
         }));
       } catch (error) {
-        console.warn('[Lobby] Failed to persist match info:', error);
+        // console.warn('[Lobby] Failed to persist match info:', error);
       }
 
       this.destroy();
@@ -192,7 +192,7 @@ class TournamentLobby {
     );
 
     if (renderToken !== this.playerRenderToken) {
-      console.log('[Lobby] Skipping stale player render');
+      // console.log('[Lobby] Skipping stale player render');
       return;
     }
 
@@ -400,7 +400,7 @@ class TournamentLobby {
   }
 
   private updatePhase(phase: TournamentPhase) {
-    console.log('[Lobby] Phase update:', phase);
+    // console.log('[Lobby] Phase update:', phase);
     const phaseEl = document.getElementById('tournament-phase');
     if (!phaseEl) return;
     const phases: Record<TournamentPhase, { text: string; class: string; icon: string }> = {
@@ -434,13 +434,13 @@ class TournamentLobby {
     if (!btn || !txt) return;
 
     const user = getCurrentUsername() || 'Guest';
-    console.log('[Lobby] Updating ready button. Username:', user, 'Players:', tournament.players);
+    // console.log('[Lobby] Updating ready button. Username:', user, 'Players:', tournament.players);
     const cp = tournament.players.find((player: TournamentPlayer) => player.username === user);
     if (!cp) {
-      console.log('[Lobby] Current player not found in players list');
+      // console.log('[Lobby] Current player not found in players list');
       return;
     }
-    console.log('[Lobby] Current player ready status:', cp.isReady);
+    // console.log('[Lobby] Current player ready status:', cp.isReady);
     if (cp.isReady) {
       btn.innerHTML = '<i class="fas fa-times mr-2"></i> Not Ready';
       btn.classList.remove('bg-primary');
@@ -491,7 +491,7 @@ class TournamentLobby {
   }
 
   destroy() {
-    console.log('[Lobby] Destroying, unsubscribing from', this.subscriptions.length, 'subscriptions');
+    // console.log('[Lobby] Destroying, unsubscribing from', this.subscriptions.length, 'subscriptions');
     // Unsubscribe from all observables
     this.subscriptions.forEach(sub => {
       if (sub && sub.unsubscribe) {

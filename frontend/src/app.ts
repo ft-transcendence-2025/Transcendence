@@ -24,7 +24,7 @@ export function getChatManager(): ChatComponent {
 export async function initializeChatManager() {
   const username = getCurrentUsername();
   if (!username) {
-    console.warn("No current user. ChatManager will not be initialized.");
+    // console.warn("No current user. ChatManager will not be initialized.");
     return;
   }
   if (!chatManager || chatManager.chatService === null || chatManager.currentUserId != username) {
@@ -33,7 +33,7 @@ export async function initializeChatManager() {
       handleIncomingMessage(e);
     }
   } else {
-    console.warn("ChatManager is already initialized.");
+    // console.warn("ChatManager is already initialized.");
   }
 }
 

@@ -182,19 +182,19 @@ class TournamentBrowser {
         allowSpectators: spectatorsInput?.checked || true,
       };
 
-      console.log('[Browser] Creating tournament:', name, config);
+      // console.log('[Browser] Creating tournament:', name, config);
 
       // Create tournament
       const response = await remoteTournamentService.createTournament(name, config);
 
-      console.log('[Browser] Create tournament response:', response);
+      // console.log('[Browser] Create tournament response:', response);
 
       if (!response.success || !response.tournament) {
         throw new Error(response.error || 'Failed to create tournament');
       }
 
       const tournamentId = response.tournament.id;
-      console.log('[Browser] Tournament created with ID:', tournamentId);
+      // console.log('[Browser] Tournament created with ID:', tournamentId);
 
       toast.success('Tournament created successfully!');
 
@@ -205,7 +205,7 @@ class TournamentBrowser {
       await new Promise(resolve => setTimeout(resolve, 500));
 
       // Navigate to lobby
-      console.log('[Browser] Navigating to lobby with ID:', tournamentId);
+      // console.log('[Browser] Navigating to lobby with ID:', tournamentId);
       navigateTo(`/remote-tournament-lobby?id=${tournamentId}`, this.container);
     } catch (error) {
       console.error('Failed to create tournament:', error);

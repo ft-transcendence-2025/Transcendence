@@ -36,10 +36,10 @@ export async function renderStats(container: HTMLElement | null) {
   try {
     playerMatchesResponse = await getPlayerMatches(playerId);
   } catch (err: any) {
-    console.error(
-      `Error fetching matches for ${playerId}:`,
-      err.message || err,
-    );
+    // console.error(
+      // `Error fetching matches for ${playerId}:`,
+      // err.message || err,
+    // );
   }
 
   // Updating the visual element placeholders
@@ -50,7 +50,7 @@ export async function renderStats(container: HTMLElement | null) {
     gamesCount = playerMatchesResponse?.count ?? 0; //Default value equals 0.
     totalGames.textContent = gamesCount.toString();
   } else {
-    console.error("Element 'user-total-games-count' not found");
+    // console.error("Element 'user-total-games-count' not found");
   }
 
   // User Total Games Won
@@ -66,7 +66,7 @@ export async function renderStats(container: HTMLElement | null) {
       totalGamesWon.textContent = "0";
     }
   } else {
-    console.error("Element 'user-games-won-count' not found");
+    // console.error("Element 'user-games-won-count' not found");
   }
 
   // User Total Games Lost
@@ -76,7 +76,7 @@ export async function renderStats(container: HTMLElement | null) {
     lostCount = gamesCount - winCount;
     totalGamesLost.textContent = lostCount.toString();
   } else {
-    console.error("Element 'user-games-lost-count' not found");
+    // console.error("Element 'user-games-lost-count' not found");
   }
 
   // Overall Win Percentage
@@ -86,7 +86,7 @@ export async function renderStats(container: HTMLElement | null) {
     winRate = (winCount / gamesCount) * 100;
     overallWinRate.textContent = `${winRate.toFixed(1).toString()}%`;
   } else {
-    console.error("Element 'overall-win-percentage not found");
+    // console.error("Element 'overall-win-percentage not found"); 
   }
 
   // Overall Win Bar
@@ -94,7 +94,7 @@ export async function renderStats(container: HTMLElement | null) {
   if (overallWinBar) {
     overallWinBar.style.width = `${winRate.toFixed(1).toString()}%`;
   } else {
-    console.error("Element 'win-rate-progress-bar' not found");
+    // console.error("Element 'win-rate-progress-bar' not found");
   }
 
   // 1v1 Total Games
@@ -110,7 +110,7 @@ export async function renderStats(container: HTMLElement | null) {
       v1GamesCount.textContent = "0 played";
     }
   } else {
-    console.error("Element '1v1-games-played' not found");
+    // console.error("Element '1v1-games-played' not found");
   }
 
   // 1v1 Total Games Won
@@ -131,7 +131,7 @@ export async function renderStats(container: HTMLElement | null) {
       v1GamesWonCount.textContent = "0 wins";
     }
   } else {
-    console.error("Element '1v1-wins' not found");
+    // console.error("Element '1v1-wins' not found");
   }
 
   // 1v1 Total Games Lost
@@ -145,7 +145,7 @@ export async function renderStats(container: HTMLElement | null) {
       v1GamesLostCount.textContent = "0 losses";
     }
   } else {
-    console.error("Element '1v1-losses' not found");
+    // console.error("Element '1v1-losses' not found");
   }
 
   // 1v1 Overall Win Percentage
@@ -155,7 +155,7 @@ export async function renderStats(container: HTMLElement | null) {
     v1WinRate = (totalV1GamesWon / totalV1Games) * 100;
     v1OverallWinRate.textContent = `${v1WinRate.toFixed(1).toString()}%`;
   } else {
-    console.error("Element '1v1-win-rate' not found");
+    // console.error("Element '1v1-win-rate' not found");
   }
 
   // Tournament Total Games
@@ -177,7 +177,7 @@ export async function renderStats(container: HTMLElement | null) {
       tournamentGamesCount.textContent = "0 played";
     }
   } else {
-    console.error("Element 'tournament-games-played' not found");
+    // console.error("Element 'tournament-games-played' not found");
   }
 
   // Tournament Total Games Won
@@ -200,7 +200,7 @@ export async function renderStats(container: HTMLElement | null) {
       tournamentGamesWonCount.textContent = "0 wins";
     }
   } else {
-    console.error("Element 'tournament-wins' not found");
+    // console.error("Element 'tournament-wins' not found");
   }
 
   // Tournament Total Games Lost
@@ -215,7 +215,7 @@ export async function renderStats(container: HTMLElement | null) {
       tournamentGamesLostCount.textContent = "0 losses";
     }
   } else {
-    console.error("Element 'tournament-loss' not found");
+    // console.error("Element 'tournament-loss' not found");
   }
 
   // Tournament Overall Win Percentage
@@ -227,7 +227,7 @@ export async function renderStats(container: HTMLElement | null) {
     tournamentWinRate = (totalTournamentGamesWon / totalTournamentGames) * 100;
     tournamentOverallWinRate.textContent = `${tournamentWinRate.toFixed(1).toString()}%`;
   } else {
-    console.error("Element 'tournament-win-rate' not found");
+    // console.error("Element 'tournament-win-rate' not found");
   }
 
   // Building the table with recent matches.
