@@ -27,7 +27,6 @@ export interface TournamentPlayer {
   username: string;
   displayName: string;
   avatar?: string;
-  skill?: number;
   joinedAt: number;
   isReady: boolean;
   isConnected: boolean;
@@ -437,7 +436,7 @@ export class RemoteTournamentService {
   /**
    * Toggle player ready status
    */
-  public toggleReady(): void {
+  public markReady(): void {
     const currentState = this._tournamentState$.value;
     if (!currentState) {
       // console.warn('[TournamentService] Cannot toggle ready - no tournament state');
@@ -447,17 +446,18 @@ export class RemoteTournamentService {
     const username = this.getCurrentUsername();
     const currentPlayer = currentState.players.find((player: TournamentPlayer) => player.username === username);
     if (!currentPlayer) {
-      // console.warn('[TournamentService] Cannot toggle ready - player not found in tournament');
+      console.warn('[TournamentService] Cannot mark ready - player not found in tournament');
+      return;
+    }
+
+    if (currentPlayer.isReady) {
+      console.log('[TournamentService] Player already ready; skipping mark');
       return;
     }
 
     this.currentPlayerState = currentPlayer;
 
-    const message: TournamentMessage = {
-      type: currentPlayer.isReady ? 'player:unready' : 'player:ready',
-    };
-
-    this.send(message);
+    this.send({ type: 'player:ready' });
   }
 
   /**
