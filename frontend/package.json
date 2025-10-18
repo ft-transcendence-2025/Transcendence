@@ -1,22 +1,26 @@
 {
-  "name": "frontend_tests",
+  "name": "frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Transcendence Frontend - Development & Production",
   "main": "index.js",
   "scripts": {
-    "//": "--- DEBUG & DEVELOPMENT ---",
-    "clean": "rm -rf dist",
-    "format": "prettier --write .",
+    "//": "=== PRODUCTION ===",
+    "build": "npm run clean && npm-run-all --parallel build:* && npm run copy:assets",
     "build:ts": "tsc",
     "build:tw": "npx @tailwindcss/cli -i ./src/app.css -o ./dist/output.css --config ./tailwind.config.js",
     "copy:assets": "ncp public dist",
-    "build": "npm run clean && npm-run-all --parallel build:* && npm run copy:assets",
+    "clean": "rm -rf dist",
+    
+    "///": "=== DEVELOPMENT ===",
+    "dev": "npm run build && npm-run-all --parallel watch:*",
     "watch:ts": "tsc --watch",
     "watch:tw": "tailwindcss -i ./src/app.css -o ./dist/output.css --watch --config ./tailwind.config.js",
     "watch:assets": "onchange \"public/**/*\" -- npm run copy:assets",
-    "dev": "npm run build && npm-run-all --parallel watch:*"
+    
+    "////": "=== UTILITIES ===",
+    "format": "prettier --write ."
   },
-  "keywords": [],
+  "keywords": ["frontend", "transcendence", "typescript", "tailwindcss"],
   "author": "Papaija",
   "license": "ISC",
   "dependencies": {
