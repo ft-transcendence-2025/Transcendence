@@ -61,7 +61,7 @@ prune: ## Prune Docker system
 	@docker system prune -af
 
 clean: ## Clean everything (keeps avalanche image and database)
-	@docker compose down --remove-orphans
+	@docker compose down --remove-orphans -v
 	@docker rmi frontend api-gateway user-management chat-service pong || true
 	@docker image prune -f
 	@cd $(USER_MGMT_DIR) && rm -rf dist node_modules
