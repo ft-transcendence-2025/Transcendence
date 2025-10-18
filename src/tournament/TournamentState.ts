@@ -23,7 +23,6 @@ export interface TournamentPlayer {
   username: string;
   displayName: string;
   avatar?: string;
-  skill?: number;
   joinedAt: number;
   isReady: boolean;
   isConnected: boolean;
@@ -92,13 +91,14 @@ export class TournamentState {
     this.id = id;
     this.name = name;
     this.phase = TournamentPhase.REGISTRATION;
+    const fixedMaxPlayers = 4;
     this.config = {
-      maxPlayers: config?.maxPlayers || 4,
-      minPlayers: config?.minPlayers || 4,
+      maxPlayers: fixedMaxPlayers,
+      minPlayers: fixedMaxPlayers,
       registrationTimeout: config?.registrationTimeout || 120000, // 2 minutes
       matchTimeout: config?.matchTimeout || 600000, // 10 minutes
-      isRanked: config?.isRanked ?? false,
-      allowSpectators: config?.allowSpectators ?? true,
+      isRanked: false,
+      allowSpectators: false,
     };
     this.players = new Map();
     this.bracket = null;
@@ -242,13 +242,17 @@ export class TournamentState {
   }
 
   /**
-   * Bracket Generation with Skill-Based Seeding
+   * Bracket Generation using join order seeding
    */
   private generateBracket(): void {
     const players = Array.from(this.players.values());
 
-    // Sort by skill for seeding (highest skill plays lowest skill)
-    players.sort((a, b) => (b.skill || 0) - (a.skill || 0));
+    if (players.length < 4) {
+      console.warn(`[TournamentState] Not enough players to generate bracket for ${this.id}`);
+      return;
+    }
+
+    const seededPlayers = players.slice(0, 4);
 
     // Create semifinals matches
     const semifinals: Match[] = [
@@ -257,8 +261,8 @@ export class TournamentState {
         tournamentId: this.id,
         round: 1,
         position: 1,
-        player1: players[0],
-        player2: players[3] || undefined,
+        player1: seededPlayers[0],
+        player2: seededPlayers[3] || undefined,
         status: MatchStatus.PENDING,
       },
       {
@@ -266,8 +270,8 @@ export class TournamentState {
         tournamentId: this.id,
         round: 1,
         position: 2,
-        player1: players[1] || undefined,
-        player2: players[2] || undefined,
+        player1: seededPlayers[1] || undefined,
+        player2: seededPlayers[2] || undefined,
         status: MatchStatus.PENDING,
       },
     ];
@@ -419,7 +423,6 @@ export class TournamentState {
         username: p.username,
         displayName: p.displayName,
         avatar: p.avatar,
-        skill: p.skill,
         joinedAt: p.joinedAt,
         isReady: p.isReady,
         isConnected: p.isConnected,

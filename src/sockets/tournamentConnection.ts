@@ -88,7 +88,6 @@ export async function handleTournamentConnection(
       id: playerId,
       username: username,
       displayName: username, // In production, fetch from user service
-      skill: 1000, // In production, fetch from ranking service
       joinedAt: Date.now(),
       isReady: false,
       isConnected: true,
