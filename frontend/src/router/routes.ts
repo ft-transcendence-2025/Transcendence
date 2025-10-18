@@ -33,7 +33,6 @@ export const routes: Route[] = [
   { path: "/tournament-tree", action: renderTournamentTree },
   { path: "/remote-tournament", action: renderRemoteTournamentBrowser },
   { path: "/remote-tournament-lobby", action: renderRemoteTournamentLobby },
-  { path: "/stats", action: renderStats },
   { path: "/friends", action: renderFriends },
   { path: "/search-results", action: renderSearchResults },
 ];
