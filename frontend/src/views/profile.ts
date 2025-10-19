@@ -182,10 +182,6 @@ async function updateSidebarStats(username: string) {
 				<span>Win Rate</span>
 				<span class="font-semibold">${stats.winRate}%</span>
 			</li>
-			<li class="flex items-center justify-between">
-				<span>Tournaments</span>
-				<span class="font-semibold">${stats.tournamentCount}</span>
-			</li>
 			${friendsListItem}
 		`;
 	}

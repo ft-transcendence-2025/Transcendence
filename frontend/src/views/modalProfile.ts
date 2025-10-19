@@ -260,14 +260,6 @@ export async function getProfileModalContent(username?: string): Promise<HTMLEle
                 <span class="inline-block animate-pulse">...</span>
               </span>
             </li>
-            <li class="flex items-center justify-between bg-(--color-primary-dark)/30 rounded-lg px-3 py-2">
-              <span class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-yellow-400 text-lg">emoji_events</span> Tournaments
-              </span>
-              <span class="font-semibold text-yellow-400" data-stat="tournaments">
-                <span class="inline-block animate-pulse">...</span>
-              </span>
-            </li>
             ${totalUnreadMessages > 0 ? `
             <li class="flex items-center justify-between bg-red-500/20 rounded-lg px-3 py-2 border border-red-500/50">
               <span class="flex items-center gap-2">
