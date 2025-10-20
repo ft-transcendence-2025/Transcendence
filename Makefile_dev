@@ -1,5 +1,5 @@
 # Transcendence Project Makefile
-.PHONY: run start stop logs status build clean install help
+.PHONY: run dev start stop logs status build clean fclean re install help prune
 .DEFAULT_GOAL := run
 
 # Colors
@@ -20,6 +20,11 @@ run: install build ## Just run 'make' to start the entire application
 	@echo "$(GREEN)🚀 STARTING TRANSCENDENCE$(NC)"
 	@docker compose up -d --build
 	@echo "$(GREEN)🎉 READY! Frontend: https://localhost:5000$(NC)"
+
+dev: ## Start the entire application in development mode with live reloading, run 'npm run dev' in frontend directory locally in another terminal before
+	@echo "$(GREEN)🚀 STARTING TRANSCENDENCE (DEVELOPMENT MODE)$(NC)"
+	@docker compose -f docker-compose.dev.yml build
+	@docker compose -f docker-compose.dev.yml up
 
 ## Essential Commands
 install: ## Install dependencies for all services
@@ -52,12 +57,27 @@ logs: ## Show logs
 status: ## Show service status
 	@docker compose ps
 
-clean: ## Clean everything
-	@docker compose down -v
+prune: ## Prune Docker system
+	@docker system prune -af
+
+clean: ## Clean everything (keeps avalanche image and database)
+	@docker compose down --remove-orphans
+	@docker rmi frontend api-gateway user-management chat-service pong || true
+	@docker image prune -f
 	@cd $(USER_MGMT_DIR) && rm -rf dist node_modules
 	@cd $(CHAT_SERVICE_DIR) && rm -rf dist node_modules
 	@cd $(API_GATEWAY_DIR) && rm -rf dist node_modules
 	@cd $(FRONTEND_DIR) && rm -rf dist node_modules
+	@echo "$(YELLOW)Cleaned build artifacts and images (avalanche image preserved)$(NC)"
+
+fclean: ## Remove everything including avalanche image and databases
+	@docker compose down -v
+	@docker system prune -af --volumes
+	@cd $(USER_MGMT_DIR) && rm -rf dist node_modules DB
+	@cd $(CHAT_SERVICE_DIR) && rm -rf dist node_modules DB
+	@cd $(API_GATEWAY_DIR) && rm -rf dist node_modules
+	@cd $(FRONTEND_DIR) && rm -rf dist node_modules
+	@echo "$(YELLOW)Full clean completed - removed all images and databases$(NC)"
 
 help: ## Show this help
 	@echo "$(CYAN)Transcendence Makefile$(NC)"
