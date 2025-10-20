@@ -1,0 +1,141 @@
+import { FastifyPluginAsync, FastifyRequest, FastifyReply } from "fastify";
+import { authService } from "../services/auth.service";
+import proxy from "@fastify/http-proxy";
+
+const authRoutes: FastifyPluginAsync = async (app: any) => {
+  app.post(
+    "/api/auth/login",
+    {},
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const response = await authService.login(req.body);
+        const user = response.data?.user;
+        // @ts-ignore
+        const token = await reply.accessTokenJwtSign(
+          { id: user.id, email: user?.email, username: user.username },
+          { expiresIn: "1m" }
+        );
+        // @ts-ignore
+        const refreshToken = await reply.refreshTokenJwtSign(
+          { id: user.id, email: user?.email, username: user.username },
+          { expiresIn: "30d" }
+        );
+        reply
+          .setCookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+          })
+          .code(200)
+          .send({ accessToken: token });
+      } catch (error: any) {
+        reply
+          .status(error.response?.status || 500)
+          .send(
+            error.response?.data || { message: "Internal server error", error }
+          );
+      }
+    }
+  );
+
+  app.post(
+    "/api/auth/logout",
+    { preHandler: [app.authenticateRefresh] },
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        // Clear the refreshToken cookie
+        reply.clearCookie("refreshToken", {
+          path: "/api/auth",
+          httpOnly: true,
+          secure: true,
+        });
+
+        // Clear Pong game-related cookies
+        reply.clearCookie("localGameId", {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
+
+        reply.clearCookie("localTournamentId", {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
+
+        reply.clearCookie("remoteTournamentId", {
+          path: "/",
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
+
+        reply.code(200).send({ message: "Logged out successfully." });
+      } catch (error) {
+        reply.code(500).send({ message: "Failed to log out.", error });
+      }
+    }
+  );
+
+  app.post(
+    "/api/auth/refresh",
+    { preHandler: [app.authenticateRefresh] },
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      // @ts-ignore
+      const user = await req.refreshTokenJwtDecode({ onlyCookie: true });
+      // @ts-ignore
+      const token = await reply.accessTokenJwtSign(
+        { id: user.id, email: user?.email, username: user.username },
+        { expiresIn: "1m" }
+      );
+      reply.code(200).send({ accessToken: token });
+    }
+  );
+
+  app.post(
+    "/api/auth/register",
+    {},
+    async (req: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const response = await authService.register(req.body);
+        const user = response.data?.user;
+        // @ts-ignore
+        const token = await reply.accessTokenJwtSign(
+          { id: user.id, email: user?.email, username: user.username },
+          { expiresIn: "1m" }
+        );
+        // @ts-ignore
+        const refreshToken = await reply.refreshTokenJwtSign(
+          { id: user.id, email: user?.email, username: user.username },
+          { expiresIn: "30d" }
+        );
+        reply
+          .setCookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+          })
+          .code(201)
+          .send({ accessToken: token });
+      } catch (error: any) {
+        reply
+          .status(error.response?.status || 500)
+          .send(error.response?.data || { message: "Internal server error" });
+      }
+    }
+  );
+
+  const upstream =
+    process.env.NODE_ENV === "production"
+      ? process.env.PROD_AUTH_URL
+      : process.env.DEV_AUTH_URL;
+
+  app.register(proxy, {
+    upstream,
+    prefix: "/api/auth/:username",
+    rewritePrefix: "/auth/:username",
+    // preHandler: [app.authenticate],
+  });
+};
+
+export default authRoutes;

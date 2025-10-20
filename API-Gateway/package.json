@@ -1,0 +1,32 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway for routing and authentication across microservices. Centralizes request handling, JWT verification, and load balancing. Serves as the entry point to services like user management, profiles, and friendship management.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "fastify": "^5.4.0",
+    "pino-pretty": "^13.0.0",
+    "ts-node-dev": "^2.0.0",
+    "tsx": "^4.20.1",
+    "typescript": "^5.8.3",
+    "@types/strip-bom": "^3.0.0"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.0.2",
+    "@fastify/cors": "^11.0.1",
+    "@fastify/http-proxy": "^11.3.0",
+    "@fastify/jwt": "^9.1.0",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "fastify-metrics": "^12.1.0"
+  }
+}
