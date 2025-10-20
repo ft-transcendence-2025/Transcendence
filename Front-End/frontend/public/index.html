@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="output.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon_m.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+    />
+    <style>
+      /* Material Symbols Outlined fallback styling */
+      .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined' !important;
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+      }
+      /* Override Tailwind text size classes for icons */
+      /* .material-symbols-outlined.text-sm {
+        font-size: 20px !important;
+      }
+      .material-symbols-outlined.text-lg {
+        font-size: 28px !important;
+      }
+      .material-symbols-outlined.text-xl {
+        font-size: 32px !important;
+      }
+      .material-symbols-outlined.text-2xl {
+        font-size: 36px !important;
+      }
+      .material-symbols-outlined.text-3xl {
+        font-size: 48px !important;
+      } */
+    </style>
+    <title>Jungle</title>
+    <!-- Load environment variables -->
+    <script src="./env.js"></script>
+    <!-- Import map for RxJS -->
+    <script type="importmap">
+      {
+        "imports": {
+          "rxjs": "https://esm.sh/rxjs@7.8.1",
+          "rxjs/operators": "https://esm.sh/rxjs@7.8.1/operators"
+        }
+      }
+    </script>
+  </head>
+  <body
+    class="font-montserrat bg-(--color-background) text-(--color-text-primary)"
+  >
+    <div id="app">
+      <header id="navbar"></header>
+      <main id="content"></main>
+      <div id="chat-div-container">
+        <div id="chat-root" class="flex h-full w-full">
+          <div
+            id="chat-windows"
+            class="fixed right-0 bottom-0 flex gap-2 p-2"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

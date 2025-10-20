@@ -1,0 +1,42 @@
+<div
+  class="flex min-h-screen flex-col items-center justify-center bg-(--color-background) p-8 text-center"
+>
+  <div class="mx-auto max-w-2xl">
+    <!-- Image with overlaid text -->
+    <div class="relative mb-8">
+      <img
+        src="../assets/images/jungle_404.jpg"
+        alt="Lost in the Jungle"
+        class="mx-auto h-auto w-80 drop-shadow-lg md:w-96"
+      />
+
+      <!-- Text overlay positioned at top -->
+      <div
+        class="absolute inset-x-0 top-0 flex flex-col items-center justify-start pt-4 md:pt-6"
+      >
+        <h1
+          class="mb-2 text-7xl font-black text-(--color-accent) drop-shadow-2xl md:text-8xl"
+        >
+          404
+        </h1>
+        <h2 class="text-2xl font-semibold text-white drop-shadow-lg md:text-3xl">
+          Lost in the Jungle!
+        </h2>
+      </div>
+    </div>
+
+    <p class="mx-auto mb-2 max-w-lg text-lg text-(--color-text-primary)">
+      Oops! It looks like you've wandered off the beaten path and gotten lost in
+      our jungle.
+    </p>
+
+    <a
+      href="/"
+      class="text-(--color-accent) hover:underline"
+      id="homeButton"
+      data-link="true"
+    >
+      Return to Safety
+    </a>
+  </div>
+</div>

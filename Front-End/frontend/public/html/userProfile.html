@@ -1,0 +1,455 @@
+<div id="user-profile" class="mx-auto max-w-2xl p-4">
+  <h2 class="mb-6 text-center text-3xl font-bold">User Profile</h2>
+
+  <!-- Success/Error Messages -->
+  <div
+    id="success-message"
+    class="mb-4 hidden rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700"
+  ></div>
+  <div
+    id="error-message"
+    class="mb-4 hidden rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
+  ></div>
+
+  <!-- Profile View (shown when profile already has been created) -->
+  <div
+    id="profile-view"
+    class="hidden rounded-lg bg-(--color-primary-light)/20 p-6 shadow-md"
+  >
+    <div class="flex flex-col items-center space-y-6">
+      <!-- Avatar Section -->
+      <div class="flex flex-col items-center">
+        <img
+          id="profile-avatar"
+          alt="Profile Avatar"
+          class="h-24 w-24 rounded-full border-4 border-(--color-primary-dark) object-cover"
+        />
+        <button
+          id="change-avatar-btn"
+          class="mt-2 rounded bg-(--color-secondary) px-3 py-1 text-sm hover:bg-(--color-secondary-light)"
+        >
+          Change Avatar
+        </button>
+      </div>
+
+      <!-- Profile Information -->
+      <div class="w-full space-y-4">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Username</label
+            >
+            <p id="display-username" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Nickname</label
+            >
+            <p id="display-nickname" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >First Name</label
+            >
+            <p id="display-firstname" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Last Name</label
+            >
+            <p id="display-lastname" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Gender</label
+            >
+            <p id="display-gender" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >E-mail</label
+            >
+            <p id="display-email" class="mt-1 text-gray-900">-</p>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700"
+              >Two-Factor Authentication</label
+            >
+            <p id="display-2fa-status" class="mt-1 text-gray-900">-</p>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700">Bio</label>
+          <p
+            id="display-bio"
+            class="mt-1 leading-relaxed break-words whitespace-pre-wrap text-gray-900"
+          >
+            -
+          </p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex space-x-4">
+        <button
+          id="edit-profile-btn"
+          class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
+        >
+          Edit Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create / Edit Profile (dynamic ) -->
+  <div
+    id="fill-profile-container"
+    class="hidden rounded-lg bg-(--color-primary-light)/20 p-6 shadow-md"
+  >
+    <h3 id="fill-profile-title" class="mb-4 text-xl font-semibold"></h3>
+    <form id="fill-profile-form" class="space-y-4">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div>
+          <label
+            for="update-nick-name"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Nickname
+          </label>
+          <input
+            type="text"
+            name="update-nick-name"
+            id="update-nick-name"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            placeholder="Your nickname"
+            maxlength="30"
+          />
+        </div>
+        <div>
+          <label
+            for="update-email"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Email
+          </label>
+          <input
+            type="email"
+            name="update-email"
+            id="update-email"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            placeholder="Your email"
+          />
+        </div>
+        <div>
+          <label
+            for="update-first-name"
+            class="block text-sm font-medium text-gray-700"
+          >
+            First Name
+          </label>
+          <input
+            type="text"
+            name="update-first-name"
+            id="update-first-name"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            placeholder="Your first name"
+            maxlength="30"
+          />
+        </div>
+        <div>
+          <label
+            for="update-last-name"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Last Name
+          </label>
+          <input
+            type="text"
+            name="update-last-name"
+            id="update-last-name"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+            placeholder="Your last name"
+            maxlength="30"
+          />
+        </div>
+        <div>
+          <label
+            for="update-gender"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Gender
+          </label>
+          <select
+            name="update-gender"
+            id="update-gender"
+            class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+          >
+            <option value="">Select gender</option>
+            <option value="MALE">Male</option>
+            <option value="FEMALE">Female</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label for="update-bio" class="block text-sm font-medium text-gray-700">
+          Bio
+        </label>
+        <textarea
+          name="update-bio"
+          id="update-bio"
+          rows="3"
+          class="mt-1 w-full rounded-md border border-gray-300 bg-white px-3 py-2 focus:border-(--color-primary) focus:outline-none"
+          placeholder="Tell us about yourself..."
+          maxlength="256"
+        ></textarea>
+      </div>
+      <!-- 2FA Toggle -->
+      <div
+        id="2fa-toggle-section"
+        class="flex items-center justify-between rounded-lg border border-gray-300 bg-white p-4"
+      >
+        <div>
+          <label
+            for="update-two-factor-enabled"
+            class="block text-sm font-medium text-gray-700"
+          >
+            Two-Factor Authentication
+          </label>
+          <p class="text-sm text-gray-500">
+            Add an extra layer of security to your account
+          </p>
+        </div>
+        <div class="relative">
+          <input
+            type="checkbox"
+            id="update-two-factor-enabled"
+            name="update-two-factor-enabled"
+            class="peer sr-only"
+          />
+          <div
+            class="peer relative h-6 w-11 rounded-full bg-gray-200 peer-checked:bg-(--color-primary) peer-focus:ring-4 peer-focus:ring-(--color-primary)/25 peer-focus:outline-none after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:-translate-x-full"
+          ></div>
+        </div>
+      </div>
+      <div class="flex justify-center">
+        <button
+          type="submit"
+          id="save-profile-btn"
+          class="rounded-lg bg-(--color-primary) px-6 py-2 text-white hover:bg-(--color-primary-dark)"
+        ></button>
+      </div>
+    </form>
+  </div>
+  <!-- Avatar Selection Modal -->
+  <div
+    id="avatar-modal"
+    class="modal fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-sm"
+  >
+    <div
+      class="mx-4 max-w-md rounded-lg border-2 border-(--color-primary) bg-white p-6 shadow-xl"
+    >
+      <h3 class="mb-4 text-xl font-semibold">Choose Avatar</h3>
+
+      <!-- Jungle Avatars -->
+      <div class="mb-6">
+        <div class="grid grid-cols-5 gap-3">
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="bear.png"
+          >
+            <img
+              src="/assets/avatars/bear.png"
+              alt="Bear"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="cat.png"
+          >
+            <img
+              src="/assets/avatars/cat.png"
+              alt="Cat"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="chicken.png"
+          >
+            <img
+              src="/assets/avatars/chicken.png"
+              alt="Chicken"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="dog.png"
+          >
+            <img
+              src="/assets/avatars/dog.png"
+              alt="Dog"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="gorilla.png"
+          >
+            <img
+              src="/assets/avatars/gorilla.png"
+              alt="Gorilla"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="koala.png"
+          >
+            <img
+              src="/assets/avatars/koala.png"
+              alt="Koala"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="meerkat.png"
+          >
+            <img
+              src="/assets/avatars/meerkat.png"
+              alt="Meerkat"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="panda.png"
+          >
+            <img
+              src="/assets/avatars/panda.png"
+              alt="Panda"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="rabbit.png"
+          >
+            <img
+              src="/assets/avatars/rabbit.png"
+              alt="Rabbit"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+          <div
+            class="avatar-option cursor-pointer rounded-lg border-2 border-transparent p-2 hover:border-(--color-primary)"
+            data-avatar="sloth.png"
+          >
+            <img
+              src="/assets/avatars/sloth.png"
+              alt="Sloth"
+              class="h-12 w-12 rounded-full object-cover"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload Custom Avatar -->
+      <div class="mb-6">
+        <h4 class="mb-3 text-sm font-medium text-gray-700">
+          Upload Custom Avatar
+        </h4>
+        <input
+          type="file"
+          id="custom-avatar-upload"
+          accept="image/*"
+          class="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-(--color-primary) focus:outline-none"
+        />
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="flex justify-end space-x-3">
+        <button
+          id="cancel-avatar-btn"
+          class="rounded bg-gray-300 px-4 py-2 text-sm hover:bg-gray-400"
+        >
+          Cancel
+        </button>
+        <button
+          id="save-avatar-btn"
+          class="rounded bg-(--color-primary) px-4 py-2 text-sm text-white hover:bg-(--color-primary-dark)"
+          disabled
+        >
+          Save Avatar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Code Modal for 2FA Setup -->
+  <div
+    id="profile-2fa-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-sm"
+  >
+    <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+      <div class="text-center">
+        <h3 class="mb-4 text-lg font-semibold text-gray-800">
+          Set up Two-Factor Authentication
+        </h3>
+
+        <div class="mb-4">
+          <p class="mb-3 text-sm text-gray-600">
+            Scan this QR code with your authenticator app (Google Authenticator,
+            Authy, etc.)
+          </p>
+
+          <!-- QR Code Display -->
+          <div class="mb-4 flex justify-center">
+            <img
+              id="profile-2fa-qr-code"
+              alt="QR Code for 2FA setup"
+              class="max-w-full rounded border-2 border-gray-300"
+            />
+          </div>
+
+          <!-- Token Input -->
+          <div class="mb-4">
+            <label
+              for="profile-2fa-token"
+              class="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Enter 6-digit verification code:
+            </label>
+            <input
+              type="text"
+              id="profile-2fa-token"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              placeholder="123456"
+              class="w-full rounded border border-gray-300 px-3 py-2 text-center text-lg tracking-widest focus:border-(--color-primary) focus:outline-none"
+            />
+          </div>
+
+          <!-- Modal Actions -->
+          <div class="flex justify-end space-x-3">
+            <button
+              id="profile-2fa-cancel-btn"
+              class="rounded bg-gray-300 px-4 py-2 text-sm hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+            <button
+              id="profile-2fa-enable-btn"
+              class="rounded bg-(--color-primary) px-4 py-2 text-sm text-white hover:bg-(--color-primary-dark)"
+            >
+              Enable 2FA
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

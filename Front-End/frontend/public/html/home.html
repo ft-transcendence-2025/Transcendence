@@ -1,0 +1,55 @@
+<div
+  class="absolute inset-0 z-30 flex h-screen items-center justify-center bg-[url('./assets/images/monstera_1920.jpg')] bg-cover bg-center p-4"
+>
+  <!-- Washed out overlay -->
+  <div class="absolute inset-0 bg-(--color-primary)/40"></div>
+
+  <!-- Centered content -->
+  <div class="relative z-10 mx-auto max-w-4xl text-center">
+    <h2
+      class="text-stroke font-greek mb-8 text-9xl text-(--color-accent) drop-shadow-lg"
+    >
+      Welcome To The Jungle
+    </h2>
+
+    <!-- Animated Pong Game Container -->
+    <div class="relative mx-auto mb-8 h-24 w-full max-w-4xl">
+      <div
+        class="animate-paddle-left absolute top-1/2 left-0 h-20 w-3 -translate-y-1/2 rounded-full bg-white/90 shadow-lg"
+      ></div>
+      <div
+        class="animate-paddle-right absolute top-1/2 right-0 h-20 w-3 -translate-y-1/2 rounded-full bg-white/90 shadow-lg"
+      ></div>
+      <div
+        class="animate-pong-ball absolute z-40 h-4 w-4 rounded-full bg-white/90 shadow-lg"
+      ></div>
+    </div>
+
+    <a
+      href="/login"
+      id="login-link"
+      data-link="true"
+      class="mx-auto mb-8 block max-w-md rounded-lg bg-white/60 p-6 text-center shadow-lg drop-shadow-md transition-all duration-300 hover:bg-white hover:shadow-xl"
+    >
+      <span
+        class="text-2xl font-semibold transition-colors duration-300 hover:text-(--color-primary-dark)"
+      >
+        Enter Pong
+      </span>
+    </a>
+
+    <!-- Tournament Button -->
+    <!-- href="/tournament" -->
+    <!-- data-link="true" -->
+    <button 
+      id="tournament-link"
+      class="mx-auto my-8 block max-w-sm rounded-lg bg-(--color-primary-dark) p-2 text-center shadow-lg drop-shadow-md transition-all duration-300 hover:bg-(--color-accent)"
+    >
+      <span
+        class="text-md font-semibold text-white transition-colors duration-300"
+      >
+        Try Tournament (No Login)
+      </span>
+    </button>
+  </div>
+</div>
