@@ -1,0 +1,37 @@
+{
+  "name": "user-management-service",
+  "version": "1.0.0",
+  "main": "server.ts",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts",
+    "build": "tsc --outDir dist",
+    "start": "node dist/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@fastify/multipart": "^9.0.3",
+    "@prisma/client": "^6.8.2",
+    "@types/node": "^22.15.29",
+    "@types/qrcode": "^1.5.5",
+    "@types/speakeasy": "^2.0.10",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^16.5.0",
+    "fastify": "^5.3.3",
+    "fastify-metrics": "^12.1.0",
+    "file-type": "^21.0.0",
+    "password-validator-pro": "^1.1.2",
+    "qrcode": "^1.5.4",
+    "speakeasy": "^2.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "pino-pretty": "^13.0.0",
+    "prisma": "^6.8.2",
+    "ts-node-dev": "^2.0.0"
+  }
+}
