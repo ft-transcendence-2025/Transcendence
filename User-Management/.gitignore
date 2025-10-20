@@ -1,0 +1,13 @@
+node_modules
+.env
+generated
+DB
+# VSCode settings (optional)
+.vscode/
+# OS files
+.DS_Store
+# Editor swap files
+*.swp
+*.swo
+# Build output (if you add a build step)
+dist/
