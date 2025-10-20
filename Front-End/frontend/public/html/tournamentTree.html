@@ -1,0 +1,295 @@
+<div id="tournament-tree" class="mx-auto max-w-7xl p-4">
+  <!-- Header Section -->
+  <div class="mb-8 flex items-center justify-between">
+    <div class="flex-1"></div>
+    <div class="flex-1 text-center">
+      <h2 class="text-3xl font-bold text-(--color-text-primary)">
+        <i class="fa-solid fa-trophy mr-2 text-(--color-primary)"></i>
+        Tournament Bracket
+      </h2>
+      <p class="mt-1 text-sm text-gray-500">Follow the matches and track your progress</p>
+    </div>
+    <div class="flex flex-1 justify-end">
+      <button
+        id="leave-tournament-btn"
+        title="Leave Tournament"
+        class="flex h-10 items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 text-sm text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:border-gray-400"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="hidden sm:inline">Exit</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tournament Progress Bar -->
+  <div class="mb-8 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div class="mb-2 flex items-center justify-between text-sm font-medium text-gray-600">
+      <span>Tournament Progress</span>
+      <span id="tournament-progress-text" class="text-(--color-primary)">Semifinal 1</span>
+    </div>
+    <div class="h-2 w-full rounded-full bg-gray-100">
+      <div id="tournament-progress-bar" class="h-2 rounded-full bg-(--color-primary) transition-all duration-500" style="width: 33%"></div>
+    </div>
+  </div>
+
+  <!-- Tournament Layout -->
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+    <!-- Semi-Finals Column (4 cols) -->
+    <div class="lg:col-span-4 space-y-6">
+      <div class="text-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-700">Semifinals</h3>
+      </div>
+      
+      <!-- Game 1 -->
+      <div class="tournament-card relative rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-(--color-primary-light)" data-match="1">
+        <div class="absolute top-3 right-3">
+          <div class="match-status-badge match-status-1 rounded-full px-3 py-1 text-xs font-medium bg-(--color-primary) text-white">
+            <i class="fa-solid fa-circle-dot mr-1"></i>
+            <span class="status-text">Ready</span>
+          </div>
+        </div>
+        
+        <div class="mb-4 flex items-center gap-2">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Match 1</span>
+        </div>
+        
+        <div class="space-y-3">
+          <div class="player-card flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 transition-all hover:bg-gray-100">
+            <div class="flex items-center gap-3">
+              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-(--color-primary) text-xs font-bold text-white">1</div>
+              <span id="game1-player1" class="font-medium text-gray-800">Player 1</span>
+            </div>
+            <span id="game1-player1-indicator" class="winner-indicator hidden text-(--color-primary)">
+              <i class="fa-solid fa-crown text-lg"></i>
+            </span>
+          </div>
+          
+          <div class="flex justify-center py-1">
+            <span class="text-xs font-medium text-gray-400">VS</span>
+          </div>
+          
+          <div class="player-card flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 transition-all hover:bg-gray-100">
+            <div class="flex items-center gap-3">
+              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-(--color-primary) text-xs font-bold text-white">2</div>
+              <span id="game1-player2" class="font-medium text-gray-800">Player 2</span>
+            </div>
+            <span id="game1-player2-indicator" class="winner-indicator hidden text-(--color-primary)">
+              <i class="fa-solid fa-crown text-lg"></i>
+            </span>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <button
+            id="button-game1"
+            class="game-button w-full rounded-lg bg-(--color-primary) px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-(--color-primary-dark) hover:shadow-md"
+          >
+            <i class="fa-solid fa-play mr-2"></i>
+            <span class="button-text">Start Match</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Game 2 -->
+      <div class="tournament-card relative rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md hover:border-gray-300" data-match="2">
+        <div class="absolute top-3 right-3">
+          <div class="match-status-badge match-status-2 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+            <i class="fa-solid fa-clock mr-1"></i>
+            <span class="status-text">Waiting</span>
+          </div>
+        </div>
+        
+        <div class="mb-4 flex items-center gap-2">
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Match 2</span>
+        </div>
+        
+        <div class="space-y-3">
+          <div class="player-card flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="flex items-center gap-3">
+              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-gray-400 text-xs font-bold text-white">3</div>
+              <span id="game2-player1" class="font-medium text-gray-800">Player 3</span>
+            </div>
+            <span id="game2-player1-indicator" class="winner-indicator hidden text-(--color-primary)">
+              <i class="fa-solid fa-crown text-lg"></i>
+            </span>
+          </div>
+          
+          <div class="flex justify-center py-1">
+            <span class="text-xs font-medium text-gray-400">VS</span>
+          </div>
+          
+          <div class="player-card flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="flex items-center gap-3">
+              <div class="flex h-7 w-7 items-center justify-center rounded-full bg-gray-400 text-xs font-bold text-white">4</div>
+              <span id="game2-player2" class="font-medium text-gray-800">Player 4</span>
+            </div>
+            <span id="game2-player2-indicator" class="winner-indicator hidden text-(--color-primary)">
+              <i class="fa-solid fa-crown text-lg"></i>
+            </span>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <button
+            id="button-game2"
+            class="game-button w-full rounded-lg bg-gray-200 px-6 py-2.5 text-sm font-semibold text-gray-400 cursor-not-allowed"
+            disabled
+          >
+            <i class="fa-solid fa-hourglass-half mr-2"></i>
+            <span class="button-text">Waiting...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector Lines (Hidden on mobile) -->
+    <div class="hidden lg:flex lg:col-span-1 items-center justify-center">
+      <div class="h-full flex flex-col justify-center gap-32">
+        <div class="flex items-center">
+          <div class="h-px w-8 bg-gray-300"></div>
+          <i class="fa-solid fa-chevron-right text-gray-300 text-sm"></i>
+        </div>
+        <div class="flex items-center">
+          <div class="h-px w-8 bg-gray-300"></div>
+          <i class="fa-solid fa-chevron-right text-gray-300 text-sm"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Final Column (3 cols) -->
+    <div class="lg:col-span-3 space-y-6">
+      <div class="text-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-700">Final</h3>
+      </div>
+      
+      <div class="tournament-card relative rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md" data-match="final">
+        <div class="absolute top-3 right-3">
+          <div class="match-status-badge match-status-3 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+            <i class="fa-solid fa-clock mr-1"></i>
+            <span class="status-text">Waiting</span>
+          </div>
+        </div>
+        
+        <div class="mb-4 flex items-center gap-2 justify-center">
+          <i class="fa-solid fa-trophy text-(--color-primary) text-sm"></i>
+          <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Final Match</span>
+        </div>
+        
+        <div class="space-y-3">
+          <div class="player-card flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-user text-gray-400 text-sm"></i>
+              <span id="final-player1" class="font-medium text-gray-400">Winner Match 1</span>
+            </div>
+          </div>
+          
+          <div class="flex justify-center py-1">
+            <span class="text-xs font-medium text-gray-400">VS</span>
+          </div>
+          
+          <div class="player-card flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-user text-gray-400 text-sm"></i>
+              <span id="final-player2" class="font-medium text-gray-400">Winner Match 2</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <button
+            id="button-game3"
+            class="game-button w-full rounded-lg bg-gray-200 px-6 py-2.5 text-sm font-semibold text-gray-400 cursor-not-allowed"
+            disabled
+          >
+            <i class="fa-solid fa-hourglass-half mr-2"></i>
+            <span class="button-text">Waiting...</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector Lines (Hidden on mobile) -->
+    <div class="hidden lg:flex lg:col-span-1 items-center justify-center">
+      <div class="flex items-center">
+        <div class="h-px w-8 bg-gray-300"></div>
+        <i class="fa-solid fa-chevron-right text-gray-300 text-sm"></i>
+      </div>
+    </div>
+
+    <!-- Winner Column (3 cols) -->
+    <div class="lg:col-span-3 space-y-6">
+      <div class="text-center mb-4">
+        <h3 class="text-lg font-semibold text-gray-700">Champion</h3>
+      </div>
+      
+      <div class="winner-card rounded-xl border-2 border-(--color-primary) bg-white p-6 shadow-sm">
+        <div class="flex flex-col items-center text-center">
+          <div class="mb-4">
+            <i class="fa-solid fa-trophy text-5xl text-(--color-primary)"></i>
+          </div>
+          
+          <div class="text-sm font-medium text-gray-500 mb-3 uppercase tracking-wide">Tournament Champion</div>
+          
+          <img
+            id="t-avatar-winner"
+            alt="Champion Avatar"
+            src="assets/icons/star.gif"
+            class="mx-auto h-20 w-20 rounded-full border-2 border-(--color-primary-light) object-cover shadow-sm mb-3"
+          />
+          
+          <div
+            id="TournamentWinnerName"
+            class="text-2xl font-bold text-(--color-text-primary)"
+          >
+            ???
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Legend Section -->
+  <div class="mt-8 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+    <div class="flex flex-wrap gap-6 justify-center items-center text-xs">
+      <div class="flex items-center gap-2">
+        <div class="h-2 w-2 rounded-full bg-(--color-primary)"></div>
+        <span class="text-gray-600 font-medium">Active Match</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="h-2 w-2 rounded-full bg-gray-300"></div>
+        <span class="text-gray-600 font-medium">Waiting</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="h-2 w-2 rounded-full bg-(--color-primary-dark)"></div>
+        <span class="text-gray-600 font-medium">Completed</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <i class="fa-solid fa-crown text-(--color-primary)"></i>
+        <span class="text-gray-600 font-medium">Winner</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Tournament specific styles */
+.match-status-badge {
+  transition: all 0.3s ease;
+}
+
+.game-button {
+  transition: all 0.2s ease;
+}
+
+.game-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.player-card {
+  transition: all 0.2s ease;
+}
+
+.tournament-card {
+  transition: all 0.2s ease;
+}
+</style>
