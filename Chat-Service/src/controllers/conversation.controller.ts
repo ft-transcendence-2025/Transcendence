@@ -1,0 +1,107 @@
+import { FastifyReply, FastifyRequest } from "fastify";
+import prisma from "../lib/prisma";
+import { markMessagesAsRead } from "../services/privatechat.service";
+
+export const createConversation = async (req: FastifyRequest, res: FastifyReply) => {
+	const { user1Id, user2Id } = req.body as {
+		user1Id: string;
+		user2Id: string;
+	}
+	const conversation = await prisma.conversation.create({
+		data: { user1Id, user2Id },
+		include: { messages: true }
+	});
+	res.code(201).send({ message: "Conversation created successfully!", conversation });
+}
+
+export const getConversation = async (req: FastifyRequest, res: FastifyReply) => {
+	const { user1Id, user2Id } = req.params as {
+		user1Id: string;
+		user2Id: string;
+	}
+	const conversation = await prisma.conversation.findFirst({
+		where: {
+			OR: [
+				{ user1Id: user1Id, user2Id: user2Id },
+				{ user1Id: user2Id, user2Id: user1Id },
+			],
+		},
+		include: { messages: true }
+	});
+	res.code(200).send(conversation);
+}
+
+export const listConversations = async (req: FastifyRequest, res: FastifyReply) => {
+	const conversations = await prisma.conversation.findMany({
+		include: { messages: true }
+	});
+	res.code(200).send(conversations);
+}
+
+export const getUnreadMessagesCount = async (req: FastifyRequest, res: FastifyReply) => {
+	const { userId } = req.params as { userId: string };
+
+	if (!userId) {
+		return res.code(400).send({ error: "Missing userId." });
+	}
+	try {
+		const unreadMessages = await prisma.message.findMany({
+			where: {
+				read: false,
+				NOT: {
+					senderId: userId,
+				},
+				conversation: {
+					OR: [
+						{ user1Id: userId },
+						{ user2Id: userId }
+					]
+				}
+			},
+			select: {
+				senderId: true,
+			}
+		});
+
+		const unreadCountBySender: Record<string, number> = {};
+		unreadMessages.forEach(msg => {
+			unreadCountBySender[msg.senderId] = (unreadCountBySender[msg.senderId] || 0) + 1;
+		});
+
+		res.code(200).send(unreadCountBySender);
+	} catch (error) {
+		console.error("Failed to fetch unread messages:", error);
+		res.code(500).send({ error: "Internal server error." });
+	}
+};
+
+export async function markConversationAsRead(req: FastifyRequest, res: FastifyReply) {
+	const { senderId, recipientId } = req.body as { senderId: string; recipientId: string };
+
+	if (!senderId || !recipientId) {
+		return res.code(400).send({ error: "Missing senderId or recipientId." });
+	}
+
+	const user1Id = senderId;
+	const user2Id = recipientId;
+	try {
+		const conversation = await prisma.conversation.findFirst({
+			where: {
+				OR: [
+					{ user1Id: user1Id, user2Id: user2Id },
+					{ user1Id: user2Id, user2Id: user1Id },
+				],
+			},
+		});
+
+		if (conversation) {
+			await markMessagesAsRead(user1Id, conversation.id);
+		} else {
+			console.log(`No conversation found between the specified users: ${user1Id}, ${user2Id}`);
+		}
+		res.code(200).send({ message: "Messages marked as read." });
+	} catch (error) {
+		console.error("Failed to mark messages as read:", error);
+		res.code(500).send({ error: "Internal server error." });
+	}
+}
