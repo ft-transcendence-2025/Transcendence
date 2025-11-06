@@ -1,7 +1,14 @@
 # Transcendence
 
-![vsAi](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
+### Features
 
+- Play two players on the same keyboard
+- Play vs AI
+- Play online
+- Play a tournament with 4 players, online or 4 on the same keyboard
+
+
+![vsAi](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
 <img width="610" height="462" alt="tutorial" src="https://github.com/user-attachments/assets/6b7a98a0-d94e-4aac-bbf8-254531a137f8" />
 <img width="1907" height="649" alt="dashboard" src="https://github.com/user-attachments/assets/7a35c4d7-54be-4e85-ad3b-930abf798597" />
 <img width="791" height="447" alt="2players" src="https://github.com/user-attachments/assets/bca9ffe1-91b1-45b7-be3e-33d10c86d1d0" />
