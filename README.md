@@ -4,6 +4,26 @@
 <img width="952" height="780" alt="createAccount" src="https://github.com/user-attachments/assets/941bc154-e9a9-49a3-be30-bf5d67997ae3" />
 
 
+<img width="970" height="556" alt="login" src="https://github.com/user-attachments/assets/42ea3913-63cc-495a-88a7-9288ecffcc0c" />
+
+<img width="1907" height="649" alt="dashboard" src="https://github.com/user-attachments/assets/7a35c4d7-54be-4e85-ad3b-930abf798597" />
+
+<img width="791" height="447" alt="2players" src="https://github.com/user-attachments/assets/bca9ffe1-91b1-45b7-be3e-33d10c86d1d0" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Materials
