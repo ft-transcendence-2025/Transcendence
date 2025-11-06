@@ -1,8 +1,11 @@
 # Transcendence
 
+/home/jhonas/Videos/gifs/index.gif
+
+
+
 ## Materials
 
-- [**Project Notion**](https://www.notion.so/uatilla/ft_Transcendence-1d8f776cb552800e9c80da43076fe9a2)
 - [**Evaluation point calculator**](https://docs.google.com/spreadsheets/d/1Q4pmPAF-1SVinc3p4zwawTuW-6cizekHFWHoP5HHciU/edit?usp=sharing)
 
 ## Environment Configuration Guide
@@ -11,7 +14,7 @@ Before running the project, create the necessary `.env` (or secret) files in the
 
 ---
 
-### User-Management (`./env`)
+### User-Management (`./.env`)
 
 ```
 DATABASE_URL="file:../DB/dev.db"
@@ -20,7 +23,7 @@ PORT=3000
 HOST="0.0.0.0"
 ```
 
-### API-Gateway (`./env`)
+### API-Gateway (`./.env`)
 
 ```
 # Authentication Secrets
@@ -45,13 +48,13 @@ PROD_FRIENDSHIP_URL="http://user-management:3000/friendships"
 DEV_FRIENDSHIP_URL="http://localhost:3000/friendships"
 ```
 
-### Frontend (`./frontend/.env`)
+### Frontend (`./.frontend/.env`)
 
 ```
 BASE_URL="<your_frontend_base_url>"
 ```
 
-### Chat-Service (`./env`)
+### Chat-Service (`./.env`)
 
 ```
 DATABASE_URL="file:../DB/dev.db"
