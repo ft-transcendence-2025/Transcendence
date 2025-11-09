@@ -2,7 +2,7 @@ Dream Team:
 
 [Aija Arepsa](https://github.com/AijaRe) - [Ebenézer Marquezine](https://github.com/ebmarque) - [Jhonas Leal](https://github.com/Jburlama) - [Leila Dantas](https://github.com/leilatdantas) - [Uatilla Almeida](https://github.com/Uatilla)
 
-# Transcendence
+# ✨ Transcendence ✨
 
 Transcendence is a full-stack web application that reimagines the classic Pong game as a feature-rich multiplayer platform. The platform features sophisticated user management with JWT authentication and 2FA, real-time chat functionality, friend systems, multiple game modes (local multiplayer, AI opponents, online play, and tournaments), and a single-page application interface.
 
@@ -20,7 +20,7 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 - AI opponent
 - Server-Side Pong and Pong API
 
-### Login and profile
+### 👤 Login and profile
 
 - Login 2FA and dashboard
   ![Login2FA_dashboard](git-assets/jungle_login_dashboard-ezgif.gif)
@@ -29,28 +29,29 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 
   ![Profile](git-assets/jungle_profile-ezgif.gif)
 
-### Friends and live chat
+### 💬 Friends and live chat
 
 - Invite a friend and start chat
 ![Invite_chat](git-assets/jungle_friend-ezgif.gif)
 
-invite to play a game
+- Invite to play a game
+![Invite_game](git-assets/jungle_game_invite-ezgif.gif)
 
-### Pong Features
+
+### 🏓 Pong Features
 
 - Play two players on the same keyboard
 - Play vs AI
 - Play online
 - Play a tournament with 4 players: online or 4 on the same keyboard
 
+
 - Play vs AI
   ![vsAi](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
 
 - Game controls
-  <img width="610" height="462" alt="tutorial" src="https://github.com/user-attachments/assets/6b7a98a0-d94e-4aac-bbf8-254531a137f8" />
 
-- Dashboard
-  <img width="1907" height="649" alt="dashboard" src="https://github.com/user-attachments/assets/7a35c4d7-54be-4e85-ad3b-930abf798597" />
+  <img width="610" height="462" alt="tutorial" src="https://github.com/user-attachments/assets/6b7a98a0-d94e-4aac-bbf8-254531a137f8" />
 
 - Player customization
   <img width="791" height="447" alt="2players" src="https://github.com/user-attachments/assets/bca9ffe1-91b1-45b7-be3e-33d10c86d1d0" />
@@ -62,7 +63,7 @@ invite to play a game
   <img width="1072" height="630" alt="localTournament" src="https://github.com/user-attachments/assets/14c710a4-763e-4849-b2db-15d94d38a4ef" />
   <img width="1464" height="949" alt="tournamentBracket" src="https://github.com/user-attachments/assets/f18cd8d8-950b-4214-95e9-a2893780fb11" />
 
-### Stats and match history
+### 📉 Stats and match history
 
 (picture of stats page)
 
