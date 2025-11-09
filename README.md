@@ -1,4 +1,3 @@
-
 Dream Team:
 
 [Aija Arepsa](https://github.com/AijaRe) - [Ebenézer Marquezine](https://github.com/ebmarque) - [Jhonas Leal](https://github.com/Jburlama) - [Leila Dantas](https://github.com/leilatdantas) - [Uatilla Almeida](https://github.com/Uatilla)
@@ -23,11 +22,18 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 
 ### Login and profile
 
-(video of 2FA login and profile update)
+videos: 2FA login and dashboard
+
+profile update
+
 
 ###  Friends and live chat
 
-(video: invite a friend, start a chat, invite to play a game)
+videos: invite a friend
+
+start a chat
+
+invite to play a game
 
 ### Pong Features
 
@@ -36,8 +42,11 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 - Play online
 - Play a tournament with 4 players: online or 4 on the same keyboard
 
+
 - Play vs AI
 ![vsAi](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
+
+- Game controls
 <img width="610" height="462" alt="tutorial" src="https://github.com/user-attachments/assets/6b7a98a0-d94e-4aac-bbf8-254531a137f8" />
 
 - Dashboard
@@ -54,8 +63,9 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 <img width="1464" height="949" alt="tournamentBracket" src="https://github.com/user-attachments/assets/f18cd8d8-950b-4214-95e9-a2893780fb11" />
 
 
+### Stats and match history
 
-
+(picture of stats page)
 
 
 
@@ -122,3 +132,8 @@ DATABASE_URL="file:../DB/dev.db"
 ```
 <your_avalanche_private_key>
 ```
+
+## Run the project
+
+- Configure the environment
+- Run ```make``` in the root folder
