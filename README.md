@@ -26,13 +26,13 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
   ![Login2FA_dashboard](git-assets/jungle_login_dashboard-ezgif.gif)
 
 - Profile update
+
   ![Profile](git-assets/jungle_profile-ezgif.gif)
 
 ### Friends and live chat
 
-videos: invite a friend
-
-start a chat
+- Invite a friend and start chat
+![Invite_chat](git-assets/jungle_friend-ezgif.gif)
 
 invite to play a game
 
