@@ -23,7 +23,7 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 ### Login and profile
 
 - Login 2FA and dashboard
-[login2FA-dashboard](https://github.com/user-attachments/assets/b1b544f6-7233-4ad9-bd1c-334231060e97)
+![login2FA-dashboard](https://github.com/user-attachments/assets/b1b544f6-7233-4ad9-bd1c-334231060e97)
 
 - Profile update
 
