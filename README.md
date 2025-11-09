@@ -47,7 +47,7 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 
 
 - Play vs AI
-  ![vsAi](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
+  ![PlayVsAI](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
 
 - Game controls
 
@@ -65,7 +65,9 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 
 ### 📉 Stats and match history
 
-(picture of stats page)
+- Results saved in Blockchain (Avalanche / Solidity)
+![Stats](git-assets/jungle_stats.jpg)
+
 
 ## Materials
 
