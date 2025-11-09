@@ -22,12 +22,12 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
 
 ### Login and profile
 
-videos: 2FA login and dashboard
+- Login 2FA and dashboard
+  ![Login2FA_dashboard](git-assets/jungle_login_dashboard.mp4)
 
-profile update
+- Profile update
 
-
-###  Friends and live chat
+### Friends and live chat
 
 videos: invite a friend
 
@@ -42,37 +42,32 @@ invite to play a game
 - Play online
 - Play a tournament with 4 players: online or 4 on the same keyboard
 
-
 - Play vs AI
-![vsAi](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
+  ![vsAi](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
 
 - Game controls
-<img width="610" height="462" alt="tutorial" src="https://github.com/user-attachments/assets/6b7a98a0-d94e-4aac-bbf8-254531a137f8" />
+  <img width="610" height="462" alt="tutorial" src="https://github.com/user-attachments/assets/6b7a98a0-d94e-4aac-bbf8-254531a137f8" />
 
 - Dashboard
-<img width="1907" height="649" alt="dashboard" src="https://github.com/user-attachments/assets/7a35c4d7-54be-4e85-ad3b-930abf798597" />
+  <img width="1907" height="649" alt="dashboard" src="https://github.com/user-attachments/assets/7a35c4d7-54be-4e85-ad3b-930abf798597" />
 
 - Player customization
-<img width="791" height="447" alt="2players" src="https://github.com/user-attachments/assets/bca9ffe1-91b1-45b7-be3e-33d10c86d1d0" />
+  <img width="791" height="447" alt="2players" src="https://github.com/user-attachments/assets/bca9ffe1-91b1-45b7-be3e-33d10c86d1d0" />
 
 - Remote pong
-<img width="1358" height="721" alt="waiting" src="https://github.com/user-attachments/assets/af714158-ceff-4e91-b6fa-2b80e53560e6" />
+  <img width="1358" height="721" alt="waiting" src="https://github.com/user-attachments/assets/af714158-ceff-4e91-b6fa-2b80e53560e6" />
 
 - Tournaments
-<img width="1072" height="630" alt="localTournament" src="https://github.com/user-attachments/assets/14c710a4-763e-4849-b2db-15d94d38a4ef" />
-<img width="1464" height="949" alt="tournamentBracket" src="https://github.com/user-attachments/assets/f18cd8d8-950b-4214-95e9-a2893780fb11" />
-
+  <img width="1072" height="630" alt="localTournament" src="https://github.com/user-attachments/assets/14c710a4-763e-4849-b2db-15d94d38a4ef" />
+  <img width="1464" height="949" alt="tournamentBracket" src="https://github.com/user-attachments/assets/f18cd8d8-950b-4214-95e9-a2893780fb11" />
 
 ### Stats and match history
 
 (picture of stats page)
 
-
-
 ## Materials
 
 - Check each module README for details
-
 
 ## Environment Configuration Guide
 
@@ -136,4 +131,4 @@ DATABASE_URL="file:../DB/dev.db"
 ## Run the project
 
 - Configure the environment
-- Run ```make``` in the root folder
+- Run `make` in the root folder
