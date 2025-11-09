@@ -1,11 +1,32 @@
+
+Dream Team:
+
+[Aija Arepsa](https://github.com/AijaRe) - [Ebenézer Marquezine](https://github.com/ebmarque) - [Jhonas Leal](https://github.com/Jburlama) - [Leila Dantas](https://github.com/leilatdantas) - [Uatilla Almeida](https://github.com/Uatilla)
+
 # Transcendence
 
-### Features
+Transcendence is a full-stack web application that reimagines the classic Pong game as a feature-rich multiplayer platform. The platform features sophisticated user management with JWT authentication and 2FA, real-time chat functionality, friend systems, multiple game modes (local multiplayer, AI opponents, online play, and tournaments), and a single-page application interface.
+
+## Project features
+
+- Backend: Node.js + Fastify
+- Frontend: Typescript + Tailwind CSS + SPA
+- SQLite database + Prisma for the backend
+- Backend as Microservices
+- Blockchain (Avalanche/Solidity) to store game results
+- Two-Factor Authentication (2FA) and JWT
+- User management: authentication and profiles
+- Live Chat + friendships + invite to a match
+- Remote players
+- AI opponent
+- Server-Side Pong and Pong API
+
+### Pong Features
 
 - Play two players on the same keyboard
 - Play vs AI
 - Play online
-- Play a tournament with 4 players, online or 4 on the same keyboard
+- Play a tournament with 4 players: online or 4 on the same keyboard
 
 
 ![vsAi](https://github.com/user-attachments/assets/8199f7b4-7b15-4c28-ab2b-273231916655)
@@ -31,6 +52,9 @@
 ## Materials
 
 - [**Evaluation point calculator**](https://docs.google.com/spreadsheets/d/1Q4pmPAF-1SVinc3p4zwawTuW-6cizekHFWHoP5HHciU/edit?usp=sharing)
+
+- Check each module README for details
+
 
 ## Environment Configuration Guide
 
