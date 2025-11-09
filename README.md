@@ -26,6 +26,7 @@ Transcendence is a full-stack web application that reimagines the classic Pong g
   ![Login2FA_dashboard](git-assets/jungle_login_dashboard.mp4)
 
 - Profile update
+- Profile update
 
 ### Friends and live chat
 
